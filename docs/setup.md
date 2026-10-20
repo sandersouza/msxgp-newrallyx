@@ -72,7 +72,7 @@ check/preview modes because those may fetch metadata. A missing `.venv` does not
 get created by either read-only mode. Preview succeeds when changes can be planned,
 but fails for manual prerequisites, incompatible environments or installed tools.
 
-`requirements.txt` pins `Pillow==13.0.0`, shared with the future extractor in #1.
+`requirements.txt` pins `Pillow==13.0.0`, used by the graphics extractor.
 The [published release](https://pypi.org/project/pillow/13.0.0/) provides CPython
 3.14 wheels for both macOS arm64 and x86_64. Setup accepts binary wheels only.
 Pillow has no mandatory Python package dependencies in this environment.
