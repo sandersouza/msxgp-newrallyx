@@ -2,3 +2,6 @@
 /references/**
 !/references/**/
 !/references/**/.gitkeep
+
+# MacOS
+.DS_Store
