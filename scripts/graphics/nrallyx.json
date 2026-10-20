@@ -1,0 +1,219 @@
+{
+  "roms": [
+    {
+      "crc32": "ba7de9fc",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 0,
+          "size": 2048
+        },
+        {
+          "file_offset": 2048,
+          "region_offset": 4096,
+          "size": 2048
+        }
+      ],
+      "name": "nrx_prg1.1d",
+      "region": "maincpu",
+      "sha1": "2133ca327589600bcbd796c213f034daa0457f72",
+      "size": 4096
+    },
+    {
+      "crc32": "eedfccae",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 2048,
+          "size": 2048
+        },
+        {
+          "file_offset": 2048,
+          "region_offset": 6144,
+          "size": 2048
+        }
+      ],
+      "name": "nrx_prg2.1e",
+      "region": "maincpu",
+      "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7",
+      "size": 4096
+    },
+    {
+      "crc32": "b4d5d34a",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 8192,
+          "size": 2048
+        },
+        {
+          "file_offset": 2048,
+          "region_offset": 12288,
+          "size": 2048
+        }
+      ],
+      "name": "nrx_prg3.1k",
+      "region": "maincpu",
+      "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19",
+      "size": 4096
+    },
+    {
+      "crc32": "7da5496d",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 10240,
+          "size": 2048
+        },
+        {
+          "file_offset": 2048,
+          "region_offset": 14336,
+          "size": 2048
+        }
+      ],
+      "name": "nrx_prg4.1l",
+      "region": "maincpu",
+      "sha1": "ffac2c07dda57285673073266712fa2987e3b34f",
+      "size": 4096
+    },
+    {
+      "crc32": "1fff38a4",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 0,
+          "size": 2048
+        }
+      ],
+      "name": "nrx_chg1.8e",
+      "region": "gfx1",
+      "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d",
+      "size": 2048
+    },
+    {
+      "crc32": "85d9fffd",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 2048,
+          "size": 2048
+        }
+      ],
+      "name": "nrx_chg2.8d",
+      "region": "gfx1",
+      "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e",
+      "size": 2048
+    },
+    {
+      "crc32": "3c16f62c",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 0,
+          "size": 256
+        }
+      ],
+      "name": "rx1-6.8m",
+      "region": "gfx2",
+      "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6",
+      "size": 256
+    },
+    {
+      "crc32": "a0a49017",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 0,
+          "size": 32
+        }
+      ],
+      "name": "nrx1-1.11n",
+      "region": "proms",
+      "sha1": "494c920a157e9f876d533c1b0146275a366c4989",
+      "size": 32
+    },
+    {
+      "crc32": "4e46f485",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 32,
+          "size": 256
+        }
+      ],
+      "name": "nrx1-7.8p",
+      "region": "proms",
+      "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf",
+      "size": 256
+    },
+    {
+      "crc32": "8f574815",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 288,
+          "size": 32
+        }
+      ],
+      "name": "rx1-2.4n",
+      "region": "proms",
+      "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3",
+      "size": 32
+    },
+    {
+      "crc32": "b8861096",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 320,
+          "size": 32
+        }
+      ],
+      "name": "rx1-3.7k",
+      "region": "proms",
+      "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25",
+      "size": 32
+    },
+    {
+      "crc32": "4bad7017",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 0,
+          "size": 256
+        }
+      ],
+      "name": "rx1-5.3p",
+      "region": "namco",
+      "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5",
+      "size": 256
+    },
+    {
+      "crc32": "77245b66",
+      "loads": [
+        {
+          "file_offset": 0,
+          "region_offset": 256,
+          "size": 256
+        }
+      ],
+      "name": "rx1-4.2m",
+      "region": "namco",
+      "sha1": "0c4d0bee858b97632411c440bea6948a74759746",
+      "size": 256
+    }
+  ],
+  "schema_version": 1,
+  "set": "nrallyx",
+  "source": {
+    "commit": "f34f02505e32c1993c6a782b6814232cbfc74e36",
+    "paths": [
+      "src/mame/namco/rallyx.cpp",
+      "src/mame/namco/rallyx_v.cpp",
+      "src/emu/drawgfx.cpp",
+      "src/emu/video/resnet.cpp",
+      "src/emu/video/resnet.h"
+    ],
+    "tag": "mame0289"
+  }
+}
