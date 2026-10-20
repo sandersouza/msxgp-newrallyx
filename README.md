@@ -26,3 +26,14 @@ identified and reported as unsupported pending their own implementations.
 
 See [environment setup](docs/setup.md) for prerequisites, dependencies, recovery,
 validation results, tool paths and the cross-assembly smoke test.
+
+Extract the contributor-supplied original graphics locally:
+
+```sh
+make extract-graphics
+```
+
+To replace an unchanged complete extraction, use `make extract-graphics OVERWRITE=1`.
+
+See [graphics extraction](docs/graphics-extraction.md) for the supported ROM set,
+output schema, safe overwrite behavior, provenance and MAME validation results.

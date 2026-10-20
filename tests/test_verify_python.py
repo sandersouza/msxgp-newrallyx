@@ -34,10 +34,13 @@ class PythonVerificationTests(unittest.TestCase):
         return directory / "bin/python", site
 
     def test_base_checks_python_minor_and_architecture(self):
-        result = self.run_verify("base")
+        # Base verification intentionally rejects virtualenv interpreters; the
+        # test runner itself may use the project's Pillow-enabled virtualenv.
+        base_python = getattr(sys, "_base_executable", sys.executable)
+        result = self.run_verify("base", python=base_python)
         expected = 0 if sys.version_info[:2] == (3, 14) else 1
         self.assertEqual(result.returncode, expected, result.stderr)
-        result = self.run_verify("base", arch="unsupported")
+        result = self.run_verify("base", python=base_python, arch="unsupported")
         self.assertNotEqual(result.returncode, 0)
 
     def test_global_python_is_not_accepted_as_repository_venv(self):
