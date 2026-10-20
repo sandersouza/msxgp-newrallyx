@@ -5,3 +5,15 @@
 
 # MacOS
 .DS_Store
+
+# Github Issues
+.github/issues/*
+
+# Local Python environment and generated caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Pinned local tools and synthetic toolchain build artifacts
+.tools/

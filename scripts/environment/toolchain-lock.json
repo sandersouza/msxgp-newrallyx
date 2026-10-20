@@ -1,0 +1,6 @@
+{
+  "version": "1.24.0",
+  "commit": "d379eeac9ad3857fb48fd3a3929175d0a56038ce",
+  "repository": "https://github.com/z00m128/sjasmplus.git",
+  "lua": false
+}
