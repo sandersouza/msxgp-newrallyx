@@ -30,11 +30,13 @@ convert graphics to an MSX video format or implement the game runtime.
 | Z80 cross-assembly | Pinned sjasmplus with a synthetic cartridge smoke test |
 | Original graphics | ROM validation and extraction of tiles, sprites, dots and palette metadata |
 | Arcade reference validation | Local graphics comparisons documented in the extraction guide |
-| MSX runtime, hardware adaptation and game build | Pending |
+| Static MSX2+ cartridge | SCREEN 5 composition, keyboard scene selection and exact openMSX validation |
+| Gameplay and hardware adaptation | Pending |
 | Linux and Windows bootstrap | Detected, but setup is not implemented |
 
-The synthetic cartridge verifies assembly and disassembly; it does not establish
-that the game runs in openMSX or on physical hardware.
+The static cartridge displays two precomposed scenes; gameplay and physical
+hardware validation remain pending. See the [cartridge guide](docs/screen5-cartridge.md)
+for `make rom`, `make run`, BIOS requirements and validation evidence.
 
 ## Quick start
 
