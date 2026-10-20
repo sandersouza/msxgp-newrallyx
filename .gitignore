@@ -1,3 +1,4 @@
-references/assets/**
-references/disassembly/**
-references/roms/**
+# Keep reference directories while ignoring their contents.
+/references/**
+!/references/**/
+!/references/**/.gitkeep
