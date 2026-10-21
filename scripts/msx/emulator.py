@@ -12,6 +12,11 @@ def tcl(value):
     return '"' + ''.join('\\'+c if c in '\\"$[]{}' else '\\n' if c=='\n' else c for c in value) + '"'
 
 
+def reference_machine(root, name):
+    return (f'source {tcl(root/"scripts/msx/mapper_reference.tcl")}\n'
+            f'nrallyx_reference_machine {tcl(name)}')
+
+
 def run(root, args):
     output = destination(root,args.output)
     if not args.bios.is_dir():
@@ -26,7 +31,7 @@ def run(root, args):
     # The process gets its own user data/settings/cache; no global configuration changes.
     lines = ['set save_settings_on_exit false',
              f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
-             f'if {{[catch {{machine {tcl(args.machine)}}} problem]}} {{',
+             f'if {{[catch {{{reference_machine(root,args.machine)}}} problem]}} {{',
              '  puts stderr "BIOS/machine load failed: $problem. Check machine ROM SHA-1 requirements and --bios."',
              '  exit 2', '}',
              'set firmwareswitch off', 'set speed 100', 'set throttle on',

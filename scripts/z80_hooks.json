@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "set": "nrallyx",
+  "hooks": [
+    {"address": 14336, "length": 3, "name": "reset-script-entry", "sha256": "bb744c3709f81c592b72c43e6cf2cdbab78c9de0aa8b5ebaaa312082c2eac77b"},
+    {"address": 496, "length": 3, "name": "game-interrupt-entry", "sha256": "b5dd0f9fe33f500e118c47f0ee78e8b032552bd32550179f91a0f8cd72c85826"},
+    {"address": 1128, "length": 4, "name": "game-interrupt-restore", "sha256": "7eb1f6b3ae3a50952625833ad3cc1d4af5d432dab18bc1e7bc6da80b426b5ef6"},
+    {"address": 3116, "length": 3, "name": "main-loop-stack-reset", "sha256": "54e12079f45031d38b57e47c0ce097b697f2f6d8d591777002110b1c3125c691"},
+    {"address": 105, "length": 3, "name": "movement-watchdog", "sha256": "8749b8ea0efad99fab89485dccd383dd20d8583e491aef84e29273e43744ec2f"},
+    {"address": 5811, "length": 4, "name": "coin-input-entry", "sha256": "1b08dc07fa007a07893ae852e917b492b727d0b455fa071a0de686d9129b2075"},
+    {"address": 5832, "length": 3, "name": "p1-read", "sha256": "269d343bc48c675fc7e50a6d720b75307ba6f889bd1d449c57ddb9adc9e8e449"},
+    {"address": 5845, "length": 3, "name": "p2-read", "sha256": "be7179a878bb41f0bace8897b48901a4e56d95d501865e34da9587b2a0355b6f"},
+    {"address": 1115, "length": 3, "name": "dip-read", "sha256": "6d024b559a2ce932eecf30b3ce5087a0d86f8c88c8d4f3c35d6a79b838ca4f5f"},
+    {"address": 14540, "length": 2, "name": "diagnostic-im2", "sha256": "bc70dababbd49702f8fdc8980fe627fb14f7c7a6cc5ae11f8216990a6c1222e1"},
+    {"address": 1039, "length": 5, "name": "rom-write-suppression", "sha256": "73940b54f7ad8052405b35211ff79512ff3f553ca526b7476ddb088dfe386f70"}
+  ]
+}

@@ -4,7 +4,7 @@ import subprocess
 from PIL import Image, ImageChops
 
 from .build import destination
-from .emulator import tcl
+from .emulator import tcl, reference_machine
 from .screen5 import packed
 from .raster_scroll import BODY_TOP, compose
 from . import sprite_radar as radar
@@ -66,7 +66,7 @@ def verify(root, args):
     lines = [
         'set save_settings_on_exit false',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
-        f'machine {tcl(args.machine)}', 'set firmwareswitch off', 'set speed 100', 'set throttle on',
+        reference_machine(root,args.machine), 'set firmwareswitch off', 'set speed 100', 'set throttle on',
         'set z80_freq 3579545', 'set z80_freq_locked false', 'set cmdtiming real',
         'set disablesprites false', 'set limitsprites true', 'set pause_on_lost_focus false',
         'set minframeskip 0', 'set maxframeskip 0', 'set gamma 1', 'set brightness 0', 'set contrast 0',
