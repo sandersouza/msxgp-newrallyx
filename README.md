@@ -38,7 +38,7 @@ pending.
 | Current renderer | Complete original first-stage map with cached hardware scrolling, a fixed raster scoreboard and dynamic sprite HUD |
 | HUD integration | Reusable Z80 API for score, record, lives, Fuel and radar, with a read-only original-RAM adapter |
 | Player driving test | Starts automatically with original continuous movement, steering, wall collision and a following camera |
-| Gameplay and hardware adaptation | [Original Z80 map, guarded hook inventory and repeatable arcade traces](docs/z80-native-analysis.md); complete native runtime pending |
+| Gameplay and hardware adaptation | [Original Z80 map and arcade traces](docs/z80-native-analysis.md), [patch/allocation contracts](docs/native-patching.md) and [clock/input/state contracts](docs/native-runtime-contracts.md); complete native runtime pending |
 | Linux and Windows bootstrap | Detected, but setup is not implemented |
 
 `make build` generates the current default diagnostic at
