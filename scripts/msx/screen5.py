@@ -17,10 +17,15 @@ def expand(color):
     return tuple(LEVELS[v] for v in color)
 
 
+def packed(pixels):
+    """Pack an even number of palette indices, with the left pixel first."""
+    return bytes((pixels[i] << 4) | pixels[i+1] for i in range(0, len(pixels), 2))
+
+
 def pack(indices):
     if len(indices) != WIDTH * HEIGHT or any(type(v) is not int or not 0 <= v < 16 for v in indices):
         raise ValueError('SCREEN 5 requires 256x212 indices in 0..15')
-    return bytes((indices[i] << 4) | indices[i + 1] for i in range(0, len(indices), 2))
+    return packed(indices)
 
 
 def convert(images):

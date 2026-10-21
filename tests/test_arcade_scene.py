@@ -30,24 +30,24 @@ class CliTests(unittest.TestCase):
         self.assertEqual(layout['compact']['title'],'HISCORE')
         self.assertIn('radar_projection',json.loads((output/'constraints.json').read_text()))
 
-    def test_exact_capture_produces_layout_and_constraint_report(self):
+    def test_preview_emits_reference_input_without_constraint_report(self):
         from scripts.scenes.bundle import load_assets, load_capture
         from scripts.scenes.render import render
         root,_,_=temporary_repo(self)
-        assets=assets_at(root/'references/assets/test')
+        assets=assets_at(root/'references/assets/test',blank=True)
         capture=capture_at(root/'references/scenes/input',assets)
         loaded=load_assets(assets)
         render(load_capture(capture,loaded),loaded).image.save(capture/'reference.png')
         seal(capture)
         output=root/'references/scenes/preview'
         with contextlib.redirect_stdout(io.StringIO()):
-            result=main(['analyze','--assets',str(assets),'--capture',str(capture),
-                         '--output',str(output),'--root',str(root),'--layout','sidebar'])
+            result=main(['preview','--assets',str(assets),'--capture',str(capture),
+                         '--output',str(output),'--root',str(root)])
         self.assertEqual(result,0)
         with Image.open(output/'preview.png') as image:
             self.assertEqual(image.size,(256,212))
-        self.assertEqual(json.loads((output/'layout.json').read_text())['status'],'proposal')
-        self.assertIn('sprites',json.loads((output/'constraints.json').read_text()))
+        self.assertEqual(json.loads((output/'layout.json').read_text())['status'],'approved')
+        self.assertFalse((output/'constraints.json').exists())
 
     def test_mismatch_publishes_diagnostics_and_nonzero_exit(self):
         root,_,_=temporary_repo(self)
