@@ -4,8 +4,9 @@ A work-in-progress port of the New Rally-X arcade game to MSX2+, focused on
 preserving the original graphics, game rules and gameplay speed.
 
 The repository provides environment setup, original-graphics tools and a
-keyboard-controlled SCREEN 5 renderer with the complete original first-stage map. **There is no playable MSX
-complete game build yet.**
+SCREEN 5 renderer with the complete original first-stage map and a controllable
+car using the original movement and wall collision. The complete game runtime
+is still in development.
 
 ## Port direction
 
@@ -19,8 +20,9 @@ complete game build yet.**
   Rendering performance and sound fidelity still require feasibility measurements
   on the target platform.
 
-These are project goals and constraints; the current graphics diagnostics do
-not implement the original game runtime.
+The current runtime integrates original player movement, steering and wall
+collision. Enemy AI, collection, smoke, scoring/Fuel rules and sound remain
+pending.
 
 ## Current status
 
@@ -40,8 +42,8 @@ not implement the original game runtime.
 `references/build/newrallyx.rom`: full-screen hardware scrolling at 50 Hz, with
 one-pixel bounded camera movement across the complete 768x1344 maze, original
 flower borders, an eight-pixel scoreboard
-fixed by a line interrupt, and one original-size yellow car with a black outline
-followed by a white remaining-life digit.
+fixed by a line interrupt, and a yellow life icon with a black outline followed
+by a white remaining-life digit.
 The scoreboard places HISCORE: and its value on the left, and 1UP: and its value
 on the right, both aligned with the maze's inner edges. ROUND is deferred.
 Three separator rows contain the raster transition. Matching eight-pixel black
@@ -53,19 +55,19 @@ In inspection mode, use arrows to scroll; Space pauses, Home reloads the selecte
 1–5 jump to the starting area or the four map corners. Key 0
 cycles the life digit through 0–9, and 9 adds test points. A transparent 48x58 sprite radar
 overlays the upper right: white border/flags, a red enemy and a white/black
-blinking player. The radar cursor tracks the viewport center; its patterns
-update every two refreshes. See [controls and verification](docs/raster-scroll.md).
+blinking player. The radar tracks the car while driving and the viewport center during
+inspection; its patterns update every two refreshes. See [controls and verification](docs/raster-scroll.md).
 Press Enter again to restart driving.
 Directly below the radar, a white fuel-pump icon and yellow gauge share its
 48-pixel width. Press F to cycle the diagnostic fuel levels.
 The [HUD integration guide](docs/hud.md) documents every component, public calls,
 state formats, register preservation and original-routine replacement boundaries.
-The game retains its original score, bonus-life, Fuel and visibility logic;
-the HUD receives the resulting display state. The keyboard producer is separate.
+The HUD adapter reads the original score, lives, Fuel and visibility state;
+the current keyboard producer supplies demonstration values separately.
 The [map guide](docs/stage-one-map.md) documents exact reconstruction, native Z80
 comparisons and the VRAM tile cache. The cartridge is 1 MB; its first build
-acquires and validates the original map through MAME 0.289. Gameplay and physical
-hardware validation remain pending.
+acquires and validates the original map through MAME 0.289. Complete-game and
+physical-hardware validation remain pending.
 
 `make run` opens the default ROM in openMSX and calls `make build` first if that
 file is missing. An existing ROM is reused; use `make build` to rebuild after
@@ -227,9 +229,9 @@ git diff --check
 ```
 
 Local comparisons against the original game require contributor-supplied ROMs and
-MAME. Recorded results and their limitations are available in the
-[setup guide](docs/setup.md#validation-evidence--2026-10-20) and
-[extraction guide](docs/graphics-extraction.md#validation-recorded-on-2026-10-20).
+MAME. Reproduction commands and limitations are documented in the
+[player guide](docs/player.md#verification), [HUD guide](docs/hud.md#verification)
+and [extraction guide](docs/graphics-extraction.md#synthetic-tests-and-optional-local-mame-validation).
 
 Keep documentation, issue bodies and code in English. Read [AGENTS.md](AGENTS.md)
 before changing the repository or managing GitHub work.

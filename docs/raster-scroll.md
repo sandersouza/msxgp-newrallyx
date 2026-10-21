@@ -206,50 +206,6 @@ Generated data, screenshots, manifests and reports remain ignored below
 Physical hardware, larger live radar populations and original-game logic
 budgets still require separate validation.
 
-## HUD/map baseline validation — 2026-10-21
-
-Before player integration, the HUD/map baseline ROM passed **53 exact complete-image comparisons** and
-**3,800 continuous visible-map VRAM checks**, covering 48,240 maze pixels per
-frame. Tests include full-height traversal, both horizontal pages, all four
-map boundaries, direction reversal, all fine phases, ten life values, all Fuel
-levels, score/record updates at all three cadences and a combined moving update.
-All three raster register sets and strict VRAM access timing also pass.
-The native arcade comparison separately checks 28,672 original tile selections.
-At that baseline, **147 automated tests** passed, including synthetic map-selector, bank-layout
-and native HUD-state contract
-tests.
-
-A separate Z80 consumer passed **121 API/ABI checks** and **118 exact complete-image
-comparisons**, covering arbitrary six-digit scores, both player labels, all
-Fuel units, lives, moving/hidden matrix points, native coordinate helpers,
-native RAM decoding, rejected inputs, register preservation and cadence.
-
-| Measurement | Result |
-| --- | --- |
-| Held camera movement | 3,537 intervals, 19.9355–19.9377 ms |
-| Header/maze and footer commits outside reloads | 3,726 intervals each, 19.9355–19.9377 ms |
-| Main-loop elapsed time outside reloads, including split wait | 6.6690–14.8639 ms, 3,772 samples |
-| Instrumented VBlank / header / footer handler sections | 0.5942 / 0.1713 / 0.4713 ms |
-| Landmark reload | Up to 1482.0 ms, display blanked |
-
-No tested continuous movement or raster commit missed a refresh. Handler sections
-exclude entry/status dispatch and return instructions. Main-loop measurements
-include deliberate waiting; they are not CPU-utilization figures or a budget
-for original game logic. Fixed-ROM projection tables keep variable division work out of the header split.
-
-Evidence: `references/build/hud-final-navigation-verified/report.json`,
-`references/build/hud-final-api-verified/report.json`, adjacent
-RGB/VRAM captures, `movement.bin` and timestamp logs. The verifier checks the BIOS
-inventory before and after emulation. All 13 contributor ROMs validate against
-the pinned checksums. Two independent full-map builds and the published default
-ROM are byte-identical, SHA-256
-`6ccec6cdc40daf18763420271b935b805c913a7f3fbaae17853bf7db0d90ae6b`.
-All generated payloads remain ignored. These measurements and this hash identify
-the HUD/map baseline, not the current driving ROM. See
-[player verification](player.md#verification) for current movement evidence.
-The current ROM is available through `make run`; physical hardware and the
-remaining original game loop require separate validation.
-
 ## Runtime integration contract
 
 Shared input/palette preparation lives in [`inputs.py`](../scripts/msx/inputs.py);

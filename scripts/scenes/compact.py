@@ -1,4 +1,4 @@
-"""Experimental 56-pixel HUD: copy glyphs; reproject radar anchors, not bitmaps."""
+"""Reference-input 56-pixel HUD: copy glyphs; reproject radar anchors, not bitmaps."""
 from collections import Counter
 from itertools import combinations
 from PIL import Image

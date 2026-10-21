@@ -211,7 +211,6 @@ def build(root, args):
     (output/'sprite-patterns.bin').write_bytes(patterns)
     (output/'radar-patterns.bin').write_bytes(radar.patterns(radar.bitmap([])))
     (output/'radar-enemies.bin').write_bytes(bytes(v for p in points for v in p['enemy']))
-    (output/'fuel-states.bin').write_bytes(b''.join(fuel.gauge_patterns(i) for i in range(31)))
     (output/'hud-fuel-scale.bin').write_bytes(bytes(min(i,54)*30//54 for i in range(256)))
     (output/'hud-project-x.bin').write_bytes(bytes(2+x*44//64 for x in range(64)))
     (output/'hud-project-y.bin').write_bytes(bytes(2+y*54//112 for y in range(112)))
@@ -272,7 +271,7 @@ def build(root, args):
         sprites=dict(size=[16, 16], life_y=LIFE_Y, life_x=list(LIFE_X), layers_per_life=2,
                      life_size=[16,16], life_magnification=1, life_split=LIFE_SPLIT,
                      life_counter_slots=3, life_reuses_fuel_slots=[27,28,29],
-                     maximum_lives=9, margin_slots=len(MASK_ROWS), radar_slots=14, total_slots=30,
+                     maximum_lives=9, margin_slots=len(MASK_ROWS), radar_slots=14, hud_slots=30, player_slots=2, total_slots=32,
                      black=black, yellow=yellow, white=white, red=red), colors=colors, size=size,
         scenes=[dict(number=s['number'], world_origin=stage_one.LANDMARKS[i])
                 for i,s in enumerate(scenes)],
@@ -286,7 +285,7 @@ def build(root, args):
                        'scripts/msx/stage_one_capture.lua')}, rom_sha256=digest(rom),
         fuel=dict(rectangle=[fuel.X, fuel.Y, fuel.X+fuel.WIDTH, fuel.Y+fuel.HEIGHT],
                   slots=[27,28,29], levels=list(fuel.LEVELS)),
-        scope='Keyboard graphics diagnostic with sprite radar/fuel; moving cars and original game logic deferred'))
+        scope='Original player movement, steering and walls with sprite HUD; enemy AI and remaining gameplay rules pending'))
     require_ignored(root, [p for p in output.rglob('*') if p.is_file()])
     seal(output)
     print(f'{size} bytes, {len(banks)+1} banks: {rom}')

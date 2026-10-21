@@ -3,6 +3,9 @@
 !/references/**/
 !/references/**/.gitkeep
 
+# MAME's default screenshot output must never become repository content.
+/snap/
+
 # MacOS
 .DS_Store
 

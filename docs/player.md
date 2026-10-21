@@ -151,37 +151,18 @@ the keyboard, native-oracle, visible-VRAM and refresh checks with real VDP timin
 but disables the renderer and explicitly records zero RGB comparisons. Use a new
 output directory when rerunning with the display enabled.
 
-The default-start check in `references/build/driving-default-headless/report.json`
-passed 1,600 native-state and 1,600 visible-VRAM comparisons, with no missed
-refresh in the measured intervals. It asserts that driving is already active
-without injecting Enter. A separate cold-boot check of the published default ROM
-also passed the driving → inspection → driving keyboard round trip
-(`references/build/driving-default-modes/checks.txt`). All 151 automated tests
-passed. The current default ROM SHA-256 is
-`ad7a3e703aa832d55b056df411d0fa525f3e0c9a019c0aee611e9bd20b9def44`.
+The verifier rejects a ROM that does not start in driving mode. Its keyboard
+sequence covers continuous motion, steering, wall probes, pause/resume and
+restart, comparing 1,600 native states and visible-VRAM frames. Full rendering
+also compares complete RGB images, including car animation and the bitmap row
+used to avoid reserved sprite Y=216.
+Presentation RAM is frozen at the footer; screenshots wait for openMSX's
+`after frame` event to avoid comparing state with the previous rendered frame.
 
-Before switching the default startup mode, the graphical baseline check in
-`references/build/player-release-visual-frame/report.json`
-passed **33 exact complete-image comparisons**, **1,600 native-state comparisons**
-and **1,600 visible-VRAM comparisons**, with no missed refresh in the measured
-intervals. It independently reran MAME 0.289. Presentation RAM is frozen at the
-footer; screenshots wait for openMSX's `after frame` event, because its rendered
-frame finishes after VBlank. A fixed delay after the footer can capture the
-previous rendered frame during continuous movement.
-
-Two baseline builds produced identical ROM bytes. Their checked ROM SHA-256 is
-`00f016758eec8dd26bfdc1a6048db93d4585d5703e79f740f7006a8b0d6e8e8b`.
-The independent headless run is recorded in
-`references/build/player-release-headless/report.json`; it validates native RAM,
-visible VRAM and timing, without RGB comparisons. Physical hardware remains
-unmeasured.
-
-That same graphical baseline ROM also passed the [map/raster](raster-scroll.md#reproduce-verification)
-regression: 53 exact complete images, 3,800 continuous visible-VRAM frames and
-28,672 native tile selections (`references/build/player-release-map/report.json`).
-The [HUD API](hud.md#verification) regression passed 121 API/ABI checks and 118
-exact complete images (`references/build/player-release-hud/report.json`).
-Rerun both verifiers after shared scheduling changes.
+Run the [map/raster](raster-scroll.md#reproduce-verification) and
+[HUD API](hud.md#verification) regressions after shared scheduling changes.
+Reports include the checked ROM hash; use reports from the same sealed build
+when assessing a change.
 Generated traces, ROMs, images and native data stay under ignored
 `references/build/`; `make clean` removes them. Physical hardware and the
 remaining original game loop need separate integration measurements.

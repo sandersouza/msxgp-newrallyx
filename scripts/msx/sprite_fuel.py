@@ -28,15 +28,6 @@ def icon():
     return bytes(int(x < 12 and PUMP[y][x] == '#') for y in range(16) for x in range(16))
 
 
-def bar(level):
-    if level not in range(len(LEVELS)):
-        raise ValueError('Fuel diagnostic level must be 0..4')
-    amount = LEVELS[level]
-    return bytes(int((y in (3, 10)) or (4 <= y <= 9 and
-                     (x in (0, 31) or 1 <= x <= amount)))
-                 for y in range(16) for x in range(32))
-
-
 def pattern(mask, width, column=0, shift=0):
     if any(mask[(15*width):]):
         raise ValueError('Fuel pattern needs one empty bottom row for sentinel avoidance')
@@ -48,25 +39,12 @@ def icon_patterns():
     return b''.join(pattern(icon(), 16, shift=phase) for phase in (0, 1))
 
 
-def bar_patterns(level):
-    return b''.join(pattern(bar(level), 32, column, phase)
-                    for phase in (0, 1) for column in (0, 16))
-
-
 def attributes(cy):
     y = (Y+cy-11-1) & 255
     phase = int(y == 216)
     return bytes(v for x, p in ((X, ICON_PATTERN+phase*4),
                                (X+16, BAR_PATTERN+phase*8),
                                (X+32, BAR_PATTERN+4+phase*8)) for v in (y-phase,x,p,0))
-
-
-def paint(pixels, level, white, yellow):
-    for mask, width, ox, color in ((icon(),16,X,white), (bar(level),32,X+16,yellow)):
-        for y in range(16):
-            for x in range(width):
-                if mask[y*width+x]:
-                    pixels[(Y+y)*256+ox+x] = color
 
 
 def gauge_patterns(pixels):
@@ -81,9 +59,10 @@ def gauge_patterns(pixels):
 
 def paint_pixels(pixels, amount, white, yellow):
     """Screen-coordinate oracle for every gauge amount, independent of sprite packing."""
+    pump=icon()
     for y in range(16):
         for x in range(16):
-            if icon()[y*16+x]:pixels[(Y+y)*256+X+x]=white
+            if pump[y*16+x]:pixels[(Y+y)*256+X+x]=white
     for y in range(16):
         for x in range(32):
             if y in (3,10) or (4<=y<=9 and (x in (0,31) or 1<=x<=amount)):

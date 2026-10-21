@@ -2,7 +2,7 @@
 import copy
 import unittest
 from PIL import Image
-from scripts.scenes.layout import compose, proposals
+from scripts.scenes.layout import compose
 from scripts.scenes.render import Frame, Object
 from test_scene_render import scene
 
@@ -29,16 +29,12 @@ def synthetic_hud():
     return assets,capture,frame
 
 
-def compact():
-    return next(layout for layout in proposals() if layout.name=='compact')
-
-
 class CompactTests(unittest.TestCase):
     def test_200_pixel_maze_and_unscaled_hiscore_fragments(self):
         assets,capture,frame=synthetic_hud()
         before=copy.deepcopy(capture.state)
         pixels_before=(frame.image.tobytes(),frame.indices,frame.background,frame.shadow,capture.video,capture.radar)
-        preview=compose(frame,capture,compact(),assets)
+        preview=compose(frame,capture,assets)
         self.assertEqual(preview.image.size,(256,212))
         self.assertEqual(preview.transforms['maze'],dict(source=[12,6,212,218],destination=[0,0,200,212]))
         self.assertEqual(preview.image.crop((200,0,216,8)).tobytes(),frame.image.crop((224,0,240,8)).tobytes())
@@ -56,7 +52,7 @@ class CompactTests(unittest.TestCase):
         assets.pixels['dots']=bytes(dots)
         # A complete 4x4 marker at the source's right edge must remain complete.
         frame.objects=[Object('dot',20,0,(284,140,288,144),bytes([18]*16))]
-        preview=compose(frame,capture,compact(),assets)
+        preview=compose(frame,capture,assets)
         obj=next(o for o in preview.objects if o.kind=='dot')
         self.assertEqual(obj.rect,(252,124,256,128))
         self.assertEqual(obj.colors,bytes([18]*16))
@@ -71,7 +67,7 @@ class CompactTests(unittest.TestCase):
         assets.pixels['dots']=bytes(dots)
         frame.objects=[Object('dot',20,0,(240,140,244,144),bytes([17]*16)),
                        Object('dot',21,1,(244,140,248,144),bytes([18]*16))]
-        preview=compose(frame,capture,compact(),assets)
+        preview=compose(frame,capture,assets)
         radar=preview.transforms['compact']['radar']
         self.assertEqual(radar['source_mobile_overlap_pixels'],0)
         self.assertGreater(radar['projected_mobile_overlap_pixels'],0)
@@ -89,7 +85,7 @@ class CompactTests(unittest.TestCase):
         assets.pixels['dots']=bytes(dots)
         colors=bytearray([255]*16); colors[6]=18
         frame.objects=[Object('dot',20,0,(280,89,284,93),bytes(colors))]
-        preview=compose(frame,capture,compact(),assets)
+        preview=compose(frame,capture,assets)
         self.assertEqual(preview.indices[74*256+250],3) # transparent pixel leaves flag ink
         self.assertEqual(preview.image.getpixel((250,74)),(21,21,21))
         self.assertEqual(preview.indices[74*256+251],18)
@@ -102,14 +98,14 @@ class CompactTests(unittest.TestCase):
 
     def test_fuel_fraction_is_preserved_with_a_52_pixel_inner_gauge(self):
         assets,capture,frame=synthetic_hud()
-        full=compose(frame,capture,compact(),assets)
+        full=compose(frame,capture,assets)
         self.assertEqual(full.indices[49*256+200:49*256+256].count(14),52)
         indices=bytearray(frame.indices)
         for y in range(65,71):
             for x in range(226,256): indices[y*288+x]=0
         frame.indices=frame.background=bytes(indices)
         frame.image.putdata([tuple(assets.palette['rgb'][i]) for i in indices])
-        preview=compose(frame,capture,compact(),assets)
+        preview=compose(frame,capture,assets)
         row=preview.indices[49*256+200:49*256+256]
         self.assertEqual(row.count(14),26)
         self.assertEqual(preview.transforms['compact']['fuel']['source_inner_width'],60)
@@ -118,13 +114,14 @@ class CompactTests(unittest.TestCase):
             for x in range(256,286): indices[y*288+x]=0
         frame.indices=frame.background=bytes(indices)
         frame.image.putdata([tuple(assets.palette['rgb'][i]) for i in indices])
-        empty=compose(frame,capture,compact(),assets)
+        empty=compose(frame,capture,assets)
         self.assertEqual(empty.indices[49*256+200:49*256+256].count(14),0)
 
-    def test_nonblank_trimmed_information_and_mutated_geometry_are_rejected(self):
+    def test_nonblank_trimmed_information_and_flipped_captures_are_rejected(self):
         assets,capture,frame=synthetic_hud()
-        layout=compact(); layout.blocks['radar']['destination'][0]=199
-        with self.assertRaises(ValueError): compose(frame,capture,layout,assets)
+        capture.state['registers']['flip']=True
+        with self.assertRaisesRegex(ValueError,'upright'): compose(frame,capture,assets)
+        capture.state['registers']['flip']=False
         frame.image.putpixel((287,192),(255,0,0))
         with self.assertRaisesRegex(ValueError,'lives'):
-            compose(frame,capture,compact(),assets)
+            compose(frame,capture,assets)

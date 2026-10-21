@@ -14,7 +14,7 @@ from scripts.scenes.record import capture_gameplay
 from scripts.scenes.render import render
 from scripts.scenes.storage import json_write, publish_bundle
 from scripts.scenes.bundle import digest
-from scripts.scenes.layout import compose, proposals
+from scripts.scenes.layout import compose
 from scripts.scenes.analyze import analyze
 
 
@@ -27,8 +27,6 @@ def main(argv=None):
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--replay',type=Path,default=Path('scripts/scenes/gameplay-inputs.json'))
     parser.add_argument('--frames',type=int,nargs='+',default=[2200,2410,2411,2760,2761])
-    parser.add_argument('--layout',choices=[p.name for p in proposals()],default='compact',
-                        help='composition layout (default: compact)')
     args=parser.parse_args(argv)
     try:
         if args.command=='capture':
@@ -47,8 +45,7 @@ def main(argv=None):
             ImageChops.difference(capture.reference,frame.image).save(stage/'difference.png')
             json_write(stage/'comparison.json',report)
             if args.command in ('preview','analyze') and report['mismatches']==0:
-                layout=next(p for p in proposals() if p.name==args.layout)
-                preview=compose(frame,capture,layout,assets)
+                preview=compose(frame,capture,assets)
                 preview.image.save(stage/'preview.png',optimize=False,compress_level=9)
                 json_write(stage/'layout.json',preview.transforms)
                 if args.command=='analyze':

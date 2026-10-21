@@ -10,7 +10,7 @@ class SpriteFuelTests(unittest.TestCase):
         self.assertEqual((fuel.X, fuel.WIDTH), (radar.X, radar.WIDTH))
         self.assertEqual(fuel.Y, radar.Y+radar.HEIGHT+4)
         canvas = bytearray([7])*(256*212)
-        fuel.paint(canvas, 0, 8, 12)
+        fuel.paint_pixels(canvas, 30, 8, 12)
         colors = set(canvas[fuel.Y*256:(fuel.Y+16)*256])
         self.assertEqual(colors,{7,8,12})
         for y in range(16):
@@ -19,7 +19,12 @@ class SpriteFuelTests(unittest.TestCase):
         self.assertEqual(canvas[(fuel.Y+3)*256+fuel.X+47],12)
 
     def test_fuel_levels_only_erase_fill_and_preserve_the_yellow_outline(self):
-        states = [fuel.bar(i) for i in range(5)]
+        states = []
+        for amount in fuel.LEVELS:
+            canvas=bytearray(256*212)
+            fuel.paint_pixels(canvas,amount,8,12)
+            states.append(bytes(canvas[(fuel.Y+y)*256+fuel.X+16+x]==12
+                                for y in range(16) for x in range(32)))
         self.assertEqual([sum(p) for p in states], sorted([sum(p) for p in states],reverse=True))
         for pixels in states:
             self.assertTrue(all(pixels[3*32+x] and pixels[10*32+x] for x in range(32)))
@@ -27,12 +32,16 @@ class SpriteFuelTests(unittest.TestCase):
         self.assertFalse(states[-1][5*32+10])
         for before, after in zip(states,states[1:]):
             self.assertTrue(all(a >= b for a,b in zip(before,after)))
-        with self.assertRaises(ValueError):
-            fuel.bar(5)
+        for invalid in (-1,31):
+            with self.assertRaises(ValueError): fuel.gauge_patterns(invalid)
 
     def test_all_levels_and_vertical_phases_preserve_every_screen_pixel(self):
-        for level in range(5):
-            raw = fuel.icon_patterns()+fuel.bar_patterns(level)
+        for amount in fuel.LEVELS:
+            raw = fuel.icon_patterns()+fuel.gauge_patterns(amount)
+            canvas=bytearray(256*212)
+            fuel.paint_pixels(canvas,amount,8,12)
+            expected=[{(x,y) for y in range(212) for x in range(256)
+                       if canvas[y*256+x]==color} for color in (8,12)]
             for cy in range(256):
                 attributes = fuel.attributes(cy)
                 actual = [set(),set()]
@@ -42,9 +51,7 @@ class SpriteFuelTests(unittest.TestCase):
                     start = p*8-fuel.ICON_PATTERN*8
                     for sx,sy in decode(raw[start:start+32]):
                         actual[int(i>0)].add((x+sx,(y+1-(cy-BODY_TOP)+sy)&255))
-                for layer,(bitmap,width,ox) in enumerate(((fuel.icon(),16,fuel.X),(fuel.bar(level),32,fuel.X+16))):
-                    expected={(ox+x,fuel.Y+y) for y in range(16) for x in range(width) if bitmap[y*width+x]}
-                    self.assertEqual(actual[layer],expected)
+                self.assertEqual(actual,expected)
 
 
 if __name__ == '__main__':

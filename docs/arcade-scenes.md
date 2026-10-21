@@ -1,7 +1,7 @@
 # Gameplay scene capture and composition
 
 Issue [#6](https://github.com/sandersouza/msxgp-newrallyx/issues/6) adds a local
-reference workflow, not an MSX game ROM. Supply the supported unpacked `nrallyx`
+reference workflow used to prepare and verify the MSX build inputs. Supply the supported unpacked `nrallyx`
 ROMs and run the existing setup/extractor first. Nothing downloads game data.
 Python 3.14, Pillow 13.0.0 and MAME 0.289 are reused.
 
@@ -24,16 +24,12 @@ From the repository root:
 .venv/bin/python -B scripts/arcade_scene.py analyze \
   --capture references/scenes/capture/frame-02760 \
   --output references/scenes/overlap-compact
-.venv/bin/python -B scripts/arcade_scene.py analyze \
-  --capture references/scenes/capture/frame-02760 \
-  --output references/scenes/overlap-wide \
-  --layout wide
 ```
 
 If assets already exist unchanged, reuse them; the extractor intentionally
 refuses existing output unless its documented overwrite option is supplied.
 Every scene/report destination must be new. Use `--output`, `--capture`,
-`--frames` and `--layout` to select paths and processing. There is no scene
+`--frames` to select paths and processing. There is no scene
 overwrite option. Choose fresh paths to preserve prior evidence. The `preview`
 command emits the preview/transforms without constraint analysis.
 
@@ -48,9 +44,8 @@ Direct CLI equivalents:
   --output references/scenes/overlap-compact
 ```
 
-`--layout` defaults to `compact`, the user-approved composition.
-Use `--layout sidebar` for the original 64-pixel panel, or `--layout wide` for
-the wider, shorter maze alternative.
+The `preview` and `analyze` commands use the compact reference-input composition.
+The live ROM uses the [raster layout](raster-scroll.md), not this input layout.
 
 `--assets` defaults to `references/assets/nrallyx`; `--replay` defaults to
 `scripts/scenes/gameplay-inputs.json`. Arguments use the caller's working
@@ -153,52 +148,15 @@ it records mismatches, half-open bounds, maximum channel difference, maze/HUD
 counts and input capture/asset manifest hashes. There are no accepted exceptions.
 JSON and images have no generated timestamps or absolute acquisition paths.
 
-## Reference input layouts
+## Compact build input
 
-These layouts prepare and validate source reference bundles. The live ROM uses
-the [raster renderer layout](raster-scroll.md), documented separately.
-
-The user selected `compact` as the default on 2026-10-20 after comparing it with
-the native arcade image. It uses a 200x212 maze and a 56-pixel right-hand panel
-on a 256x212 canvas. This approves the viewport/HUD arrangement; MSX screen mode,
-palette conversion and rendering performance remain separate decisions.
-`layout.json` reports `status: "approved"` for `compact`; `sidebar` and `wide`
-retain `status: "proposal"`.
-
-### Original alternatives
-
-Every rectangle is `[x0,y0,x1,y1)` in native PNG or preview coordinates. Both
-initial layouts preserve all required source blocks at original size:
-
-| Block | Native source | Sidebar destination | Wide destination |
-| --- | --- | --- | --- |
-| Score/player information | [224,0,288,32) | [192,0,256,32) | [0,100,64,132) |
-| Fuel label and bar | [224,56,288,72) | [192,40,256,56) | [64,100,128,116) |
-| Radar and its dots | [224,80,288,192) | [192,64,256,176) | [192,100,256,212) |
-| Lives | [224,192,288,208) | [192,180,256,196) | [0,140,64,156) |
-| Round | [224,208,288,224) | [192,196,256,212) | [0,164,64,180) |
-
-Sidebar maze: source [16,6,208,218), destination [0,0,192,212).
-Wide maze: source [0,60,224,160), destination [16,0,240,100).
-The wide candidate demonstrates the cost in vertical visibility of relocating
-the complete radar below a wider maze. Neither is an approved final layout.
-Blank spacing between semantic HUD blocks is removed; information is not scaled.
-
-The transform is `preview = native PNG + destination origin - source origin`.
-Objects are translated with their containing segment and masked at its bounds.
-For an upright maze, tilemap address origin is
-`((source_x + scroll_x - 3) mod 256, (source_y + 16 + scroll_y) mod 256)`.
-This is an address into the captured tilemap, not a replacement for the game's
-larger world-coordinate system. All original state remains available separately.
-Upright cabinet captures are required for these proposals; native flipped
-rendering has synthetic tests but is not covered by the gameplay integration.
-
-### Build input: compact sidebar
-
-Omitting `--layout` selects the compact sidebar. Explicit `--layout compact`
-selects the same approved layout.
-The maze crop is [12,6,212,218), placed at [0,0,200,212). The additional eight
-columns increase visible maze width by about 4.17% over the 192-pixel sidebar.
+This composition prepares the source bundles consumed by the renderer build.
+It uses a 200x212 maze crop from [12,6,212,218), placed at [0,0,200,212),
+and a 56-pixel right-hand panel. `layout.json` reports `name: "compact"`
+and `status: "approved"`. The live ROM recomposes the original assets into its
+[raster scoreboard and sprite HUD](raster-scroll.md).
+Upright cabinet captures are required for reference-input composition; native
+flipped rendering remains covered by synthetic tests.
 
 ```sh
 .venv/bin/python -B scripts/arcade_scene.py analyze \
@@ -244,28 +202,6 @@ in denser cases; the report exposes them rather than promising worst-case
 readability. No new marker clipping or overlap was found in the five accepted
 frames; each contained ten tile flags and two visible hardware dots.
 
-Local commands used `references/scenes/review-fixed-v3/frame-02200` and
-`frame-02760`, with outputs in `references/scenes/compact-v1/normal` and
-`overlap`. Both native reconstructions still have zero differences. Normal
-compact: 13 RGB colors, 426 SCREEN 4 row violations, five estimated sprite
-entries, peak three per line. Enemy/smoke compact: 14 colors, 759 violations,
-eight entries, peak four. Compact is the approved default layout; final MSX
-palette conversion and SCREEN-mode selection remain unresolved.
-
-The compact follow-up passed 110 synthetic tests and independent review. Its
-six focused tests include mixed dot transparency over flag ink, collision
-reporting, original-state preservation and full/half/empty fuel gauges.
-Repeating enemy/smoke analysis to `references/scenes/compact-v1/repeat` produced
-seven byte-identical files. A local 1:1 comparison image is available at
-`references/scenes/compact-v1/comparison/comparison.png`. The native arcade versus
-compact comparison used for the user's approval is
-`references/scenes/original-vs-compact/comparison.png`.
-
-Default-selection validation passed 111 synthetic tests. Both direct CLI and
-`scripts/arcade_scene.py analyze`, without a layout override, generated the approved compact
-geometry with zero native differences. Their preview pixels are identical to
-the previously reviewed compact output; only the approval metadata changed.
-
 ## Constraint report interpretation
 
 The [Yamaha V9938 Technical Data Book](https://map.grauw.nl/resources/video/yamaha_v9938.pdf),
@@ -277,7 +213,7 @@ with per-row color selection and optional color combination.
 The report measures RGB/source-index counts globally, by region and by scanline.
 SCREEN 4 violations count background rows at final pattern-grid alignment,
 before sprite/dot overlay. SCREEN 5 reports palette-count fit only; final
-3-bit-channel palette conversion remains outside this issue. A 212-line
+3-bit-channel palette conversion is handled by the [renderer build](raster-scroll.md). A 212-line
 SCREEN 4 implementation must still resolve pattern/name-table allocation and
 address wrapping, not just satisfy the row-color test.
 
@@ -302,7 +238,7 @@ git diff --check
 
 Fixtures exercise flips, tile/foreground addressing, horizontal/vertical wrapping,
 clipping, indirect transparency, tile/object priority, repeated shadow passes,
-camera transforms, HUD packing, corruption/provenance failures, comparison
+HUD packing, corruption/provenance failures, comparison
 failure, guarded publication, row-color restrictions and multicolor entry demand.
 When a standalone `lua` interpreter is available, the suite also executes the
 actual recorder against a synthetic lifecycle harness covering delayed setup
