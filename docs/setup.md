@@ -14,6 +14,12 @@ make/shell prerequisites and provisioning belong to a future implementation.
 
 ## macOS prerequisites
 
+The port's emulator reference requires at least **128 KB RAM mapper and 128 KB
+VRAM**. Run and verification scripts derive a private FS-A1WSX machine with a
+128 KB main mapper inside each session's ignored output directory. They do not
+edit the installed openMSX machine XML or global settings. Other selected machine
+profiles must also provide a mapper of at least 128 KB.
+
 Use a native Apple Silicon or Intel terminal and stock Bash 3.2 or newer. Install
 [Xcode Command Line Tools](https://developer.apple.com/xcode/resources/) manually
 with `xcode-select --install`, then complete the installer. GNU Make is supplied

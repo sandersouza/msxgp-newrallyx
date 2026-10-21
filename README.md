@@ -8,6 +8,9 @@ SCREEN 5 renderer with the complete original first-stage map and a controllable
 car using the original movement and wall collision. The complete game runtime
 is still in development.
 
+The port targets **at least 128 KB of RAM mapper and 128 KB VRAM**. The openMSX
+launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
+
 ## Port direction
 
 - Preserve original graphics at **1:1 pixel scale**, including 8x8 tiles and
@@ -35,7 +38,7 @@ pending.
 | Current renderer | Complete original first-stage map with cached hardware scrolling, a fixed raster scoreboard and dynamic sprite HUD |
 | HUD integration | Reusable Z80 API for score, record, lives, Fuel and radar, with a read-only original-RAM adapter |
 | Player driving test | Starts automatically with original continuous movement, steering, wall collision and a following camera |
-| Gameplay and hardware adaptation | Pending |
+| Gameplay and hardware adaptation | [Original Z80 map, guarded hook inventory and repeatable arcade traces](docs/z80-native-analysis.md); complete native runtime pending |
 | Linux and Windows bootstrap | Detected, but setup is not implemented |
 
 `make build` generates the current default diagnostic at

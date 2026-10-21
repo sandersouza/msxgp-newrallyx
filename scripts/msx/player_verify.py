@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess
 from PIL import Image,ImageChops
 from .build import destination
-from .emulator import tcl
+from .emulator import tcl, reference_machine
 from .player import coordinates
 from .raster_scroll import compose,header
 from .screen5 import packed
@@ -21,7 +21,7 @@ def verify(root,args):
     output.mkdir(parents=True)
     lines=['set save_settings_on_exit false',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
-        f'machine {tcl(args.machine)}','set firmwareswitch off','set speed 100',f'set throttle {"off" if headless else "on"}',
+        reference_machine(root,args.machine),'set firmwareswitch off','set speed 100',f'set throttle {"off" if headless else "on"}',
         'set z80_freq 3579545','set cmdtiming real','set limitsprites true','set disablesprites false',
         'set pause_on_lost_focus false','set minframeskip 0','set maxframeskip 0',
         'set gamma 1','set brightness 0','set contrast 0','set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',

@@ -6,7 +6,7 @@ import shutil
 import subprocess
 from PIL import Image,ImageChops
 from .build import destination
-from .emulator import tcl
+from .emulator import tcl, reference_machine
 from .hud_contract import native_values,DIGIT_OFFSETS
 from .raster_scroll import compose,header
 from . import sprite_fuel as fuel
@@ -117,7 +117,7 @@ def verify(root,args):
     for i,bank in enumerate(native_banks,data_bank+1):rom[i*16384:(i+1)*16384]=bank
     (output/'test.rom').write_bytes(rom)
     lines=['set save_settings_on_exit false',f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
-        f'machine {tcl(args.machine)}','set firmwareswitch off','set throttle on','set speed 100','set z80_freq 3579545',
+        reference_machine(root,args.machine),'set firmwareswitch off','set throttle on','set speed 100','set z80_freq 3579545',
         'set cmdtiming real','set limitsprites true','set disablesprites false','set minframeskip 0','set maxframeskip 0',
         'set gamma 1','set brightness 0','set contrast 0','set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',
         'set blur 0','set noise 0','set scanline 0','set pause_on_lost_focus false',
