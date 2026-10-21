@@ -50,7 +50,7 @@ executables do not satisfy the declared Homebrew dependency contract.
 | --- | --- |
 | `make environment` | Install missing packages, build/reuse pinned sjasmplus, verify synthetic cross-assembly, create/reuse `.venv` and verify pinned Python dependencies |
 | `make environment-check` | Read-only requirements, toolchain, cached build evidence, ShellCheck, environment, import and pip checks; fail if unmet |
-| `make environment-dry-run` | Read-only diagnostics and preview of planned changes |
+| `bash scripts/setup.sh --dry-run` | Read-only diagnostics and preview of planned changes |
 | `bash scripts/setup.sh --help` | Show shell entry-point usage |
 
 The shell entry point also supports `--check` and `--dry-run`. It resolves the
@@ -121,88 +121,6 @@ unsupported platform), 2 (usage), 3 (incompatible existing environment), and
 4 (installation/final verification failure). GNU Make normally returns its own
 nonzero code while printing the shell's code as `Error N`.
 
-## Validation evidence — 2026-10-20
-
-Current result: the complete environment is ready on the arm64 host below.
-The earlier blocked attempts are retained as historical evidence.
-
-- `make environment`: built real sjasmplus 1.24.0 from the locked commit and
-  verified the synthetic 16 KiB cartridge byte for byte, symbols, listing and
-  real z80dasm output. openMSX 21.0 and ShellCheck 0.11.0 are now installed.
-- The first resumed native build failed with `fatal error: 'cassert' file not
-  found`. Direct Clang lacked an SDK selection; the header exists in the selected
-  macOS SDK. Explicit `SDKROOT` fixes the build without reintroducing developer
-  shims or their external cache writes. Three regressions observed RED then GREEN
-  cover Command Line Tools, full Xcode and a missing SDK.
-- `make environment-check`, `make environment-dry-run` and a second
-  `make environment`: all passed. SHA-256, symlink-target and file-mtime snapshots
-  of `.venv/` and `.tools/` were unchanged across each command; no rebuild,
-  dependency reinstall, upgrade or environment replacement was needed.
-- `.venv/bin/python -I -B`: real Pillow 13.0.0 import and in-memory PNG round
-  trip passed; pip 26.2.1 reports no broken requirements.
-- `python3 -B -m unittest discover -s tests`: 41 tests passed. Real ShellCheck,
-  Bash syntax and `git diff --check` passed. Generated tools, environment and
-  reference ROM paths remain ignored. Native Intel/full Xcode are still simulated;
-  emulator probes check help/version only, without a machine or BIOS boot.
-
-### Earlier attempts and review history
-
-Observed host: macOS 27.0.1 arm64, stock Bash 3.2.57, Python 3.14.7,
-Git 2.55.0, GNU Make 3.81, Apple Clang 21.0.0, z80dasm 1.2.0, MAME 0.289.
-Latest inspection found Homebrew 7.0.10 and GitHub CLI 2.102.0; earlier extraction-only
-validation observed Homebrew 7.0.6 and GitHub CLI 2.98.0. Command Line Tools are present.
-
-- `python3 -B -m unittest discover -s tests -v`: 38 tests passed. Shell tests use
-  isolated executable stubs; Python verification tests use real temporary venvs
-  and synthetic dependency metadata/import modules. Toolchain tests simulate clone,
-  compiler, assembler and emulators; the real installed z80dasm also successfully
-  disassembled the synthetic code. This does not validate the real sjasmplus build.
-  No game data is used.
-- `bash -n scripts/setup.sh scripts/environment/macos.sh`: passed.
-- `make environment-dry-run`: passed on the real host without installation.
-- `make environment-check`: correctly reports missing openMSX/ShellCheck after
-  scope expansion. Earlier extraction-only checks also detected missing `.venv`
-  and Pillow. The installed z80dasm requires `-V`; its broken long version flag
-  was detected on the host and is covered by a regression test.
-- `PIP_RETRIES=0 PIP_TIMEOUT=8 make environment`: created `.venv` and failed at
-  Pillow installation, preserving the environment. A second run reused it and
-  failed at the same dependency step. DNS/network access is restricted here;
-  `curl` could not resolve pypi.org. The successful dependency installation and
-  no-op rerun are covered only with stubs, not verified end to end on this host.
-- Expanded `make environment`: stopped at `brew install openmsx` because this
-  execution session cannot write Homebrew's directories. openMSX, ShellCheck and
-  the real pinned assembler remain uninstalled here. No claim is made that the
-  real compiler, real assembler, full toolchain lint, or emulators passed validation.
-- `.venv/bin/python -I -B -m pip check`: found no broken requirements, but this
-  environment contains no Pillow; this does not demonstrate a ready environment.
-- ShellCheck is not installed, so static analysis remains pending. When available:
-  `shellcheck -s bash scripts/setup.sh scripts/environment/macos.sh`.
-- Follow-up after the user's local installation: real ShellCheck exposed SC1007
-  on three empty CDPATH assignments. Explicit `CDPATH=''` fixed the warnings;
-  actual ShellCheck and Bash syntax checks now pass. The earlier unavailable-tool
-  result above is historical, not the current static-analysis status.
-- Native Intel and other macOS versions remain unverified. Routing/architecture
-  cases are simulated; this is not a physical-platform validation matrix.
-- Independent review found a missing-base-Python environment-validation gap; a
-  regression test now verifies that all modes preserve the existing environment
-  and stop with recovery instructions. The two standard Homebrew fallback
-  locations are implemented but do not have isolated automated coverage; tests
-  supply brew on PATH and exercise discovery through its custom prefix.
-- Toolchain review caught an external xcrun cache write in read-only modes;
-  direct compiler/Make resolution replaces that lookup, and a regression checks
-  the external cache as well as repository files. Another regression ensures
-  dry-run reports a corrupt smoke-cache recovery blocker consistently with setup.
-
-To repeat host validation, run `make environment`, `make environment-check`, and
-`make environment` again, then a synthetic image round trip:
-
-```sh
-.venv/bin/python -B -c 'from io import BytesIO; from PIL import Image; b=BytesIO(); Image.new("RGB", (2, 2), "red").save(b, format="PNG"); b.seek(0); im=Image.open(b); assert im.size == (2, 2) and im.getpixel((0, 0)) == (255, 0, 0); print("PNG round trip passed")'
-```
-
-`.venv/`, `.tools/`, bytecode/cache files and reference data remain ignored. Tools, tests,
-requirements and documentation are suitable for version control.
-
 ## Complete Z80 toolchain
 
 | Purpose | Tool and provisioning |
@@ -253,3 +171,43 @@ Homebrew provides [openMSX](https://formulae.brew.sh/formula/openmsx),
 [MAME](https://formulae.brew.sh/formula/mame) and
 [ShellCheck](https://formulae.brew.sh/formula/shellcheck); bottle support varies by
 OS/architecture. C/SDCC compilation is not required for this Z80 Assembly workflow.
+
+## Machine and contributor-supplied BIOS
+
+Local validation uses openMSX **21.0**, `Panasonic_FS-A1WSX`, V9958 with 128 KB
+VRAM and 64 KB RAM. The launcher sets the CPU to **3,579,545 Hz**, emulator speed
+100%, firmware off and a 212-line display. The cartridge itself sets 50 Hz
+through VDP R9. Its BIOS calls require an MSX2 or later machine; the recorded
+integration target is MSX2+.
+
+Supply compatible system ROMs under `references/msxbios`. The launcher adds
+that directory as a session-local `system_rom` file pool **before** loading the
+machine. openMSX resolves files by the machine definition's SHA-1, recursively;
+renaming files or copying BIOS into a global emulator directory is unnecessary.
+The launcher isolates `OPENMSX_HOME` and `OPENMSX_USER_DATA` inside the run output,
+disables saving settings and leaves global emulator configuration untouched.
+
+These split ROMs are the compatible inputs for the selected machine:
+
+| Filename in machine definition | SHA-1 |
+| --- | --- |
+| `fs-a1wsx_basic-bios2p.rom` | `f4433752d3bf876bfefb363c749d4d2e08a218b6` |
+| `fs-a1wsx_msx2psub.rom` | `fe0254cbfc11405b79e7c86c7769bd6322b04995` |
+| `fs-a1wsx_fmbasic.rom` | `aad42ba4289b33d8eed225d42cea930b7fc5c228` |
+| `fs-a1wsx_kanjibasic.rom` | `dcc3a67732aa01c4f2ee8d1ad886444a4dbafe06` |
+| `fs-a1wsx_disk.rom` | `7ed7c55e0359737ac5e68d38cb6903f9e5d7c2b6` |
+| `fs-a1wsx_firmware.rom` | `3330d9b6b76e3c4ccb7cf252496ed15d08b95d3f` |
+| `fs-a1wsx_kanjifont.rom` | `5aff2d9b6efc723bc395b0f96f0adfa83cc54a49` |
+
+openMSX also accepts combined IC18/IC17 dumps and an alternate FM-BASIC hash;
+see the installed `share/machines/Panasonic_FS-A1WSX.xml` for alternatives.
+Local supplied combined dumps have SHA-1 `28cc0fbab62d9b4ff5d16971795ebb8a4e02f1f6`
+and `9da0306506640ea89acaa9516cb836233a9221ec`, respectively. These identifiers are
+metadata only. No BIOS payload belongs in Git.
+
+On missing/mismatched BIOS, inspect the run's `emulator.log`: openMSX identifies
+the failed ROM lookup and the launcher reports the selected machine/BIOS
+diagnostic. Verify hashes against that machine's XML, or use the renderer CLI
+options `--machine` and `--bios` with compatible contributor-supplied inputs. No global settings edits
+or BIOS downloads are required. A first-run missing `firmwareswitch` persistent
+file warning is expected in the isolated, initially empty home directory.

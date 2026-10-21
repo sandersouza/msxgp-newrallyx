@@ -10,23 +10,32 @@ Python 3.14, Pillow 13.0.0 and MAME 0.289 are reused.
 From the repository root:
 
 ```sh
-make extract-graphics
-make capture-scene
-make reconstruct-scene
-make analyze-scene SCENE_REPORT=references/scenes/normal-compact
-make analyze-scene SCENE_INPUT=references/scenes/capture/frame-02760 \
-  SCENE_REPORT=references/scenes/overlap-compact
-make analyze-scene SCENE_INPUT=references/scenes/capture/frame-02760 \
-  SCENE_REPORT=references/scenes/overlap-wide SCENE_LAYOUT=wide
+.venv/bin/python -B scripts/extract_graphics.py \
+  --input references/roms/nrallyx \
+  --output references/assets/nrallyx
+.venv/bin/python -B scripts/arcade_scene.py capture \
+  --output references/scenes/capture
+.venv/bin/python -B scripts/arcade_scene.py reconstruct \
+  --capture references/scenes/capture/frame-02200 \
+  --output references/scenes/report
+.venv/bin/python -B scripts/arcade_scene.py analyze \
+  --capture references/scenes/capture/frame-02200 \
+  --output references/scenes/normal-compact
+.venv/bin/python -B scripts/arcade_scene.py analyze \
+  --capture references/scenes/capture/frame-02760 \
+  --output references/scenes/overlap-compact
+.venv/bin/python -B scripts/arcade_scene.py analyze \
+  --capture references/scenes/capture/frame-02760 \
+  --output references/scenes/overlap-wide \
+  --layout wide
 ```
 
 If assets already exist unchanged, reuse them; the extractor intentionally
 refuses existing output unless its documented overwrite option is supplied.
-Every scene/report destination must be new. `SCENE_OUTPUT` changes the capture
-run destination; `SCENE_INPUT`, `SCENE_REPORT`, `SCENE_FRAMES` and `SCENE_LAYOUT`
-select subsequent processing. There is no scene overwrite option. Choose fresh
-paths to preserve prior evidence. `preview-scene` emits the preview/transforms
-without constraint analysis.
+Every scene/report destination must be new. Use `--output`, `--capture`,
+`--frames` and `--layout` to select paths and processing. There is no scene
+overwrite option. Choose fresh paths to preserve prior evidence. The `preview`
+command emits the preview/transforms without constraint analysis.
 
 Direct CLI equivalents:
 
@@ -39,9 +48,9 @@ Direct CLI equivalents:
   --output references/scenes/overlap-compact
 ```
 
-`--layout` and `SCENE_LAYOUT` default to `compact`, the user-approved composition.
-Use `--layout sidebar` / `SCENE_LAYOUT=sidebar` for the original 64-pixel panel,
-or `--layout wide` / `SCENE_LAYOUT=wide` for the wider, shorter maze alternative.
+`--layout` defaults to `compact`, the user-approved composition.
+Use `--layout sidebar` for the original 64-pixel panel, or `--layout wide` for
+the wider, shorter maze alternative.
 
 `--assets` defaults to `references/assets/nrallyx`; `--replay` defaults to
 `scripts/scenes/gameplay-inputs.json`. Arguments use the caller's working
@@ -144,7 +153,10 @@ it records mismatches, half-open bounds, maximum channel difference, maze/HUD
 counts and input capture/asset manifest hashes. There are no accepted exceptions.
 JSON and images have no generated timestamps or absolute acquisition paths.
 
-## Approved default and alternative layouts
+## Reference input layouts
+
+These layouts prepare and validate source reference bundles. The live ROM uses
+the [raster renderer layout](raster-scroll.md), documented separately.
 
 The user selected `compact` as the default on 2026-10-20 after comparing it with
 the native arcade image. It uses a 200x212 maze and a 56-pixel right-hand panel
@@ -181,16 +193,17 @@ larger world-coordinate system. All original state remains available separately.
 Upright cabinet captures are required for these proposals; native flipped
 rendering has synthetic tests but is not covered by the gameplay integration.
 
-### Approved default: compact sidebar
+### Build input: compact sidebar
 
-Omitting `--layout` (or `SCENE_LAYOUT`) selects the compact sidebar. Explicit
-`--layout compact` / `SCENE_LAYOUT=compact` selects the same approved layout.
+Omitting `--layout` selects the compact sidebar. Explicit `--layout compact`
+selects the same approved layout.
 The maze crop is [12,6,212,218), placed at [0,0,200,212). The additional eight
 columns increase visible maze width by about 4.17% over the 192-pixel sidebar.
 
 ```sh
-make analyze-scene SCENE_INPUT=references/scenes/capture/frame-02760 \
-  SCENE_REPORT=references/scenes/compact-trial
+.venv/bin/python -B scripts/arcade_scene.py analyze \
+  --capture references/scenes/capture/frame-02760 \
+  --output references/scenes/compact-trial
 open references/scenes/compact-trial/preview.png
 ```
 
@@ -249,7 +262,7 @@ compact comparison used for the user's approval is
 `references/scenes/original-vs-compact/comparison.png`.
 
 Default-selection validation passed 111 synthetic tests. Both direct CLI and
-`make analyze-scene`, without a layout override, generated the approved compact
+`scripts/arcade_scene.py analyze`, without a layout override, generated the approved compact
 geometry with zero native differences. Their preview pixels are identical to
 the previously reviewed compact output; only the approval metadata changed.
 
@@ -310,55 +323,8 @@ Reproduce the negative control without modifying either bundle:
 .venv/bin/python -B -c 'from pathlib import Path; from scripts.scenes.bundle import load_assets,load_capture; from scripts.scenes.render import render; from scripts.scenes.compare import compare; a=load_assets(Path("references/assets/nrallyx")); p=Path("references/scenes/capture"); print(compare(load_capture(p/"frame-02410",a).reference,render(load_capture(p/"frame-02411",a),a).image))'
 ```
 
-Re-run capture to a fresh `SCENE_OUTPUT`, and re-run analysis to a fresh
-`SCENE_REPORT`; never add derived files inside a sealed case. Verify output
+Re-run capture and analysis with fresh `--output` paths; never add derived
+files inside a sealed case. Verify output
 manifest hashes and pixel/report identity for unchanged inputs. Keep all actual
 screenshots/RAM below ignored references paths. Hashes and mismatch/count summaries
 may be shared without including original images or bytes.
-
-Validation recorded on 2026-10-20 used:
-
-```sh
-make capture-scene SCENE_OUTPUT=references/scenes/acceptance-v2
-make capture-scene SCENE_OUTPUT=references/scenes/acceptance-repeat-v2
-make analyze-scene SCENE_INPUT=references/scenes/acceptance-v2/frame-02200 \
-  SCENE_REPORT=references/scenes/results-v2/normal-sidebar SCENE_LAYOUT=sidebar
-make analyze-scene SCENE_INPUT=references/scenes/acceptance-v2/frame-02760 \
-  SCENE_REPORT=references/scenes/results-v2/overlap-sidebar SCENE_LAYOUT=sidebar
-make analyze-scene SCENE_INPUT=references/scenes/acceptance-v2/frame-02760 \
-  SCENE_REPORT=references/scenes/results-v2/overlap-wide SCENE_LAYOUT=wide
-make analyze-scene SCENE_INPUT=references/scenes/acceptance-v2/frame-02760 \
-  SCENE_REPORT=references/scenes/results-repeat-v2/overlap-sidebar SCENE_LAYOUT=sidebar
-```
-
-Both capture runs contained 27 byte-identical files, including all manifests;
-all five frames matched natively. Repeated overlap analysis produced seven
-byte-identical files. The normal case manifest SHA-256 is
-`2ac87d18b997c5ac35943df76d954168dbc9633cf85a2fad77d314f334d599c4`;
-the overlap case is
-`d0f069529e4748194dc5ac2e50af9f7be46148992779a900599b9bce4227a746`.
-
-| Case/layout | RGB colors | SCREEN 4 violating rows | Estimated entries | Peak entries/line |
-| --- | ---: | ---: | ---: | ---: |
-| Normal/sidebar | 13 | 749 | 5 | 3 |
-| Enemy/smoke/sidebar | 14 | 853 | 8 | 4 |
-| Enemy/smoke/wide | 14 | 614 | 8 | 3 |
-
-All three fit the 16-color count budget before MSX palette conversion, but none
-can be copied directly into SCREEN 4 background patterns. Each has eight
-shadowed dot pixels. Entry counts cover the captured cases only.
-
-After independent review, the final suite passed 104 tests, including the Lua
-lifecycle harness. `make capture-scene SCENE_OUTPUT=references/scenes/review-fixed-v3`
-produced the same 27 files as `acceptance-v2`, and analysis under
-`references/scenes/review-fixed-results/` retained identical seven-file sidebar
-output. All 13 contributor ROM checksums remained valid. Review fixes covered
-write-map invalidation, complete staging/final/acquisition ignore inventories
-and required frame/time metadata. No original game data was staged or tracked.
-
-The next MSX graphical prototype should use the approved compact layout, choose
-a SCREEN mode with the user, specify palette conversion, plan tile/name-table use for 212 lines,
-decide which objects/effects need software composition, and measure VDP transfer,
-scroll and object cost. Later levels, multiple simultaneous enemies, sprite/sprite
-overlap, maximum smoke, flipped gameplay and worst-case scanline demand remain
-untested. Do not infer their feasibility from these two early-game cases.

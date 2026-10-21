@@ -75,8 +75,7 @@ class DispatcherTests(unittest.TestCase):
 
     def test_make_targets_forward_modes(self):
         self.executable(self.bin / "uname", "#!/bin/bash\necho Darwin\n")
-        for target, mode in [("environment", ""), ("environment-check", "--check"),
-                             ("environment-dry-run", "--dry-run")]:
+        for target, mode in [("environment", ""), ("environment-check", "--check")]:
             with self.subTest(target=target):
                 result = subprocess.run(["make", "-C", str(self.repo), target], env=self.env,
                                         capture_output=True, text=True)
