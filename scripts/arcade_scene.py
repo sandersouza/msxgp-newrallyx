@@ -27,10 +27,12 @@ def main(argv=None):
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--replay',type=Path,default=Path('scripts/scenes/gameplay-inputs.json'))
     parser.add_argument('--frames',type=int,nargs='+',default=[2200,2410,2411,2760,2761])
+    parser.add_argument('--overwrite',action='store_true',
+        help='Replace only an unchanged complete bundle with the same payload inventory')
     args=parser.parse_args(argv)
     try:
         if args.command=='capture':
-            capture_gameplay(args.root,args.assets,args.output,args.replay,args.frames)
+            capture_gameplay(args.root,args.assets,args.output,args.replay,args.frames,overwrite=args.overwrite)
             print(f'Captured frames {args.frames}: {args.output}')
             return 0
         if args.capture is None:
@@ -56,7 +58,7 @@ def main(argv=None):
         if args.command in ('preview','analyze') and report['mismatches']==0:
             payloads+=['preview.png','layout.json']
             if args.command=='analyze': payloads+=['constraints.json']
-        publish_bundle(args.root,args.output,writer,payloads=payloads)
+        publish_bundle(args.root,args.output,writer,payloads=payloads,overwrite=args.overwrite)
         print(f'{report["mismatches"]} mismatching pixels: {args.output}')
         return int(report['mismatches']!=0)
     except (ValueError,OSError,KeyError,TypeError) as error:

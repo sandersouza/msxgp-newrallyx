@@ -85,6 +85,28 @@ class NativePatchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.apply((), expected_sha256='invalid')
 
+    def test_incoming_control_flow_cannot_enter_displaced_instructions(self):
+        branches = (b'\x18\x03', b'\x20\x03', b'\x10\x03',
+                    b'\xc3\x05\x00', b'\xca\x05\x00', b'\xcd\x05\x00')
+        for branch in branches:
+            image = bytearray(branch + bytes(16384-len(branch)))
+            before = bytes(image)
+            patch = Patch(4, digest(image[4:8]), bytes(4), 8)
+            with self.subTest(branch=branch), self.assertRaisesRegex(ValueError, 'patch interior: 0000->0005'):
+                apply_patches(image, digest(image), (patch,), frozenset(range(16)))
+            self.assertEqual(bytes(image), before)
+        image = b'\xcf' + bytes(16383)  # Authored RST8 enters the interior 7..10.
+        with self.assertRaisesRegex(ValueError, 'patch interior'):
+            apply_patches(image, digest(image), (Patch(7, digest(image[7:10]), bytes(3), 10),), frozenset(range(16)))
+
+    def test_patch_entry_and_replaced_source_edges_remain_valid(self):
+        image = b'\xc3\x04\x00' + bytes(16381)
+        patch = Patch(4, digest(image[4:8]), bytes(4), 8)
+        self.assertEqual(apply_patches(image, digest(image), (patch,), frozenset(range(16))), image)
+        image = b'\xc3\x05\x00' + bytes(16381)
+        source = Patch(0, digest(image[:3]), bytes(3), 3)
+        self.assertEqual(apply_patches(image, digest(image), (source, patch), frozenset(range(16))), bytes(16384))
+
 
 if __name__ == '__main__':
     unittest.main()

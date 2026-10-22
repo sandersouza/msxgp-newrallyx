@@ -12,6 +12,13 @@
 
 ## Global Constraints
 
+Acceptance amendment approved by the user on 2026-10-21: prioritize the playable
+port with original logic/rules, documented temporal differences, and behavioral,
+control and performance validation. Strict arcade RAM comparison remains a
+diagnostic and must keep reporting its actual failures. It no longer blocks
+Task 6. Safety, 1:1 graphics, source integrity, exact logical cadence and measured
+rendering budgets remain required. See the amendment in the approved design.
+
 - Standard-speed MSX2+, **at least 128 KB RAM mapper and 128 KB VRAM**; session-local `Panasonic_FS-A1WSX_NR128` reference machine.
 - Original 8x8 tiles and 16x16 sprites at 1:1 scale; 256x212 output; original world coordinates and game rules.
 - One logical tick per 16.5 ms, independently of 50/60 Hz display refresh; no dropped ticks or speed compensation.
@@ -113,11 +120,17 @@ reuse `scripts/msx/emulator.py`, `mapper_reference.tcl` and storage helpers.
 - `Native_MapAssets` / `Native_RestoreGame` are host-only calls. The first requires suspended native execution; both preserve interrupt-visible resident mappings.
 - Generated `native-layout.inc` is the sole source for new allocations. Existing HUD/vector/stack reservations remain protected. Export event and symbol addresses for verification; do not hardcode them in the harness.
 
-- [ ] Add failure tests for unsafe/existing/symlink/tracked output, unsupported ROMs and asset overflow before publication. Reuse current path protection rather than introducing weaker rules. Assert no missing-input build publishes a valid-looking manifest or replaces the current default ROM.
-- [ ] Run `.venv/bin/python -B -m unittest discover -s tests -p 'test_native_*.py' -v`; observe failure and implement build orchestration using Tasks 1–2. Initially build `tests/fixtures/native-loader.asm`, which includes the real loader and supplies a synthetic `Native_Reset` probe entry; it needs no Task 4 runtime or original gameplay bytes. Do not publish that fixture as a native gameplay build.
-- [ ] Assemble the synthetic loader and execute it in isolated openMSX: verify eight independent 16 KB segments, page-0 RAM with BIOS hidden, page-1 resident code, page-2 state restoration, asset reads and unchanged page-3 canaries/stack. Fail clearly with less than 128 KB mapper.
-- [ ] Repeatedly switch asset/state segments with host IRQs active; verify complete register/stack/segment restoration. Record initial slot state and test the selected reset restoration path. Inventory real resources and prove they fit the four asset segments.
-- [ ] Re-run Task 3 tests to PASS; review assembly/map/symbol and real machine evidence. Do not proceed on loader, capacity or overlap failure.
+- [x] Add failure tests for unsafe/existing/symlink/tracked output, unsupported ROMs and asset overflow before publication. Reuse current path protection rather than introducing weaker rules. Assert no missing-input build publishes a valid-looking manifest or replaces the current default ROM.
+- [x] Run `.venv/bin/python -B -m unittest discover -s tests -p 'test_native_*.py' -v`; observe failure and implement build orchestration using Tasks 1–2. Initially build `tests/fixtures/native-loader.asm`, which includes the real loader and supplies a synthetic `Native_Reset` probe entry; it needs no Task 4 runtime or original gameplay bytes. Do not publish that fixture as a native gameplay build.
+- [x] Assemble the synthetic loader and execute it in isolated openMSX: verify eight independent 16 KB segments, page-0 RAM with BIOS hidden, page-1 resident code, page-2 state restoration, asset reads and unchanged page-3 canaries/stack. Fail clearly with less than 128 KB mapper.
+- [x] Repeatedly switch asset/state segments with host IRQs active; verify complete register/stack/segment restoration. Record initial slot state and test the selected reset restoration path. Inventory real resources and prove they fit the four asset segments.
+- [x] Re-run Task 3 tests to PASS; review assembly/map/symbol and real machine evidence. Do not proceed on loader, capacity or overlap failure.
+
+Local evidence: `docs/native-loader.md`; positive proofs at 50/60 Hz and with
+relocated host segment 5, stock 64 KB refusal, 256 switches/257 IRQs and actual
+machine reset per positive run. The 48,596-byte inventory fits four asset
+segments; unchanged original program bytes are loaded but not executed. All
+stage-3 builds are explicitly loader probes until Task 4 supplies original reset.
 
 ## Task 4: Original reset, foreground execution and logical IRQs
 
@@ -137,6 +150,46 @@ reuse `scripts/msx/emulator.py`, `mapper_reference.tcl` and storage helpers.
 - [ ] Inspect fresh local reset/execution evidence to select the post-cabinet-diagnostic transition and its required initialization effects. Add guarded spans for every new reset/IM/vector/input/ROM-write adapter. Verify full-program integrity and indirect input reads. Prove `$040f` discarded-write flags/read semantics with synthetic emulator cases.
 - [ ] Boot the real logic-only cartridge from reset, insert coin and start through the original debounce path. Record stack high-water marks, worst host IRQ latency, native foreground/IRQ cycles and masked IRQ behavior; assert BIOS calls cease after native mapping.
 - [ ] Capture arcade evidence at matching logical boundaries. First prove reset/coin/start state equivalence, then the initial stage. Any nonreturning path, diagnostic dependency or unexplained divergence stops progression to graphics.
+
+**2026-10-21 local checkpoint:** Reset-only source initialization now matches
+all 6,536 reference bytes with no exclusions. The separate host IRQ stack and
+1,024 discarded-write flag/readback cases pass real synthetic emulator probes
+at 50/60 Hz and with host segment 5. Fresh original execution proves a coin
+IRQ transfer that never reaches the normal epilogue; it requires an explicit
+transfer/publication adapter, not restoration of the abandoned foreground.
+`Snapshot` now distinguishes initialization and IRQ-transfer publication.
+Original game IRQ delivery, virtual EI/DI, direct/indirect inputs, logical
+HALT/busy waits and normal/transfer publication are now installed in an explicit
+candidate. Real synthetic proofs cover 100,000-frame cadence, 64 gates, backlog
+drain and three wait/poll cases at 50/60 Hz and displaced host segment 5.
+Complete original-input acquisitions finish 2,440 IRQs at both refresh rates,
+but strict state comparison fails from publication 1 and later live foreground
+progress also differs. No exclusions or comparison-boundary relaxation have
+been applied. Source/resident copies remain intact; 56 native checks and 216
+full-suite tests pass. See `docs/native-runtime.md` for measurements and ignored
+evidence paths. Task 4 remains in progress; its equivalence gate is not complete.
+
+Further checkpoint: fixed-clock acquisition now verifies the openMSX frequency
+lock is disabled. Byte-identical repetitions ruled out the former lock omission
+as the divergence cause. Mask telemetry localized queue growth during scenario
+generation; a guarded row-end poll and exact nonempty-cache fast path reduced
+the 50 Hz maximum queue from 13 to 3, with 60 Hz still 1. Full 2,440-tick acquisitions
+complete and synthetic 50/60 Hz/host-5 proofs check queue-cache borrow 256→255.
+Foreground player-update counts improve to 5,017/4,967 versus arcade 5,607; exact
+phase/state and latency acceptance remain open, with no exclusions applied.
+
+Latest checkpoint: a bounded read-only profiler led to an optional coordinate
+loop adapter, disabled by default. Its independent original-function oracle
+passes 131,072 A/L/carry cases with identical AF/HL and 18.23% fewer function
+clocks at both refresh rates. Fresh-launch register setup removes inherited
+BIOS IX/IY/alternate state using the reference CPU startup contract, without
+seeding game RAM. Real boot telemetry verifies all ten register pairs. Latest
+optimized 2,440-tick captures at 50/60 Hz retain exact reset, intact code,
+maximum queues 3/1 and empty final queues; player updates are 5,123/5,056 versus
+source 5,607. Strict state still differs from publication 1. No exclusions,
+boundary relaxation or default promotion. Current validation: 59 native checks,
+219 full-suite tests; independent review reports no Important/Critical defects.
+See `docs/native-runtime.md` for evidence and the fresh-launch reset limitation.
 
 ## Task 5: Reproducible replay, comparison and phase proof
 

@@ -63,8 +63,13 @@ bytes into the overlapping arcade read/write addresses.
 ## Snapshot comparison
 
 Frozen `Snapshot(tick, phase, video, work, shadows)` records validate a
-nonnegative logical tick, explicit `pre-game-irq` / `post-game-irq` phase and
+nonnegative logical tick, an explicit boundary phase and
 exact immutable payload lengths:
+
+Phases are `initialization-entry`, `pre-game-irq`, `post-game-irq` and
+`post-game-irq-transfer`. The last phase represents an evidenced nonreturning
+IRQ transition, such as coin acceptance; it cannot be compared as a normal
+return. See [runtime acquisition](native-runtime.md).
 
 | Region | Original addresses | Bytes |
 | --- | --- | ---: |

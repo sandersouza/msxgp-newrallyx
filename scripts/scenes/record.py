@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 from PIL import Image
 from scripts.graphics.roms import load_metadata, validate_roms, input_records
-from .bundle import load_assets, load_capture
+from .bundle import load_assets, load_capture, verify_manifest
 from .storage import json_write, seal, safe_destination, publish_bundle, require_ignored
 
 INPUTS = {'Coin 1','1 Player Start','P1 Up','P1 Down','P1 Left','P1 Right','P1 Button 1'}
@@ -57,15 +57,18 @@ def finalize_case(case, assets):
     load_capture(case, assets)
 
 
-def capture_gameplay(root: Path, assets: Path, output: Path, replay: Path, frames: list[int]) -> None:
+def capture_gameplay(root: Path, assets: Path, output: Path, replay: Path, frames: list[int], *, overwrite=False) -> None:
     from .bundle import read_json
     root = root.resolve()
-    output = safe_destination(root, output)
+    output = safe_destination(root, output, overwrite=overwrite)
     loaded = load_assets(assets)
     events = validate_replay(read_json(replay))
     if (not frames or any(type(f) is not int or f <= 1 for f in frames)
             or sorted(set(frames)) != frames or frames[-1] > 36000):
         raise ValueError('Frames must be unique ascending integers in 2..36000')
+    payloads=['replay.json']+[f'frame-{frame:05d}/{name}' for frame in frames for name in CASE_PAYLOADS]
+    if output.exists():
+        verify_manifest(output,set(payloads))
     version = subprocess.run(['mame','-help'],capture_output=True,text=True,check=True).stdout.splitlines()[0]
     if not version.startswith('MAME v0.289 '):
         raise ValueError('Gameplay capture requires MAME 0.289')
@@ -77,7 +80,6 @@ def capture_gameplay(root: Path, assets: Path, output: Path, replay: Path, frame
     output.parent.mkdir(parents=True,exist_ok=True)
     work = Path(tempfile.mkdtemp(prefix='.acquisition-',dir=output.parent))
     check_acquisition_paths(root,work,frames)
-    payloads=['replay.json']+[f'frame-{frame:05d}/{name}' for frame in frames for name in CASE_PAYLOADS]
     require_ignored(root,[output/name for name in payloads+['manifest.json']])
     for frame in frames:
         (work/f'frame-{frame:05d}').mkdir()
@@ -119,6 +121,6 @@ def capture_gameplay(root: Path, assets: Path, output: Path, replay: Path, frame
                 shutil.copytree(work/name,stage/name)
             # No absolute acquisition paths in the published metadata.
             json_write(stage/'replay.json',dict(frames=frames,inputs=events))
-        publish_bundle(root,output,writer,payloads=payloads)
+        publish_bundle(root,output,writer,payloads=payloads,overwrite=overwrite)
     except (OSError,subprocess.SubprocessError,ValueError) as error:
         raise ValueError(f'{error}; acquisition evidence retained at {work}') from error

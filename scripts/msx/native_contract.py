@@ -46,8 +46,9 @@ class Snapshot:
     def __post_init__(self):
         if type(self.tick) is not int or self.tick < 0:
             raise ValueError('Snapshot tick must be a nonnegative integer')
-        if self.phase not in ('pre-game-irq', 'post-game-irq'):
-            raise ValueError('Snapshot phase must identify a game IRQ boundary')
+        if self.phase not in ('initialization-entry', 'pre-game-irq', 'post-game-irq',
+                              'post-game-irq-transfer', 'post-game-irq-collision'):
+            raise ValueError('Snapshot phase must identify a reset or game IRQ boundary')
         for name, _, size in REGIONS:
             payload = getattr(self, name)
             if type(payload) is not bytes or len(payload) != size:

@@ -8,6 +8,24 @@ Issue: https://github.com/sandersouza/msxgp-newrallyx/issues/11
 
 ## Outcome and boundaries
 
+### User-approved acceptance amendment — 2026-10-21
+
+The user selected the playable-port criterion after reviewing the measured
+foreground timing difference: retain the original logic and rules, document
+temporal differences, and validate behavior, controls and performance. Complete
+byte equality with arcade post-IRQ RAM is therefore a diagnostic, not a gate
+blocking graphics. Do not describe a failing strict replay as equivalent.
+
+Reset integrity, guarded patches, register/stack safety, source/BIOS integrity,
+1:1 graphics, original rules and the standard-speed 128 KB target still apply.
+Game ticks retain the exact 16.5 ms rational cadence; do not drop ticks or alter
+movement constants. Record foreground progress and visible/input latency
+honestly. Validate coin/start, original steering/collision/enemies/smoke,
+collection/score/fuel and death/restart on the port itself. Rendering acceptance
+still requires coherent presentation, all active actors and measured raster/frame
+budgets. This amendment supersedes the strict-RAM prerequisite in the sections
+below; it does not authorize publishing or closing an incomplete port.
+
 Produce a locally playable, silent cartridge using the original New Rally-X
 program and the existing SCREEN 5 backend. Cover boot, coin, single-player start
 and the initial normal stage: original steering/wall collision, enemies, smoke,

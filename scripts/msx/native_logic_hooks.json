@@ -1,0 +1,480 @@
+{
+  "schema_version": 1,
+  "program_sha256": "d6943e556fcd6ffc32bcc1cc4abbec2249c16a2059a3cdc0ba9c942dbb765d4c",
+  "hooks": [
+    {
+      "address": 953,
+      "length": 4,
+      "kind": "jump",
+      "continuation": 6337,
+      "sha256": "ffae30b812dd8ac3341df9a3c36a0093b6bf0a0bfd935b7865aafdf07da0f81a",
+      "target": "Native_PublishCollision"
+    },
+    {
+      "address": 6441,
+      "length": 5,
+      "kind": "poll",
+      "continuation": 6446,
+      "sha256": "610ab00aa220f0787417eb845f3e08ed05d40f107d1e54202e06806654c7f0d5",
+      "post": [
+        [
+          6441,
+          5
+        ]
+      ]
+    },
+    {
+      "address": 58,
+      "length": 5,
+      "kind": "ei",
+      "continuation": 63,
+      "sha256": "9a44ebffcc2e9e1a5b3a799e0dc7d2afe2ad6d3bfcb62ed9dc68658510c6d567",
+      "pre": [],
+      "post": [
+        [
+          61,
+          2
+        ]
+      ]
+    },
+    {
+      "address": 63,
+      "length": 2,
+      "kind": "nop",
+      "continuation": 65,
+      "sha256": "3d39e1daa56e138e86a368c324eea2bb1a2b20f2d12a09fc8cc719a6aa497fad"
+    },
+    {
+      "address": 1039,
+      "length": 5,
+      "kind": "increment-read",
+      "continuation": 1044,
+      "sha256": "73940b54f7ad8052405b35211ff79512ff3f553ca526b7476ddb088dfe386f70",
+      "post": [
+        [
+          1041,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 1115,
+      "length": 3,
+      "kind": "input",
+      "continuation": 1118,
+      "sha256": "6d024b559a2ce932eecf30b3ce5087a0d86f8c88c8d4f3c35d6a79b838ca4f5f",
+      "input": 41474
+    },
+    {
+      "address": 1128,
+      "length": 4,
+      "kind": "jump",
+      "continuation": 1132,
+      "sha256": "7eb1f6b3ae3a50952625833ad3cc1d4af5d432dab18bc1e7bc6da80b426b5ef6",
+      "target": "Native_PublishRuntime"
+    },
+    {
+      "address": 1285,
+      "length": 3,
+      "kind": "input",
+      "continuation": 1288,
+      "sha256": "6d024b559a2ce932eecf30b3ce5087a0d86f8c88c8d4f3c35d6a79b838ca4f5f",
+      "input": 41474
+    },
+    {
+      "address": 1383,
+      "length": 3,
+      "kind": "input",
+      "continuation": 1386,
+      "sha256": "be7179a878bb41f0bace8897b48901a4e56d95d501865e34da9587b2a0355b6f",
+      "input": 41473
+    },
+    {
+      "address": 1426,
+      "length": 2,
+      "kind": "nop",
+      "continuation": 1428,
+      "sha256": "3d39e1daa56e138e86a368c324eea2bb1a2b20f2d12a09fc8cc719a6aa497fad"
+    },
+    {
+      "address": 1531,
+      "length": 4,
+      "kind": "ei",
+      "continuation": 1535,
+      "sha256": "7ee3652992583848c75075d024c5c31276a3e90f8b05223b78b865ca28b6bbe2",
+      "pre": [],
+      "post": [
+        [
+          1532,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 1726,
+      "length": 3,
+      "kind": "poll",
+      "continuation": 1729,
+      "sha256": "e7b36ee122736b9654ba13f874b18ad2bb5bcb0220805649d3f6d9ceb7f8d40b",
+      "post": [
+        [
+          1726,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 1817,
+      "length": 3,
+      "kind": "wait-three",
+      "continuation": 1820,
+      "sha256": "3daabcc85cfd07e409fd5bcd3f4431584b331712c133ceb6f9f1c8b11f6c653a"
+    },
+    {
+      "address": 1831,
+      "length": 4,
+      "kind": "wait-count",
+      "continuation": 1835,
+      "sha256": "f1feecdf296d9c1303ed0f63c13335e4ab285add249d322faccd5e5ac9d62c09"
+    },
+    {
+      "address": 1882,
+      "length": 3,
+      "kind": "jump",
+      "continuation": 1885,
+      "sha256": "54e12079f45031d38b57e47c0ce097b697f2f6d8d591777002110b1c3125c691",
+      "target": "Native_Transfer"
+    },
+    {
+      "address": 1897,
+      "length": 4,
+      "kind": "transfer-ei",
+      "continuation": 1901,
+      "sha256": "8530b27a696007cb1be65fabe4b820454e7158e68a423d5d224be70144d94f49",
+      "pre": [],
+      "post": [
+        [
+          1898,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 2073,
+      "length": 3,
+      "kind": "poll",
+      "continuation": 2076,
+      "sha256": "e7b36ee122736b9654ba13f874b18ad2bb5bcb0220805649d3f6d9ceb7f8d40b",
+      "post": [
+        [
+          2073,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 2086,
+      "length": 3,
+      "kind": "input",
+      "continuation": 2089,
+      "sha256": "269d343bc48c675fc7e50a6d720b75307ba6f889bd1d449c57ddb9adc9e8e449",
+      "input": 41472
+    },
+    {
+      "address": 2093,
+      "length": 3,
+      "kind": "input",
+      "continuation": 2096,
+      "sha256": "be7179a878bb41f0bace8897b48901a4e56d95d501865e34da9587b2a0355b6f",
+      "input": 41473
+    },
+    {
+      "address": 2150,
+      "length": 2,
+      "kind": "nop",
+      "continuation": 2152,
+      "sha256": "3d39e1daa56e138e86a368c324eea2bb1a2b20f2d12a09fc8cc719a6aa497fad"
+    },
+    {
+      "address": 2152,
+      "length": 3,
+      "kind": "ei",
+      "continuation": 2155,
+      "sha256": "a0607bf9bc8486e210bd9260be902c237274956366ebaea233b6d41a5de64912",
+      "pre": [],
+      "post": [
+        [
+          2153,
+          2
+        ]
+      ]
+    },
+    {
+      "address": 2265,
+      "length": 4,
+      "kind": "ei",
+      "continuation": 2269,
+      "sha256": "4bfa4bffbd3642ba2468d741dd0e541cab95af1e2c25401c646c3cc4cf553efd",
+      "pre": [],
+      "post": [
+        [
+          2266,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 2272,
+      "length": 3,
+      "kind": "poll",
+      "continuation": 2275,
+      "sha256": "e7b36ee122736b9654ba13f874b18ad2bb5bcb0220805649d3f6d9ceb7f8d40b",
+      "post": [
+        [
+          2272,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 2336,
+      "length": 3,
+      "kind": "poll",
+      "continuation": 2339,
+      "sha256": "8749b8ea0efad99fab89485dccd383dd20d8583e491aef84e29273e43744ec2f",
+      "post": [
+        [
+          2336,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 2720,
+      "length": 4,
+      "kind": "ei",
+      "continuation": 2725,
+      "sha256": "648408dd3eafa552f3cd17e0f3662a78c2bb8d961aa912d1b3c46358bb4c344d",
+      "pre": [
+        [
+          2720,
+          3
+        ]
+      ],
+      "post": [
+        [
+          2724,
+          1
+        ]
+      ]
+    },
+    {
+      "address": 2739,
+      "length": 4,
+      "kind": "poll-branch-zero",
+      "loop": 2737,
+      "continuation": 2743,
+      "sha256": "09d046b081c0e63459a2a9927089521691471ce8466ca825e43c990aec7d4fa8",
+      "post": [
+        [
+          2741,
+          2
+        ]
+      ]
+    },
+    {
+      "address": 3036,
+      "length": 3,
+      "kind": "poll",
+      "continuation": 3039,
+      "sha256": "e7b36ee122736b9654ba13f874b18ad2bb5bcb0220805649d3f6d9ceb7f8d40b",
+      "post": [
+        [
+          3036,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 3116,
+      "length": 3,
+      "kind": "jump",
+      "continuation": 3119,
+      "sha256": "54e12079f45031d38b57e47c0ce097b697f2f6d8d591777002110b1c3125c691",
+      "target": "Native_Checkpoint"
+    },
+    {
+      "address": 3946,
+      "length": 4,
+      "kind": "read-hl",
+      "continuation": 3950,
+      "sha256": "86d7a572df688c896f5d22307995938160736729c3b042a91ee327d692be886e",
+      "post": [
+        [
+          3947,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 4210,
+      "length": 6,
+      "kind": "read-bc-di",
+      "continuation": 4216,
+      "sha256": "f878539fb175500864ca352a35291f46301e95c081d440dcdd8cabc70c5bb1e3",
+      "post": [
+        [
+          4213,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 4318,
+      "length": 4,
+      "kind": "ei",
+      "continuation": 4322,
+      "sha256": "4e6cab84dd787385ab8cb5e83638c7a56b5c63ee39cf2f6bcf9cc1b5c18c2a8c",
+      "pre": [],
+      "post": [
+        [
+          4319,
+          3
+        ]
+      ]
+    },
+    {
+      "address": 4543,
+      "length": 3,
+      "kind": "di",
+      "continuation": 4546,
+      "sha256": "92403a91b01e1e05d151f9e4946f0aab18b51df023a4e53b4ede40cdec3d3c90",
+      "post": [
+        [
+          4544,
+          2
+        ]
+      ]
+    },
+    {
+      "address": 4615,
+      "length": 3,
+      "kind": "di",
+      "continuation": 4618,
+      "sha256": "92403a91b01e1e05d151f9e4946f0aab18b51df023a4e53b4ede40cdec3d3c90",
+      "post": [
+        [
+          4616,
+          2
+        ]
+      ]
+    },
+    {
+      "address": 4730,
+      "length": 4,
+      "kind": "ei",
+      "continuation": 4884,
+      "sha256": "495bfe911efb0a8ff179fa326d0bae7522b000b645ef4d798c72545239a5a57e",
+      "pre": [],
+      "post": []
+    },
+    {
+      "address": 4783,
+      "length": 3,
+      "kind": "ei",
+      "continuation": 4786,
+      "sha256": "e1a23e28392945c5b39e486aaa5f3c369513ebb415d0a79f3050ca8a8632ddfa",
+      "pre": [],
+      "post": [
+        [
+          4784,
+          2
+        ]
+      ]
+    },
+    {
+      "address": 5573,
+      "length": 5,
+      "kind": "di",
+      "continuation": 5578,
+      "sha256": "ad9bbc22d075400d1481915718bd8c016ed2c0a67b9c129582e3a00c1063f017",
+      "post": [
+        [
+          5574,
+          4
+        ]
+      ]
+    },
+    {
+      "address": 5654,
+      "length": 3,
+      "kind": "loop-ei-return",
+      "continuation": 5657,
+      "sha256": "66d97b9a86d6dbdbf58055c81325687e288ecd07bae520191a45da3e0ebb55ea",
+      "loop": 5628
+    },
+    {
+      "address": 5832,
+      "length": 3,
+      "kind": "input",
+      "continuation": 5835,
+      "sha256": "269d343bc48c675fc7e50a6d720b75307ba6f889bd1d449c57ddb9adc9e8e449",
+      "input": 41472
+    },
+    {
+      "address": 5845,
+      "length": 3,
+      "kind": "input",
+      "continuation": 5848,
+      "sha256": "be7179a878bb41f0bace8897b48901a4e56d95d501865e34da9587b2a0355b6f",
+      "input": 41473
+    },
+    {
+      "address": 6321,
+      "length": 13,
+      "kind": "coordinate-table",
+      "continuation": 6334,
+      "optional": "coordinate-loop",
+      "sha256": "c3ca3c7eae6aa62db030b49747f47ebc3a5edda93634b2f5e08d31a8fa7ee3c3"
+    },
+    {
+      "address": 2351,
+      "length": 5,
+      "kind": "write-de",
+      "sha256": "d1196fc65ee14a71cce2cf02ee43e5eaccc75ad0f3c8123d841d38b6f4e1f45c",
+      "continuation": 2356,
+      "pre": [
+        [
+          2351,
+          4
+        ]
+      ]
+    },
+    {
+      "address": 2358,
+      "length": 3,
+      "kind": "write-de",
+      "sha256": "243708a8ebed70bd98688a110746379840cc0e3a1ae304e10f970236f13e109e",
+      "continuation": 2361,
+      "pre": [
+        [
+          2358,
+          2
+        ]
+      ]
+    },
+    {
+      "address": 2361,
+      "length": 6,
+      "kind": "write-de",
+      "sha256": "dc2a436f82c158091a4e6de3071dbb16dab55463cf4b78dc895e352b34a0f7af",
+      "continuation": 2367,
+      "pre": [
+        [
+          2361,
+          5
+        ]
+      ]
+    }
+  ]
+}

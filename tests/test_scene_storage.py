@@ -1,5 +1,7 @@
 import subprocess
 import unittest
+from pathlib import Path
+from unittest.mock import patch
 from graphics_fixtures import temporary_repo
 from scripts.scenes.storage import publish_bundle
 from scripts.scenes.storage import seal
@@ -76,3 +78,55 @@ class StorageTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             publish_bundle(self.root,self.output,lambda p: called.append(p),payloads=['reference.png'])
         self.assertEqual(called,[])
+
+    def test_explicit_overwrite_replaces_only_complete_matching_bundles(self):
+        publish_bundle(self.root,self.output,lambda p:(p/'x').write_bytes(b'first'),payloads=['x'])
+        publish_bundle(self.root,self.output,lambda p:(p/'x').write_bytes(b'second'),
+                       payloads=['x'],overwrite=True)
+        self.assertEqual((self.output/'x').read_bytes(),b'second')
+        verify_manifest(self.output,{'x'})
+        for modification in ('modified','unknown','empty-directory','symlink','different-inventory'):
+            with self.subTest(modification=modification):
+                extra=self.output/'extra'
+                if modification=='modified':
+                    (self.output/'x').write_bytes(b'edited')
+                elif modification=='unknown':
+                    extra.write_bytes(b'keep')
+                elif modification=='empty-directory':
+                    extra.mkdir()
+                elif modification=='symlink':
+                    extra.symlink_to(self.output/'x')
+                called=[]
+                with self.assertRaises(ValueError):
+                    publish_bundle(self.root,self.output,lambda p:called.append(p),
+                                   payloads=['y'] if modification=='different-inventory' else ['x'],
+                                   overwrite=True)
+                self.assertEqual(called,[])
+                self.assertTrue((self.output/'x').is_file())
+                if extra.is_dir() and not extra.is_symlink():
+                    extra.rmdir()
+                elif extra.exists() or extra.is_symlink():
+                    extra.unlink()
+                (self.output/'x').write_bytes(b'second')
+
+    def test_overwrite_publication_failure_restores_old_bundle(self):
+        publish_bundle(self.root,self.output,lambda p:(p/'x').write_bytes(b'first'),payloads=['x'])
+        rename=Path.rename
+        def fail_install(path,target):
+            if '.staging-' in path.name:
+                raise OSError('synthetic installation failure')
+            return rename(path,target)
+        with patch.object(Path,'rename',fail_install), self.assertRaises(OSError):
+            publish_bundle(self.root,self.output,lambda p:(p/'x').write_bytes(b'new'),
+                           payloads=['x'],overwrite=True)
+        self.assertEqual((self.output/'x').read_bytes(),b'first')
+        verify_manifest(self.output,{'x'})
+        self.assertEqual(list(self.output.parent.iterdir()),[self.output])
+
+    def test_overwrite_still_protects_tracked_files(self):
+        publish_bundle(self.root,self.output,lambda p:(p/'x').write_bytes(b'first'),payloads=['x'])
+        subprocess.run(['git','-C',str(self.root),'add','-f',str(self.output/'x')],check=True)
+        with self.assertRaises(ValueError):
+            publish_bundle(self.root,self.output,lambda p:(p/'x').write_bytes(b'new'),
+                           payloads=['x'],overwrite=True)
+        self.assertEqual((self.output/'x').read_bytes(),b'first')

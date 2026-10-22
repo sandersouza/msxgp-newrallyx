@@ -38,7 +38,7 @@ pending.
 | Current renderer | Complete original first-stage map with cached hardware scrolling, a fixed raster scoreboard and dynamic sprite HUD |
 | HUD integration | Reusable Z80 API for score, record, lives, Fuel and radar, with a read-only original-RAM adapter |
 | Player driving test | Starts automatically with original continuous movement, steering, wall collision and a following camera |
-| Gameplay and hardware adaptation | [Original Z80 map and arcade traces](docs/z80-native-analysis.md), [patch/allocation contracts](docs/native-patching.md) and [clock/input/state contracts](docs/native-runtime-contracts.md); complete native runtime pending |
+| Gameplay and hardware adaptation | [Original Z80 map](docs/z80-native-analysis.md), [patch/allocation](docs/native-patching.md), [clock/input/state contracts](docs/native-runtime-contracts.md) and [native loader/mapper proof](docs/native-loader.md); complete native runtime pending |
 | Linux and Windows bootstrap | Detected, but setup is not implemented |
 
 `make build` generates the current default diagnostic at
@@ -128,8 +128,7 @@ Other revisions and ZIP input are not supported by this extractor.
 ### 3. Extract the graphics
 
 ```sh
-.venv/bin/python -B scripts/extract_graphics.py \
-  --input references/roms/nrallyx --output references/assets/nrallyx
+make extract-graphics
 ```
 
 Output is written to `references/assets/nrallyx/`. It includes original pixel
@@ -139,16 +138,14 @@ manifest recording source and output hashes. Original dimensions are preserved.
 Existing output is protected. To replace a complete, unchanged extraction:
 
 ```sh
-.venv/bin/python -B scripts/extract_graphics.py \
-  --input references/roms/nrallyx --output references/assets/nrallyx --overwrite
+make extract-graphics OVERWRITE=1
 ```
 
 To keep an earlier extraction, choose a different destination below
 `references/assets/`:
 
 ```sh
-.venv/bin/python -B scripts/extract_graphics.py \
-  --input references/roms/nrallyx --output references/assets/nrallyx-other
+make extract-graphics GRAPHICS_OUTPUT="references/assets/nrallyx-other"
 ```
 
 See [graphics extraction](docs/graphics-extraction.md) for input overrides,
@@ -162,18 +159,21 @@ then analyze the normal and overlap captures to generate the approved bundles at
 `references/scenes/review-fixed-v3/`; use that path when capturing:
 
 ```sh
-.venv/bin/python -B scripts/arcade_scene.py capture \
-  --output references/scenes/review-fixed-v3
-.venv/bin/python -B scripts/arcade_scene.py analyze \
-  --capture references/scenes/review-fixed-v3/frame-02200 \
-  --output references/scenes/rom-input/normal
-.venv/bin/python -B scripts/arcade_scene.py analyze \
-  --capture references/scenes/review-fixed-v3/frame-02760 \
-  --output references/scenes/rom-input/overlap
+make prepare-scenes
 ```
 
-Reuse existing verified captures and input bundles if present. Supply the
-compatible BIOS locally, then:
+This captures the reference frames first, then analyzes the normal and overlap
+frames in order. To run the steps separately, use `make capture-scenes` and
+`make analyze-scenes`. Existing destinations are protected by default. Use
+`make prepare-scenes OVERWRITE=1` to replace complete, unchanged capture and
+analysis bundles with matching payload inventories. Modified bundles, unknown
+files, directories or symlinks are preserved and cause an error. Override `SCENES_CAPTURE`,
+`SCENES_NORMAL` and `SCENES_OVERLAP` for a fresh run; `GRAPHICS_OUTPUT` selects
+the extracted assets. The default build expects the standard paths above.
+
+Reuse existing verified captures and input bundles if present: run only
+`make analyze-scenes` if captures already exist, or proceed to `make run` if
+both bundles are ready. Supply the compatible BIOS locally, then:
 
 ```sh
 make run
@@ -185,13 +185,17 @@ make run
 | --- | --- |
 | `make environment` | Install dependencies and prepare or verify the local environment |
 | `make environment-check` | Verify the environment without installing or rebuilding |
+| `make extract-graphics` | Extract original arcade graphics into `references/assets/nrallyx/` |
+| `make capture-scenes` | Capture the arcade reference frames with MAME |
+| `make analyze-scenes` | Analyze normal and overlap captures into build input bundles |
+| `make prepare-scenes` | Capture scenes, then analyze both input bundles in order |
 | `make build` | Rebuild and publish `references/build/newrallyx.rom` |
 | `make run` | Build if the default ROM is missing, then start openMSX |
 | `make test` | Run the automated test suite |
 | `make clean` | Remove generated builds and emulator sessions |
 
-Plain `make` is equivalent to `make build`. Asset extraction, scene processing
-and renderer verification use their script CLIs; they are not Make targets.
+Plain `make` is equivalent to `make build`. Renderer verification uses its
+script CLIs.
 
 ## Repository layout
 

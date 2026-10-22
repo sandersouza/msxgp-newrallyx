@@ -10,9 +10,16 @@ The existing macOS bootstrap prepares the dependencies:
 
 ```sh
 make environment
-.venv/bin/python -B scripts/extract_graphics.py \
-  --input references/roms/nrallyx \
-  --output references/assets/nrallyx
+make extract-graphics
+```
+
+The Make target uses `references/roms/nrallyx` as input and
+`references/assets/nrallyx` as output. Use `make extract-graphics OVERWRITE=1`
+to replace an unchanged complete extraction. Override paths with
+`GRAPHICS_INPUT` and `GRAPHICS_OUTPUT`, for example:
+
+```sh
+make extract-graphics GRAPHICS_OUTPUT="references/assets/nrallyx-other"
 ```
 
 Both `--input` and `--output` are required. Existing output is protected by
