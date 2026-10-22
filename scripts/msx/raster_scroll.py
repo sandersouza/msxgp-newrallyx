@@ -12,12 +12,14 @@ from . import sprite_fuel as fuel
 from . import sprite_lives as life_counter
 from scripts.scenes.bundle import digest, load_assets
 from scripts.scenes.storage import json_write, require_ignored, seal
+from .display import (LEFT_MASK, VIEWPORT_WIDTH, VIEWPORT_HALF, HORIZONTAL_ADJUST,
+                      DISPLAY_SHIFT, PLAYER_X, FUEL_SLOT, PLAYER_SLOT, HUD_SPRITES, TOTAL_SPRITES,
+                      PLAYER_LABEL_X, SCORE_X)
 
 HUD_HEIGHT = 8
 BODY_TOP = 11
-LEFT_MASK = 8
-RIGHT_MASK = 8
-MASK_ROWS = tuple(range(BODY_TOP, 212, 16))
+RIGHT_MASK = 0
+MASK_ROWS = ()
 LIFE_Y = life_counter.Y
 LIFE_X = (life_counter.X, life_counter.NUMBER_X)
 LIFE_SPLIT = life_counter.SPLIT
@@ -27,6 +29,15 @@ LIFE_PATTERN = life_counter.CAR_PATTERN
 def palette_rgb(encoded):
     return [expand((encoded[i] >> 4, encoded[i+1], encoded[i] & 7))
             for i in range(0, 32, 2)]
+
+
+def bordered(image, palette):
+    """Include the complete 320x240 raw frame, rather than cropping overscan."""
+    if image.size != (256, 212):
+        raise ValueError('Expected a complete 256x212 display oracle')
+    result = Image.new('RGB', (320, 240), palette_rgb(palette)[index_for(palette, (0, 0, 0))])
+    result.paste(image, (32, 14))
+    return result
 
 
 def index_for(encoded, source):
@@ -42,8 +53,8 @@ def header(assets, encoded, score=0, high=20000, player=1):
     white = index_for(encoded, (222, 222, 222))
     red = index_for(encoded, (255, 0, 0))
     cyan = index_for(encoded, (0, 151, 222))
-    parts = [(' ', black), ('HISCORE:', white), (f'{high:06d}', red), (' '*6, black),
-             (f'{player}UP:', white), (f'{score:06d}', cyan), (' ', black)]
+    parts = [(' ', black), ('HISCORE:', white), (f'{high:06d}', red), (' '*7, black),
+             (f'{player}UP:', white), (f'{score:06d}', cyan)]
     if sum(len(text) for text, _ in parts) != 32:
         raise ValueError('Scoreboard values must fit one 32-cell line')
     result = bytearray([black]) * (256*8)
@@ -73,6 +84,13 @@ def outlined_life(mask):
                  for y in range(16) for x in range(16))
 
 
+def player_label_patterns(assets, palette):
+    """Extract the original 1/2 glyph at the current label position."""
+    return b''.join(packed(bytes(line[y*256+PLAYER_LABEL_X+x]
+                                  for y in range(8) for x in range(8)))
+                    for player in (1, 2) for line in [header(assets, palette, player=player)])
+
+
 def sprite_pattern(mask, shift=0):
     if shift and any(mask[-16:]):
         raise ValueError('Sentinel-avoidance shift would clip sprite pixels')
@@ -81,16 +99,8 @@ def sprite_pattern(mask, shift=0):
 
 
 def sprite_attributes(cy, lives=2, points=None, footer=False):
-    margin = bytearray()
-    offset = 0
-    for row in MASK_ROWS:
-        my = (row+cy-BODY_TOP-1-offset) & 255
-        if my == 216:
-            offset += 1
-            my -= 1
-        margin.extend((my, 256-RIGHT_MASK, 16, 0))
     overlay = radar.attributes(cy, points['player'], points['enemy']) if points else b''
-    result = bytes(margin) + overlay
+    result = overlay
     if footer:
         result += life_counter.attributes(cy)
     elif points:
@@ -121,7 +131,9 @@ def compose(world, hud, life, palette, cx=0, cy=0, lives=2, points=None, player_
     image = Image.new('RGB', (256, 212))
     colors = palette_rgb(palette)
     image.putdata([colors[index] for index in pixels])
-    return image
+    framed = Image.new('RGB', image.size, colors[black])
+    framed.paste(image, (DISPLAY_SHIFT, 0))
+    return framed
 
 
 def build(root, args):
@@ -139,11 +151,11 @@ def build(root, args):
     black = index_for(palette, (0, 0, 0))
     life = bytes(huds[0][(180+y)*56+x] == yellow for y in range(16) for x in range(16))
     patterns = bytes(128)  # Preserve established radar/fuel pattern indices.
-    patterns += bytes([255])*16 + bytes(16)  # Opaque 8x16 right-margin strip.
+    patterns += bytes(32)  # Retain subsequent pattern IDs; no mask pattern/SAT.
     flags = [(2+(i%32*24+36)*44//stage_one.WIDTH,
               2+(i//32*24+36)*54//stage_one.HEIGHT)
              for i,c in enumerate(cells) if c in (1,2,4)]
-    points = [dict(flags=flags, player=[2+(x+120)*44//stage_one.WIDTH,
+    points = [dict(flags=flags, player=[2+(x+VIEWPORT_HALF)*44//stage_one.WIDTH,
                                        2+(y+100)*54//stage_one.HEIGHT],
                    enemy=radar.capture_enemy(scene['path'], assets))
               for scene,(x,y) in zip(scenes,stage_one.LANDMARKS)]
@@ -156,8 +168,8 @@ def build(root, args):
     output.mkdir(parents=True)
     banks = stage_one.tile_banks(stage_world)
     (output/'stage-world.bin').write_bytes(stage_world)
-    (output/'stage-radar-x.bin').write_bytes(bytes(2+(x+120)*44//stage_one.WIDTH
-        for x in range(stage_one.WIDTH-240+1)))
+    (output/'stage-radar-x.bin').write_bytes(bytes(2+(x+VIEWPORT_HALF)*44//stage_one.WIDTH
+        for x in range(stage_one.WIDTH-VIEWPORT_WIDTH+1)))
     (output/'stage-radar-y.bin').write_bytes(bytes(2+(y+100)*54//stage_one.HEIGHT
         for y in range(stage_one.HEIGHT-201+1)))
     (output/'stage-tilemap.bin').write_bytes(bytes(v for pair in pairs for v in pair))
@@ -192,9 +204,7 @@ def build(root, args):
     resources = b''.join(fuel.gauge_patterns(i) for i in range(31))
     resources += bytes(4096-len(resources))
     resources += radar.patterns(radar.bitmap([]))
-    for player in (1,2):
-        label=header(assets,palette,player=player)
-        resources+=packed(bytes(label[y*256+168+x] for y in range(8) for x in range(8)))
+    resources += player_label_patterns(assets, palette)
     banks.append(resources+bytes(16384-len(resources)))
     player_bank=len(banks)+1
     banks.extend(driver.build(output,program,(native/'video.bin').read_bytes(),assets))
@@ -220,8 +230,7 @@ def build(root, args):
                                       height=radar.HEIGHT, scenes=points))
     white = index_for(palette, (222, 222, 222))
     red = index_for(palette, (255, 0, 0))
-    sprite_colors = bytes([black | 0x20])*(16*len(MASK_ROWS))
-    sprite_colors += bytes([white | 0x20])*(16*13) + bytes([red | 0x20])*16
+    sprite_colors = bytes([white | 0x20])*(16*13) + bytes([red | 0x20])*16
     sprite_colors += b''.join(bytes([c | 0x20])*16 for c in (white, yellow, yellow))
     sprite_colors += bytes([3|0x20])*16+bytes([9|0x60])*16
     (output/'sprite-colors.bin').write_bytes(sprite_colors)
@@ -238,7 +247,13 @@ def build(root, args):
         f'STAGE_ID_BANK EQU {id_bank}\n'
         f'PLAYER_RATE EQU {round((video_timing(args.hz)["frame_seconds"]/.0165-1)*65536)}\n'
         f'LIFE_X0 EQU {LIFE_X[0]}\nLIFE_X1 EQU {LIFE_X[1]}\nMASK_SPRITES EQU {len(MASK_ROWS)}\n'
-        f'SAT_BYTES EQU 121\nPATTERN_BYTES EQU {len(patterns)}\n'
+        f'VIEWPORT_WIDTH EQU {VIEWPORT_WIDTH}\nVIEWPORT_HALF EQU {VIEWPORT_HALF}\n'
+        f'HORIZONTAL_ADJUST EQU {HORIZONTAL_ADJUST}\nPLAYER_X EQU {PLAYER_X}\n'
+        f'PLAYER_LABEL_X EQU {PLAYER_LABEL_X}\nSCORE_X EQU {SCORE_X}\n'
+        f'FUEL_SLOT EQU {FUEL_SLOT}\nPLAYER_SLOT EQU {PLAYER_SLOT}\n'
+        f'FUEL_COLORS EQU $f400+{FUEL_SLOT}*16\nFUEL_ATTRIBUTES EQU $f600+{FUEL_SLOT}*4\n'
+        f'PLAYER_COLORS EQU $f400+12*16\n'
+        f'SAT_BYTES EQU {HUD_SPRITES*4+1}\nPATTERN_BYTES EQU {len(patterns)}\n'
         f'SPRITE_COLOR_BYTES EQU {len(sprite_colors)}\nWHITE EQU {white}\n'
         f'RADAR_X EQU {radar.X}\nRADAR_Y EQU {radar.Y}\n'
         f'YELLOW EQU {yellow}\nFUEL_Y EQU {fuel.Y}\nLIFE_SPLIT EQU {LIFE_SPLIT}\n')
@@ -267,11 +282,14 @@ def build(root, args):
         step_pixels=1, strip_border_flowers=False, timing=video_timing(args.hz),
         geometry=dict(width=256, height=212, header_height=HUD_HEIGHT, separator=[8, BODY_TOP],
                       maze=[LEFT_MASK, BODY_TOP, 256-RIGHT_MASK, 212], left_mask=LEFT_MASK,
-                      right_mask=RIGHT_MASK, header=[LEFT_MASK, 0, 256-RIGHT_MASK, HUD_HEIGHT]),
+                      right_mask=RIGHT_MASK, header=[LEFT_MASK, 0, 256, HUD_HEIGHT],
+                      horizontal_adjust=HORIZONTAL_ADJUST, display_shift=DISPLAY_SHIFT,
+                      framed_maze=[4, BODY_TOP, 252, 212]),
         sprites=dict(size=[16, 16], life_y=LIFE_Y, life_x=list(LIFE_X), layers_per_life=2,
                      life_size=[16,16], life_magnification=1, life_split=LIFE_SPLIT,
-                     life_counter_slots=3, life_reuses_fuel_slots=[27,28,29],
-                     maximum_lives=9, margin_slots=len(MASK_ROWS), radar_slots=14, hud_slots=30, player_slots=2, total_slots=32,
+                     life_counter_slots=3, life_reuses_fuel_slots=list(range(FUEL_SLOT,FUEL_SLOT+3)),
+                     maximum_lives=9, margin_slots=0, radar_slots=14, hud_slots=HUD_SPRITES,
+                     player_slots=2, player_first_slot=PLAYER_SLOT, total_slots=TOTAL_SPRITES, free_slots=32-TOTAL_SPRITES,
                      black=black, yellow=yellow, white=white, red=red), colors=colors, size=size,
         scenes=[dict(number=s['number'], world_origin=stage_one.LANDMARKS[i])
                 for i,s in enumerate(scenes)],
@@ -279,12 +297,12 @@ def build(root, args):
                     captures=[digest(s['path']/'manifest.json') for s in scenes],
                     hud=[digest(p/'manifest.json') for p in (args.normal, args.overlap)]),
         source_sha256={p:digest(root/p) for p in ('src/raster-scroll.asm', 'scripts/msx/raster_scroll.py',
-                       'scripts/msx/inputs.py', 'scripts/msx/sprite_radar.py', 'scripts/msx/player.py','src/player.inc',
+                       'scripts/msx/inputs.py', 'scripts/msx/display.py', 'scripts/msx/sprite_radar.py', 'scripts/msx/player.py','src/player.inc',
                        'scripts/msx/sprite_fuel.py', 'scripts/msx/sprite_lives.py',
                        'src/stage-one-stream.inc', 'src/hud.inc', 'src/hud-api.inc', 'src/hud-demo.inc', 'src/hud-native.inc', 'src/hud-state.inc', 'src/hud-assets.inc', 'src/hud-raster.inc', 'scripts/msx/stage_one.py',
                        'scripts/msx/stage_one_capture.lua')}, rom_sha256=digest(rom),
         fuel=dict(rectangle=[fuel.X, fuel.Y, fuel.X+fuel.WIDTH, fuel.Y+fuel.HEIGHT],
-                  slots=[27,28,29], levels=list(fuel.LEVELS)),
+                  slots=list(range(FUEL_SLOT,FUEL_SLOT+3)), levels=list(fuel.LEVELS)),
         scope='Original player movement, steering and walls with sprite HUD; enemy AI and remaining gameplay rules pending'))
     require_ignored(root, [p for p in output.rglob('*') if p.is_file()])
     seal(output)

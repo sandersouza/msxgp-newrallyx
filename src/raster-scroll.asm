@@ -33,13 +33,6 @@ line_count  EQU $c03d
 vblank_count EQU $c03e
 dx          EQU $c050
 dy          EQU $c051
-gap_valid   EQU $c070
-gap_x       EQU $c071
-gap_y       EQU $c072
-gap_page    EQU $c073
-gap_mode    EQU $c074
-gap_saved   EQU $c078
-gap_patch   EQU $c080
 line_before EQU $c090
 radar_world_x EQU $c09a
 radar_world_y EQU $c09c
@@ -88,7 +81,7 @@ boot:
     ld a,VDP_R9
     call register
     ld b,18
-    xor a
+    ld a,HORIZONTAL_ADJUST
     call register
     ld b,7
     ld a,BLACK
@@ -180,7 +173,6 @@ main:
     call Player_Update
 .position:
     call stage_position
-    call update_gap
     call Player_Radar
     ld a,(paused)
     call HUD_SetForce
@@ -364,9 +356,7 @@ show_scene:
     ld a,256-BODY_TOP
     ld (scroll_y),a
     xor a
-    ld (gap_valid),a
     call stage_position
-    call update_gap
     xor a
     ld (radar_clock),a
     ld a,(scene)
@@ -406,155 +396,6 @@ upload:
     or e
     jr nz,upload
     ret
-
-; Sprites start one row after display unblanking. Cover those eight pixels in
-; both world pages, saving the original bytes and restoring them before moving.
-update_gap:
-    ld a,(gap_valid)
-    or a
-    jr z,.new
-    ld a,(gap_x)
-    ld b,a
-    ld a,(camera_x)
-    cp b
-    jr nz,.restore
-    ld a,(gap_y)
-    ld b,a
-    ld a,(camera_y)
-    cp b
-    jr nz,.restore
-    ld a,(gap_half)
-    ld b,a
-    ld a,(camera_page)
-    cp b
-    ret z
-.restore:
-    ld hl,gap_saved
-    call gap_write_mask
-.new:
-    ld a,(camera_page)
-    ld (gap_half),a
-    ld a,(camera_x)
-    ld (gap_x),a
-    ld a,(camera_y)
-    ld (gap_y),a
-    xor a
-    ld (gap_page),a
-    ld (gap_mode),a
-    ld hl,gap_saved
-    call gap_position
-    call gap_pointer
-    nop
-    nop
-.read:
-    in a,($98)
-    ld (hl),a
-    inc hl
-    dec c
-    jr z,.cached
-    inc e
-    bit 7,e
-    call nz,gap_wrap
-    jr .read
-.cached:
-    ld hl,gap_saved
-    ld de,gap_patch
-    ld bc,5
-    ldir
-    ld hl,gap_patch
-    ld b,4
-    ld a,(gap_x)
-    and 1
-    jr z,.whole
-    ld a,(hl)
-    and $f0
-    or BLACK
-    ld (hl),a
-    inc hl
-    dec b
-.whole:
-    ld (hl),BLACK*17
-    inc hl
-    djnz .whole
-    ld a,(gap_x)
-    and 1
-    jr z,.write
-    ld a,(hl)
-    and 15
-    or BLACK*16
-    ld (hl),a
-.write:
-    ld hl,gap_patch
-    call gap_write_mask
-    ld a,1
-    ld (gap_valid),a
-    ret
-gap_position:
-    ld a,(gap_y)
-    ld d,a
-    ld a,(gap_x)
-    and 1
-    add a,4
-    ld c,a
-    ld a,(gap_x)
-    add a,248
-    ld e,a
-    ld a,(gap_half)
-    jr nc,.half
-    xor 2
-.half:
-    ld (gap_page),a
-    ld a,e
-    srl a
-    ld e,a
-    ret
-gap_pointer:
-    ld a,d
-    rlca
-    and 1
-    ld b,a
-    ld a,(gap_page)
-    or b
-    ld b,14
-    call register
-    ld a,d
-    rrca
-    and $80
-    or e
-    out ($99),a
-    ld a,d
-    rrca
-    and $3f
-    ld b,a
-    ld a,(gap_mode)
-    or b
-    out ($99),a
-    ret
-gap_wrap:
-    ld a,(gap_page)
-    xor 2
-    ld (gap_page),a
-    ld e,0
-    call gap_pointer
-    nop
-    nop
-    ret
-gap_write_mask:
-    ld a,$40
-    ld (gap_mode),a
-gap_write:
-    call gap_position
-    call gap_pointer
-.byte:
-    ld a,(hl)
-    out ($98),a
-    inc hl
-    dec c
-    ret z
-    inc e
-    bit 7,e
-    call nz,gap_wrap
-    jr .byte
 
     INCLUDE "hud.inc"
     INCLUDE "player.inc"

@@ -55,22 +55,8 @@ HUD_Init:
 ; Reusable SCREEN 5 HUD implementation. Public entries/state: hud-api.inc.
 ; Rendering calls run in the renderer's scheduled VDP phases with DI.
 update_lives:
-    ; Thirteen 16-row strips cover the right border. Propagate a one-row
-    ; sentinel adjustment to all following strips, avoiding a gap.
+    ; The hardware left mask owns the only hidden edge; SAT starts with radar.
     ld hl,sat
-    ld de,4
-    ld a,(scroll_y)
-    add a,BODY_TOP-1
-    ld b,MASK_SPRITES
-.margin:
-    cp 216
-    jr nz,.next_margin
-    dec a
-.next_margin:
-    ld (hl),a
-    add hl,de
-    add a,16
-    djnz .margin
     ld a,(scroll_y)
     add a,RADAR_Y-1
     ld (sprite_y),a
@@ -268,9 +254,9 @@ update_radar:
     ld hl,point_buffer
     ld bc,$4098
     otir
-    ld a,$90
+    ld a,PLAYER_COLORS&255
     out ($99),a
-    ld a,$75
+    ld a,$40+((PLAYER_COLORS>>8)&$3f)
     out ($99),a
     ld a,(point_color)
     or $20
@@ -540,7 +526,7 @@ HUD_FlushNumbers:
     ld (hud_score_dirty),a
     ld hl,hud_score_pending
     ld de,hud_score_drawn
-    ld bc,100
+    ld bc,SCORE_X/2
     ld ix,$8400
     jr .field
 .high:

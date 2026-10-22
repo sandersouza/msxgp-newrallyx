@@ -55,25 +55,27 @@ class SpriteRadarTests(unittest.TestCase):
         # Reserve BOTH point slots on EVERY radar row: stronger than a fixed capture.
         for cy in range(256):
             attrs = sprite_attributes(cy,2,dict(player=[2,2],enemy=[2,2]))
-            self.assertEqual(len(attrs),121)
+            self.assertEqual(len(attrs),69)
             counts = [0]*256
-            for i in list(range(len(MASK_ROWS)+12))+list(range(27,30)):
+            for i in list(range(12))+list(range(14,17)):
                 y = attrs[i*4]
                 for row in range(16):
                     counts[(y+1-(cy-BODY_TOP)+row)&255] += 1
             for y in range(radar.Y,radar.Y+radar.HEIGHT+15):
                 counts[y] += 2
+            for y in range(108,124):
+                counts[y] += 2
             self.assertLessEqual(max(counts[BODY_TOP:LIFE_SPLIT]),8)
             lower = sprite_attributes(cy,2,dict(player=[2,2],enemy=[2,2]),footer=True)
             lower_counts = [0]*256
-            for i in range(30):
+            for i in range(17):
                 for row in range(16):
                     lower_counts[(lower[i*4]+1-(cy-BODY_TOP)+row)&255] += 1
             self.assertLessEqual(max(lower_counts[LIFE_SPLIT:212]),8)
             for lives in range(10):
                 short = sprite_attributes(cy,lives,dict(player=[2,2],enemy=[2,2]),footer=True)
                 self.assertEqual(short[-1],216)
-                self.assertEqual(len(short),121)
+                self.assertEqual(len(short),69)
 
     def test_transparent_background_and_white_frame_survive_marker_overlap(self):
         canvas = bytearray([7])*(256*212)

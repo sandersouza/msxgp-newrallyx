@@ -8,10 +8,62 @@ from PIL import Image,ImageChops
 from .build import destination
 from .emulator import tcl, reference_machine
 from .hud_contract import native_values,DIGIT_OFFSETS
-from .raster_scroll import compose,header
+from .raster_scroll import compose,header,bordered
 from . import sprite_fuel as fuel
 from scripts.scenes.bundle import load_assets,read_json,digest,verify_manifest
 from scripts.scenes.storage import json_write,require_ignored,seal
+
+
+def measure_attributes(root, args):
+    """Measure actual HUD SAT work across all 256 renderer scroll phases.
+
+    The probe changes only the renderer's scroll shadow around the routine and
+    restores it before returning. This is a cost microprobe, not an RGB proof.
+    """
+    verify_manifest(args.rom.parent)
+    original_rom = digest(args.rom)
+    original_manifest = digest(args.rom.parent/'manifest.json')
+    sym = symbols(args.rom.parent/'raster-scroll.sym')
+    output = destination(root,args.output)
+    require_ignored(root,[output/'cycles.tsv',output/'session.tcl'])
+    output.mkdir(parents=True)
+    bios = {str(p):digest(p) for p in args.bios.rglob('*') if p.is_file()}
+    lines = ['set save_settings_on_exit false','set renderer none','set sound_driver null',
+        f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
+        reference_machine(root,args.machine),'set firmwareswitch off','set throttle off',
+        'set z80_freq 3579545','set z80_freq_locked false','set cmdtiming real',
+        f'cart {tcl(args.rom.resolve())} -romtype ASCII16','reset',
+        f'set out {tcl(output)}','set n 0','set trace [open [file join $out cycles.tsv] w]',
+        'puts $trace "phase\tcycles"',
+        f'debug set_bp {sym["update_lives"]} {{[reg IM]==2 && [reg I]==208}} {{',
+        'set ::saved [debug read memory 49180]; debug write memory 49180 $::n',
+        'set ::start [machine_info time]', '}',
+        f'debug set_bp {sym["point_attribute"]-1} {{[info exists ::start]}} {{',
+        'if {[debug read memory [reg PC]]!=201} {puts stderr "HUD timing return changed";exit 2}',
+        'puts $::trace "$::n\t[expr {round(([machine_info time]-$::start)*3579545)+10}]"',
+        'debug write memory 49180 $::saved; unset ::start; incr ::n',
+        'if {$::n==256} {close $::trace;exit 0}', '}',
+        'set VDP.too_fast_vram_access_callback {puts stderr "VRAM timing violation";exit 2}',
+        'after time 120 {puts stderr "HUD cost probe timeout";exit 2}']
+    (output/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n} problem]} {puts stderr $problem;exit 2}\n')
+    with (output/'emulator.log').open('w') as log:
+        subprocess.run([args.openmsx,'-script',str(output/'session.tcl')],check=True,timeout=130,
+            env=dict(os.environ,OPENMSX_HOME=str(output/'home'),OPENMSX_USER_DATA=str(output/'userdata')),
+            stdout=log,stderr=subprocess.STDOUT)
+    rows=[list(map(int,row.split('\t'))) for row in (output/'cycles.tsv').read_text().splitlines()[1:]]
+    if len(rows)!=256 or any(len(row)!=2 or row[0]!=n or not 0<row[1]<20000 for n,row in enumerate(rows)):
+        raise ValueError('Incomplete or invalid HUD attribute-cost proof')
+    verify_manifest(args.rom.parent)
+    if original_rom != digest(args.rom) or original_manifest != digest(args.rom.parent/'manifest.json'):
+        raise ValueError('Cartridge changed during HUD cost proof')
+    if bios != {str(p):digest(p) for p in args.bios.rglob('*') if p.is_file()}:
+        raise ValueError('BIOS changed during HUD cost proof')
+    json_write(output/'report.json',dict(phases=256,rom_sha256=digest(args.rom),
+        min_cycles=min(row[1] for row in rows),max_cycles=max(row[1] for row in rows),
+        cpu_hz=3579545,scope='Isolated HUD attribute routine; not total frame CPU or RGB validation'))
+    require_ignored(root,[p for p in output.rglob('*') if p.is_file()])
+    seal(output)
+    return output
 
 
 def symbols(path):
@@ -168,8 +220,9 @@ def analyze(args,output,commands):
         expected=compose(world,header(assets,palette,state['score'],state['high'],player=state['player_number']),life,palette,
             264,1032,state['lives'],frame_points,player_color=read_json(bundle/'build.json')['sprites']['white'],
             life_digits=digits,width=816,fuel_pixels=state['fuel'])
+        expected=bordered(expected,palette)
         expected.save(output/f'{i}-expected.png')
-        with Image.open(output/f'{i}.png') as raw:actual=raw.convert('RGB').crop((32,14,288,226))
+        with Image.open(output/f'{i}.png') as raw:actual=raw.convert('RGB')
         diff=ImageChops.difference(actual,expected)
         if diff.getbbox():
             diff.save(output/f'{i}-difference.png');raise ValueError(f'HUD image mismatch {case["name"]}: {diff.getbbox()}')

@@ -143,7 +143,7 @@ Player_Position:
 Player_Apply:
     ld hl,(player_pending_x)
     ld (player_x),hl
-    ld de,-120
+    ld de,-VIEWPORT_HALF
     add hl,de
     ld (world_x),hl
     ld hl,(player_pending_y)
@@ -264,7 +264,7 @@ Player_Draw:
     otir
 .attributes:
     ld a,(scroll_y)
-    add a,107                ; Car top=108, centre=(128,116), independent of camera.
+    add a,107                ; Logical centre=(132,116); fixed R18 centres at128.
     ld b,180
     cp 216
     jr nz,.safe
@@ -274,7 +274,7 @@ Player_Draw:
     ld hl,player_sat
     ld (hl),a
     inc hl
-    ld (hl),120
+    ld (hl),PLAYER_X
     inc hl
     ld (hl),b
     inc hl
@@ -282,7 +282,7 @@ Player_Draw:
     inc hl
     ld (hl),a
     inc hl
-    ld (hl),120
+    ld (hl),PLAYER_X
     inc hl
     ld a,b
     add a,4
@@ -290,13 +290,15 @@ Player_Draw:
     inc hl
     ld (hl),0
     vdp_write 14,7
-    ld a,$78                 ; Attributes 30/31 replace the HUD's slot-30 terminator.
+    ld a,PLAYER_SLOT*4        ; Replace HUD terminator with car slots 17/18.
     out ($99),a
     ld a,$76
     out ($99),a
     ld hl,player_sat
     ld bc,$0898
     otir
+    ld a,216                 ; Slot 19 terminates the thirteen free SAT slots.
+    out ($98),a
     ret
 
 ; Restore the previous one-row patch, then complete the shifted full-height car.

@@ -13,14 +13,13 @@ row_x EQU $c0bb
 tile_x EQU $c0bc
 tile_y EQU $c0bd
 camera_page EQU $c0be
-gap_half EQU $c0bf
 tile_vram_bank EQU $c455
 cache_left EQU $c46f
 cache_top EQU $c470
 
 stage_move:
     ld hl,(world_x)
-    ld de,STAGE_WIDTH-240
+    ld de,STAGE_WIDTH-VIEWPORT_WIDTH
     ld a,(dx)
     call stage_axis
     ld (world_x),hl
@@ -569,7 +568,7 @@ stage_landmarks:
 stage_radar:
     ; Coordinate tables keep projection out of the pre-header raster budget.
     ld hl,(world_x)
-    ld de,120
+    ld de,VIEWPORT_HALF
     add hl,de
     ld (radar_world_x),hl
     ld hl,(world_y)

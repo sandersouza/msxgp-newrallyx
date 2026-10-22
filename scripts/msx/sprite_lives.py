@@ -1,7 +1,7 @@
 """One original outlined car and one dynamically defined original-font digit."""
-X, NUMBER_X, Y, SPLIT = 212, 230, 194, 176
+X, NUMBER_X, Y, SPLIT = 220, 238, 194, 176
 CAR_PATTERN, COUNT_PATTERN = 156, 172
-FIRST_SLOT = 27  # Fuel has already passed when these slots become the footer.
+FIRST_SLOT = 14  # Fuel has already passed when these slots become the footer.
 
 
 def digit_masks(assets):

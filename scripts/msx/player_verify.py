@@ -6,7 +6,8 @@ from PIL import Image,ImageChops
 from .build import destination
 from .emulator import tcl, reference_machine
 from .player import coordinates
-from .raster_scroll import compose,header
+from .raster_scroll import compose,header,bordered
+from .display import VIEWPORT_WIDTH, PLAYER_X, DISPLAY_SHIFT, HORIZONTAL_ADJUST, TOTAL_SPRITES
 from .screen5 import packed
 from scripts.scenes.bundle import digest,read_json,verify_manifest,load_assets
 from scripts.scenes.storage import json_write,require_ignored
@@ -30,6 +31,7 @@ def verify(root,args):
         'set step -1; set lastshot -1; set frames 1600',
         'set motion [open [file join $out motion.bin] wb]; set cache [open [file join $out cache.bin] wb]',
         'set times [open [file join $out times.tsv] w]',
+        'set slots [open [file join $out slots.tsv] w]',
         'proc snapshot {file} {puts -nonewline $file [debug read_block memory 0xe000 4096]; puts -nonewline $file [debug read_block memory 0xc400 96]; puts -nonewline $file [debug read_block memory 0xc0b0 4]}',
         'proc input {n} {keymatrixup 8 255; if {$n==160 || $n==200} {keymatrixdown 8 1; return}; if {$n==1000} {keymatrixdown 8 2; return}; if {$n<80 || $n>=1400} {return}; set m [lindex {128 32 16 64} [expr {int(($n-80)/220)%4}]]; keymatrixdown 8 $m}',
         'proc mark {} {',
@@ -38,6 +40,10 @@ def verify(root,args):
         ' if {$::wp_last_value!=2} {return}',
         ' if {![debug read memory 0xc400]} {puts stderr "Default ROM did not start in driving mode"; exit 2}',
         ' incr ::step',
+        f' if {{[debug read {{VDP regs}} 18]!={HORIZONTAL_ADJUST}}} {{puts stderr "Display adjustment changed";exit 2}}',
+        ' set stop 32; for {set i 0} {$i<32} {incr i} {if {[debug read VRAM [expr {128512+$i*4}]]==216} {set stop $i;break}}',
+        f' if {{$stop!={TOTAL_SPRITES} || [debug read VRAM {128512+17*4+1}]!={PLAYER_X} || [debug read VRAM {128512+18*4+1}]!={PLAYER_X}}} {{puts stderr "Invalid compact SAT allocation";exit 2}}',
+        ' puts $::slots "$::step $stop"',
         ' snapshot $::motion; puts -nonewline $::cache [debug read_block VRAM 0 65536]',
         ' puts $::times "main $::step [machine_info time] [expr {[machine_info time]-$::begin}]"',
         ' input [expr {$::step+1}]',
@@ -53,7 +59,7 @@ def verify(root,args):
         # Freeze presentation state at the footer; capture only once the renderer
         # finishes that frame. VBlank precedes the renderer's frame-end event.
         ' if {$::step%60==0 || ![info exists ::seen($flag)] || ([debug read memory 0xc418] && ![info exists ::patchseen])} {set ::seen($flag) 1; if {[debug read memory 0xc418]} {set ::patchseen 1}; set ::lastshot $::step; set ::shot($::step) [debug read_block memory 0xc000 12288]; after frame [list capture $::step]}',
-        ' if {[info exists ::done]} {after time 0.004 {close $::motion;close $::cache;close $::times;exit}}',
+        ' if {[info exists ::done]} {after time 0.004 {close $::motion;close $::cache;close $::times;close $::slots;exit}}',
         '}',
         'debug set_watchpoint write_mem 0xc000 {$wp_last_value==1 || $wp_last_value==2} mark',
         'debug set_watchpoint write_mem 0xc03c {$wp_last_value==2 || $wp_last_value==4 || $wp_last_value==6} raster',
@@ -104,6 +110,9 @@ def verify(root,args):
 
 
 def analyze(args,output,records,*,images_required=True):
+    slots=[list(map(int,row.split())) for row in (output/'slots.tsv').read_text().splitlines()]
+    if slots != [[n,TOTAL_SPRITES] for n in range(len(records))]:
+        raise ValueError('Missing or invalid compact SAT allocation evidence')
     native=(output/'native.bin').read_bytes()
     if len(native)!=4096*len(records):raise ValueError('Incomplete original Z80 trace')
     for i,r in enumerate(records):
@@ -151,8 +160,9 @@ def analyze(args,output,records,*,images_required=True):
         car=sprites[flags.index(ram[0x409])*256:][:256]
         for y in range(16):
             for x in range(16):
-                if car[y*16+x]:expected.putpixel((120+x,108+y),colors[car[y*16+x]])
-        with Image.open(path.with_suffix('.png')) as image:actual=image.convert('RGB').crop((32,14,288,226))
+                if car[y*16+x]:expected.putpixel((PLAYER_X+DISPLAY_SHIFT+x,108+y),colors[car[y*16+x]])
+        expected=bordered(expected,palette)
+        with Image.open(path.with_suffix('.png')) as image:actual=image.convert('RGB')
         diff=ImageChops.difference(actual,expected)
         if diff.getbbox():
             expected.save(path.with_name(path.stem+'-expected.png'));diff.save(path.with_name(path.stem+'-diff.png'))
@@ -170,6 +180,8 @@ def analyze(args,output,records,*,images_required=True):
         if any(abs(d-target)>.6 for d in deltas):raise ValueError(f'Player refresh deadline missed: {kind}, {max(deltas):.3f} ms')
         periods[kind]=dict(samples=len(deltas),min_ms=min(deltas),max_ms=max(deltas))
     report=dict(rom_sha256=digest(args.rom),native_frames=len(records),rgb_images=images,
+        occupied_sprite_slots=TOTAL_SPRITES,free_sprite_slots=32-TOTAL_SPRITES,
+        borders_verified=images_required,
         visible_cache_frames=len(records),strict_vram_timing=True,periods=periods,
         rendered_images_required=images_required,
         native_runtime=read_json(output/'native-runtime.json') if (output/'native-runtime.json').exists() else None,
@@ -179,7 +191,7 @@ def analyze(args,output,records,*,images_required=True):
 
 
 def check_cache(vram,data,width,wx,wy,frame):
-    odd=wx&1;size=120+odd;bx=(wx&511)//2
+    odd=wx&1;size=VIEWPORT_WIDTH//2+odd;bx=(wx&511)//2
     for y in range(201):
         row=((wy+y)&255)*128;remaining=size;pos=bx;actual=bytearray()
         while remaining:

@@ -49,8 +49,9 @@ fixed by a line interrupt, and a yellow life icon with a black outline followed
 by a white remaining-life digit.
 The scoreboard places HISCORE: and its value on the left, and 1UP: and its value
 on the right, both aligned with the maze's inner edges. ROUND is deferred.
-Three separator rows contain the raster transition. Matching eight-pixel black
-margins flank both the scoreboard and maze; the visible maze occupies 240x201 pixels.
+Three separator rows contain the raster transition. The native V9958 left mask
+leaves a 248x201 maze; fixed R18 adjustment centres it without a right mask or
+asset rescaling. The HUD and car occupy 19 sprite slots, leaving 13 free.
 The ROM starts in the [driving test](docs/player.md): arrows steer the original
 car, releasing them retains movement, Space pauses and Home restarts. The camera
 and radar follow the car. Press **Enter** to switch to map inspection.
