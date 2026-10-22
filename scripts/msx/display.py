@@ -1,0 +1,13 @@
+"""Shared geometry and SAT ownership for the V9958 keyboard diagnostic."""
+LEFT_MASK = 8
+VIEWPORT_WIDTH = 248
+VIEWPORT_HALF = VIEWPORT_WIDTH//2
+HORIZONTAL_ADJUST = 4  # R18: move the complete display four pixels left.
+DISPLAY_SHIFT = -4
+PLAYER_X = LEFT_MASK+VIEWPORT_HALF-8
+FUEL_SLOT = 14
+PLAYER_SLOT = 17
+HUD_SPRITES = 17
+TOTAL_SPRITES = 19
+PLAYER_LABEL_X = 176
+SCORE_X = 208

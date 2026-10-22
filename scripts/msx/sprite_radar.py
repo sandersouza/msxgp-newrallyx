@@ -2,7 +2,7 @@
 from scripts.scenes.bundle import load_capture
 from scripts.scenes.render import render
 
-X, Y, WIDTH, HEIGHT = 196, 20, 48, 58
+X, Y, WIDTH, HEIGHT = 204, 20, 48, 58
 BAND = 15  # One spare row permits lossless avoidance of the mode-2 Y=216 sentinel.
 CELLS = 12
 FRAME_PATTERN = 20

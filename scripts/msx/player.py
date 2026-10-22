@@ -5,6 +5,7 @@ import subprocess
 
 from .screen5 import expand, rgb333, packed
 from .raster_scroll import sprite_pattern
+from .display import PLAYER_SLOT
 from scripts.scenes.storage import json_write
 
 CODE = ((0x0069,0x0185),(0x0c6c,0x0cba),(0x0e63,0x0f11),
@@ -124,6 +125,6 @@ def build(output, program, native, assets):
     json_write(output/'player.json',dict(flags=flags,patches=patches,
         code_ranges=CODE,native_ram=[0xe000,0xf000],input=0xe3f0,
         native_period_seconds=0.0165,speed_fixed=int.from_bytes(seed[0x27:0x29],'little'),
-        palette=dict(blue=3,pale_yellow=9,black=11),slots=[30,31],pattern=180,
+        palette=dict(blue=3,pale_yellow=9,black=11),slots=[PLAYER_SLOT,PLAYER_SLOT+1],pattern=180,
         coordinate_origin=[36,36],scope='Original player movement, walls and steering; no enemy/flag/Fuel rules'))
     return code,data

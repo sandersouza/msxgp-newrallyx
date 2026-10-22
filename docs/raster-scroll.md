@@ -46,7 +46,7 @@ font glyphs retain their native sizes.
 
 ## Transparent sprite radar
 
-The overlay occupies `[196,20,244,78)`, inset four pixels from the maze's right
+The overlay occupies logical `[204,20,252,78)`, inset four pixels from the maze's right
 edge. Its 48x58 outline has a one-pixel white line and chamfered corners; every
 unpainted pixel is transparent. The original blue radar background is omitted.
 Original first-stage flag anchors are projected onto the bordered map; markers
@@ -76,11 +76,11 @@ extra top padding rows explain the 58-pixel height. Shifted pattern variants
 avoid SAT Y=216 without clipping any frame or marker pixel. A synthetic check
 evaluates all 256 vertical phases, reserving both marker sprites on every radar
 row, and proves at most eight active sprites per visible scanline including the
-right margin, fuel and lives.
+  fuel, lives and the two-plane player car.
 
 ## Fuel and the outlined-car life counter
 
-The fuel display occupies `[196,82,244,98)`, four pixels below the radar and
+The fuel display occupies logical `[204,82,252,98)`, four pixels below the radar and
 exactly aligned with its 48-pixel width. One white sprite draws an authored
 fuel-pump silhouette; two yellow sprites draw a 32-pixel gauge to its right.
 The interior empties to transparency while its thin yellow outline preserves
@@ -93,8 +93,8 @@ not simulated.
 
 The life display now uses **one original-size yellow car with its black outline,
 followed by one white digit from 0 through 9**. It occupies three sprite slots
-regardless of the count: two layers for the car at x=212 and one for the digit at
-x=230, all anchored at y=194. Zero still draws the car and a visible zero. Sprites remain 16x16/1x throughout the maze and HUD.
+regardless of the count: two layers for the car at logical x=220 and one for the digit at
+x=238, all anchored at y=194; the car icon starts at logical x=220. Zero still draws the car and a visible zero. Sprites remain 16x16/1x throughout the maze and HUD.
 
 The counter reuses the original 8x8 numeric tile assets. The ROM stores only their
 eight mask bytes per digit. On a count change, Z80 code expands the selected
@@ -114,17 +114,25 @@ comparator's R19 value is `(176+R23)&255`. Maze scroll registers and sprite
 size/magnification do not change at this split. Both regions appear in the same
 frame; no alternating-frame rendering is used.
 
-Allocation is 13 margin + 14 radar + 3 shared Fuel/footer slots = **30 slots**,
-leaving two free. The white radar outline and fixed points still share the same
-3x4 matrix of twelve sprites; player and enemy remain separate.
-The driving adapter uses both remaining slots for the full-color car, for a
-total of 32 while driving. Its fixed screen band avoids the other HUD regions.
+Allocation is 14 radar + 3 shared Fuel/footer + 2 car slots = **19 slots**,
+leaving **13 free**. The white radar outline and fixed points still share the
+3x4 matrix of twelve sprites; player and enemy remain separate. The fixed car
+band avoids the other HUD regions.
+
+| SAT slots | Owner |
+| --- | --- |
+| 0–11 | Radar outline and flag matrix |
+| 12–13 | Player and enemy radar markers |
+| 14–16 | Fuel, reused for lives after row 176 |
+| 17–18 | Two original-color car planes while driving |
+| 19–31 | Free; slot 19 contains the Y=216 terminator |
 
 ## Raster and VRAM
 
-- Rows 0–7 contain the original 8x8 glyph cells, with one empty cell on each
-  side: ` HISCORE:020000      1UP:000000 `. The left label begins at x=8 and
-  the player-score field ends at x=248, matching the maze's inner edges.
+- Rows 0–7 contain original 8x8 glyph cells: ` HISCORE:020000       1UP:000000`.
+  HISCORE begins at logical x=8; 1UP and its score move eight pixels right and
+  end at logical x=256, matching the widened maze. With fixed R18=4 those edges
+  appear at x=4 and 252 within the nominal 256-pixel display.
   Labels are white, record digits red, and player-score digits cyan, using the
   original converted palette.
 - VBlank selects the fixed header bitmap in VRAM page 2 and zeros R23/R26/R27.
@@ -135,31 +143,28 @@ total of 32 while driving. Its fixed screen band avoids the other HUD regions.
   scrolling. SP2 uses different adjacent map regions in VRAM pages 0/1, forming
   a 512x256 ring. A bounded tile streamer updates hidden guard rows/columns
   without copying the visible maze.
-  The V9958's fine-scroll mask hides columns 0–7 below the header. An opaque
-  sprite strip covers columns 248–255, giving equal eight-pixel side margins.
-  The remaining 240x201 maze pixels retain their original size and include the
-  flower field. The original world textures remain intact behind both margins.
+  The V9958's native fine-scroll mask hides logical columns 0–7 below the header.
+  There is no right mask. The 248x201 useful maze retains original pixel sizes
+  and flower borders. Fixed R18=4 shifts the whole display four pixels left,
+  centring the useful range at physical `[4,252)`. It does not scroll the world;
+  R26/R27 still handle background scrolling. Overlays move eight logical pixels
+  right, and the camera uses 124 horizontal pixels from the car's world centre.
 - The header uses no mask, and sprites are disabled while it is drawn. R23 also
   affects sprite Y, so every VBlank adjusts all overlay attributes. All visible
   HUD sprites use 16x16/1x mode.
-- The right margin uses thirteen 16-row black strips. A strip whose Y attribute
-  would become 216 moves up one pixel, along with every following strip;
-  propagating that adjustment prevents gaps. Thirteen margin, fourteen radar
-  and three shared fuel/life slots use thirty attributes, with at most eight
-  sprites per visible scanline. The SAT has 120 attribute bytes and a Y=216
-  terminator. Additional gameplay sprites must respect the remaining two slots
-  and the per-line limit. The header disables
-  all sprites and supplies its two black margins directly in the bitmap.
+- There are no right-mask attributes, colors or first-row mask patches. The HUD
+  uploads 68 attribute bytes and its slot 17 terminator; driving replaces it with
+  the two car entries and writes a new terminator at slot 19. All 256 vertical
+  phases retain at most eight sprites per scanline. Future actors must respect
+  that limit as well as the 13 free slots. The header disables sprites.
 - Sprite colors, attributes and patterns live at 0x1F400, 0x1F600 and 0x1F800.
-  The first active row needs an eight-pixel VRAM patch behind the right mask,
-  because sprites appear one line after the display is unblanked. The CPU saves
-  the original four/five bytes, restores them before moving the mask and preserves
-  the neighboring nibble for odd camera positions. The patch follows the
-  actual horizontal page and handles page crossings; the complete source map
-  remains unchanged. Normal updates
+  The obsolete right-mask read/patch/restore path has been removed. The separate
+  `Player_Patch` still preserves the last car row at the sprite Y=216 boundary.
+  A 32-byte blank pattern reservation retains subsequent established pattern IDs;
+  it holds no opaque mask and consumes no SAT entry. Normal updates
   also write sprite attributes, dirty radar/fuel patterns/colors and due six-digit
   score/record fields. Numeric fields are patched after the raster split, while
-  their page is hidden; camera/mask/sprite updates precede the split.
+  their page is hidden; camera/sprite updates precede the split.
 
 Original tilemap/asset/capture files are read-only. Flower borders are retained.
 Inspection covers the complete static map; driving reuses the original player
@@ -187,9 +192,9 @@ Verification uses the sealed build's ROM, rather than the published copy, so its
 input manifests, world textures, glyphs and sprite patterns can be checked.
 It drives actual keyboard-matrix inputs without writing camera/state memory.
 The complete screenshot must match a separate screen-coordinate compositor,
-including every header/separator/mask pixel and every sprite overlay. It also
+including all 320x240 pixels with borders, every header/separator pixel and every sprite overlay. It also
 checks all three raster register sets, the visible map pixels in the 512x256
-cache, the first-row mask, scoreboard bytes, exact camera displacement,
+cache, scoreboard bytes, exact camera displacement,
 pause/reset, all map corners, full-height traversal, direction reversal, fine
 scroll phases, life digits, fuel states and a simultaneous score/fuel/life move.
 The native map-acquisition check separately covers the entire original layout.
@@ -206,6 +211,47 @@ Generated data, screenshots, manifests and reports remain ignored below
 Physical hardware, larger live radar populations and original-game logic
 budgets still require separate validation.
 
+## Issue24 validation — 2026-10-22
+
+The final diagnostic cartridge SHA-256 is
+`a89f20da0553295c0dcd71c2725ad0ea560bdf1767fdd221eaabff69bed86f49`.
+The build remains 1 MiB ASCII16. `make build` publishes the same cartridge as the
+sealed `default-2bce75947ad54e559a1c9e2a8eadc551` bundle; its ROM is byte-identical
+to the directly tested `default-3f29dad869c64811a26b0f26f7581785` bundle.
+
+- `make test`: 191 tests pass, including all 256 vertical sprite phases and an
+  independent original-font regression for the relocated 1UP/2UP label.
+- `issue24-player4`: 1,600 original movement/keyboard/VRAM frames and 34 complete
+  320x240 images pass. Every refresh checks R18 and the actual slot 19 terminator,
+  confirming 19 occupied slots and 13 free. Pause, restart, native steering,
+  collisions, animation and the separate car-row patch remain covered.
+- `issue24-raster4`: 53 complete images and 3,801 visible-map checks pass, including
+  all eight horizontal fine-scroll phases, both pages, vertical wrap, map
+  boundaries, diagonal motion, reversal, pause and restart. Held movement and
+  raster commits stay within 19.93549–19.93773 ms per refresh. Normal main work,
+  excluding map loads, remains within the frame budget.
+- `issue24-hud4`: 121 API/ABI checks and 118 complete images pass, covering label
+  selection, scores, all 31 Fuel widths, life digits, radar flags and setters.
+- All rendering checks use real VDP timing and enabled sprite limits, with no
+  VRAM access violations. Full 320x240 comparison includes every border pixel;
+  there is no overscan crop used to conceal undefined pixels.
+
+The isolated attribute-cost probe covers all 256 renderer scroll phases:
+8052–8088 cycles before, 5949–5985 after. Every phase saves 2103 cycles, approximately
+0.588 ms at 3.579545 MHz, or 26.1% of this routine's cost. This excludes other frame
+work and the removed first-row mask patch; it is not a whole-game speed claim.
+Reproduce with `scripts/raster_scroll.py verify-hud-cost --rom <sealed-rom>
+--output <fresh-dir>`, using the same BIOS/machine options as the other verifiers.
+The probe temporarily sets only the renderer scroll shadow and restores it
+around the measured call; its output makes no RGB claim.
+
+The normal `make run` launcher is also exercised with the display active and a
+bounded test shutdown, loading the published ROM at standard CPU speed. Its
+evidence is `references/build/issue24-run-check/`. Physical hardware and monitor
+framing remain unmeasured; these results make no general television overscan
+compatibility claim. Original-game integration and its combined performance
+remain issue #11 work after the branch merge.
+
 ## Runtime integration contract
 
 Shared input/palette preparation lives in [`inputs.py`](../scripts/msx/inputs.py);
@@ -213,7 +259,7 @@ packing and color conversion live in [`screen5.py`](../scripts/msx/screen5.py).
 The executable entry is [`raster-scroll.asm`](../src/raster-scroll.asm).
 [`stage-one-stream.inc`](../src/stage-one-stream.inc) supplies the full-map camera,
 ROM tile lookup, guard-cache jobs and radar projection. Camera-center projection
-uses 577-byte X and 1192-byte Y tables in fixed ROM, avoiding variable division
+uses 569-byte X and 1192-byte Y tables in fixed ROM, avoiding variable division
 work before the header split. The builder enables this
 path for `make build` and the renderer CLI; there is one supported rendering path.
 
@@ -258,7 +304,7 @@ calls to the [public HUD API](hud.md#public-state-api-version-1), publish actual
 map entities into the radar, and retain bank selection,
 SAT allocation and raster deadlines. A tile mutation must update its ROM/RAM
 source abstraction and any resident cache copy; this static-map version does not
-implement mutable terrain. The 30 HUD slots and eight-sprites-per-line limit
+implement mutable terrain. The 17 HUD slots and eight-sprites-per-line limit
 also constrain any later gameplay sprite allocation. The existing RGB oracle,
 strict VRAM timing callback and held-movement interval checks should accompany
 changes to these interfaces.

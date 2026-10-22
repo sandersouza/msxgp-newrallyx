@@ -692,7 +692,7 @@ hud_draw_player_number:
     ld a,HUD_DATA_BANK
     ld ($7000),a
     vdp_write 14,4
-    ld de,84
+    ld de,PLAYER_LABEL_X/2
     ld a,8
 .row:
     push af

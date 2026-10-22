@@ -52,7 +52,7 @@ World centres use native cells and signed intra-cell offsets:
 ```text
 x = 24 + 12 + cell_x*24 + signed(offset_x)
 y = 24 + 12 + cell_y*24 - signed(offset_y)
-camera = (x-120, y-105)
+camera = (x-124, y-105)
 ```
 
 The 24-pixel term is border padding; the 12-pixel term locates a cell centre.
@@ -92,7 +92,10 @@ live game state with the prototype seed. Existing IM2, trampoline, stack and
 
 ## Two sprites, unchanged car pixels
 
-The car occupies free attribute slots **30 and 31**, bringing allocation to 32.
+The car occupies attribute slots **17 and 18**, bringing allocation to 19 and
+leaving 13 free. Its logical left edge is 124; fixed R18=4 moves the complete
+display four pixels left, keeping the car's physical centre at 128. The camera
+uses half of the 248-pixel useful viewport. Native world coordinates do not change.
 Mode-2 color planes preserve original blue, pale yellow and black using indices
 3, 9 and combined `3|9=11`. A palette permutation preserves the displayed RGB
 values throughout the maze and HUD. Original flip bits and animation survive.
@@ -101,7 +104,8 @@ Bank 48 contains twelve 128-byte car variants, their last-row colors and the RAM
 seed. Each car variant has normal and
 shifted phases, with two 32-byte planes per phase. Only the needed 64-byte phase
 uploads on a change, using pattern numbers 180 and 184. `Player_Draw` replaces
-the HUD's slot-30 terminator in driving mode; inspection keeps it hidden.
+the HUD's slot-17 terminator in driving mode and writes a new terminator at 19;
+inspection keeps the car hidden.
 
 Some original frames use all sixteen rows. To avoid reserved SAT Y=216 without
 cropping, the adapter uses Y=215 and shifted patterns, then paints the missing

@@ -15,7 +15,7 @@ from scripts.msx.emulator import run
 def main(argv=None):
     root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=('build', 'run', 'verify', 'verify-hud', 'verify-player'))
+    parser.add_argument('command', choices=('build', 'run', 'verify', 'verify-hud', 'verify-player', 'verify-hud-cost'))
     parser.add_argument('--output', type=Path, required=True, help='Fresh output directory')
     parser.add_argument('--rom', type=Path, default=Path('references/build/newrallyx.rom'))
     parser.add_argument('--normal', type=Path, default=Path('references/scenes/rom-input/normal'))
@@ -30,7 +30,10 @@ def main(argv=None):
     parser.add_argument('--headless', action='store_true', help='Verify player RAM/timing without a display or RGB captures')
     args = parser.parse_args(argv)
     try:
-        if args.command == 'verify-player':
+        if args.command == 'verify-hud-cost':
+            from scripts.msx.hud_verify import measure_attributes
+            measure_attributes(root,args)
+        elif args.command == 'verify-player':
             from scripts.msx.player_verify import verify
             verify(root,args)
         elif args.command == 'verify-hud':

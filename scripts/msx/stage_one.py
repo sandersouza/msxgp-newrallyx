@@ -11,6 +11,7 @@ from scripts.graphics.roms import load_metadata, validate_roms, input_records
 from scripts.extract_graphics import _region
 from scripts.scenes.bundle import digest, verify_manifest, read_json
 from scripts.scenes.storage import require_ignored, seal, json_write
+from .display import VIEWPORT_WIDTH
 
 CELL_COLUMNS, CELL_ROWS = 32, 56
 BORDER = 24
@@ -18,7 +19,7 @@ WIDTH, HEIGHT = 768+2*BORDER, 1344+2*BORDER
 TILE_COLUMNS, TILE_ROWS = WIDTH//8, HEIGHT//8
 STRIDE = 128  # Four rows of 128 packed tiles fit an ASCII16 bank.
 START = (264, 1032)
-LANDMARKS = (START, (0, 0), (WIDTH-240, 0), (0, HEIGHT-201), (WIDTH-240, HEIGHT-201))
+LANDMARKS = (START, (0, 0), (WIDTH-VIEWPORT_WIDTH, 0), (0, HEIGHT-201), (WIDTH-VIEWPORT_WIDTH, HEIGHT-201))
 
 
 def cells_from_rom(program, page):
