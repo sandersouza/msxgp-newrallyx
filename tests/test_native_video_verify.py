@@ -5,9 +5,28 @@ import tempfile
 import unittest
 
 from scripts.msx.native_video_verify import verify_video_frames
+from scripts.msx.native_verify import analyze_presentation_callers
 
 
 class NativeVideoEvidenceTests(unittest.TestCase):
+    def test_caller_costs_require_real_call_instructions_and_complete_totals(self):
+        with tempfile.TemporaryDirectory() as folder:
+            output = Path(folder)
+            (output/'native.sym').write_text('Native_PrepareFrame: EQU 0x5000\n')
+            (output/'native.rom').write_bytes(bytes((0xcd, 0, 0x50)))
+            (output/'manifest.json').write_text('{}')
+            (output/'presentation-context.json').write_text(json.dumps(dict(calls=3, steps=1)))
+            path = output/'presentation-callers.tsv'
+            header = 'caller\tcalls\tsteps\tskip_cycles\tstep_cycles\tmax_cycles\n'
+            path.write_text(header+'16387\t3\t1\t100\t200\t200\n')
+            self.assertTrue(analyze_presentation_callers(output, output)['complete'])
+            for bad in ('16387\t4\t1\t100\t200\t200\n',
+                        '16388\t3\t1\t100\t200\t200\n',
+                        '16387\t3\t1\t0\t200\t200\n'):
+                path.write_text(header+bad)
+                with self.assertRaises(ValueError):
+                    analyze_presentation_callers(output, output)
+
     def fixture(self, output):
         (output/'execution.json').write_text(json.dumps(dict(complete=True, ticks=7)))
         (output/'presentation-context.json').write_text(json.dumps(dict(

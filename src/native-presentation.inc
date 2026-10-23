@@ -17,9 +17,27 @@ Native_PrepareFrame:
     ld sp,NATIVE_STACK
     push af
     ei
+    ld a,(Native_PresentationArmed+1)
+    or a
+    jp z,Native_PrepareSkip
+    IF NATIVE_FREEZE_PRESENTATION
+    ld a,(Native_RenderFrames)
+    or a
+    jp nz,Native_PrepareSkip
+    ENDIF
+    ld a,(Native_Due)
+    or a
+    jp nz,Native_PrepareSkip   ; publish queued game ticks before presentation
     ld a,(Native_RenderStage)
     or a
+    jr z,.idle
+    cp 4
     jr nz,.active
+    ld a,(Native_RasterPhase)
+    cp 1
+    jp nz,Native_PrepareSkip
+    jr .active
+.idle:
     ld a,(Native_RenderDue)
     or a
     jp z,Native_PrepareSkip
@@ -128,8 +146,12 @@ Native_RenderJob:
     cp 1
     ret nz
     ei
+    IF NATIVE_HUD && !NATIVE_HWACTORS
     call HUD_PrepareFrame
+    ENDIF
+    IF NATIVE_HUD
     call HUD_DrawContent
+    ENDIF
     call Native_RestoreGame
     di                         ; publish page/camera/SAT as one VBlank handshake
     ld a,(Native_DrawPage)
@@ -154,11 +176,34 @@ Native_RenderJob:
     ret
 .actors:
     ei
+    IF NATIVE_HWACTORS
+    ld a,(Native_HWStarted)
+    or a
+    jr nz,.actor_job
+    inc a
+    ld (Native_HWStarted),a
+    IF NATIVE_HUD
+    call HUD_PrepareFrame
+    ENDIF
+    IF NATIVE_ACTORS
+    call Native_HWBeginFrame
+    ENDIF
+.actor_job:
+    ENDIF
+    IF NATIVE_ACTORS
     call Native_DrawActors
+    ELSE
+    ld a,6
+    ld (Native_FrameActor),a
+    ENDIF
     ld a,(Native_FrameActor)
     cp 6
     ret c
+    IF NATIVE_EDGE_CLEAR
+    ld a,255                  ; clear the right edge before drawing the radar
+    ELSE
     xor a
+    ENDIF
     ld (Native_RadarStep),a
     ld a,5
     ld (Native_RenderStage),a
@@ -166,6 +211,10 @@ Native_RenderJob:
 
 Native_DrawFrame:
     ei
+    IF NATIVE_HWACTORS
+    xor a
+    ld (Native_HWStarted),a
+    ENDIF
     ld a,(Native_GameTicks)
     ld (Native_LastRenderTick),a
     xor a
@@ -215,8 +264,17 @@ Native_DrawFrame:
     ld de,Native_FrameAttrs
     ld bc,12
     ldir
+    IF NATIVE_HUD
     call Native_SyncHUD
     call Native_SyncRadar
+    ELSE
+    xor a
+    ld (Native_RadarVisible),a
+    call Native_BareHUD
+    ENDIF
+    IF NATIVE_EDGE_CLEAR
+    call Native_RestoreOldGutter
+    ENDIF
     call Native_RestoreGame
     ei
 Native_FrameAfterHUD:
@@ -368,6 +426,8 @@ Native_RenderTiles:
     djnz .find
     ld a,2
     ld (Native_RenderStage),a
+    xor a
+    ld (Native_PageCursor),a
 .finish:
     ret
 .dirty:

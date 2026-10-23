@@ -325,7 +325,27 @@ hud_mark_pixel:
 
 ; Scheduled after the header split. Two dirty cells per frame bound VRAM work.
 HUD_FlushFlags:
+    IF RADAR_BLITTER
+    xor a
+    ld (hud_flags_dirty),a
+    ld (hud_flags_dirty+1),a
+    ret
+    ENDIF
+    IF RADAR_CELLS_ONLY
+    ld a,(Radar_Initializing)
+    or a
+    jr nz,.cell_budget
+    ld a,(paused)
+    or a
+    jr nz,.cell_budget
+    ld a,(player_steps)
+    cp 2
+    ret z
+.cell_budget:
+    ld b,1                  ; Bound flag-base composition as well as marker work.
+    ELSE
     ld b,2
+    ENDIF
 .cell:
     push bc
     ld hl,(hud_flags_dirty)
@@ -359,6 +379,12 @@ HUD_FlushFlags:
     ld c,0
     jr .find
 .found:
+    IFDEF HUD_COLLECTION_METER
+    push hl
+    ld hl,Flag_HudWork
+    inc (hl)
+    pop hl
+    ENDIF
     ld a,c
     ld (hud_cell),a
     inc a
@@ -391,6 +417,9 @@ HUD_FlushFlags:
     ret
 
 hud_render_cell:
+    IF RADAR_CELLS_ONLY
+    jp Radar_RebuildBase
+    ENDIF
     ld a,HUD_DATA_BANK
     ld ($7000),a
     ld a,(hud_cell)
@@ -458,6 +487,10 @@ hud_render_cell:
     pop hl
     pop bc
     djnz .flag
+    IF RADAR_CELLS_ONLY
+    call Radar_CacheCell
+    jp Radar_RenderCell
+    ELSE
     ; Shift both 16-row halves by one row for sentinel avoidance.
     ld hl,point_buffer
     ld de,point_buffer+32
@@ -515,6 +548,7 @@ hud_render_cell:
     ld bc,$2098
     otir
     ret
+    ENDIF
 hud_plot_cell_pixel:
     ld a,(hud_cell_x)
     ld e,a
@@ -567,16 +601,87 @@ HUD_Tick:
 
 ; Renderer-owned phases. These clobber AF/BC/DE/HL/IX; preserve IY and AF'/BC'/DE'/HL'.
 HUD_PrepareFrame:
+    IFDEF HUD_FUEL_METER
+    xor a
+    ld (Fuel_HudWork),a
+    ENDIF
+    IF RADAR_CELLS_ONLY
+    IF STAGE_TILE_STRIPS
+    ; Ordinary marker payloads are produced after terrain's raster deadline.
+    ; Blank-screen initialization still drains every cell before unblanking.
+    ld a,(Radar_Initializing)
+    or a
+    jr nz,.initial_markers
+    call Radar_UpdatePoints
+    call Radar_TailBudget
+    jp update_fuel
+.initial_markers:
+    call Radar_Prepare
+    ELSE
+    call Radar_Prepare
+    ENDIF
+    jp update_fuel
+    ELSE
     call update_radar
+    ENDIF
     call update_fuel
+    IF INCREMENTAL_STAGE >= 9
+    ei                      ; Remaining HUD work only prepares canonical RAM.
+    nop
+    ENDIF
     call update_fuel_sat
     call update_life_sat
     jp update_lives
+    IF RADAR_CELLS_ONLY
+; Publish fixed-screen coordinates before any actor-pattern uploads. The first
+; radar band has a much earlier fetch deadline than the centered player.
+HUD_PrepareCoordinates:
+    jp Radar_Coordinates
+HUD_PrepareEarlyCoordinates:
+    jp Radar_EarlyCoordinates
+HUD_FinishCoordinates:
+    jp Radar_FinishCoordinates
+    ENDIF
 HUD_DrawContent:
+    IFDEF HUD_SCORING_METER
+    xor a
+    ld (Score_HudPairs),a
+    ENDIF
+    IFDEF HUD_COLLECTION_METER
+    xor a
+    ld (Flag_HudWork),a
+    ENDIF
     call hud_draw_player_number
     call update_life_digit
+    IF RADAR_CELLS_ONLY
+    call HUD_ContentWindow
+    ret c
+    ENDIF
     call HUD_FlushNumbers
+    IF RADAR_CELLS_ONLY
+    call HUD_ContentWindow
+    ret c
+    ENDIF
     jp HUD_FlushFlags
+
+    IF RADAR_CELLS_ONLY
+HUD_ContentWindow:
+    call Radar_AllowIRQ
+    di                      ; Observe any pending close IRQ before spending work.
+    ld a,(Radar_Initializing)
+    or a
+    jr nz,.ready
+    ld a,(raster_phase)
+    cp 3
+    jr z,.ready
+    cp 4
+    jr z,.ready
+    scf
+    ret
+.ready:
+    or a
+    ret
+    ENDIF
 
 
 ; B/C = arcade-local radar coordinates (0..63, 0..111); B=255 hides.
@@ -644,6 +749,9 @@ HUD_Prime:
     push af
     ld a,1
     ld (hud_force),a
+    IF RADAR_CELLS_ONLY
+    call HUD_PrepareCoordinates
+    ENDIF
     call HUD_PrepareFrame
 .drain:
     call HUD_DrawContent
@@ -657,6 +765,11 @@ HUD_Prime:
     ld a,(hud_high_dirty)
     or b
     jr nz,.drain
+    IF RADAR_CELLS_ONLY
+    call Radar_PublishReady
+    xor a
+    ld (Radar_Initializing),a
+    ENDIF
     pop af
     ld (hud_force),a
     ret

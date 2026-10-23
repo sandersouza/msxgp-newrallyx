@@ -67,16 +67,6 @@ Native_DrawSolidRun:
     xor a
     ld (Native_SolidCount),a
 .cell:
-    ; Extending a fill across an unchanged solid neighbor changes no pixels.
-    ; Preserve existing actor/page dirtiness without introducing another copy.
-    ld hl,(Native_TileIndex)
-    ld de,Native_ShadowBlack
-    add hl,de
-    ld a,(Native_SolidColor)
-    cp (hl)
-    call nz,Native_DirtyBothPages
-    call Native_RecordTile
-    call Native_ClearRenderBit
     ld a,(Native_SolidCount)
     inc a
     ld (Native_SolidCount),a
@@ -107,6 +97,7 @@ Native_DrawSolidRun:
     cp b
     jr z,.cell
 .send:
+    call Native_RecordSolidSpan
     ld hl,Native_SolidCommand
     ld de,Native_Command
     ld bc,15
@@ -146,6 +137,99 @@ Native_DrawSolidRun:
     ret
 Native_SolidCommand:
     db 0,0,0,0,0,0,0,2,8,0,8,0,0,0,$c0
+
+; Record an exact frozen row span in contiguous copies. The previous per-cell
+; path recalculated three tag pointers, dirty-byte pointers and variable masks
+; for every cell of a uniform fill.
+Native_RecordSolidSpan:
+    ld hl,(Native_SolidFirst)
+    ld (Native_TileIndex),hl
+    ld a,l
+    and 7
+    ld b,a
+    ld a,(Native_SolidCount)
+    add a,b
+    add a,7
+    rrca
+    rrca
+    rrca
+    and 7
+    ld b,a
+.groups:
+    call Native_DirtyBothPages
+    ld hl,(Native_TileIndex)
+    ld de,8
+    add hl,de
+    ld (Native_TileIndex),hl
+    djnz .groups
+    ld hl,(Native_SolidFirst)
+    ld e,l
+    ld a,h
+    add a,Native_ShadowCodes/256
+    ld d,a
+    ld a,h
+    add a,$20
+    ld h,a
+    ld a,(Native_SolidCount)
+    ld c,a
+    ld b,0
+    ldir
+    ld hl,(Native_SolidFirst)
+    ld e,l
+    ld a,h
+    add a,Native_ShadowAttrs/256
+    ld d,a
+    ld a,h
+    add a,$24
+    ld h,a
+    ld a,(Native_SolidCount)
+    ld c,a
+    ld b,0
+    ldir
+    ld hl,(Native_SolidFirst)
+    ld a,h
+    add a,Native_ShadowBlack/256
+    ld h,a
+    ld a,(Native_SolidCount)
+    ld b,a
+    ld a,(Native_SolidColor)
+.colors:
+    ld (hl),a
+    inc hl
+    djnz .colors
+    ld hl,(Native_SolidFirst)
+    ld a,l
+    and 7
+    ld e,a
+    ld d,0
+    ld hl,Native_SolidBitMasks
+    add hl,de
+    ld c,(hl)
+    ld hl,(Native_SolidFirst)
+    srl h
+    rr l
+    srl h
+    rr l
+    srl h
+    rr l
+    set 7,l
+    ld h,Native_RenderDirty/256
+    ld a,(Native_SolidCount)
+    ld b,a
+.bits:
+    ld a,c
+    cpl
+    and (hl)
+    ld (hl),a
+    sla c
+    jr nc,.next
+    inc hl
+    ld c,1
+.next:
+    djnz .bits
+    ret
+Native_SolidBitMasks:
+    db 1,2,4,8,16,32,64,128
 
 Native_ClearRenderBit:
     ld hl,(Native_TileIndex)

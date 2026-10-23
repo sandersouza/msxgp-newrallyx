@@ -24,6 +24,11 @@ def parser():
     reference.add_argument('--output',type=Path,required=True)
     reference.add_argument('--frames',type=int,default=3200)
     reference.add_argument('--replay',type=Path)
+    checkpoint = commands.add_parser('checkpoint', help='Publish an immutable name for an existing sealed local test cartridge')
+    checkpoint.add_argument('--name', required=True)
+    checkpoint.add_argument('--rom', type=Path, required=True)
+    checkpoint.add_argument('--description', required=True)
+    checkpoint.add_argument('--kind', choices=('reference', 'diagnostic', 'experimental'), default='experimental')
     build = commands.add_parser('build-probe',help='Build an explicit headless/synthetic probe, never gameplay')
     build.add_argument('--mode',choices=('loader','runtime','irq','reset','logic'),required=True)
     build.add_argument('--output',type=Path,required=True)
@@ -34,6 +39,14 @@ def parser():
     build.add_argument('--function-proof',action='store_true',help='Exhaustive function proof before original reset')
     build.add_argument('--fine-irq',action='store_true',help='Experimental scanline deadline clock')
     build.add_argument('--video-reference',type=Path,help='Explicit sealed renderer bundle for the live video candidate')
+    build.add_argument('--hardware-actors',action='store_true',help='Experimental hardware actor renderer; explicit video candidate only')
+    build.add_argument('--no-hud',action='store_true',help='Compile out HUD/radar preparation, drawing and raster uploads for comparison')
+    build.add_argument('--no-actors',action='store_true',help='Scenery-only benchmark: retain all game rules, omit actor presentation')
+    build.add_argument('--freeze-presentation',action='store_true',help='Timing benchmark: prepare one page, then run all logic without further rendering')
+    build.add_argument('--foreground-render-only',action='store_true',help='Timing experiment: keep rendering out of the logical game IRQ')
+    build.add_argument('--no-edge-clear',action='store_true',help='Diagnostic: omit the right-edge repair to measure its restoration cost')
+    build.add_argument('--tick-foreground',action='store_true',help='Scheduling experiment: one original foreground pass per logical tick while game IRQs are enabled')
+    build.add_argument('--actor-cache',action='store_true',help='Reuse exact unclipped hardware actor patterns across prepared frames')
     build.add_argument('--assets',type=Path,default=ROOT/'references/assets/nrallyx')
     build.add_argument('--execution-reference',type=Path,action='append',default=[],help='Supplemental sealed source execution for additional branches')
     run = commands.add_parser('run', help='Launch a sealed native candidate in an isolated emulator session')
@@ -49,6 +62,14 @@ def parser():
     inputs.add_argument('--bios',type=Path,default=ROOT/'references/msxbios')
     inputs.add_argument('--machine',default='Panasonic_FS-A1WSX')
     inputs.add_argument('--openmsx',default='openmsx')
+    actors = commands.add_parser('verify-actor-sprites', help='Verify isolated hardware actor fixtures; no runtime integration claim')
+    actors.add_argument('--rom',type=Path,required=True)
+    actors.add_argument('--capture',type=Path,required=True)
+    actors.add_argument('--output',type=Path,required=True)
+    actors.add_argument('--frames',nargs='+',type=int,required=True)
+    actors.add_argument('--bios',type=Path,default=ROOT/'references/msxbios')
+    actors.add_argument('--machine',default='Panasonic_FS-A1WSX')
+    actors.add_argument('--openmsx',default='openmsx')
     for name in ('acquire','verify-reset','verify-probe'):
         c = commands.add_parser(name)
         c.add_argument('--rom',type=Path,required=True)
@@ -80,12 +101,19 @@ def main(argv=None):
     try:
         if a.command == 'reference':
             result = capture_reference(ROOT,a.output,frames=a.frames,replay_path=a.replay)
+        elif a.command == 'checkpoint':
+            from scripts.msx.checkpoints import publish
+            result = publish(ROOT, a.name, a.rom, a.description, a.kind)
         elif a.command == 'build-probe':
             result = build_probe(ROOT,a.output,a.assembler,a.hz,probe=a.mode,
                 reset_reference=a.reference,optimize=a.coordinate_table,
                 function_probe=a.function_proof,fine_irq=a.fine_irq,
                 video_reference=a.video_reference,assets_path=a.assets,
-                execution_references=tuple(a.execution_reference))
+                execution_references=tuple(a.execution_reference),hardware_actors=a.hardware_actors,
+                hud_enabled=not a.no_hud, actors_enabled=not a.no_actors,
+                freeze_presentation=a.freeze_presentation,
+                render_in_game_irq=not a.foreground_render_only, edge_clear=not a.no_edge_clear,
+                tick_foreground=a.tick_foreground, actor_cache=a.actor_cache)
         elif a.command == 'acquire':
             result = acquire(ROOT,a)
         elif a.command == 'verify-reset':
@@ -105,6 +133,10 @@ def main(argv=None):
         elif a.command == 'verify-inputs':
             from scripts.msx.native_inputs import verify_inputs
             result = verify_inputs(ROOT,a)
+        elif a.command == 'verify-actor-sprites':
+            from scripts.msx.native_sprite_probe import verify_actor_sprites
+            result = verify_actor_sprites(ROOT,a.rom,a.capture,a.output,a.bios,
+                frames=a.frames,openmsx=a.openmsx,machine=a.machine)
         else:
             result = compare_acquisition(ROOT,a.rom.parent,a.capture,a.reference,a.output)
     except (ValueError,OSError,subprocess.SubprocessError) as error:

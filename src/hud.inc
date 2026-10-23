@@ -1,5 +1,9 @@
 ; Renderer integration contract: src/hud-api.inc and docs/hud.md.
 HUD_Init:
+    IF INCREMENTAL_STAGE >= 9
+    ld a,HUD_DATA_BANK
+    ld ($7000),a
+    ENDIF
     ld b,14
     ld a,7
     call register
@@ -50,13 +54,22 @@ HUD_Init:
     ld de,sat
     ld bc,SAT_BYTES
     ldir
+    IF RADAR_CELLS_ONLY
+    call HUD_InitState
+    jp Radar_Init
+    ELSE
     jp HUD_InitState
+    ENDIF
 
 ; Reusable SCREEN 5 HUD implementation. Public entries/state: hud-api.inc.
 ; Rendering calls run in the renderer's scheduled VDP phases with DI.
 update_lives:
+    IF RADAR_CELLS_ONLY
+    jp Radar_Coordinates
+    ELSE
     ; The hardware left mask owns the only hidden edge; SAT starts with radar.
     ld hl,sat
+    IF !RADAR_BLITTER
     ld a,(scroll_y)
     add a,RADAR_Y-1
     ld (sprite_y),a
@@ -119,6 +132,7 @@ update_lives:
     ld (sprite_base),a
     pop bc
     djnz .radar_band
+    IF !RADAR_CELLS_ONLY
     ld a,(point_x)
     ld d,a
     ld a,(point_y)
@@ -130,7 +144,13 @@ update_lives:
     ld a,(enemy_y)
     ld e,a
     ld c,124
+    IF ENEMY_PAIR_RADAR
+    call Enemy_PairAttribute
+    ELSE
     call point_attribute
+    ENDIF
+    ENDIF
+    ENDIF
     ld de,fuel_sat
     ld b,12
 .fuel:
@@ -140,6 +160,19 @@ update_lives:
     inc hl
     djnz .fuel
     ld (hl),216
+    IF SPRITE_FLICKER
+    ret
+    ENDIF
+    IF INCREMENTAL_STAGE >= 9
+    ld hl,sat
+    ld de,$7600
+    IF RADAR_CELLS_ONLY
+    ld b,SAT_BYTES-1
+    ELSE
+    ld b,SAT_BYTES
+    ENDIF
+    jp Sprite_Upload
+    ENDIF
     ld b,14
     ld a,7
     call register
@@ -148,9 +181,14 @@ update_lives:
     ld a,$76
     out ($99),a
     ld hl,sat
+    IF RADAR_CELLS_ONLY
+    ld bc,(SAT_BYTES-1)*256+$98  ; keep the already prepared car SAT entries
+    ELSE
     ld bc,SAT_BYTES*256+$98
+    ENDIF
     otir
     ret
+    ENDIF
 
 point_attribute:
     ld a,e
@@ -181,6 +219,13 @@ point_attribute:
     ret
 
 update_radar:
+    IF RADAR_BLITTER
+    ret
+    ENDIF
+    IFDEF HUD_ENEMY_METER
+    xor a
+    ld (Enemy_RadarWork),a
+    ENDIF
     ld a,(hud_enemy_x)
     ld b,a
     ld a,(hud_enemy_drawn_x)
@@ -192,6 +237,10 @@ update_radar:
     cp b
     jr z,.player
 .enemy:
+    IFDEF HUD_ENEMY_METER
+    ld a,4
+    ld (Enemy_RadarWork),a
+    ENDIF
     ld a,(hud_enemy_x)
     ld (enemy_x),a
     ld (hud_enemy_drawn_x),a
@@ -200,15 +249,28 @@ update_radar:
     ld (enemy_y),a
     ld (hud_enemy_drawn_y),a
     ld e,a
+    IF ENEMY_PAIR_RADAR
+    call Enemy_PairPattern
+    ELSE
     call draw_point
+    ENDIF
     vdp_write 14,7
     ld a,$e0
     out ($99),a
     ld a,$7b
     out ($99),a
+    IFDEF HUD_ENEMY_METER
+    ld hl,(Enemy_RadarSource)
+    ELSE
     ld hl,point_buffer
+    ENDIF
     ld bc,$4098
+    IF INCREMENTAL_STAGE >= 9
+    ld de,$7be0
+    call Sprite_Upload
+    ELSE
     otir
+    ENDIF
 .player:
     ld a,(hud_force)
     or a
@@ -251,9 +313,18 @@ update_radar:
     out ($99),a
     ld a,$7b
     out ($99),a
+    IFDEF HUD_ENEMY_METER
+    ld hl,(Enemy_RadarSource)
+    ELSE
     ld hl,point_buffer
+    ENDIF
     ld bc,$4098
+    IF INCREMENTAL_STAGE >= 9
+    ld de,$7ba0
+    call Sprite_Upload
+    ELSE
     otir
+    ENDIF
     ld a,PLAYER_COLORS&255
     out ($99),a
     ld a,$40+((PLAYER_COLORS>>8)&$3f)
@@ -270,6 +341,33 @@ update_radar:
 ; Rebuild both 16x16 phases from coordinates, including the x=7 byte crossing.
 ; Only 64 pattern bytes and one 16-byte color row change when the marker moves.
 draw_point:
+    IFDEF HUD_ENEMY_METER
+    ld a,d
+    cp 255
+    jr z,.hidden
+    and 3
+    rrca
+    rrca
+    ld l,a
+    ld a,d
+    and 7
+    srl a
+    srl a
+    ld h,a
+    ld a,e
+    and 7
+    add a,a
+    add a,h
+    or $b0
+    ld h,a
+    ld (Enemy_RadarSource),hl
+    ld a,ENEMY_MASK_BANK
+    ld ($7000),a
+    ret
+.hidden:
+    ld hl,point_buffer
+    ld (Enemy_RadarSource),hl
+    ENDIF
     push de
     ld hl,point_buffer
     ld de,point_buffer+1
@@ -372,6 +470,10 @@ update_fuel:
     jr z,.due
     ret nc
 .due:
+    IFDEF HUD_FUEL_METER
+    ld a,6
+    ld (Fuel_HudWork),a
+    ENDIF
     ld a,HUD_DATA_BANK
     ld ($7000),a
     ld a,c
@@ -390,7 +492,12 @@ update_fuel:
     ld a,$7c
     out ($99),a
     ld bc,$8098
+    IF INCREMENTAL_STAGE >= 9
+    ld de,$7c60
+    call Sprite_Upload
+    ELSE
     otir
+    ENDIF
     ld a,(ticks)
     ld (fuel_at),a
     ret
@@ -407,6 +514,39 @@ update_life_sat:
     ld e,164
     ld c,176
 .safe:
+    IF HUD_STATIC_LIFE
+    ld hl,life_sat
+    ld (hl),d
+    inc hl
+    ld (hl),LIFE_X1
+    inc hl
+    ld (hl),c                ; White counter reuses the white fuel-icon slot.
+    inc hl
+    ld (hl),0
+    inc hl
+    ld (hl),d
+    inc hl
+    ld (hl),LIFE_X0
+    inc hl
+    ld (hl),e                ; Original yellow silhouette; no added outline.
+    inc hl
+    ld (hl),0
+    inc hl
+    ld a,(scroll_y)
+    add a,211
+    cp 216
+    jr nz,.hidden
+    inc a
+.hidden:
+    ld (hl),a
+    inc hl
+    ld (hl),LIFE_X0
+    inc hl
+    ld (hl),e
+    inc hl
+    ld (hl),0
+    ret
+    ENDIF
     ld hl,life_sat
     ld (hl),d
     inc hl
@@ -482,6 +622,15 @@ update_life_digit:
     ret
 
 HUD_FlushNumbers:
+    IF INCREMENTAL_STAGE >= 9
+    ld a,(hud_force)
+    or a
+    jr nz,.budget_ready
+    ld a,(player_steps)
+    cp 2
+    ret z
+.budget_ready:
+    ENDIF
     ld c,0
     ld a,(hud_score_dirty)
     or a
@@ -560,6 +709,10 @@ HUD_FlushNumbers:
     cp (hl)
     jr z,.next
 .changed:
+    IFDEF HUD_SCORING_METER
+    ld hl,Score_HudPairs
+    inc (hl)
+    ENDIF
     ld hl,(hud_field_pending)
     ld de,(hud_field_drawn)
     ld a,(hl)
@@ -621,10 +774,18 @@ hud_number_due:
     or a
     ret
 hud_write_pair:
+    IF INCREMENTAL_STAGE < 9
     vdp_write 14,4
+    ENDIF
     ld a,8
 .row:
     push af
+    IF INCREMENTAL_STAGE >= 9
+    ei
+    nop
+    di
+    vdp_write 14,4            ; Raster hooks own R14 between atomic glyph rows.
+    ENDIF
     ld a,e
     out ($99),a
     ld a,d

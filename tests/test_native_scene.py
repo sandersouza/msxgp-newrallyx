@@ -1,15 +1,47 @@
 import unittest
 
 from scripts.msx.native_contract import Snapshot
-from scripts.msx.native_scene import compose_scene, dirty_regions, scene_from_snapshot, tile_pixels, verify_tile_cache, verify_scene_cache, radar_from_snapshot, verify_radar_cache
-from scripts.msx.native_video import flipped_pens, native_palette, black_tables
+from scripts.msx.native_scene import compose_scene, dirty_regions, scene_from_snapshot, tile_pixels, verify_tile_cache, verify_scene_cache, radar_from_snapshot, verify_radar_cache, radar_visible
+from scripts.msx.native_video import flipped_pens, native_palette, black_tables, strip_atlas
 from scripts.msx.screen5 import expand
+from scripts.msx.native_scene import verify_presentation
 
 
 class NativeSceneTests(unittest.TestCase):
+    def test_presentation_gate_rejects_visible_fuel_and_stale_right_edge(self):
+        snapshot = Snapshot(0, 'post-game-irq', bytes(4096), bytes(2048), bytes(392))
+        hud = bytearray(1140)
+        hud[0x1c] = 5  # Hidden sprite Y=216 must be moved to 217, never terminate.
+        for slot in range(3):
+            hud[0x280+slot*4] = hud[0x138+slot*4] = 217
+        vram = bytearray(131072)
+        result = verify_presentation(snapshot, vram, hud, 0)
+        self.assertEqual((result['gutter_differences'], result['fuel_attribute_errors']), (0, 0))
+        hud[0x280] = hud[0x138] = 86  # Visible title-screen fuel is rejected.
+        self.assertGreater(verify_presentation(snapshot, vram, hud, 0)['fuel_attribute_errors'], 0)
+        vram[22*128+249//2] = 3
+        self.assertEqual(verify_presentation(snapshot, vram, hud, 0)['gutter_differences'], 1)
+        vram[22*128+249//2] = 0x30  # The aligned GPU margin is checked too.
+        self.assertEqual(verify_presentation(snapshot, vram, hud, 0)['gutter_differences'], 0)
+        self.assertEqual(verify_presentation(snapshot, vram, hud, 0, aligned_gutter=True)['gutter_differences'], 1)
+
+    def test_inactive_radar_leaves_the_complete_underlying_scene_visible(self):
+        video, work = bytearray(4096), bytearray(2048)
+        video[0x992:0x994] = (0x8100).to_bytes(2, 'little')
+        video[0x100:0x102] = (0x9800).to_bytes(2, 'little')
+        work[0] = 1  # Startup can initialize flags before any hardware radar dot.
+        snapshot = Snapshot(0, 'post-game-irq', bytes(video), bytes(work), bytes(392))
+        self.assertEqual(radar_from_snapshot(snapshot)['flags'][0], (0, 0))
+        self.assertFalse(radar_visible(snapshot))
+        vram = bytearray(b'\x77'*131072)
+        args = (bytes((3,))*16384, bytes(16384), bytes((0, 1, 2, 7))*64, bytes(range(16)))
+        self.assertEqual(verify_radar_cache(snapshot, bytes(vram), 0, *args)['different_pixels'], 0)
+        vram[31*128+102] = 0x33  # A spurious blue underlay must also fail off viewport.
+        self.assertEqual(verify_radar_cache(snapshot, bytes(vram), 0, *args)['different_pixels'], 2)
+
     def test_bitmap_radar_checks_all_pixels_across_both_world_seams(self):
         video, shadow = bytearray(4096), bytearray(392)
-        shadow[0x130], shadow[0x140] = 58, 204
+        shadow[0x130], shadow[0x140] = 50, 204
         video[0x35], video[0x835], shadow[5] = 224, 157, 1
         snapshot = Snapshot(1, 'post-game-irq', bytes(video), bytes(2048), bytes(shadow))
         vram = bytearray(b'\x33'*131072)
@@ -19,7 +51,7 @@ class NativeSceneTests(unittest.TestCase):
             vram[at] = (vram[at] & ~(15 << shift)) | (color << shift)
         for y in range(235, 295):
             for x in range(254, 304):
-                pixel(x, y, 11)
+                pixel(x, y, 3)
         for y in (237, 238):
             for x in (1, 2):
                 pixel(x, y, 13)
@@ -27,7 +59,7 @@ class NativeSceneTests(unittest.TestCase):
         scene = verify_scene_cache(snapshot, bytes(vram), 1, bytes((3,))*16384,
                                    bytes(16384), bytes(range(4))*64, bytes(range(16)), radar=True)
         self.assertTrue(scene['bitmap_scene_verified'])
-        pixel(40, 20, 3)  # Far outside the 200-pixel game viewport, inside radar.
+        pixel(40, 20, 11)  # Far outside the 200-pixel game viewport, inside radar.
         report = verify_radar_cache(snapshot, bytes(vram), 1)
         self.assertEqual((report['compared_pixels'], report['different_pixels']), (3000, 1))
 
@@ -96,6 +128,31 @@ class NativeSceneTests(unittest.TestCase):
         self.assertEqual(masks[0] & ~black[0], 0)
         self.assertNotEqual(masks[0] & ~black[1], 0)
         self.assertEqual(masks[1], 1)
+
+    def test_strip_atlas_keys_decode_exact_original_pixels_without_overlapping_hud(self):
+        tiles = bytes((x+2*y+code) & 3 for code in range(256)
+                      for y in range(8) for x in range(8))
+        lookup, translation = bytes(range(4))*64, bytes(range(16))
+        pixels, offsets, records, count = strip_atlas(bytes(16384), tiles, lookup, translation)
+        entries = []
+        for bucket in range(16):
+            at = int.from_bytes(offsets[bucket*2:bucket*2+2], 'little')
+            for n in range(records[at]):
+                entry = records[at+1+n*8:at+9+n*8]
+                codes, attrs, x, y = entry[:3], entry[3:6], entry[6], entry[7]
+                self.assertEqual((codes[0] ^ attrs[0] ^ (attrs[0] >> 4)) & 15, bucket)
+                self.assertTrue(0 <= x <= 216 and 208 <= y <= 224)
+                slot = (y-208)//8*10+x//24
+                payload = pixels[slot*96:(slot+1)*96]
+                decoded = bytes(c for value in payload for c in (value >> 4, value & 15))
+                original = [tile_pixels(tiles, lookup, c, a) for c, a in zip(codes, attrs)]
+                self.assertEqual(decoded, bytes(original[x//8][y*8+x%8]
+                                                for y in range(8) for x in range(24)))
+                entries.append(slot)
+        self.assertEqual(sorted(entries), list(range(count)))
+        self.assertLessEqual(0x2800+len(pixels), 16384)
+        with self.assertRaises(ValueError):
+            strip_atlas(bytes(16), tiles, lookup, translation)
     def test_cache_checks_completed_tiles_and_reports_pending_work_separately(self):
         video = bytes(4096)
         vram = bytearray(131072)

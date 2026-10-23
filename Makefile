@@ -1,7 +1,18 @@
 .DEFAULT_GOAL := build
-.PHONY: environment environment-check extract-graphics capture-scenes analyze-scenes prepare-scenes build run test clean
+.PHONY: environment environment-check extract-graphics capture-scenes analyze-scenes prepare-scenes build run checkpoints test clean
 
 PYTHON ?= .venv/bin/python
+ROM ?= references/build/newrallyx.rom
+CHECKPOINT ?=
+LATEST ?= 0
+NO_HUD ?= 0
+PLAYER_BLITTER ?= 0
+RADAR_BLITTER ?= 0
+SPRITE_FLICKER ?= 0
+FLICKER_STRESS ?= 0
+HZ ?= 50
+NATIVE ?= 0
+STAGE ?= 8
 GRAPHICS_INPUT ?= references/roms/nrallyx
 GRAPHICS_OUTPUT ?= references/assets/nrallyx
 OVERWRITE ?= 0
@@ -29,11 +40,24 @@ prepare-scenes: capture-scenes
 	@$(MAKE) analyze-scenes
 
 build:
-	@$(PYTHON) -B scripts/project.py build
+	@$(PYTHON) -B scripts/project.py build $(if $(filter 1,$(NO_HUD)),--no-hud) $(if $(filter 1,$(NATIVE)),--native) $(if $(filter 1,$(PLAYER_BLITTER)),--player-blitter) $(if $(filter 1,$(RADAR_BLITTER)),--radar-blitter) $(if $(filter 1,$(SPRITE_FLICKER)),--sprite-flicker) $(if $(filter 1,$(FLICKER_STRESS)),--flicker-stress) $(if $(filter-out 50,$(HZ)),--hz "$(HZ)") --stage "$(STAGE)"
 
 run:
-	@if [ ! -f references/build/newrallyx.rom ]; then $(MAKE) build; fi
-	@$(PYTHON) -B scripts/project.py run
+ifeq ($(LATEST),1)
+	@$(PYTHON) -B scripts/project.py run --latest $(if $(strip $(CHECKPOINT)),--checkpoint "$(CHECKPOINT)") $(if $(filter-out references/build/newrallyx.rom,$(ROM)),--rom "$(ROM)")
+else
+ifneq ($(strip $(CHECKPOINT)),)
+	@$(PYTHON) -B scripts/project.py run --checkpoint "$(CHECKPOINT)"
+else
+ifeq ($(ROM),references/build/newrallyx.rom)
+	@if [ ! -f "$(ROM)" ]; then $(MAKE) build; fi
+endif
+	@$(PYTHON) -B scripts/project.py run --rom "$(ROM)"
+endif
+endif
+
+checkpoints:
+	@$(PYTHON) -B scripts/project.py checkpoints
 
 test:
 	@$(PYTHON) -B -m unittest discover -s tests -v

@@ -46,6 +46,10 @@ fuel_state  EQU $c0a3
     dw boot,0,0,0,0,0,0
 boot:
     di
+    IF INCREMENTAL_STAGE >= 9
+    xor a
+    ld (Sprite_UploadActive),a
+    ENDIF
     ld sp,$f380
     call $0138
     rrca
@@ -139,6 +143,9 @@ boot:
     im 2
     xor a
     ld (last_enter),a
+    IF INCREMENTAL_STAGE >= 7
+    ld (Life_Restarting),a
+    ENDIF
 startup_mode:
     ld a,1                   ; The default development ROM starts with the car active.
     ld (driving),a
@@ -149,6 +156,9 @@ main:
     ld a,3
     ld (marker),a
 .wait:
+    IF INCREMENTAL_STAGE >= 9
+    di                      ; Check and EI/HALT must form one atomic wait decision.
+    ENDIF
     ld a,(ticks)
     ld b,a
     ld a,(frame_tick)
@@ -161,26 +171,155 @@ main:
     di
     ld a,b
     ld (frame_tick),a
+    IF RASTER_GUARD
+    xor a
+    ld (Stage_GuardClosed),a
+    IF STAGE_TILE_STRIPS && RADAR_CELLS_ONLY && HUD_ENABLED
+    inc a
+    ld (Radar_TailWork),a
+    ENDIF
+    ENDIF
     ld a,1
     ld (marker),a
     ld a,(line_count)
     ld (line_before),a
     call keys
     di
+    IF INCREMENTAL_STAGE >= 9
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+    call Radar_CommitPublished
+    ENDIF
+    call Death_Frame
+    ENDIF
+    IF FLICKER_STRESS
+    ld a,(paused)
+    or a
+    jr z,.stress_running
+    ; The diagnostic scene is already prepared. Isolate the priority exchange
+    ; during pause, without rebuilding identical actor/HUD RAM every refresh.
+    call Flicker_Publish
+    jp Enemy_AfterPrepare.split_wait
+.stress_running:
+    ENDIF
     ld a,(paused)
     or a
     jr nz,.position
     call Player_Update
 .position:
     call stage_position
+    IF RADAR_CELLS_ONLY || SPRITE_FLICKER
+    ei
+    nop
+    ENDIF
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+    IF RADAR_PLAYER_SPRITE
+    call Player_Radar       ; Freeze the dot with this refresh's player position.
+    ENDIF
+    call HUD_PrepareEarlyCoordinates
+    ENDIF
+    IF ENEMY_RENDER
+    call Enemy_Prepare
+Enemy_AfterPrepare:
+    IF RADAR_PLAYER_SPRITE
+    call Enemy_Radar
+    ENDIF
+    ENDIF
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+    IF ENEMY_RENDER
+    di
+    call Enemy_Draw         ; An enemy may begin at the first maze scanline.
+    ENDIF
+    call HUD_FinishCoordinates
+    ei
+    nop
+    ENDIF
+    IF HUD_ENABLED
+    IF !RADAR_PLAYER_SPRITE
     call Player_Radar
+    ENDIF
     ld a,(paused)
     call HUD_SetForce
-    call HUD_PrepareFrame
+    IF RADAR_CELLS_ONLY
+    di
     call Player_Draw
+    ei
+    nop
+    di
+    IF ENEMY_COUNT
+    ; Commit the frame's existing presentation before advancing native state.
+    call Player_Patch
+    ld b,64
+    call Death_Stream
+    call Player_AdvanceEarly
+    ld b,64
+    call Flag_Stream
+    call Score_ReservedFrame
+    ENDIF
+    ENDIF
+    IF SPRITE_FLICKER
+    di
+    ENDIF
+    call HUD_PrepareFrame
+    IF SPRITE_FLICKER
+    ei
+    nop
+    ENDIF
+    ELSE
+    IF RADAR_CELLS_ONLY
+    di
+    ENDIF
+    call Stage_HideHUD
+    ENDIF
+    IF !RADAR_CELLS_ONLY || !HUD_ENABLED
+    IF SPRITE_FLICKER
+    di
+    ENDIF
+    IF RADAR_CELLS_ONLY && ENEMY_RENDER && ENEMY_COUNT >= 2 && !HUD_ENABLED
+    call Enemy_Draw         ; Top-edge cars must be ready before player patterns.
+    call Player_Draw
+    ELSE
+    call Player_Draw
+    IF SPRITE_FLICKER
+    ei
+    nop
+    di
+    ENDIF
+    IF ENEMY_RENDER
+    call Enemy_Draw
+    ENDIF
+    ENDIF
+    ENDIF
+    IF SPRITE_FLICKER
+    call Flicker_Publish
+    ENDIF
+    IF ENEMY_COUNT && !SPRITE_FLICKER
+    IF !RADAR_CELLS_ONLY || !HUD_ENABLED
+    call Player_AdvanceEarly
+    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2 && !HUD_ENABLED
+    ld b,64
+    call Flag_Stream
+    call Score_ReservedFrame
+    ENDIF
+    ENDIF
+    ENDIF
+    IF PLAYER_BLITTER
+    ; The previous player band has passed. Spend the blank interval on VDP
+    ; save/restore/draw rather than extending the visible guard-work phase.
+    IF RADAR_BLITTER
+    call BitmapRadar_FrameRestore
+    ENDIF
+    call Bitmap_Restore
+    call Bitmap_Draw
+    IF RADAR_BLITTER
+    call BitmapRadar_FrameDraw
+    ENDIF
+    ENDIF
     ; The numeric HUD lives on a hidden page during the maze. Patch it after
     ; the split, keeping the larger sprite population out of the raster deadline.
 .split_wait:
+    IF INCREMENTAL_STAGE >= 9
+    di                      ; A split arriving before HALT must not be slept past.
+    ENDIF
     ld a,(line_before)
     ld b,a
     ld a,(line_count)
@@ -193,17 +332,44 @@ main:
     di
     ld a,(ticks)
     ld (frame_tick),a         ; A scene reload may have crossed a VBlank/header.
+    IF SPRITE_FLICKER
+    call Player_AdvanceEarly
+    ENDIF
+    IF !PLAYER_BLITTER
+    IF !RADAR_CELLS_ONLY || !HUD_ENABLED
     call Player_Patch
+    ENDIF
+    ENDIF
+    IF HUD_ENABLED
     ld a,(paused)
     or a
     call z,hud_demo_numbers
     call HUD_DrawContent
+    ENDIF
     call Player_Advance
+    IF ENEMY_COUNT
+    call Flag_PublishHUD
+    ENDIF
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+    call Radar_WaitPublish
+    ENDIF
     call stage_stream
     ld a,(driving)
     or a
+    IF !TILE_MODE
     call nz,stage_wait_command
+    ENDIF
+    IF STAGE_TILE_STRIPS && RADAR_CELLS_ONLY && HUD_ENABLED
+    ; The next refresh publishes these payloads in its safe radar window.
+    ; Use the tail instead of displacing urgent terrain before scanout.
+    call Radar_PrepareTail
+    ENDIF
+    IF HUD_ENABLED
     call hud_demo_sync_fuel
+    ENDIF
+    IF INCREMENTAL_STAGE >= 7
+    call Life_Frame
+    ENDIF
     ld a,2
     ld (marker),a
     jp main
@@ -220,39 +386,166 @@ interrupt:
     and 1
     jp z,vertical
     ld a,(raster_phase)
+    IF RASTER_GUARD
+    or a
+    jp z,maze_interrupt      ; retain the baseline header-dispatch cycle count
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+    cp 3
+    jp z,radar_interrupt
+    cp 4
+    jp z,radar_close_interrupt
+    IF STAGE_GUARD_LINE < LIFE_SPLIT
+    cp 5
+    jp z,prefetch_guard_interrupt
+    ENDIF
+    ENDIF
+    cp 2
+    jp z,guard_interrupt
+    jp life_interrupt
+    ELSE
     or a
     jp nz,life_interrupt
+    ENDIF
+maze_interrupt:
     ld a,3
     ld (irq_stage),a
+    IF INCREMENTAL_STAGE >= 9
+    ; Reserve the split before foreground work can mask its exact deadline.
+    ; Keep the complete seven-row font visible, then latch the maze registers.
+    ld a,6
+    ld b,19
+    call register
+.header_end:
+    in a,($99)
+    and 1
+    jr z,.header_end
+    ENDIF
     vdp_write 1,$22            ; hide register latching inside the separator
     vdp_write 8,$28            ; arm maze sprites; the first row has a VRAM mask
-    vdp_write 0,6              ; suppress stale line matching while R23 changes
+    vdp_write 0,MAZE_R0              ; suppress stale line matching while R23 changes
     vdp_write 25,3             ; two-page torus and the 8-pixel left mask
     vdp_write 26,(scroll_high)
     vdp_write 27,(scroll_low)
     vdp_write 23,(scroll_y)
-    vdp_write 2,$3f            ; SP2 requires R2.A15=1; maze pages 0/1
-    vdp_write 1,$62
-    ld a,1
-    ld (raster_phase),a
+    vdp_write 2,MAZE_R2            ; SP2 requires R2.A15=1; maze pages 0/1
+    IF INCREMENTAL_STAGE >= 9
+    ; Prepare early, then latch display-on at a hardware line boundary. A
+    ; variable foreground DI tail must not move the first visible maze row.
     ld a,(scroll_y)
-    add a,LIFE_SPLIT
+    add a,9
     ld b,19
     call register
-    vdp_write 0,$16            ; reuse the completed fuel sprites for the footer
+    vdp_write 0,MAZE_R0+16
+.separator:
+    in a,($99)               ; S1 remains selected by interrupt dispatch.
+    and 1
+    jr z,.separator
+    ENDIF
+    vdp_write 1,$62
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+    ld a,3
+    ELSE
+    ld a,1
+    ENDIF
+    ld (raster_phase),a
+    ld a,(scroll_y)
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+    add a,80
+    ELSE
+    add a,LIFE_SPLIT
+    ENDIF
+    ld b,19
+    call register
+    vdp_write 0,MAZE_R0+16            ; reuse the completed fuel sprites for the footer
     ld a,(line_count)
     inc a
     ld (line_count),a
     ld a,4
     ld (irq_stage),a
     jp irq_return
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+radar_interrupt:
+    ld a,1
+    ld (Radar_Scanned),a
+    IF STAGE_GUARD_LINE < LIFE_SPLIT
+    ld a,5
+    ld (raster_phase),a
+    ld a,(scroll_y)
+    add a,STAGE_GUARD_LINE
+    ld b,19
+    call register
+    jp irq_return
+prefetch_guard_interrupt:
+    ld a,(Radar_TailWork)
+    or a
+    jr z,.no_marker_tail
+    ld a,1
+    ld (Stage_GuardClosed),a
+.no_marker_tail:
+    ENDIF
+    ld a,4
+    ld (raster_phase),a
+    ld a,(scroll_y)
+    add a,144
+    ld b,19
+    call register
+    jp irq_return
+radar_close_interrupt:
+    ld a,2
+    ld (Radar_Scanned),a
+    ld a,1
+    ld (raster_phase),a
+    ld a,(scroll_y)
+    add a,LIFE_SPLIT
+    ld b,19
+    call register
+    jp irq_return
+    ENDIF
 life_interrupt:
     ld a,5
     ld (irq_stage),a
+    IF HUD_ENABLED
     HUD_FooterSprites
+    ELSE
+    vdp_write 0,MAZE_R0
+    ENDIF
+    IF RASTER_GUARD
+    ld a,2
+    ld (raster_phase),a
+    IF STAGE_GUARD_LINE < LIFE_SPLIT
+    ld a,(Radar_TailWork)
+    or a
+    jr z,.terrain_tail
+    vdp_write 0,MAZE_R0             ; The marker producer owns the remaining tail.
+    jr .tail_ready
+.terrain_tail:
+    ld a,(scroll_y)
+    add a,196
+    ld b,19
+    call register
+    vdp_write 0,MAZE_R0+16
+.tail_ready:
+    ELSE
+    ld a,(scroll_y)
+    add a,STAGE_GUARD_LINE
+    ld b,19
+    call register
+    vdp_write 0,MAZE_R0+16
+    ENDIF
+    ENDIF
     ld a,6
     ld (irq_stage),a
     jp irq_return
+    IF RASTER_GUARD
+; Stop before the next visible refresh. The final indivisible command has
+; STAGE_GUARD_LINE leaves a measured tail before VBlank; foreground checks this
+; flag between copies (16 scanlines in the reference, eight in stage09).
+guard_interrupt:
+    ld a,1
+    ld (Stage_GuardClosed),a
+    vdp_write 0,MAZE_R0
+    jp irq_return
+    ENDIF
 vertical:
     ld b,15
     xor a
@@ -260,11 +553,22 @@ vertical:
     in a,($99)
     and $80
     jp z,irq_return
+    IF PLAYER_BLITTER || INCREMENTAL_STAGE >= 9 || TILE_MODE
+    ; VBlank is also a hard stop if a late split prevented the earlier guard
+    ; comparator from firing. Never carry optional cache work into a new frame.
+    ld a,1
+    ld (Stage_GuardClosed),a
+    ENDIF
     ld a,1
     ld (irq_stage),a
     xor a
     ld (raster_phase),a
+    IF RADAR_CELLS_ONLY && HUD_ENABLED
+    ld (Radar_Scanned),a
+    ENDIF
+    IF HUD_ENABLED
     HUD_VBlankSprites
+    ENDIF
     ld b,8
     ld a,$2a
     call register
@@ -284,7 +588,11 @@ vertical:
     ld a,$5f                  ; header bitmap at 0x10000, fixed at scroll zero
     call register
     ld b,19
+    IF INCREMENTAL_STAGE >= 9
+    ld a,3                    ; Reserve split; wait for font end and line nine.
+    ELSE
     ld a,7                    ; compare while R23=0, after the last header row
+    ENDIF
     call register
     ld b,0
     ld a,$16
@@ -304,6 +612,11 @@ irq_return:
     ld b,15
     xor a
     call register
+    IF INCREMENTAL_STAGE >= 9
+    ld a,(Sprite_UploadActive)
+    or a
+    call nz,Sprite_ResumeUpload
+    ENDIF
     pop bc
     pop af
     ei
@@ -337,9 +650,46 @@ show_scene:
     ld a,(driving)
     or a
     call nz,stage_atlas_init
+    IF STAGE_TILE_STRIPS
+    call Stage_StripInit
+    ENDIF
     call stage_load
     call HUD_Init
+    IF SPRITE_FLICKER
+    call Flicker_Init
+    ENDIF
+    IF PLAYER_BLITTER
+    call Bitmap_Init
+    IF RADAR_BLITTER
+    call BitmapRadar_Init
+    ENDIF
+    ENDIF
+    IF ENEMY_RENDER
+    ld a,(driving)
+    or a
+    call nz,Enemy_InitPatterns
+    ENDIF
+    IF HUD_ENABLED
     call hud_demo_reset
+    IF INCREMENTAL_STAGE >= 5
+    ld a,(driving)
+    or a
+    call nz,Score_Publish
+    ENDIF
+    IF INCREMENTAL_STAGE >= 6
+    ld a,(driving)
+    or a
+    call nz,Fuel_Publish
+    ENDIF
+    IF INCREMENTAL_STAGE >= 7
+    ld a,(driving)
+    or a
+    jr z,.life_published
+    call Life_Publish
+    call Life_Flags
+.life_published:
+    ENDIF
+    ENDIF
     xor a
     ld (camera_x),a
     ld (camera_y),a
@@ -357,6 +707,10 @@ show_scene:
     ld (scroll_y),a
     xor a
     call stage_position
+    IF ENEMY_RENDER
+    call Enemy_Prepare
+    ENDIF
+    IF HUD_ENABLED
     xor a
     ld (radar_clock),a
     ld a,(scene)
@@ -371,7 +725,22 @@ show_scene:
     call HUD_SetEnemy
     call Player_Radar
     call HUD_Prime
+    ELSE
+    call Stage_HideHUD
+    ENDIF
     call Player_Draw
+    IF PLAYER_BLITTER
+    call Bitmap_Draw
+    IF RADAR_BLITTER
+    call BitmapRadar_Draw
+    ENDIF
+    ENDIF
+    IF ENEMY_RENDER
+    call Enemy_Draw
+    ENDIF
+    IF SPRITE_FLICKER
+    call Flicker_Publish
+    ENDIF
     ld b,15
     ld a,1
     call register
@@ -387,6 +756,47 @@ show_scene:
     call register
     ei
     ret
+    IF !HUD_ENABLED
+; Preserve the established car slot numbers while hiding every unused HUD entry.
+; There is no Y=216 terminator before the car and no HUD work per refresh.
+Stage_HideHUD:
+    IF PLAYER_SLOT == 0
+    ret                     ; A HUD-free SAT contains only player and enemies.
+    ENDIF
+    IF INCREMENTAL_STAGE >= 9
+    ei                      ; RAM preparation must not delay the reserved header.
+    nop
+    ENDIF
+    ld a,(scroll_y)
+    add a,211
+    cp 216
+    jr nz,.safe
+    inc a
+.safe:
+    ld hl,sat
+    ld de,4
+    ld b,PLAYER_SLOT
+.hide:
+    ld (hl),a
+    add hl,de
+    djnz .hide
+    ld (hl),216
+    IF INCREMENTAL_STAGE >= 9
+    ld hl,sat
+    ld de,$7600
+    ld b,SAT_BYTES
+    jp Sprite_Upload
+    ENDIF
+    vdp_write 14,7
+    xor a
+    out ($99),a
+    ld a,$76
+    out ($99),a
+    ld hl,sat
+    ld bc,SAT_BYTES*256+$98
+    otir
+    ret
+    ENDIF
 upload:
     ld a,(hl)
     out ($98),a
@@ -399,7 +809,30 @@ upload:
 
     INCLUDE "hud.inc"
     INCLUDE "player.inc"
+    IF PLAYER_BLITTER
+    INCLUDE "bitmap-player.inc"
+    ENDIF
+    IF RADAR_BLITTER
+    INCLUDE "bitmap-radar.inc"
+    ENDIF
+    IF SPRITE_FLICKER
+    INCLUDE "sprite-flicker.inc"
+    ELSE
+    IF INCREMENTAL_STAGE >= 9
+    INCLUDE "sprite-upload.inc"
+    ENDIF
+    ENDIF
     INCLUDE "stage-one-stream.inc"
+    INCLUDE "rock-collision.inc"
+    INCLUDE "death.inc"
+    INCLUDE "flags.inc"
+    INCLUDE "score.inc"
+    INCLUDE "fuel.inc"
+    INCLUDE "lives.inc"
+    INCLUDE "enemy.inc"
+    IF RADAR_CELLS_ONLY
+    INCLUDE "radar-cells.inc"
+    ENDIF
 palette:
     INCBIN "palette.bin"
     ASSERT $ <= $8000

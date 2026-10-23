@@ -21,6 +21,9 @@ def measure_attributes(root, args):
     restores it before returning. This is a cost microprobe, not an RGB proof.
     """
     verify_manifest(args.rom.parent)
+    if read_json(args.rom.parent/'build.json').get('hud_style',{}).get('radar_cells_only'):
+        from .hud_coordinates_verify import verify
+        return verify(root,args)
     original_rom = digest(args.rom)
     original_manifest = digest(args.rom.parent/'manifest.json')
     sym = symbols(args.rom.parent/'raster-scroll.sym')

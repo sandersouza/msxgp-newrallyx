@@ -38,6 +38,7 @@ Native_TileSlot EQU $c79a
 Native_PageRunPixels EQU $c79b
 Native_PageRunFirst EQU $e62b
 Native_PageRunHigh EQU $e62d
+Native_PageCursor EQU $e62e
 Native_LastRenderTick EQU $c79c
 Native_PageDirty0 EQU $c880
 Native_PageDirty1 EQU $cd00
@@ -54,6 +55,12 @@ Native_PackedBuffer EQU $e400
 Native_PixelBuffer EQU $e500
 Native_DirtyTiles EQU $c800
 Native_Command EQU $c460
+Native_DisplayR1 EQU $c7d3
+Native_RadarVisible EQU $c7d4
+Native_PresentationArmed EQU $c7d5 ; original reset completion SP; host state only
+Native_FuelSAT EQU $c7da
+Native_GPUCommandPointer EQU $c7d7
+Native_TilePacket EQU $c7e8
 
 Native_VideoInit:
     ld hl,$c000
@@ -70,6 +77,12 @@ Native_VideoInit:
     ld (Native_InputCache),hl
     ld a,$c3
     ld (Native_InputCache+2),a
+    ld a,$22                  ; keep atlas uploads/cold initialization invisible
+    ld (Native_DisplayR1),a
+    ld hl,Native_TileCommand
+    ld de,Native_TilePacket
+    ld bc,15
+    ldir
     ld hl,$e000
     ld de,$e001
     ld bc,$fff
@@ -101,7 +114,7 @@ Native_VideoInit:
     vdp_write 1,2
     vdp_write 7,BLACK
     vdp_write 8,$2a
-    vdp_write 18,0
+    vdp_write 18,HORIZONTAL_ADJUST
     vdp_write 16,0
     ld hl,Native_Palette
     ld bc,$209a
@@ -120,15 +133,18 @@ Native_VideoInit:
     ldir
     call Native_SendCommand
     call Native_WaitCommand
+    IF NATIVE_HUD
     call HUD_Init
     call HUD_Prime
+    ENDIF
     call Native_RestoreGame
     call Native_WarmTiles
+    call Native_WarmStrips
     call Native_MarkAllTiles
     vdp_write 2,$7f
-    vdp_write 19,7
+    vdp_write 19,4
     vdp_write 0,$16
-    vdp_write 1,$62
+    vdp_write 1,(Native_DisplayR1)
     ret
 
 Native_ClearCommand:
@@ -143,15 +159,26 @@ Native_RasterIRQ:
     ld a,(Native_RasterPhase)
     or a
     jr nz,.later
+    ; Enter early, then synchronize to the end of the eight-line header. This
+    ; removes instruction/DI jitter before the fixed register-switch sequence.
+    ; S#1 is already selected; reading FH acknowledges the temporary comparator.
+    vdp_write 19,7
+.header_end:
+    in a,($99)
+    and 1
+    jr z,.header_end
     vdp_write 1,$22
     vdp_write 8,$28
     vdp_write 0,6
-    vdp_write 25,2
+    vdp_write 25,2             ; bit 1=MSK, bit 0=SP2: use one 256-pixel page
     vdp_write 26,(Native_ActiveHigh)
     vdp_write 27,(Native_ActiveLow)
     vdp_write 23,(Native_ActiveY)
     vdp_write 2,(Native_ActiveR2)
-    vdp_write 1,$62
+    ld b,16                   ; retain the three-line black separator after HUD
+.separator:
+    djnz .separator
+    vdp_write 1,(Native_DisplayR1)
     ld a,(Native_ActiveY)
     add a,64
     ld b,19
@@ -171,7 +198,11 @@ Native_RasterIRQ:
     ld (Native_RasterPhase),a
     jr .line_done
 .footer:
+    IF NATIVE_HUD
     HUD_FooterSprites
+    ELSE
+    vdp_write 0,6
+    ENDIF
     ld a,3
     ld (Native_RasterPhase),a
 .line_done:
@@ -195,33 +226,65 @@ Native_RasterIRQ:
     ld (Native_ActiveLow),a
     ld a,(Native_PendingR2)
     ld (Native_ActiveR2),a
+    ld a,$62                  ; the first complete page permits presentation
+    ld (Native_DisplayR1),a
+    IF NATIVE_HUD
     push de
     ld hl,life_sat
     ld de,Native_LifeSAT
     ld bc,12
     ldir
+    ld hl,fuel_sat
+    ld de,Native_FuelSAT
+    ld bc,12
+    ldir
     pop de
+    ENDIF
     vdp_write 14,7
     xor a
     out ($99),a
     ld a,$76
     out ($99),a
     ld hl,sat
+    IF NATIVE_HWACTORS
+    ld a,(Native_HWCount)
+    add a,a
+    add a,a
+    add a,SAT_BYTES
+    ld b,a
+    ld c,$98
+    ELSE
     ld bc,SAT_BYTES*256+$98
+    ENDIF
     otir
+    IF NATIVE_HWACTORS
+    call Native_HWPublishColors
+    ENDIF
     xor a
     ld (Native_HUDReady),a
 .no_hud:
+    IF NATIVE_HUD
     HUD_VBlankSprites
+    ; Footer sharing overwrites slots 14..16 every physical frame. Restore
+    ; their active fuel attributes even when no new bitmap page is ready.
+    vdp_write 14,7
+    ld a,FUEL_ATTRIBUTES&255
+    out ($99),a
+    ld a,$40+((FUEL_ATTRIBUTES>>8)&$3f)
+    out ($99),a
+    ld hl,Native_FuelSAT
+    ld bc,$0c98
+    otir
+    ENDIF
     vdp_write 8,$2a
     vdp_write 25,0
     vdp_write 26,0
     vdp_write 27,0
     vdp_write 23,0
     vdp_write 2,$7f
-    vdp_write 19,7
+    vdp_write 19,4
     vdp_write 0,$16
-    vdp_write 1,$62
+    vdp_write 1,(Native_DisplayR1)
     xor a
     ld (Native_RasterPhase),a
     inc a
@@ -352,6 +415,8 @@ Native_DrawTile:
     or a
     ret
 .draw:
+    call Native_TryStrip
+    ret c
     ; Keep the common 32 maze codes x four flips x two palettes simultaneously.
     ; Full descriptors are still checked, so other codes/palettes may collide
     ; safely without ever reusing pixels from the wrong source pattern.
@@ -389,29 +454,27 @@ Native_DrawTile:
 .upload:
     call Native_UploadTile
 .cached:
-    ld hl,Native_TileCommand
-    ld de,Native_Command
-    ld bc,15
-    ldir
+    ; The tile packet's dimensions, pages and operation never change. Keep a
+    ; private template instead of copying fifteen bytes for every eight pixels.
     ld a,(Native_TileSlot)
     and 31
     add a,a
     add a,a
     add a,a
-    ld (Native_Command),a
+    ld (Native_TilePacket),a
     ld a,(Native_TileSlot)
     and $e0
     rrca
     rrca
     add a,16
-    ld (Native_Command+2),a
+    ld (Native_TilePacket+2),a
     ld hl,(Native_TileIndex)
     ld a,l
     and 31
     add a,a
     add a,a
     add a,a
-    ld (Native_Command+4),a
+    ld (Native_TilePacket+4),a
     add hl,hl
     add hl,hl
     add hl,hl
@@ -419,10 +482,9 @@ Native_DrawTile:
     add a,a
     add a,a
     add a,a
-    ld (Native_Command+6),a
-    ld a,2
-    ld (Native_Command+7),a ; clean page2
-    call Native_SendCommand
+    ld (Native_TilePacket+6),a
+    ld hl,Native_TilePacket
+    call Native_SendPacket
     call Native_DirtyBothPages
     call Native_RecordTile
     scf
@@ -434,34 +496,24 @@ Native_TileCommand:
 Native_DirtyBothPages:
     ld hl,(Native_TileIndex)
     ld a,l
-    and 7
-    ld b,a
-    ld c,1
-    jr z,.mask
-.shift:
-    sla c
-    djnz .shift
-.mask:
-    srl h
-    rr l
-    srl h
-    rr l
-    srl h
-    rr l
-    ld a,l
-    add a,$80
+    rrca
+    rrca
+    rrca
+    and 31
+    ld l,a
+    ld a,h
+    and 3
+    rrca
+    rrca
+    rrca
+    or l
+    or $80
     ld l,a
     ld h,Native_PageDirty0/256
-    ld a,c
-    or (hl)
-    ld (hl),a
-    ld a,l
-    sub $80
-    ld l,a
+    ld (hl),$ff               ; restore the complete eight-cell descriptor group
+    res 7,l
     ld h,Native_PageDirty1/256
-    ld a,c
-    or (hl)
-    ld (hl),a
+    ld (hl),$ff
     ret
 
 Native_SyncPage:
@@ -494,7 +546,13 @@ Native_SyncPage:
     ret
 .incremental:
     call .bitmap
-    ld b,128
+    ld a,(Native_PageCursor)
+    add a,l
+    ld l,a
+    ld a,(Native_PageCursor)
+    neg
+    add a,128
+    ld b,a
 .find:
     ld a,(hl)
     or a
@@ -541,6 +599,9 @@ Native_SyncPage:
     ld d,1
     jr .run
 .run_done:
+    ld a,l
+    and 127
+    ld (Native_PageCursor),a  ; never rescan clean rows before this command
     ld a,e
     add a,a
     add a,a
@@ -609,22 +670,25 @@ Native_PageTileCommand:
     db 0,0,0,2,0,0,0,0,8,0,8,0,0,0,$d0
 
 Native_RecordDescriptors:
+    ASSERT (Native_ShadowCodes&255) == 0
+    ASSERT (Native_ShadowAttrs&255) == 0
+    ASSERT (Native_ShadowAttrs&$7ff) == 0
+    ASSERT Native_ShadowBlack-Native_ShadowAttrs == $400
     ld hl,(Native_TileIndex)
-    ld bc,Native_ShadowCodes
-    add hl,bc
+    ld a,h
+    add a,Native_ShadowCodes/256
+    ld h,a
     ld a,(Native_TileCode)
     ld (hl),a
-    ld hl,(Native_TileIndex)
-    ld bc,Native_ShadowAttrs
-    add hl,bc
+    ld a,h
+    add a,(Native_ShadowAttrs-Native_ShadowCodes)/256
+    ld h,a
     ld a,(Native_TileAttr)
     ld (hl),a
     ret
 Native_RecordTile:
     call Native_RecordDescriptors
-    ld hl,(Native_TileIndex)
-    ld bc,Native_ShadowBlack
-    add hl,bc
+    set 2,h
     ld a,(Native_TileBlack)
     ld (hl),a
     ret
@@ -779,34 +843,25 @@ Native_MarkTileHL:
     and $f4
     cp $84
     jr nz,.done
-    push bc
-    push de
     push hl
+    ; Descriptor comparison is exact in the renderer. Marking its eight-cell
+    ; snapshot group avoids a variable shift and preserves every guest register.
     ld a,l
-    and 7
-    ld b,a
-    ld c,1
-    jr z,.mask_done
-.shift:
-    sla c
-    djnz .shift
-.mask_done:
+    rrca
+    rrca
+    rrca
+    and 31
+    ld l,a
     ld a,h
     and 3
-    ld h,a
-    srl h
-    rr l
-    srl h
-    rr l
-    srl h
-    rr l
+    rrca
+    rrca
+    rrca
+    or l
+    ld l,a
     ld h,Native_DirtyTiles/256
-    ld a,c
-    or (hl)
-    ld (hl),a
+    ld (hl),$ff
     pop hl
-    pop de
-    pop bc
 .done:
     pop af
     ret
@@ -908,7 +963,6 @@ Native_HUDMapAssets:
     jp Native_MapAssets
 Native_WaitCommand:
 .busy:
-    call Native_VDPWindow
     di
     vdp_write 15,2
     in a,($99)
@@ -920,31 +974,24 @@ Native_WaitCommand:
     jr nz,.busy
     ret
 Native_SendCommand:
+    ld hl,Native_Command
+Native_SendPacket:
     call Native_WaitCommand
-    call Native_VDPWindow
+    ld (Native_GPUCommandPointer),hl
     di
     vdp_write 17,32
     call Native_RenderEI    ; raster handlers never alter the indirect R17 cursor
-    ld hl,Native_Command
     ld bc,$0f9b
     otir
     call Native_RenderEI
-    ret
-Native_VDPWindow:
-    ; Each caller sets the complete VRAM address or command packet under DI.
-    ; Host raster handlers may replace the VDP pointer between packets. The
-    ; inactive bitmap/atlas writes are also safe during vertical blanking;
-    ; waiting for the next body line here would block original game execution.
     ret
 Native_RenderEI:
     push af
     ld a,(Native_ClockMode)
     or a
-    jr z,.boot
-    pop af
+    jr z,.restore
     ei
-    ret
-.boot:
+.restore:
     pop af
     ret
 register:
@@ -971,6 +1018,7 @@ Native_TileMasks:
 Native_BlackMasks:
     INCBIN "native-black-masks.bin"
     INCLUDE "native-solid.inc"
+    INCLUDE "native-strips.inc"
     INCLUDE "native-actors.inc"
     INCLUDE "native-radar.inc"
     INCLUDE "native-hud-io.inc"

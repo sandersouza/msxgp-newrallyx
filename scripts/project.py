@@ -14,52 +14,99 @@ from scripts.msx.build import destination
 from scripts.msx.raster_scroll import build as build_rom
 from scripts.msx.emulator import run as run_emulator
 from scripts.scenes.storage import require_ignored
+from scripts.msx.checkpoints import inventory, resolve, publish_latest, resolve_latest
 
 
 ROM = Path('references/build/newrallyx.rom')
 
 
-def build(root):
-    """Keep build evidence and publish the default ROM only after a successful build."""
-    output = destination(root, root/'references/build'/f'default-{uuid4().hex}')
-    rom = root/ROM
-    if rom.is_symlink() or (rom.exists() and not rom.is_file()):
-        raise ValueError(f'Default ROM must be a regular file: {rom}')
-    pending = output.with_suffix('.rom.tmp')
-    require_ignored(root, [rom, pending])
+def build_renderer(root, output, *, no_hud=False, stage=0, player_blitter=False,radar_blitter=False,hz=50,sprite_flicker=False,flicker_stress=False):
     args = argparse.Namespace(
-        output=output, hz=50,
+        output=output, hz=hz, no_hud=no_hud, stage=stage,
+        player_blitter=player_blitter,radar_blitter=radar_blitter,
+        sprite_flicker=sprite_flicker,flicker_stress=flicker_stress,
+        cache_columns=48 if player_blitter else None,
         assets=root/'references/assets/nrallyx',
         captures=root/'references/scenes/review-fixed-v3',
         normal=root/'references/scenes/rom-input/normal',
         overlap=root/'references/scenes/rom-input/overlap',
         assembler=root/'.tools/sjasmplus/1.24.0/sjasmplus',
     )
-    built_rom = build_rom(root, args)
+    return build_rom(root, args)
+
+
+def build(root, *, no_hud=False, native=False, stage=8,player_blitter=False,radar_blitter=False,hz=50,sprite_flicker=False,flicker_stress=False):
+    """Build an explicit incremental stage; never start the full arcade loop.
+
+    The legacy native switch is a compatibility alias for this active baseline.
+    """
+    output = destination(root, root/'references/build'/f'default-{uuid4().hex}')
+    rom = root/ROM
+    if rom.is_symlink() or (rom.exists() and not rom.is_file()):
+        raise ValueError(f'Default ROM must be a regular file: {rom}')
+    pending = output.with_suffix('.rom.tmp')
+    require_ignored(root, [rom, pending])
+    built_rom = build_renderer(root, output, no_hud=no_hud, stage=stage,
+                              player_blitter=player_blitter,radar_blitter=radar_blitter,
+                              hz=hz,sprite_flicker=sprite_flicker,flicker_stress=flicker_stress)
     # Keep the sealed bundle unchanged; publish a separate, stable ROM path.
     try:
         shutil.copyfile(built_rom, pending)
         pending.replace(rom)
     finally:
         pending.unlink(missing_ok=True)
+    latest = publish_latest(root, built_rom)
     print(f'Default ROM: {rom.relative_to(root)}')
+    print(f'Stage {stage:02d} (HUD {"off" if no_hud else "on"}); latest: {latest.relative_to(root)}')
+    return built_rom
 
 
-def run(root):
+def run(root, rom=ROM, checkpoint=None, latest=False):
+    if latest:
+        if checkpoint is not None or rom != ROM:
+            raise ValueError('Choose only one of latest, checkpoint or ROM')
+        rom = resolve_latest(root)
+    if checkpoint is not None:
+        rom, entry = resolve(root, checkpoint)
+        print(f'Checkpoint: {checkpoint} ({entry["kind"]}) - {entry["description"]}', flush=True)
     args = argparse.Namespace(
-        rom=root/ROM, output=root/'references/build'/f'run-{uuid4().hex}',
+        rom=root/rom, output=root/'references/build'/f'run-{uuid4().hex}',
         bios=root/'references/msxbios', machine='Panasonic_FS-A1WSX', openmsx='openmsx',
     )
+    print(f'Running ROM: {args.rom}', flush=True)
     run_emulator(root, args)
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=('build', 'run'))
+    parser.add_argument('command', choices=('build', 'run', 'checkpoints'))
+    selection = parser.add_mutually_exclusive_group()
+    selection.add_argument('--rom', type=Path, default=ROM, help='Cartridge to launch with run')
+    selection.add_argument('--checkpoint', help='Named local test cartridge; list with make checkpoints')
+    selection.add_argument('--latest', action='store_true', help='Launch references/build/latest.rom')
+    parser.add_argument('--no-hud', action='store_true', help='Build the active incremental baseline without HUD')
+    parser.add_argument('--player-blitter', action='store_true', help='Stage 00/01 diagnostic: bitmap player, no player sprites')
+    parser.add_argument('--radar-blitter', action='store_true', help='Slow full-copy blue 48x80 radar diagnostic; requires --player-blitter')
+    parser.add_argument('--sprite-flicker', action='store_true', help='Stage09 two-enemy priority rotation experiment')
+    parser.add_argument('--flicker-stress', action='store_true', help='Paused original-graphics stress fixture')
+    parser.add_argument('--hz', type=int, choices=(50,60), default=50, help='VDP refresh; original game tick remains16.5ms')
+    parser.add_argument('--native', action='store_true', help='Compatibility alias: selected-player baseline, no full arcade loop')
+    parser.add_argument('--stage', type=int, choices=range(10), default=8, help='Incremental stage 0..9: baseline through enemy population experiments')
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parents[1]
     try:
-        {'build': build, 'run': run}[args.command](root)
+        if args.command == 'run':
+            run(root, args.rom, args.checkpoint, args.latest)
+        elif args.command == 'checkpoints':
+            entries = inventory(root)
+            if not entries:
+                print('No local checkpoints. They are published as test builds become available.')
+            for name, entry in entries.items():
+                print(f'{name:24} {entry["kind"]:13} {entry["description"]}')
+        else:
+            build(root, no_hud=args.no_hud, native=args.native, stage=args.stage,
+                  player_blitter=args.player_blitter,radar_blitter=args.radar_blitter,
+                  hz=args.hz,sprite_flicker=args.sprite_flicker,flicker_stress=args.flicker_stress)
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as error:
         print(f'Error: {error}', file=sys.stderr)
         return 2

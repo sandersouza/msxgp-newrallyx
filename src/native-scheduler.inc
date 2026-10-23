@@ -293,7 +293,7 @@ Native_ClaimGameIRQ EQU Native_SelectIRQ.claimed
 ; Entered after the game has saved HL,DE,BC,AF,IX,IY in the original order.
 ; Foreground PC is already on the interrupted stack, not a returning game tick.
 Native_PublishRuntime:
-    IF NATIVE_VIDEO
+    IF NATIVE_VIDEO && NATIVE_RENDER_IN_IRQ
     call Native_PrepareFrame
     ENDIF
     ld hl,Native_GameTicks
@@ -317,6 +317,20 @@ Native_PublishRuntime:
 ; instruction as return PC. Share dispatch without advancing the host clock.
 Native_Checkpoint:
     ld sp,$8400
+    IF NATIVE_TICK_FOREGROUND
+    push af
+    ld a,(Native_VirtualIFF)
+    or a
+    jr z,.unpaced
+    ld a,($a181)
+    and 1
+    jr z,.unpaced
+    pop af
+    call Native_WaitTick       ; original logic stays active; spare time services VDP
+    jp NATIVE_FOREGROUND_RESUME
+.unpaced:
+    pop af
+    ENDIF
     IF NATIVE_VIDEO
     call Native_PrepareFrame
     ENDIF

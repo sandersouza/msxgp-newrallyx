@@ -332,6 +332,44 @@ def analyze_function(output: Path) -> dict:
     return result
 
 
+def analyze_presentation_callers(bundle: Path, output: Path) -> dict:
+    """Bind complete per-caller timing to actual CALLs in the measured cartridge."""
+    syms = symbols(bundle/'native.sym')
+    rom = (bundle/'native.rom').read_bytes()
+    context = json.loads((output/'presentation-context.json').read_text())
+    with (output/'presentation-callers.tsv').open() as stream:
+        rows = list(csv.DictReader(stream, delimiter='\t'))
+    fields = {'caller', 'calls', 'steps', 'skip_cycles', 'step_cycles', 'max_cycles'}
+    if not rows:
+        raise ValueError('Missing presentation caller timing')
+    seen, calls, steps, result = set(), 0, 0, []
+    target = syms['Native_PrepareFrame']
+    instruction = bytes((0xcd, target & 255, target >> 8))
+    for row in rows:
+        if set(row) != fields or any(not str(value).isdecimal() for value in row.values()):
+            raise ValueError('Invalid presentation caller fields')
+        values = {key: int(value) for key, value in row.items()}
+        caller = values['caller']
+        at = caller-3-0x4000
+        if (caller in seen or not 0x4003 <= caller <= 0x8000
+                or rom[at:at+3] != instruction
+                or not 0 <= values['steps'] <= values['calls']
+                or values['calls'] == 0 or values['max_cycles'] == 0
+                or (values['step_cycles'] == 0) != (values['steps'] == 0)
+                or (values['skip_cycles'] == 0) != (values['steps'] == values['calls'])
+                or values['max_cycles'] > values['step_cycles']+values['skip_cycles']):
+            raise ValueError('Inconsistent presentation caller timing')
+        seen.add(caller)
+        calls += values['calls']
+        steps += values['steps']
+        result.append(values)
+    if calls != context['calls'] or steps != context['steps']:
+        raise ValueError('Presentation callers disagree with complete context counts')
+    return dict(complete=True, calls=calls, steps=steps, callers=result,
+                timing='elapsed CPU clocks, including physical IRQ service',
+                candidate_manifest_sha256=digest(bundle/'manifest.json'))
+
+
 def analyze_profile(output: Path, expected) -> dict:
     if (type(expected) not in (tuple,list) or len(expected) != 2
             or any(type(v) is not int for v in expected)
@@ -461,13 +499,15 @@ def acquire(root: Path, args) -> Path:
     (output/'inputs.tcl').write_text('set nr_inputs {'+' '.join('{'+ ' '.join(map(str,row))+'}' for row in levels[:count])+'}\n')
     scanout = getattr(args, 'scanout', False)
     lines = ['set save_settings_on_exit false', 'set sound_driver null',
-        *(['set renderer SDLGL-PP', 'set pause_on_lost_focus false', 'set pause false',
+        *(['set vsync off', 'set renderer SDLGL-PP', 'set pause_on_lost_focus false', 'set pause false',
            'set minframeskip 0', 'set maxframeskip 0', 'set gamma 1', 'set brightness 0',
            'set contrast 0', 'set blur 0', 'set noise 0', 'set scanline 0',
            'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}'] if scanout else ['set renderer none']),
         f'set nr_scanout_enabled {int(scanout)}',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
-        reference_machine(root,args.machine),'set firmwareswitch off','set throttle off','set z80_freq 3579545','set z80_freq_locked false',
+        reference_machine(root,args.machine),'set firmwareswitch off',
+        'set throttle on' if scanout else 'set throttle off', 'set speed 100',
+        'set z80_freq 3579545','set z80_freq_locked false',
         f'cart {tcl(args.rom.resolve())} -romtype ASCII16','reset',f'set nr_out {tcl(output)}',
         f'set nr_target {count}',
         'set nr_entry_spans {'+' '.join('{'+f'{a} {n}'+'}' for a,n in report.get('guarded_entry_spans',[]))+'}',
@@ -483,7 +523,8 @@ def acquire(root: Path, args) -> Path:
     (output/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n} problem]} {puts stderr $problem; exit 2}\n')
     env = dict(os.environ,OPENMSX_HOME=str(session/'home'),OPENMSX_USER_DATA=str(session/'userdata'))
     with (output/'emulator.log').open('w') as log:
-        subprocess.run([args.openmsx,'-script',str(output/'session.tcl')],env=env,stdout=log,stderr=subprocess.STDOUT,timeout=180,check=True)
+        subprocess.run([args.openmsx,'-script',str(output/'session.tcl')],env=env,stdout=log,stderr=subprocess.STDOUT,
+                       timeout=300 if scanout else 180,check=True)
     if (before != {str(p):digest(p) for p in args.bios.rglob('*') if p.is_file()}
             or inputs != input_records(validate_roms(root/'references/roms/nrallyx',load_metadata()))):
         raise ValueError('Contributor source/BIOS inventory changed')
@@ -506,6 +547,8 @@ def acquire(root: Path, args) -> Path:
         json_write(output/'fine-verification.json',fine)
     if profile is not None:
         json_write(output/'profile.json',analyze_profile(output,profile))
+    if report.get('video_candidate'):
+        json_write(output/'presentation-costs.json', analyze_presentation_callers(bundle, output))
     verify_manifest(bundle)
     verify_manifest(reference)
     for config in (session/'userdata/machines').glob('*.xml'):

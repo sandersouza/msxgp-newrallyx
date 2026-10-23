@@ -1,10 +1,66 @@
 # Native reset and runtime validation
 
+The full-runtime candidates below failed playable-speed acceptance. The active
+user-directed restart follows the [incremental gameplay plan](incremental-gameplay-plan.md):
+start from the fast controllable-player build and add one gameplay system at a
+time. See active stage 00 entries in the [checkpoint guide](checkpoints.md).
+`make build`, `NO_HUD=1` and `LATEST=1` now select that baseline. Historical
+full-runtime probe builds cannot automatically replace its latest link.
+
 Issue #20 is in progress. Original reset, foreground logic and game IRQs now
 execute, including coin acceptance and collision transfers. The sections below
 record earlier validation checkpoints; their historical strict-equality gates
 are superseded by the approved playable-port criterion. Strict comparison still
 fails and remains available as a diagnostic, with no byte exclusions.
+
+The user explicitly prioritizes playable speed over graphical identity. Renderer
+adaptations may reduce scenery colors or narrow the maze viewport while retaining
+original-size assets, world coordinates and original gameplay logic/rules. Measure
+each change; visual identity must not block a playable port.
+
+Native video builds expose `--no-hud` on `scripts/native_runtime.py build-probe`.
+The default compiles `NATIVE_HUD=1`; `--no-hud` compiles `NATIVE_HUD=0` and records
+`hud_enabled=false` in the sealed build metadata. This removes HUD initialization,
+state translation, scoreboard/flag rendering, bitmap radar, and the fuel/life
+raster uploads. Actor sprites, camera, scenery, logical timing and input rules
+remain enabled. Unused HUD SAT entries are hidden without terminating the actor
+list. Resources remain available so this comparison isolates runtime HUD work.
+
+Select either already-built cartridge with the launcher:
+
+```sh
+make run ROM=references/build/issue11-hud-on-4/native.rom
+make run ROM=references/build/issue11-hud-off-4/native.rom
+```
+
+These are performance experiments, not accepted playable releases. Use the same
+build arguments and input replay for comparisons; report HUD CPU work, bitmap
+latency and observed gameplay separately. Foreground PC counts are not physics
+steps, and changes in runtime scheduling can change the workload of later frames.
+
+The final HUD comparison pair passes every prepared scene/actor/gutter pixel and
+both sets of four complete 320x240 RGB scanouts. The common header split enters
+early, synchronizes to the end of its eight lines, and retains the separator
+before enabling the scrolling body. This removes the one-line split jitter
+exposed by the first HUD-disabled candidate. Both remain too slow for acceptance.
+
+The user's subsequent direction is progressive isolation from the fast #10/#24
+reference. Benchmark switches `--no-actors` and `--freeze-presentation` retain
+all original game logic: the former omits actor presentation, while the latter
+prepares one page and then stops further rendering. These partial presentations
+are diagnostic builds. `--foreground-render-only` separately tests moving
+presentation out of the logical game IRQ; its default remains unchanged until
+that experiment is validated. Build metadata records every selection.
+
+All five initial cases use the same 2,440 logical inputs at the standard CPU
+clock and 50 Hz display. The rendering-free original-logic run's periodic IRQ
+has a median duration of 2.19 ms and maximum of 6.59 ms. The scenery-only
+presentation already reproduces 2.39-second maximum page latency, with no actor
+or HUD presentation. Adding actors and then HUD changes that workload further.
+This identifies scene publication as a reproducible bottleneck before changing
+enemy AI or gameplay rules. Per-caller presentation counters measure elapsed
+clocks and distinguish actual work from skipped polls; their total call/step
+counts must match the complete context proof.
 
 The local evaluation cartridge `references/build/native-review-2026-10-22/native.rom`
 adds live scenery, six bitmap actors, HUD and radar. It is a 128 KiB ASCII16
@@ -13,6 +69,37 @@ standard-speed Z80. It does not replace the default cartridge. Rendering and
 foreground throughput still fail performance acceptance; actual scanout RGB,
 joystick directions and complete gameplay scenarios remain unverified. Sound
 is outside issue #11's scope. Reset the machine to exit.
+
+The following evaluation results describe the older cartridge, rather than
+the current uncommitted continuation. After #24 was completed and merged locally
+(`58d72fe` into `f447a7d`), native-only changes aligned the bitmap radar with the
+new HUD, made its background blue and removed its white outline. Flags and the
+player point still use HUD sprites; its bitmap underlay allocates no sprites.
+Original hardware-dot activity now gates radar visibility, so initialized flag
+tables cannot display it on title screens. Cold initialization runs invisibly;
+presentation starts only after original reset completes and a prepared page is
+ready. This retains exact cold RAM initialization without a captured-state seed.
+
+Candidate `issue11-tile-packets` verifies every one of its 165 prepared frames:
+6,633,000 scene pixels and 495,000 radar pixels, with exact descriptors and
+unchanged original RAM/registers/mappings. The independent real-time scanout run
+`issue11-tile-packets-scanout` also matches all four complete 320x240 RGB captures
+(307,200 pixels, no exclusions), including the split header, scrolling, HUD
+sprites and borders. It exposed and fixed a shared-SAT bug: every physical
+VBlank must restore fuel attributes after the footer temporarily uses those
+slots for lives. Scanout observations occur at fixed logical boundaries even
+when the active page is stale; metadata records its age instead of waiting for
+a new flip. These raster checks do not establish gameplay acceptance.
+
+Performance remains a failing gate: that candidate's median prepared-frame
+latency is 61.45 ms and its maximum is 1874.88 ms. Subsequent strip-cache and
+contiguous-tag optimizations remain experiments pending combined pixel,
+throughput and latency validation. A tile-writer scheduling experiment was
+removed after worsening latency. Separate fresh input proof
+`issue11-post24-input-proof` passes 72 keyboard-matrix and 72 emulated joystick
+peripheral cases, with original game RAM unchanged for both. It does not verify
+a physical controller or the complete gameplay scenarios. The Python suite
+passes 254 tests at the strip-cache checkpoint.
 
 ```sh
 .venv/bin/python -B scripts/native_runtime.py run \

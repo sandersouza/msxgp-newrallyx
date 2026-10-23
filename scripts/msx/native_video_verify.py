@@ -6,7 +6,38 @@ from pathlib import Path
 import statistics
 
 from .native_contract import Snapshot
-from .native_scene import verify_scene_cache, verify_radar_cache, radar_from_snapshot, project_radar
+from .native_scene import verify_scene_cache, verify_radar_cache, radar_from_snapshot, project_radar, radar_visible
+from .native_scene import verify_presentation
+
+
+def hardware_actor_inputs(bundle):
+    """Read pending HUD colors and the palette from the bound cartridge."""
+    from .native_probe import symbols
+    syms = symbols(bundle/'native.sym')
+    rom = (bundle/'native.rom').read_bytes()
+    at = syms['sprite_colors']-0x4000+224
+    fuel = rom[at:at+48]
+    at = syms['life_colors']-0x4000
+    return dict(palette=(bundle/'native-palette.bin').read_bytes(),
+                hud_enabled=json.loads((bundle/'build.json').read_text()).get('hud_enabled', True),
+                fuel=fuel, life=rom[at:at+48])
+
+
+def verify_hardware_actors(snapshot, data, page, sprites, lookup, translation, resources):
+    """Compare actual SAT/patterns against fresh original actor pixels."""
+    from PIL import ImageChops
+    from .native_scanout import compose
+    from .native_sprites import compile_actors, published_actors
+    hud, vram = data['hud'], data['vram']
+    actual = published_actors(hud, vram, page)
+    expected = compile_actors(snapshot, sprites, lookup, translation, hud,
+                              hud_enabled=resources.get('hud_enabled', True))
+    if not expected['supported']:
+        raise ValueError('Hardware actor frame required the bitmap fallback')
+    args = (vram, hud, page, resources['palette'], resources['fuel'], resources['life'])
+    reference, rendered = compose(*args, actor_sprites=expected), compose(*args, actor_sprites=actual)
+    diff = ImageChops.difference(reference, rendered)
+    return sum(pixel != (0, 0, 0) for pixel in diff.get_flattened_data())
 
 REGISTERS = ['AF', 'BC', 'DE', 'HL', 'IX', 'IY', 'AF2', 'BC2', 'DE2', 'HL2', 'SP']
 FRAME_FIELDS = {'frame', 'tick', 'cycles', 'phase', 'time', 'hud_cycles',
@@ -39,7 +70,9 @@ def _time(row):
 
 
 def verify_video_frames(output: Path, tiles: bytes, sprites: bytes,
-                        lookup: bytes, translation: bytes, *, radar=False) -> dict:
+                        lookup: bytes, translation: bytes, *, radar=False, hardware=None,
+                        presentation=False, hud_enabled=True, actors_enabled=True, edge_clear=True,
+                        aligned_gutter=False) -> dict:
     """Verify every completed page against its captured input, with no exclusions.
 
     This consumes raw acquisition before sealing, or an already sealed capture.
@@ -71,6 +104,8 @@ def verify_video_frames(output: Path, tiles: bytes, sprites: bytes,
     previous_input, previous_finish, previous_time = -6, -1, -1
     different = pixels = descriptor_changes = radar_differences = radar_pixels = radar_state_changes = 0
     failures, latencies, active_cycles = [], [], []
+    actor_differences = actor_pixels = actor_frames = fallback_frames = 0
+    gutter_pixels = gutter_differences = fuel_errors = hidden_fuel_frames = 0
     completed = {}
     for n, row in enumerate(rows, 1):
         if set(row) != FRAME_FIELDS | ({'radar_cycles'} if radar else set()):
@@ -99,13 +134,42 @@ def verify_video_frames(output: Path, tiles: bytes, sprites: bytes,
             raise ValueError('Incomplete or inconsistent ready bitmap page')
         snapshot = Snapshot(values['input_tick'], 'post-game-irq',
                             state[:4096], state[4096:6144], state[6144:])
-        report = verify_scene_cache(snapshot, data['vram'], page, tiles, sprites, lookup, translation, radar=radar)
-        if radar:
-            radar_report = verify_radar_cache(snapshot, data['vram'], page)
+        if presentation:
+            if not radar:
+                raise ValueError('Presentation policy requires HUD evidence')
+            policy = verify_presentation(snapshot, data['vram'], data['hud'], page,
+                                         hud_enabled=hud_enabled, edge_clear=edge_clear,
+                                         aligned_gutter=aligned_gutter)
+            gutter_pixels += policy['gutter_pixels']
+            gutter_differences += policy['gutter_differences']
+            fuel_errors += policy['fuel_attribute_errors']
+            hidden_fuel_frames += not policy['fuel_visible']
+        hardware_active = False
+        if hardware is not None:
+            if not radar or data['hud'][0x176] not in (0, 1):
+                raise ValueError('Invalid hardware actor frame mode')
+            hardware_active = bool(data['hud'][0x176])
+            if hardware_active:
+                actor_differences += verify_hardware_actors(snapshot, data, page, sprites, lookup, translation, hardware)
+                actor_pixels += 320*240
+                actor_frames += 1
+            else:
+                if data['hud'][0x175] != 0:
+                    raise ValueError('Bitmap fallback left hardware actors enabled')
+                fallback_frames += 1
+        report = verify_scene_cache(snapshot, data['vram'], page, tiles, sprites, lookup, translation,
+                                    radar=radar and hud_enabled, bitmap_actors=actors_enabled and not hardware_active)
+        if radar and hud_enabled:
+            radar_report = verify_radar_cache(snapshot, data['vram'], page, tiles, sprites, lookup, translation,
+                                              bitmap_actors=actors_enabled and not hardware_active,
+                                              right_gutter=presentation and edge_clear,
+                                              aligned_gutter=aligned_gutter)
             radar_differences += radar_report['different_pixels']
             radar_pixels += radar_report['compared_pixels']
             points = radar_from_snapshot(snapshot)
-            expected_flags = bytes(value for point in points['flags'] for value in project_radar(point))
+            radar_state_changes += host[0x54] != int(radar_visible(snapshot))
+            flags = points['flags'] if radar_visible(snapshot) else (None,)*10
+            expected_flags = bytes(value for point in flags for value in project_radar(point))
             expected_enemies = bytes(value for point in points['enemies'] for value in project_radar(point))
             radar_state_changes += sum(a != b for a, b in zip(data['hud'][0x350:0x364], expected_flags))
             radar_state_changes += sum(a != b for a, b in zip(cache[0x660:0x670], expected_enemies))
@@ -147,7 +211,13 @@ def verify_video_frames(output: Path, tiles: bytes, sprites: bytes,
             sum(step_totals.get(tick, [])) != row['cycles'] for tick, row in completed.items()):
         raise ValueError('Video frame/context step totals disagree')
     return dict(schema_version=1, prepared_frames=len(rows),
-                prepared_bitmaps_verified=different == descriptor_changes == radar_differences == radar_state_changes == 0,
+                hud_enabled=hud_enabled,
+                actors_enabled=actors_enabled,
+                prepared_bitmaps_verified=different == descriptor_changes == radar_differences == radar_state_changes == actor_differences == gutter_differences == fuel_errors == 0,
+                gutter_compared_pixels=gutter_pixels, gutter_different_pixels=gutter_differences,
+                fuel_attribute_errors=fuel_errors, hidden_fuel_frames=hidden_fuel_frames,
+                hardware_actor_rgb_differences=actor_differences, hardware_actor_rgb_pixels=actor_pixels,
+                hardware_actor_frames=actor_frames, bitmap_fallback_frames=fallback_frames,
                 compared_pixels=pixels, different_pixels=different,
                 descriptor_changes=descriptor_changes, first_failures=failures,
                 radar_compared_pixels=radar_pixels, radar_different_pixels=radar_differences,

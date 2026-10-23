@@ -85,6 +85,11 @@ keys:
     ld a,b
     ld (last_zero),a
     jr z,.no_life
+    IF INCREMENTAL_STAGE >= 7
+    ld a,(driving)
+    or a
+    jr nz,.no_life
+    ENDIF
     ld a,(lives)
     inc a
     cp 10
@@ -138,6 +143,11 @@ keys:
     ld a,b
     ld (last_f),a
     jr z,.no_fuel
+    IF INCREMENTAL_STAGE >= 6
+    ld a,(driving)
+    or a
+    jr nz,.no_fuel
+    ENDIF
     ld a,(fuel_goal)
     inc a
     cp 5
@@ -180,6 +190,13 @@ keys:
 
 
 hud_demo_numbers:
+    IFDEF HUD_COLLECTION_METER
+    IF INCREMENTAL_STAGE >= 5
+    ld a,(driving)
+    or a
+    ret nz
+    ENDIF
+    ENDIF
     ld a,(content_at)
     ld b,a
     ld a,(ticks)
@@ -211,6 +228,12 @@ hud_demo_numbers:
     call hud_demo_number_address
     jp HUD_SetHiscore
 hud_demo_number_address:
+    IF STAGE_TILE_STRIPS
+    push af
+    ld a,HUD_BANK
+    ld ($7000),a
+    pop af
+    ENDIF
     ld l,a
     ld h,0
     add hl,hl
@@ -237,8 +260,12 @@ hud_demo_fuel_units:
     db 54,40,27,13,0
 hud_demo_fuel_pixels:
     db 30,22,15,7,0
+    IF STAGE_TILE_STRIPS
+hud_demo_digits EQU $bf00
+    ELSE
 hud_demo_digits:
     INCBIN "hud-demo-digits.bin"
+    ENDIF
 
 radar_enemies:
     INCBIN "radar-enemies.bin"
@@ -246,6 +273,10 @@ radar_enemies:
 
 ; Demonstration values belong to this producer, never to HUD_Init.
 hud_demo_reset:
+    IF STAGE_TILE_STRIPS
+    ld a,HUD_BANK
+    ld ($7000),a
+    ENDIF
     ld hl,hud_demo_digits+4*6
     call HUD_SetHiscore
     ld a,2

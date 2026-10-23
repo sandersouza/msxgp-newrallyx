@@ -51,6 +51,25 @@ def stage_scenarios():
     return cases
 
 
+def rock_scenarios(positions):
+    """Keyboard-only edge clipping, reversal and cache eviction at each rock."""
+    cases=[dict(name='initial',kind='initial',row=0,mask=0,count=0)]
+    for i,point in enumerate(positions):
+        x,y=point['world_origin']
+        wx,wy=x-(VIEWPORT_WIDTH-24),y-80
+        if not 4 <= wx <= 568 or not 320 <= wy <= 1191:
+            raise ValueError('Rock focus route requires a supported interior original placement')
+        cases.append(dict(name=f'rock-{i}-top-left',kind='scene',row=0,mask=4,count=1,scene=1))
+        for label,dx,dy,count in [('horizontal',1,0,wx),('right-edge',0,1,wy),
+                ('edge-clipped',-1,0,4),('edge-return',1,0,4),
+                ('evict-horizontal',-1,0,wx),('reload-horizontal',1,0,wx),
+                ('evict-vertical',0,-1,320),('reload-vertical',0,1,320)]:
+            cases.append(dict(name=f'rock-{i}-{label}',kind='move',row=8,
+                              mask={(1,0):128,(-1,0):16,(0,1):64,(0,-1):32}[(dx,dy)],
+                              count=count,delta=[dx,dy]))
+    return cases
+
+
 def verify(root, args):
     output = destination(root, args.output)
     verify_manifest(args.rom.parent)
@@ -62,13 +81,16 @@ def verify(root, args):
     bios = {p.relative_to(args.bios).as_posix():digest(p) for p in sorted(args.bios.rglob('*')) if p.is_file()}
     require_ignored(root, [output/'session.tcl', output/'report.json'])
     output.mkdir(parents=True)
-    cases = stage_scenarios()
+    rock_fixture=read_json(args.rom.parent/'stage-one.json').get('rock_fixture')
+    if getattr(args,'rock_focus',False) and not rock_fixture:
+        raise ValueError('Rock focus requires a stage 01 rock fixture')
+    cases = rock_scenarios(rock_fixture['positions']) if getattr(args,'rock_focus',False) else stage_scenarios()
     actions = ' '.join('{'+f'{c["kind"]} {c["row"]} {c["mask"]} {c["count"]} {c.get("move_mask",0)} {int(c.get("fuel_key",False))} {int(c.get("life_key",False))}'+'}' for c in cases)
     lines = [
         'set save_settings_on_exit false',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
         reference_machine(root,args.machine), 'set firmwareswitch off', 'set speed 100', 'set throttle on',
-        'set z80_freq 3579545', 'set z80_freq_locked false', 'set cmdtiming real',
+        'set z80_freq 3579545', 'set z80_freq_locked false', 'set cmdtiming real', 'set vsync off',
         'set disablesprites false', 'set limitsprites true', 'set pause_on_lost_focus false',
         'set minframeskip 0', 'set maxframeskip 0', 'set gamma 1', 'set brightness 0', 'set contrast 0',
         'activate_input_layer -blocking raster_verification',
@@ -249,6 +271,8 @@ def analyze_stage(rom, output, cases):
         raise ValueError('Stage streaming missed a movement refresh')
     times['held_movement_periods']=dict(samples=len(periods),min_ms=min(periods),max_ms=max(periods))
     json_write(output/'report.json',dict(schema_version=1,rom_sha256=digest(rom),cases=reports,
+        incremental_stage=info.get('incremental_stage'),rock_sprite_slots=info.get('rock_sprite_slots',0),
+        rock_collision=info.get('rock_collision',False),
         timings=times,native_tiles_checked=read_json(rom.parent/'stage-one.json')['native_tiles_checked'],
         scope='Original first-stage static map; real keyboard, settled RGB, visible VRAM and movement periods'))
     print(f'{len(reports)} exact full-stage keyboard/raster images: {output}/report.json')

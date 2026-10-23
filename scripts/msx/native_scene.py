@@ -3,6 +3,7 @@ from PIL import Image
 
 from .hud_contract import native_values
 from .native_contract import Snapshot
+from .sprite_radar import X as RADAR_X
 
 
 def radar_from_snapshot(snapshot: Snapshot) -> dict:
@@ -34,25 +35,40 @@ def project_radar(point):
     return (255, 255) if point is None else (2+point[0]*44//64, 2+point[1]*54//112)
 
 
+def radar_visible(snapshot):
+    points = radar_from_snapshot(snapshot)
+    return any(point is not None for point in (points['player'], *points['enemies']))
+
+
 def radar_bitmap(snapshot):
     sx, sy = snapshot.shadows[0x130], snapshot.shadows[0x140]
-    dots = [((sx+197+x) & 255, (sy+31+y) & 255)
+    dots = [((sx+RADAR_X+1+x) & 255, (sy+31+y) & 255)
             for point in radar_from_snapshot(snapshot)['enemies'] if point is not None
             for x, y in [project_radar(point)]]
-    return ((sx+197) & 254, (sy+31) & 255), dots
+    return ((sx+RADAR_X+1) & 254, (sy+31) & 255), dots
 
 
-def verify_radar_cache(snapshot, vram, page):
+def verify_radar_cache(snapshot, vram, page, tiles=None, sprites=None, lookup=None, translation=None, *, bitmap_actors=True, right_gutter=False, aligned_gutter=False):
     if (not isinstance(snapshot, Snapshot) or len(vram) != 131072
             or type(page) is not int or page not in (0, 1)):
         raise ValueError('Incomplete native radar evidence')
     (ox, oy), dots = radar_bitmap(snapshot)
+    visible = radar_visible(snapshot)
+    if not visible and (tiles is None or sprites is None or lookup is None or translation is None):
+        raise ValueError('Hidden radar requires original scene resources')
     differences, first = 0, None
     for y in range(60):
         wy = (oy+y) & 255
         for x in range(50):
             wx = (ox+x) & 255
-            wanted = 13 if any((wx-dx) & 255 < 2 and (wy-dy) & 255 < 2 for dx, dy in dots) else 11
+            wanted = 13 if any((wx-dx) & 255 < 2 and (wy-dy) & 255 < 2 for dx, dy in dots) else 3
+            if not visible:
+                wanted = _world_pixel(snapshot, wx, wy, tiles, sprites, lookup, translation, actors=bitmap_actors)
+                sx = snapshot.shadows[0x130]
+                in_gutter = ((wx-((sx+249) & 254)) & 255 < 10 if aligned_gutter
+                             else (wx-sx-1) & 255 >= 248)
+                if right_gutter and in_gutter:
+                    wanted = 11
             byte = vram[page*32768+wy*128+wx//2]
             actual = (byte >> (0 if wx & 1 else 4)) & 15
             if actual != wanted and {actual, wanted} != {0, 11}:
@@ -62,7 +78,59 @@ def verify_radar_cache(snapshot, vram, page):
     return dict(compared_pixels=3000, different_pixels=differences, first_difference=first)
 
 
-def scene_from_snapshot(snapshot: Snapshot) -> dict:
+def verify_presentation(snapshot, vram, hud, page, *, hud_enabled=True, edge_clear=True, aligned_gutter=False):
+    """Check the cleared right edge and phase-gated fuel, including torus wrap."""
+    if len(vram) != 131072 or len(hud) != 1140 or page not in (0, 1):
+        raise ValueError('Incomplete native presentation evidence')
+    sx, sy = snapshot.shadows[0x130], snapshot.shadows[0x140]
+    visible = hud_enabled and radar_visible(snapshot)
+    (rx, ry), dots = radar_bitmap(snapshot)
+    differences = 0
+    origin, width = (((sx+249) & 254), 10) if aligned_gutter else ((sx+249) & 255, 8)
+    for y in range(201):
+        wy = (sy+22+y) & 255
+        for x in (range(width) if edge_clear else ()):
+            wx = (origin+x) & 255
+            wanted = 11
+            if visible and (wx-rx) & 255 < 50 and (wy-ry) & 255 < 60:
+                wanted = 13 if any((wx-dx) & 255 < 2 and (wy-dy) & 255 < 2
+                                  for dx, dy in dots) else 3
+            packed = vram[page*32768+wy*128+wx//2]
+            actual = (packed >> (0 if wx & 1 else 4)) & 15
+            differences += actual != wanted and {actual, wanted} != {0, 11}
+    scroll = hud[0x1c]
+    ay = (scroll+(81 if visible else 211)) & 255
+    if ay == 216:
+        ay += -1 if visible else 1
+    fuel_errors = sum(hud[0x280+slot*4] != ay for slot in range(3))
+    fuel_errors += sum(a != b for a, b in zip(hud[0x138:0x144], hud[0x280:0x28c]))
+    return dict(gutter_pixels=width*201 if edge_clear else 0, gutter_differences=differences,
+                fuel_attribute_errors=fuel_errors, fuel_visible=visible)
+
+
+def _world_pixel(snapshot, wx, wy, tiles, sprites, lookup, translation, *, actors=True):
+    """Fresh source decode, including the arcade's actor clipping and priority."""
+    ram, shadow = snapshot.video, snapshot.shadows
+    index = (wy//8)*32+wx//8
+    attr, code = ram[0xc00+index], ram[0x400+index]
+    tx, ty = wx & 7 if attr & 64 else 7-(wx & 7), 7-(wy & 7) if attr & 128 else wy & 7
+    color = lookup[(attr & 63)*4+tiles[code*64+ty*8+tx]]
+    x, y = (wx-shadow[0x130]-9) & 255, (wy-shadow[0x140]-22) & 255
+    if actors and not attr & 32 and x < 200 and y < 201:
+        for offset in range(0x14, 0x20, 2):
+            flags, actor_attr = ram[offset], ram[0x801+offset]
+            px = x-(ram[offset+1]+((actor_attr & 128) << 1)-12)
+            py = y-(225-ram[0x800+offset]-6)
+            if 0 <= px < 16 and 0 <= py < 16:
+                pen = sprites[(flags >> 2)*256+(15-py if flags & 2 else py)*16+
+                              (15-px if flags & 1 else px)]
+                actor_color = lookup[(actor_attr & 63)*4+pen]
+                if actor_color:
+                    color = actor_color
+    return translation[color]
+
+
+def actors_from_snapshot(snapshot: Snapshot) -> tuple:
     if not isinstance(snapshot, Snapshot):
         raise ValueError('A complete native snapshot is required')
     video, shadows = snapshot.video, snapshot.shadows
@@ -76,8 +144,15 @@ def scene_from_snapshot(snapshot: Snapshot) -> dict:
                            screen_bounds=(x-12, y-6, x+4, y+10),
                            bounds=(x+sx-3, y+sy+16, x+sx+13, y+sy+32),
                            flip_x=bool(flags & 1), flip_y=bool(flags & 2)))
+    return tuple(actors)
+
+
+def scene_from_snapshot(snapshot: Snapshot) -> dict:
+    actors = actors_from_snapshot(snapshot)
+    video, shadows = snapshot.video, snapshot.shadows
+    sx, sy = shadows[0x130], shadows[0x140]
     return dict(tick=snapshot.tick, camera=((sx+9) & 255, (sy+22) & 255),
-                flip=bool(shadows[0x183] & 1), actors=tuple(actors),
+                flip=bool(shadows[0x183] & 1), actors=actors,
                 hud=native_values(video), tile_codes=video[0x400:0x800],
                 tile_attributes=video[0xc00:0x1000],
                 foreground_codes=video[:0x400], foreground_attributes=video[0x800:0xc00],
@@ -197,7 +272,7 @@ def verify_tile_cache(video: bytes, vram: bytes, dirty: bytes, tiles: bytes,
 
 
 def verify_scene_cache(snapshot: Snapshot, vram: bytes, page: int, tiles: bytes,
-                       sprites: bytes, lookup: bytes, translation: bytes, *, radar=False) -> dict:
+                       sprites: bytes, lookup: bytes, translation: bytes, *, radar=False, bitmap_actors=True) -> dict:
     """Fresh full visible-scene oracle, with no dirty-cache exclusions.
 
     Check the prepared bitmap page independently of its atlas, cache tags and
@@ -224,7 +299,7 @@ def verify_scene_cache(snapshot: Snapshot, vram: bytes, page: int, tiles: bytes,
             expected[y*width+x] = translation[lookup[(attr & 63)*4+tiles[code*64+ty*8+tx]]]
             priority[y*width+x] = bool(attr & 32)
     # Original first-hit priority is equivalent to drawing the reverse order.
-    for offset in range(0x14, 0x20, 2):
+    for offset in (range(0x14, 0x20, 2) if bitmap_actors else ()):
         flags, attr = ram[offset], ram[0x801+offset]
         ox = ram[offset+1] + ((attr & 128) << 1)-12
         oy = 225-ram[0x800+offset]-6
@@ -235,7 +310,7 @@ def verify_scene_cache(snapshot: Snapshot, vram: bytes, page: int, tiles: bytes,
                 color = lookup[(attr & 63)*4+sprites[(flags >> 2)*256+py*16+px]]
                 if color and not priority[y*width+x]:
                     expected[y*width+x] = translation[color]
-    if radar:
+    if radar and radar_visible(snapshot):
         (rx, ry), dots = radar_bitmap(snapshot)
         for y in range(height):
             wy = (y+sy+22) & 255
@@ -243,7 +318,7 @@ def verify_scene_cache(snapshot: Snapshot, vram: bytes, page: int, tiles: bytes,
                 wx = (x+sx+9) & 255
                 if (wx-rx) & 255 < 50 and (wy-ry) & 255 < 60:
                     expected[y*width+x] = 13 if any(
-                        (wx-dx) & 255 < 2 and (wy-dy) & 255 < 2 for dx, dy in dots) else 11
+                        (wx-dx) & 255 < 2 and (wy-dy) & 255 < 2 for dx, dy in dots) else 3
     differences = 0
     first = None
     for y in range(height):

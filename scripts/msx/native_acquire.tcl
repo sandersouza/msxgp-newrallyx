@@ -9,6 +9,16 @@ debug set_watchpoint write_mem {0 32767} {$::nr_started} {
          [reg PC] == [dict get $::nr_symbols Native_FrameCopyCodeCell]+1 ||
          [reg PC] == [dict get $::nr_symbols Native_FrameCopyAttrCell]+1)} {
         # Explicit host snapshot in asset-bank-3 padding, not the program bank.
+    } elseif {[dict exists $::nr_symbols NATIVE_HWACTORS] &&
+        [dict get $::nr_symbols NATIVE_HWACTORS] &&
+        [debug read memory [dict get $::nr_symbols Native_FrameMapped]] == 1 &&
+        [debug read memory [dict get $::nr_symbols Native_Suspended]] == 1 &&
+        $::wp_last_address >= 14592 && $::wp_last_address < 14848 &&
+        ([reg PC] == [dict get $::nr_symbols Native_HWLoadFirst] ||
+         [reg PC] == [dict get $::nr_symbols Native_HWLoadClear]+1 ||
+         [reg PC] == [dict get $::nr_symbols Native_HWLoadHUD] ||
+         [reg PC] == [dict get $::nr_symbols Native_HWLoadActor])} {
+        # Exact host-only occupancy map in asset-3 padding at $3900..$39ff.
     } else {
     puts stderr "Unexpected native code write: PC=[reg PC] SP=[reg SP] HL=[reg HL] DE=[reg DE]"
     exit 2
@@ -34,6 +44,7 @@ if {[dict exists $nr_symbols NATIVE_VIDEO] && [dict get $nr_symbols NATIVE_VIDEO
     }
     set nr_context_calls 0
     set nr_context_steps 0
+    set nr_present_callers [dict create]
     debug set_bp [dict get $nr_symbols Native_PrepareFrame] {$::nr_started} nr_present_enter
     foreach name {Native_FrameReturn Native_SkipReturn} {
         debug set_bp [dict get $nr_symbols $name] {$::nr_started} nr_present_leave
@@ -95,13 +106,9 @@ if {[dict exists $nr_symbols NATIVE_VIDEO] && [dict get $nr_symbols NATIVE_VIDEO
     debug set_bp [dict get $nr_symbols Native_StepDone] {$::nr_started} nr_end_step
     if {$nr_scanout_enabled} {
       debug set_watchpoint write_mem [dict get $nr_symbols Native_ActiveR2] {$::nr_started} {
-        set tick [nr_u32 Native_GameTicks]
-        foreach boundary {200 1100 1800 2400} {
-            if {$tick >= $boundary && ![info exists ::nr_scanout($boundary)]} {
-                set ::nr_scanout($boundary) 1
-                after time 0.025 [list nr_scanout_capture $boundary]
-            }
-        }
+        set ::nr_scanout_active_frame $::nr_video_frame
+        set ::nr_scanout_active_time [machine_info time]
+        set ::nr_scanout_active_vdp [machine_info VDP_frame_count]
       }
     }
 }
@@ -126,6 +133,14 @@ proc nr_gpu_event {} {
     # Command-register debug reads synchronize the engine. Inside its transition
     # callback that can recurse into command execution; inspect our RAM packet.
     set base [dict get $::nr_symbols Native_Command]
+    if {[dict exists $::nr_symbols Native_GPUCommandPointer]} {
+        set pointer [dict get $::nr_symbols Native_GPUCommandPointer]
+        set base [expr {[debug read memory $pointer]+256*[debug read memory [expr {$pointer+1}]]}]
+        if {$base != [dict get $::nr_symbols Native_Command] &&
+            $base != [dict get $::nr_symbols Native_TilePacket]} {
+            puts stderr "Invalid native GPU staging pointer"; exit 2
+        }
+    }
     set values [list [debug probe read VDP.commandExecuting] [machine_info time] [debug read memory [expr {$base+14}]]]
     foreach offset {4 6 8 10} {
         lappend values [expr {[debug read memory [expr {$base+$offset}]]+256*[debug read memory [expr {$base+$offset+1}]]}]
@@ -133,7 +148,23 @@ proc nr_gpu_event {} {
     puts $::nr_gpu [join $values "\t"]
 }
 proc nr_scanout_capture {boundary} {
+    # Raw screenshots consume a completed rasterizer frame. Like the diagnostic
+    # RGB harness, require three stable VDP frames after the VBlank handshake.
+    if {![info exists ::nr_scanout_active_frame] ||
+        [machine_info time]-$::nr_scanout_active_time < 0.070 ||
+        [machine_info VDP_frame_count]-$::nr_scanout_active_vdp < 3} {
+        after time 0.020 [list nr_scanout_capture $boundary]
+        return
+    }
     screenshot -raw -size auto [file join $::nr_out scanout-$boundary.png]
+    foreach {suffix address size surface} {vram 0 131072 VRAM host 51072 2176 memory} {
+        set raw [open [file join $::nr_out scanout-$boundary-$suffix.bin] wb]
+        puts -nonewline $raw [debug read_block $surface $address $size]
+        close $raw
+    }
+    set file [open [file join $::nr_out scanout-$boundary.json] w]
+    puts $file [format {{"prepared_frame":%d,"logical_tick":%d,"time":%s,"active_since":%s,"vdp_frame":%d,"active_vdp_frame":%d}} $::nr_scanout_active_frame [nr_u32 Native_GameTicks] [machine_info time] $::nr_scanout_active_time [machine_info VDP_frame_count] $::nr_scanout_active_vdp]
+    close $file
 }
 proc nr_tile_write {} {
     set address $::wp_last_address
@@ -158,6 +189,9 @@ proc nr_present_enter {} {
         dict set ::nr_present_regs $name [reg $name]
     }
     set ::nr_present_bytes [nr_game_bytes]
+    set sp [reg SP]
+    set ::nr_present_caller [expr {[debug read memory $sp]+256*[debug read memory [expr {$sp+1}]]}]
+    set ::nr_present_started [machine_info time]
 }
 proc nr_present_leave {} {
     if {![info exists ::nr_present_regs]} {puts stderr "Missing presentation entry"; exit 2}
@@ -171,7 +205,19 @@ proc nr_present_leave {} {
         puts stderr "Presentation left page 0 mapped to snapshot data"; exit 2
     }
     incr ::nr_context_calls
-    if {[reg PC] == [dict get $::nr_symbols Native_FrameReturn]} {incr ::nr_context_steps}
+    set step [expr {[reg PC] == [dict get $::nr_symbols Native_FrameReturn]}]
+    if {$step} {incr ::nr_context_steps}
+    set cycles [expr {round(([machine_info time]-$::nr_present_started)*3579545)}]
+    set caller $::nr_present_caller
+    if {![dict exists $::nr_present_callers $caller]} {
+        dict set ::nr_present_callers $caller {0 0 0 0 0}
+    }
+    lassign [dict get $::nr_present_callers $caller] calls steps skip_cycles step_cycles maximum
+    incr calls
+    incr steps $step
+    if {$step} {incr step_cycles $cycles} else {incr skip_cycles $cycles}
+    set maximum [expr {max($maximum,$cycles)}]
+    dict set ::nr_present_callers $caller [list $calls $steps $skip_cycles $step_cycles $maximum]
     unset ::nr_present_regs
     unset ::nr_present_bytes
 }
@@ -344,12 +390,24 @@ proc nr_post {} {
     set cycles [expr {round(([machine_info time]-$::nr_begin)*3579545)}]
     puts $::nr_events "$tick\t$phase\t[reg PC]\t[reg SP]\t[nr_u32 Native_Pending]\t$cycles\t[machine_info time]"
     nr_snapshot [format state-%05d.bin $tick]
+    # Observe the page actually on screen at each logical boundary, including
+    # a stale page when presentation is slow. Waiting for a new flip here would
+    # omit precisely those samples and conceal visible latency.
+    if {$::nr_scanout_enabled && $tick in {200 1100 1800 2400}} {
+        after time 0.075 [list nr_scanout_capture $tick]
+    }
     if {[info exists ::nr_profile_range]} {nr_profile_boundary $tick}
     if {$tick == $::nr_target} {
         if {[info exists ::nr_context_calls]} {
             if {[info exists ::nr_present_regs] || !$::nr_context_steps} {puts stderr "Incomplete presentation context proof"; exit 2}
             set file [open [file join $::nr_out presentation-context.json] w]
             puts $file [format {{"complete":true,"calls":%d,"steps":%d,"game_ram_bytes":6536,"registers":["AF","BC","DE","HL","IX","IY","AF2","BC2","DE2","HL2","SP"]}} $::nr_context_calls $::nr_context_steps]
+            close $file
+            set file [open [file join $::nr_out presentation-callers.tsv] w]
+            puts $file "caller\tcalls\tsteps\tskip_cycles\tstep_cycles\tmax_cycles"
+            dict for {caller values} $::nr_present_callers {
+                puts $file "$caller\t[join $values \t]"
+            }
             close $file
         }
         nr_code final

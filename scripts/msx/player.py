@@ -11,54 +11,106 @@ from scripts.scenes.storage import json_write
 CODE = ((0x0069,0x0185),(0x0c6c,0x0cba),(0x0e63,0x0f11),
         (0x0f3e,0x0f5c),(0x1052,0x11bf),(0x14e0,0x150c),
         (0x1ddf,0x1e3d),(0x212b,0x2135))
+ENEMY_CODE=((0x0010,0x0023),(0x022b,0x02eb),(0x038a,0x03c3),
+            (0x04a0,0x04d7),(0x0ab5,0x0b0f),(0x0b63,0x0bd1),
+            (0x0cd6,0x0e63),(0x1031,0x1052),(0x11bf,0x124f),
+            (0x15bd,0x1685),(0x1885,0x18b1))
 
 
-def palette(encoded, buffers):
+def clipped_masks(masks,clip):
+    """Exact left clipping in the source's 16-row-per-half sprite layout."""
+    if len(masks)!=64 or not 0<=clip<16:raise ValueError('Invalid enemy clipping input')
+    left=255>>min(clip,8);right=255>>max(clip-8,0)
+    return bytes(value&(right if (i//16)&1 else left) for i,value in enumerate(masks))
+
+
+def palette(encoded, buffers, *, enemy=False):
     """Assign blue=3, pale yellow=9, black=11=3|9 for two mode-2 planes."""
     colors=[expand((encoded[i]>>4,encoded[i+1],encoded[i]&7)) for i in range(0,32,2)]
     desired=((3,(33,71,222)),(9,(255,255,151)))
+    if enemy:desired+=((6,(255,0,0)),(10,(0,0,151)))
     order=list(range(16))
     for target,rgb in desired:
         source=colors.index(expand(rgb333(rgb)))
         previous=order.index(source)
         order[target],order[previous]=order[previous],order[target]
+    if enemy and colors[order[14]]!=(0,0,0):
+        raise ValueError('Enemy sprite OR color 6|10 must remain black')
     translation=bytes(order.index(i) if i<16 else i for i in range(256))
     return b''.join(encoded[i*2:i*2+2] for i in order),[b.translate(translation) for b in buffers]
 
 
-def relocate(program, listing):
+def relocate(program, listing, *, rock_collision=False, scoring=False, score_tables=(), fuel=False, lives=False,enemies=False,enemy_count=1):
     """Relocate instruction operands, leaving fixed-point constants untouched."""
     bank=bytearray([255])*16384
-    for first,last in CODE+((0x253a,0x2552),(0x3000,0x30e0)):
+    code_ranges=CODE+(((0x1774,0x17a6),) if rock_collision else ())
+    if scoring:code_ranges+=((0x1aa4,0x1aca),(0x1e62,0x1e6b),(0x2064,0x20e5),(0x210f,0x212b))
+    if fuel:code_ranges+=((0x0482,0x04a0),(0x1ecc,0x1f8e))
+    if lives:code_ranges+=((0x08e7,0x0908),(0x18da,0x18e8))
+    if enemies:code_ranges+=ENEMY_CODE
+    for first,last in code_ranges+((0x253a,0x2552),(0x3000,0x30e0))+tuple((p,p+8) for p in score_tables)+(((0x226f,0x227f),) if fuel else ()):
         bank[first:last]=program[first:last]
     patches=[]
     for line in listing.splitlines():
         match=re.search(r';([0-9a-f]{4})\s+((?:[0-9a-f]{2}\s+)+)',line)
         if not match:continue
         address=int(match[1],16)
-        if not any(a<=address<b for a,b in CODE):continue
+        if not any(a<=address<b for a,b in code_ranges):continue
         raw=bytes.fromhex(match[2]);text=line.split(';',1)[0].strip()
         if raw!=program[address:address+len(raw)]:raise ValueError('Disassembly bytes differ from pinned program')
         if text in ('di','ei'):
             bank[address]=0x00  # The embedding renderer owns interrupt windows.
             patches.append(dict(address=address,kind='renderer-interrupt-ownership'))
             continue
-        if address in (0x0069,0x0c7d):
+        if address in (0x0069,0x0c7d,0x03b6):
             bank[address:address+3]=bytes(3)  # Arcade output latch, not movement state.
             patches.append(dict(address=address,kind='arcade-output-latch'))
             continue
         if len(raw)<3:continue
+        # Indexed displacements/immediates are bytes, not a 16-bit address.
+        # In particular DD 36 00 88 must retain the enemy's $88 startup state.
+        if re.search(r'\((?:ix|iy)(?:[+-]|\))',text):continue
         value=int.from_bytes(raw[-2:],'little');new=value
         if text.startswith(('call ','jp ')):
             new=value+0x8000
         elif text.startswith('ld ') and 0x8000<=value<0x9000:
             new=value+0x6000
-        elif address==0x1de5:  # Native animation table, not a velocity constant.
+        elif address in (0x1de5,0x1eec,0x1ef3,0x1f80):  # Original ROM tables, not velocity constants.
             new=value+0x8000
         if new!=value:
             bank[address+len(raw)-2:address+len(raw)]=new.to_bytes(2,'little')
             patches.append(dict(address=address,original=value,relocated=new))
     bank[0x0c2c]=0xc9  # Return from the native main-loop continuation to our caller.
+    if rock_collision:
+        bank[0x17a6]=0xc9  # Return the original contact cell; later systems stay absent.
+        patches.append(dict(address=0x17a6,kind='contact-cell-return-before-flag-scan'))
+    if scoring:
+        bank[0x1aca]=0xc9  # Fuel conversion is a separate incremental component.
+        bank[0x0b2f]=0xc9  # Source bonus-life count/bits retained; old bitmap HUD absent.
+        patches.extend((dict(address=0x1aca,kind='score-return-before-lucky-fuel-conversion'),
+                        dict(address=0x0b2f,kind='bonus-life-bitmap-interface-owned-by-host')))
+    if lives:
+        for at,kind in ((0x0908,'restart-ram-return-before-radar-and-redraw'),
+                        (0x18e8,'life-loss-return-before-two-player-dispatch'),
+                        (0x073d,'inactive-game-return'),(0x1bcd,'final-life-return-to-host-state')):
+            bank[at]=0xc9
+            patches.append(dict(address=at,kind=kind))
+    if enemies:
+        if program[0xafd:0xb01]!=bytes((0xd7,0x00,0x20,0x05)):
+            raise ValueError('Enemy initialization RST-10 hook changed')
+        # CALL the retained RST helper inside this bank, then take the same
+        # source branch. No restart vector in the MSX BIOS is invoked.
+        bank[0xafd:0xb00]=bytes((0xc3,0x00,0xbf))
+        bank[0x3f00:0x3f09]=bytes((0xcd,0x10,0x80,0xc2,0x06,0x8b,0xc3,0x01,0x8b))
+        for at in (0x02eb,0x03c3,0x0bd1,0x124f,0x1273,0x127e,0x12a8):bank[at]=0xc9
+        bank[0x18c1:0x18c7]=bytes((0x3e,1,0x32,0xd0,0xc5,0xc9))
+        if enemy_count>1:
+            # HL identifies the exact colliding descriptor's Y coordinate.
+            bank[0x18c1:0x18ca]=bytes((0x22,0x3c,0xc6,0x3e,1,0x32,0xd0,0xc5,0xc9))
+        patches.extend((dict(address=0xafd,kind='bank-local-original-rst10-trampoline',target=0xbf00),
+                        dict(address=0x18c1,kind='original-contact-return-to-host-event')))
+        patches.extend(dict(address=at,kind='hardware-interface-return') for at in
+                       (0x02eb,0x03c3,0x0bd1,0x124f,0x1273,0x127e,0x12a8))
     return bytes(bank),patches
 
 
@@ -69,7 +121,24 @@ def coordinates(ram):
             36+ram[0x72]*24-signed(ram[0x6f]))
 
 
-def atlas(world):
+def padded_world(world, width=816, height=1392, *, pad=256, flower=24):
+    """Independent viewport oracle: outside the maze, repeat its flower tile.
+
+    Linear array indexing across an edge would read an unrelated maze row.
+    Retain the runtime's world-coordinate flower phase on both axes instead.
+    """
+    if len(world)!=width*height or min(width,height)<flower or pad<0 or flower<=0:
+        raise ValueError('Invalid world/padding dimensions')
+    stride=width+2*pad;rows=height+2*pad;result=bytearray(stride*rows)
+    for y in range(rows):
+        sy=y-pad
+        for x in range(stride):
+            sx=x-pad
+            result[y*stride+x]=world[sy*width+sx] if 0<=sx<width and 0<=sy<height else world[sy%flower*width+sx%flower]
+    return result,stride,rows
+
+
+def atlas_with_tiles(world, extra_tiles=(),*,force_source_xy=False):
     """Deduplicate exact 8x8 pixels; command copies never rescale the source."""
     unique=[];indices={};table=bytearray(128*174)
     for y in range(174):
@@ -78,19 +147,77 @@ def atlas(world):
             if tile not in indices:
                 indices[tile]=len(unique);unique.append(tile)
             table[y*128+x]=indices[tile]
-    if len(unique)>32:raise ValueError('First-stage command atlas exceeds its reserved 32 tiles')
-    image=bytearray(256*8)
+    extra_ids=[]
+    for tile in extra_tiles:
+        if len(tile)!=64:raise ValueError('Atlas tiles must contain exactly 8x8 pixels')
+        if tile not in indices:
+            indices[tile]=len(unique);unique.append(tile)
+        extra_ids.append(indices[tile])
+    if len(unique)>64:raise ValueError('Command atlas exceeds its reserved 64 tiles')
+    rows=8 if len(unique)<=32 and not force_source_xy else 16
+    image=bytearray(256*rows)
     for n,tile in enumerate(unique):
-        for y in range(8):image[y*256+n*8:y*256+n*8+8]=tile[y*8:y*8+8]
+        for y in range(8):
+            start=(n//32*8+y)*256+(n%32)*8
+            image[start:start+8]=tile[y*8:y*8+8]
     table.extend(bytes(32768-len(table)))
-    return packed(image),[bytes(table[:16384]),bytes(table[16384:])],len(unique)
+    if len(unique)>32 or force_source_xy:
+        # Two source-address bytes per world tile. A 256-byte row permits
+        # direct H/L addressing and four 64-row banks, with no runtime multiply.
+        addresses=bytearray(65536)
+        for y in range(174):
+            for x in range(128):
+                tile=table[y*128+x]
+                at=y*256+x*2
+                addresses[at:at+2]=bytes(((tile%32)*8,16+(tile//32)*8))
+        return packed(image),[bytes(addresses[i:i+16384]) for i in range(0,65536,16384)],len(unique),extra_ids
+    return packed(image),[bytes(table[:16384]),bytes(table[16384:])],len(unique),extra_ids
 
 
-def build(output, program, native, assets):
+def uniform_source_tags(atlas, banks):
+    """Tag exact solid terrain for HMMV; retain flag-owner and textured entries."""
+    result=[]
+    for bank in banks:
+        data=bytearray(bank)
+        for at in range(0,len(data),2):
+            x,y=data[at:at+2]
+            if x&1 or y not in (16,24):continue
+            pixels=bytes(v for row in range(8)
+                         for byte in atlas[((y-16)*128+row*128+x//2):][:4]
+                         for v in (byte>>4,byte&15))
+            if len(pixels)==64 and len(set(pixels))==1:
+                data[at]=(pixels[0]<<4)|2
+                data[at+1]=0
+        result.append(bytes(data))
+    return result
+
+
+def merge_scenery_color(world,source,target,protected,*,width=816):
+    """Recolor terrain only; restore complete original object rectangles."""
+    if len(world)%width:raise ValueError('Incomplete scenery rows')
+    translation=bytearray(range(256));translation[source]=target
+    result=bytearray(world.translate(bytes(translation)))
+    height=len(world)//width
+    for x,y,w,h in protected:
+        if min(x,y,w,h)<0 or x+w>width or y+h>height:
+            raise ValueError('Protected scenery object is outside the world')
+        for row in range(y,y+h):
+            at=row*width+x;result[at:at+w]=world[at:at+w]
+    return bytes(result)
+
+
+def atlas(world):
+    return atlas_with_tiles(world)[:3]
+
+
+def build(output, program, native, assets, *, rock_collision=False, scoring=False, fuel=False, lives=False,enemies=False,enemy_count=1):
     (output/'native-program.bin').write_bytes(program)
     listing=subprocess.check_output(['z80dasm','-a','-t','-g','0',str(output/'native-program.bin')],
                                     text=True,stderr=subprocess.DEVNULL)
-    code,patches=relocate(program,listing)
+    score_tables=[int.from_bytes(native[p:p+2],'little') for p in (0x1b3,0x1b9)] if scoring else []
+    if any(not 0x2000<=p<0x2500 or p&255>247 for p in score_tables):
+        raise ValueError('Unexpected original bonus-score table pointer/page boundary')
+    code,patches=relocate(program,listing,rock_collision=rock_collision,scoring=scoring,score_tables=score_tables,fuel=fuel,lives=lives,enemies=enemies,enemy_count=enemy_count)
     flags=list(dict.fromkeys(program[0x253a:0x2552]))
     if len(flags)!=12:raise ValueError('Unexpected native car animation cycle')
     lookup=bytes(flags.index(i) if i in flags else 255 for i in range(256))
@@ -117,14 +244,31 @@ def build(output, program, native, assets):
     seed[0x28f]=0xb0  # Original first-stage bitmap, relocated to native bank + $3000.
     seed[0x99e:0x9a0]=(0xe3f0).to_bytes(2,'little')
     seed[0x3f0]=255
+    if scoring:
+        seed[0x60:0x68]=native[0x60:0x68]
+        seed[0xa0:0xa8]=native[0xa0:0xa8]
+        seed[0x990:0x992]=(0xe0a0).to_bytes(2,'little')
+        seed[0x988:0x98a]=(0xe00f).to_bytes(2,'little')
+        seed[0xf]=native[0xf]
+        seed[0x1aa]=native[0x1aa]
+        for at,p in zip((0x1b3,0x1b9),score_tables):seed[at:at+2]=(p+0x8000).to_bytes(2,'little')
+    if fuel:
+        for at,size in ((0x21,1),(0x2b,2),(0x1b0,1),(0x26a,2),(0x26e,1),(0x28b,1)):
+            seed[at:at+size]=native[at:at+size]
+        for at,target in ((0x98a,0xe1b0),(0x98c,0xe271),(0x98e,0xe26a),(0x99a,0xe289),(0x99c,0xe28b)):
+            seed[at:at+2]=target.to_bytes(2,'little')
+    if lives:seed[0x25:0x2d]=native[0x25:0x2d]
     last_rows=b''.join(pixels[i*256+240:(i+1)*256] for i in range(len(flags)))
     data=bytes(masks)+last_rows+bytes(8192-len(masks)-len(last_rows))+seed+bytes(4096)
     (output/'player-flags.bin').write_bytes(lookup)
     (output/'player-pixels.bin').write_bytes(pixels)
     (output/'player-seed.bin').write_bytes(seed)
     json_write(output/'player.json',dict(flags=flags,patches=patches,
-        code_ranges=CODE,native_ram=[0xe000,0xf000],input=0xe3f0,
+        code_ranges=CODE+(((0x1774,0x17a6),) if rock_collision else ())+
+                    (((0x1aa4,0x1aca),(0x1e62,0x1e6b),(0x2064,0x20e5),(0x210f,0x212b)) if scoring else ())+(((0x0482,0x04a0),(0x1ecc,0x1f8e)) if fuel else ())+(((0x08e7,0x0908),(0x18da,0x18e8)) if lives else ())+ (ENEMY_CODE if enemies else ()),
+        rock_contact_geometry=rock_collision,scoring=scoring,fuel=fuel,lives=lives,enemies=enemies,score_tables=score_tables,native_ram=[0xe000,0xf000],input=0xe3f0,
         native_period_seconds=0.0165,speed_fixed=int.from_bytes(seed[0x27:0x29],'little'),
         palette=dict(blue=3,pale_yellow=9,black=11),slots=[PLAYER_SLOT,PLAYER_SLOT+1],pattern=180,
-        coordinate_origin=[36,36],scope='Original player movement, walls and steering; no enemy/flag/Fuel rules'))
+        coordinate_origin=[36,36],scope=('Selected original movement and scoring routines for the bounded score adapter; no complete foreground loop'
+            if scoring else 'Original player movement, walls and steering; no enemy/flag/Fuel rules')))
     return code,data

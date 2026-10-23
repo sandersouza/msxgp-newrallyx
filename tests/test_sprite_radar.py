@@ -10,6 +10,26 @@ def decode(raw):
 
 
 class SpriteRadarTests(unittest.TestCase):
+    def test_borderless_radar_keeps_flag_pixels_and_identical_resource_size(self):
+        flags=[(2,2),(15,14),(30,44)]
+        bare=radar.bitmap(flags,border=False)
+        self.assertEqual(sum(bare),12)
+        self.assertFalse(any(bare[y*radar.WIDTH] for y in range(radar.HEIGHT)))
+        self.assertEqual(len(radar.patterns(bare)),len(radar.patterns(radar.bitmap(flags))))
+    def test_square_frame_adds_only_corners_without_extra_sprite_resources(self):
+        flags=[(4,6)]
+        chamfered=radar.bitmap(flags)
+        square=radar.bitmap(flags,square=True)
+        corners={0,radar.WIDTH-1,(radar.HEIGHT-1)*radar.WIDTH,len(square)-1}
+        self.assertEqual({i for i,(a,b) in enumerate(zip(chamfered,square)) if a!=b},corners)
+        self.assertEqual(sum(square),2*(radar.WIDTH+radar.HEIGHT)-4+4)
+        self.assertEqual(square[10*radar.WIDTH+10],0)
+        self.assertEqual(len(radar.patterns(square)),len(radar.patterns(chamfered)))
+        canvas=bytearray([7])*(256*212)
+        radar.paint(canvas,flags,[10,10],[20,20],8,9,11,square=True)
+        self.assertEqual(canvas[radar.Y*256+radar.X],8)
+        self.assertEqual(canvas[(radar.Y+30)*256+radar.X+30],7)
+
     def test_projection_keeps_native_markers_inside_white_outline(self):
         self.assertEqual(radar.project(224,80), (2,2))
         for x in range(224,289):

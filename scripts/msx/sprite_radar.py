@@ -1,4 +1,4 @@
-"""Transparent sprite radar: native 2x2 markers, reprojected anchors, white frame."""
+"""Transparent sprite radar: native 2x2 markers and an optional white frame."""
 from scripts.scenes.bundle import load_capture
 from scripts.scenes.render import render
 
@@ -22,13 +22,13 @@ def capture_enemy(path, assets):
     return project(*enemy.rect[:2])
 
 
-def bitmap(flags):
+def bitmap(flags, *, border=True, square=False):
     pixels = bytearray(WIDTH*HEIGHT)
     for y in range(HEIGHT):
         for x in range(WIDTH):
-            # One-pixel chamfered corners, no opaque fill.
-            if ((y in (0, HEIGHT-1) and 1 <= x < WIDTH-1)
-                    or (x in (0, WIDTH-1) and 1 <= y < HEIGHT-1)):
+            # Optional square corners use the same resident sprite patterns.
+            if border and ((y in (0, HEIGHT-1) and (0 if square else 1) <= x < WIDTH-(0 if square else 1))
+                    or (x in (0, WIDTH-1) and (0 if square else 1) <= y < HEIGHT-(0 if square else 1))):
                 pixels[y*WIDTH+x] = 1
     for px, py in flags:
         for y in range(py, py+2):
@@ -75,15 +75,15 @@ def attributes(cy, player, enemy):
     return bytes(result)
 
 
-def paint(pixels, flags, player, enemy, white, red, player_color):
+def paint(pixels, flags, player, enemy, white, red, player_color, *, border=True, square=False,enemies=()):
     """Screen-coordinate reference independent of sprite packing and VRAM layout."""
-    for i, value in enumerate(bitmap(flags)):
+    for i, value in enumerate(bitmap(flags,border=border,square=square)):
         if value:
             y, x = divmod(i, WIDTH)
             pixels[(Y+y)*256+X+x] = white
     # Lower sprite number wins overlaps: player precedes enemy, both follow frame.
-    frame = bitmap(flags)
-    for point, color in ((enemy, red), (player, player_color)):
+    frame = bitmap(flags,border=border,square=square)
+    for point, color in [(p,red) for p in (enemy,*enemies)]+[(player,player_color)]:
         px, py = point
         if px == 255:
             continue

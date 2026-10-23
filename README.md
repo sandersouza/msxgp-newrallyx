@@ -81,6 +81,79 @@ isolated settings in `references/build/run-*/`. The launcher uses Panasonic
 FS-A1WSX and contributor-supplied BIOS under `references/msxbios/`; see the
 [BIOS requirements](docs/setup.md#machine-and-contributor-supplied-bios).
 
+Select a test cartridge with `make run ROM=references/build/<test-build>/native.rom`.
+The selected file is launched directly; a missing test ROM reports an error.
+Omit `ROM` to use the default development cartridge.
+The active issue 11 build is **stage 08**, the fast driving baseline plus an
+explicit bitmap-rock fixture. Normal first-stage initialization has no rocks;
+this test adds two original placement outputs and records diagnostic collision
+entry events without extra sprites. Selected original player movement/steering/wall routines remain active;
+the complete arcade foreground/IRQ loop is absent. Rock contact now triggers the
+original 24x24 bitmap explosion and one life loss. The hold lasts 120 logical
+ticks with lives remaining, 96 on the final life. Automatic restart preserves
+the same round's collected flags, score and high score, refills fuel and resets
+the new life's flag-point ordinal. The HUD shows actual spare cars. Flags are
+now collected once and removed from the bitmap/radar, including after cache
+reload. The score/high-score HUD now uses actual flag points and the special
+multiplier. Original decimal fuel consumption, empty-fuel deceleration and the
+round-dependent lucky countdown are now active; the gauge shows actual fuel.
+Lucky restores the pre-countdown fuel and is excluded when collected last.
+One original enemy now pursues the player, appears on the radar, and causes
+the same explosion/life loss on contact. Two additional sprite planes bring
+the total to 21 slots, with 11 free; the measured line peak remains eight.
+The score header has its original black background. The transparent radar has
+a square white border, using the same sprite patterns and instruction stream.
+A solid blue radar fill would require another layer or work during scrolling;
+the existing transparent background is retained under the zero-extra-cost constraint.
+Zero lives stops this fixture; Home starts a fresh test run. Additional enemies,
+smoke and credit/start/transition presentation remain pending. F and 0 fixture keys are
+disabled while driving. See the [fuel performance report](docs/fuel-performance-fix.md)
+and [one-enemy evidence and adaptations](docs/one-enemy-plan.md).
+Use `make build STAGE=0` to
+recreate the preserved movement-only baseline.
+The current `LATEST` is `11-r09-player-dot-50-v115`: one original enemy with
+HUD at 50 Hz and the original 16.5 ms logical clock. Twelve radar sprites keep
+the map, flags and enemy dynamic; one independent player dot alternates white
+and black every eight native ticks, matching the original routine. Moving the
+player does not dirty the map cells. Twenty SAT slots are used, leaving twelve
+free. Both the 1,138-state contact/restart route (28 RGB images) and the
+1,600-state movement/cache control (39 RGB) pass the unchanged timing gate.
+Arrows steer, Space pauses and Home resets. Rebuild with `make build STAGE=9`.
+The two-enemy HUD-off reference remains
+`make run CHECKPOINT=11-r09-two-no-hud-v80` (60 Hz, six slots, 26 free).
+Two enemies with HUD remain under investigation; this does not complete #11.
+The preserved stage 08 reference is `make run CHECKPOINT=11-r08-restored-v1`.
+See the
+[current checkpoint guide](docs/checkpoints.md).
+The preserved sprite priority experiment starts paused with two enemies over
+the radar: `make run CHECKPOINT=11-flicker-60-v6`; compare with
+`make run CHECKPOINT=11-flicker-50-v6`. Space resumes an unaccepted moving
+prototype, Home resets the controlled fixture. Rebuild with
+`make build STAGE=9 SPRITE_FLICKER=1 FLICKER_STRESS=1 HZ=60` (or `HZ=50`).
+Both rates pass controlled display/RGB checks; moving integration remains
+pending. Flicker changes priority and uses 24 slots/eight free, without lifting
+the hardware limit. See [evidence and limitations](docs/sprite-flicker-experiment.md).
+The previous rendering experiment uses the movement baseline with a bitmap
+player: `make build STAGE=0 PLAYER_BLITTER=1`, also supporting `NO_HUD=1`.
+`RADAR_BLITTER=1` additionally selects the **slow diagnostic** with a blue
+48x80 bitmap radar. The accepted gameplay default remains stage 08; see
+[blitter checkpoints, measurements and limitations](docs/bitmap-blitter-experiments.md).
+See the [incremental gameplay plan](docs/incremental-gameplay-plan.md).
+Use `make build NO_HUD=1` to compile this same baseline without HUD frame work;
+plain `make build` includes HUD. `NATIVE=1` remains a compatibility alias for the
+baseline and no longer starts the abandoned full-loop candidate.
+Both builds publish the default ROM and update `references/build/latest.rom`, a
+relative symlink to the sealed stage cartridge. Run it with `make run LATEST=1`.
+Historical full-runtime probe commands do not replace this active latest link.
+Missing latest builds fail explicitly;
+`LATEST`, `CHECKPOINT`, and an explicit `ROM` selection are mutually exclusive.
+Use `make checkpoints` to list published local test builds, then
+`make run CHECKPOINT=<name>` to launch one. Checkpoint names retain their exact
+cartridge/evidence hashes; later experiments receive new names. Cleaning the
+build directory removes these local checkpoints too.
+See the [checkpoint comparison guide](docs/checkpoints.md) for enabled components,
+controls and current validation limits.
+
 Use `python3 -B scripts/clean.py --dry-run` to preview generated builds and
 `make clean` to remove all contents of `references/build/`, including ROMs, screenshots,
 reports and emulator session data. The build directory and its top-level

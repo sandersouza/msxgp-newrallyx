@@ -26,7 +26,9 @@ Native_CoordinateDelta:
     ENDIF
     ENDIF
     ASSERT $ <= $8000
+    IF $ < $8000
     defs $8000-$,$ff
+    ENDIF
     INCBIN "native-program.bin"
     INCBIN "native-assets.bin"
     defs $24000-$,$ff

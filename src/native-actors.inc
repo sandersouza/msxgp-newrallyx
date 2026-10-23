@@ -25,6 +25,16 @@ Native_ActorBlocked EQU $e611
 Native_DrawActors:
     ld a,(Native_FrameActor)
     add a,a
+    IF NATIVE_HWACTORS
+    ld b,a
+    ld a,(Native_HWActive)
+    or a
+    ld a,b
+    jr z,.offset
+    ld a,10
+    sub b
+.offset:
+    ENDIF
     ld l,a
     ld h,0
     ld bc,Native_FrameOAM
@@ -38,11 +48,11 @@ Native_DrawActors:
 .actor:
     ld a,(ix+$01)
     cp 212
-    jp nc,.next
+    jp nc,.skip
     ld b,a
     ld a,(iy+1)
     and $80
-    jp nz,.next               ; ninth X bit places this actor outside the maze
+    jp nz,.skip               ; ninth X bit places this actor outside the maze
     ld a,b
     ld c,0
     cp 12
@@ -66,9 +76,9 @@ Native_DrawActors:
     ld (Native_ActorX),a
     ld a,(iy+0)
     cp 19
-    jp c,.next
+    jp c,.skip
     cp 235
-    jp nc,.next
+    jp nc,.skip
     ld b,a
     ld c,0
     cp 220
@@ -93,6 +103,11 @@ Native_DrawActors:
     ld (Native_ActorY),a
     ld a,(ix+0)
     ld (Native_ActorFlags),a
+    IF NATIVE_HWACTORS
+    ld a,(Native_HWActive)
+    or a
+    jr nz,.cached
+    ENDIF
     ; Different car palettes must not evict the same pattern every frame.
     ld b,a
     ld a,(iy+1)
@@ -130,6 +145,14 @@ Native_DrawActors:
     call Native_UploadActor
     pop ix
 .cached:
+    IF NATIVE_HWACTORS
+    ld a,(Native_HWActive)
+    or a
+    jr z,.bitmap_begin
+    call Native_HWActorBegin
+    ret c
+.bitmap_begin:
+    ENDIF
     xor a
     ld (Native_ActorMode),a
     ld (Native_ActorBlocked),a
@@ -202,6 +225,14 @@ Native_DrawActors:
     ld (Native_ActorBlocked),a
     jr .advance
 .unblocked:
+    IF NATIVE_HWACTORS
+    ld a,(Native_HWActive)
+    or a
+    jr z,.bitmap_piece
+    call Native_HWMaskPiece
+    jr .advance
+.bitmap_piece:
+    ENDIF
     ld a,(Native_ActorMode)
     or a
     jr nz,.paint
@@ -231,6 +262,15 @@ Native_DrawActors:
     ld a,(Native_ActorMode)
     or a
     jr nz,.next
+    IF NATIVE_HWACTORS
+    ld a,(Native_HWActive)
+    or a
+    jr z,.bitmap_finish
+    call Native_HWFinishActor
+    ret c
+    jr .next
+.bitmap_finish:
+    ENDIF
     ld a,(Native_ActorBlocked)
     or a
     jr z,.fast
@@ -244,6 +284,28 @@ Native_DrawActors:
     inc a
     ld (Native_FrameActor),a
     ret
+.skip:
+    ld a,(Native_FrameActor)
+    inc a
+    ld (Native_FrameActor),a
+    cp 6
+    ret nc
+    IF NATIVE_HWACTORS
+    ld a,(Native_HWActive)
+    or a
+    jr z,.forward
+    dec ix
+    dec ix
+    dec iy
+    dec iy
+    jp .actor
+.forward:
+    ENDIF
+    inc ix
+    inc ix
+    inc iy
+    inc iy
+    jp .actor                 ; invisible slots do not need a foreground yield
 
 ; No priority tile intersects this actor: split only at the 256-pixel seams.
 Native_ActorFast:

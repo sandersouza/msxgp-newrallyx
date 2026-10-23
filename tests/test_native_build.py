@@ -49,7 +49,14 @@ class NativeBuildTests(unittest.TestCase):
                         dict(optimize=1),dict(optimize=True),dict(function_probe=True),
                         dict(probe='logic',function_probe=True),dict(function_probe='yes'),
                         dict(fine_irq=True),dict(fine_irq=1),dict(probe='runtime',fine_irq=True),
-                        dict(probe='runtime', program=bytes(16384))):
+                        dict(probe='runtime', program=bytes(16384)),
+                        dict(hud_enabled=False), dict(hud_enabled=1),
+                        dict(actors_enabled=False), dict(actors_enabled=1),
+                        dict(freeze_presentation=True), dict(freeze_presentation=1),
+                        dict(render_in_game_irq=False), dict(render_in_game_irq=1),
+                        dict(edge_clear=False), dict(edge_clear=1),
+                        dict(tick_foreground=True), dict(tick_foreground=1),
+                        dict(actor_cache=True), dict(actor_cache=1)):
             with self.subTest(changes=list(changes)), self.assertRaises((ValueError, OSError)):
                 self.probe(**changes)
             self.assertFalse(self.output.exists())

@@ -37,6 +37,8 @@ def bordered(image, palette):
         raise ValueError('Expected a complete 256x212 display oracle')
     result = Image.new('RGB', (320, 240), palette_rgb(palette)[index_for(palette, (0, 0, 0))])
     result.paste(image, (32, 14))
+    if 'left_header' in image.info:
+        result.paste(image.info['left_header'],(32+DISPLAY_SHIFT,14))
     return result
 
 
@@ -45,7 +47,7 @@ def index_for(encoded, source):
     return palette_rgb(encoded).index(rgb)
 
 
-def header(assets, encoded, score=0, high=20000, player=1):
+def header(assets, encoded, score=0, high=20000, player=1, *, background=None):
     """Use all 32 original 8x8 cells, with inline values and no scaled glyphs."""
     if player not in (1,2):
         raise ValueError('Player label must be 1 or 2')
@@ -57,7 +59,7 @@ def header(assets, encoded, score=0, high=20000, player=1):
              (f'{player}UP:', white), (f'{score:06d}', cyan)]
     if sum(len(text) for text, _ in parts) != 32:
         raise ValueError('Scoreboard values must fit one 32-cell line')
-    result = bytearray([black]) * (256*8)
+    result = bytearray([black if background is None else background]) * (256*8)
     column = 0
     for text, color in parts:
         for char in text:
@@ -84,11 +86,11 @@ def outlined_life(mask):
                  for y in range(16) for x in range(16))
 
 
-def player_label_patterns(assets, palette):
+def player_label_patterns(assets, palette, *, background=None):
     """Extract the original 1/2 glyph at the current label position."""
     return b''.join(packed(bytes(line[y*256+PLAYER_LABEL_X+x]
                                   for y in range(8) for x in range(8)))
-                    for player in (1, 2) for line in [header(assets, palette, player=player)])
+                    for player in (1, 2) for line in [header(assets, palette, player=player,background=background)])
 
 
 def sprite_pattern(mask, shift=0):
@@ -98,18 +100,27 @@ def sprite_pattern(mask, shift=0):
                      for bit in range(8)) for x in (0, 8) for y in range(16))
 
 
-def sprite_attributes(cy, lives=2, points=None, footer=False):
+def sprite_attributes(cy, lives=2, points=None, footer=False,*,cells_only=False,bitmap_radar=False,separate_player=False):
     overlay = radar.attributes(cy, points['player'], points['enemy']) if points else b''
+    if cells_only:overlay=overlay[:48]
+    if bitmap_radar:overlay=b''
     result = overlay
+    if separate_player:
+        hidden=(cy-11+211)&255
+        result=bytes((hidden+int(hidden==216),0,0,0))+result
     if footer:
         result += life_counter.attributes(cy)
     elif points:
-        result += fuel.attributes(cy)
+        attrs=bytearray(fuel.attributes(cy))
+        if bitmap_radar:
+            for i in range(0,len(attrs),4):attrs[i]=(attrs[i]+80-radar.HEIGHT)&255
+        result += attrs
     return result + bytes([216])
 
 
 def compose(world, hud, life, palette, cx=0, cy=0, lives=2, points=None, player_color=None,
-            fuel_level=None, life_digits=None, *, width=256, fuel_pixels=None):
+            fuel_level=None, life_digits=None, *, width=256, fuel_pixels=None, actors=(),actor_top=BODY_TOP,
+            radar_back_points=(),life_outline=True):
     """Independent screen-coordinate oracle; no hardware-page/address calculations."""
     black, yellow = index_for(palette, (0, 0, 0)), index_for(palette, (255, 255, 0))
     pixels = bytearray([black]) * (256*212)
@@ -117,13 +128,35 @@ def compose(world, hud, life, palette, cx=0, cy=0, lives=2, points=None, player_
     for y in range(BODY_TOP, 212):
         for x in range(LEFT_MASK, 256-RIGHT_MASK):
             pixels[y*256+x] = world[(y-BODY_TOP+cy)*width+x-LEFT_MASK+cx]
+    if points:
+        for px,py in radar_back_points:
+            if px==255:continue
+            for y in range(py,py+2):
+                for x in range(px,px+2):
+                    pixels[(radar.Y+y)*256+radar.X+x]=index_for(palette,(255,0,0))
+    for actor,ax,ay in actors:
+        for y in range(16):
+            for x in range(16):
+                color=actor[y*16+x]
+                if color and LEFT_MASK<=ax+x<256 and actor_top<=ay+y<212:
+                    pixels[(ay+y)*256+ax+x]=color
     if life_digits is not None:
-        life_counter.paint(pixels, life, outlined_life(life), life_digits, lives, yellow, black,
+        life_counter.paint(pixels, life, outlined_life(life) if life_outline else life, life_digits, lives, yellow, black,
                            index_for(palette, (222, 222, 222)))
     if points:
         white, red = index_for(palette, (222, 222, 222)), index_for(palette, (255, 0, 0))
-        radar.paint(pixels, points['flags'], points['player'], points['enemy'], white, red,
-                    white if player_color is None else player_color)
+        if points.get('cells_only'):
+            from .radar_cells import paint
+            paint(pixels,points['flags'],points['player'],[points['enemy'],*points.get('extra_enemies',())],
+                  white,red,black,(cy-BODY_TOP)&255,square=points.get('square',True),cells=points.get('published_cells'))
+            if points.get('separate_player_visible'):
+                px,py=points['separate_player']
+                for y in range(py,py+2):
+                        for x in range(px,px+2):pixels[(radar.Y+y)*256+radar.X+x]=points['separate_player_color']
+        else:
+            radar.paint(pixels, points['flags'], points['player'], points['enemy'], white, red,
+                        white if player_color is None else player_color,border=points.get('border',True),square=points.get('square',False),
+                        enemies=points.get('extra_enemies',()))
     if fuel_level is not None:
         fuel_pixels = fuel.LEVELS[fuel_level]
     if fuel_pixels is not None:
@@ -133,29 +166,116 @@ def compose(world, hud, life, palette, cx=0, cy=0, lives=2, points=None, player_
     image.putdata([colors[index] for index in pixels])
     framed = Image.new('RGB', image.size, colors[black])
     framed.paste(image, (DISPLAY_SHIFT, 0))
+    if DISPLAY_SHIFT<0:framed.info['left_header']=image.crop((0,0,-DISPLAY_SHIFT,8))
     return framed
 
 
 def build(root, args):
     output = destination(root, args.output)
+    hud_enabled = not getattr(args, 'no_hud', False)
+    stage = getattr(args, 'stage', 0)
+    tile_mode=bool(getattr(args,'tile_mode',False))
+    if tile_mode and stage not in (0,1):
+        raise ValueError('SCREEN 4 prototype isolates the stage00/01 driving fixture')
+    player_blitter=bool(getattr(args,'player_blitter',False))
+    bitmap_radar=bool(getattr(args,'radar_blitter',False))
+    flicker=bool(getattr(args,'sprite_flicker',False))
+    if tile_mode and (player_blitter or bitmap_radar or flicker):
+        raise ValueError('SCREEN 4 fixture uses the established sprite player/HUD')
+    if bitmap_radar and (not player_blitter or not hud_enabled):
+        raise ValueError('Bitmap radar diagnostic requires --player-blitter and HUD enabled')
+    if player_blitter and stage>1:
+        raise ValueError('Player blitter integration currently isolates movement/rocks stages 00/01')
+    cells_only=stage>=9 and not getattr(args,'separate_radar_points',False) and not flicker
+    radar_player=bool(cells_only and hud_enabled and not getattr(args,'enemy_logic_only',False) and getattr(args,'enemies',None)!=0)
+    fuel_slot=12+radar_player if cells_only else FUEL_SLOT
+    player_slot=15+radar_player if cells_only else PLAYER_SLOT
+    hud_slots=15+radar_player if cells_only else HUD_SPRITES
+    if bitmap_radar:fuel_slot,player_slot,hud_slots=0,3,3
+    fuel_y=radar.Y+80+4 if bitmap_radar else fuel.Y
+    base_slots=hud_slots+2
+    if type(stage) is not int or stage not in range(10):
+        raise ValueError('Choose implemented incremental stage 0 through 9')
+    enemy_count=getattr(args,'enemies',None)
+    if enemy_count is None:enemy_count=2 if flicker else 1 if stage>=8 else 0
+    flicker_stress=bool(getattr(args,'flicker_stress',False))
+    if flicker_stress and (not flicker or not hud_enabled):raise ValueError('Flicker HUD-overlap stress fixture requires sprite flicker and HUD')
+    if enemy_count not in range(3) or enemy_count and stage<8 or enemy_count>1 and stage<9:
+        raise ValueError('Stage 08 supports one enemy; stage 09 adds the two-enemy diagnostic')
+    enemy_render=bool(enemy_count and not getattr(args,'enemy_logic_only',False))
+    enemy_contact=bool(enemy_render and not getattr(args,'enemy_render_only',False))
+    enemy_planes=getattr(args,'enemy_planes',None) or 2
+    if enemy_planes not in (1,2) or enemy_count==1 and enemy_planes!=2:
+        raise ValueError('The one-enemy reference keeps two planes; population diagnostics allow one or two')
+    if flicker and (stage!=9 or enemy_count!=2 or not enemy_render or enemy_planes!=2):
+        raise ValueError('Sprite flicker diagnostic requires stage09, two rendered enemies and two color planes')
+    bare_sat=bool(stage>=9 and enemy_count>=2 and not hud_enabled and cells_only)
+    if bare_sat:
+        fuel_slot,player_slot,hud_slots,base_slots=0,0,0,2
+    tile_strips=bool(getattr(args,'tile_strips',False))
+    if tile_strips and (stage!=9 or enemy_count<2):
+        raise ValueError('Tile-strip diagnostic requires stage09 with multiple enemies')
+    marker_quantum=getattr(args,'radar_quantum',1)
+    if marker_quantum not in (1,2) or marker_quantum!=1 and not (tile_strips and cells_only and hud_enabled):
+        raise ValueError('Radar quantization requires the stage09 compact HUD strip diagnostic')
+    static_life=bool(cells_only and hud_enabled and enemy_count>=2 and not tile_strips)
+    simple_maze=bool(getattr(args,'simple_maze',False))
+    if simple_maze and (stage!=9 or enemy_count<2):
+        raise ValueError('Simple-maze diagnostic requires stage09 with multiple enemies')
+    cache_columns=40 if stage>=9 else 48 if stage>=4 else 64
+    cache_guard=4 if stage>=9 else 8 if stage>=4 else 16
+    if getattr(args,'cache_columns',None):
+        cache_columns=args.cache_columns
+        if cache_columns in (36,40) and stage<9:raise ValueError('The 40-column cache is a stage09 experiment')
+        cache_guard=2 if cache_columns==36 else 4 if cache_columns==40 else 8 if cache_columns==48 else 16
     require_ignored(root, [output/'raster-scroll.rom'])
     palette, huds, colors, scenes = sources(args)
     from . import player as driver
-    palette,huds=driver.palette(palette,huds)
+    palette,huds=driver.palette(palette,huds,enemy=enemy_render)
     assets = load_assets(args.assets)
     from . import stage_one
     program, native = stage_one.acquire(root)
     cells, pairs, checked = stage_one.reconstruct(program, native)
+    rock_reference = None
+    rock_positions = []
+    rock_checked = 0
+    if stage >= 1:
+        from . import rocks
+        cells,rock_positions,rock_checked,rock_reference = rocks.acquire(root,program,cells)
+        source_video = (native/'video.bin').read_bytes()
+        pairs = [stage_one.tile(program,cells,x-3,y-3,source_video[0x2b1],source_video[0x2d6])
+                 for y in range(stage_one.TILE_ROWS) for x in range(stage_one.TILE_COLUMNS)]
     stage_world = stage_one.bitmap(pairs, assets, palette)
+    tile_data=None
+    if tile_mode:
+        from .tilemap import encode
+        before=stage_world
+        tile_data=encode(stage_world,palette)
+        stage_world=tile_data['world']
+        tile_data['source_world_sha256']=__import__('hashlib').sha256(before).hexdigest()
+    scenery_style=None
+    if simple_maze:
+        source=index_for(palette,(0,0,151));target=index_for(palette,(255,0,151))
+        protected=[(24+i%32*24,24+i//32*24,24,24)
+                   for i,kind in enumerate(cells) if kind in (1,2,3,4)]
+        original_world=stage_world
+        stage_world=driver.merge_scenery_color(stage_world,source,target,protected)
+        scenery_style=dict(mode='merge-blue-wall-outline',source_index=source,target_index=target,
+            protected_objects=len(protected),changed_pixels=sum(a!=b for a,b in zip(original_world,stage_world)),
+            source_world_sha256=__import__('hashlib').sha256(original_world).hexdigest(),
+            dimensions_unchanged=True,collision_world_unchanged=True)
     yellow = index_for(palette, (255, 255, 0))
     black = index_for(palette, (0, 0, 0))
+    header_background=black
+    radar_border=True
+    radar_square=stage>=8
     life = bytes(huds[0][(180+y)*56+x] == yellow for y in range(16) for x in range(16))
     patterns = bytes(128)  # Preserve established radar/fuel pattern indices.
     patterns += bytes(32)  # Retain subsequent pattern IDs; no mask pattern/SAT.
     flags = [(2+(i%32*24+36)*44//stage_one.WIDTH,
               2+(i//32*24+36)*54//stage_one.HEIGHT)
              for i,c in enumerate(cells) if c in (1,2,4)]
-    points = [dict(flags=flags, player=[2+(x+VIEWPORT_HALF)*44//stage_one.WIDTH,
+    points = [dict(flags=flags,border=radar_border,square=radar_square, player=[2+(x+VIEWPORT_HALF)*44//stage_one.WIDTH,
                                        2+(y+100)*54//stage_one.HEIGHT],
                    enemy=radar.capture_enemy(scene['path'], assets))
               for scene,(x,y) in zip(scenes,stage_one.LANDMARKS)]
@@ -164,8 +284,10 @@ def build(root, args):
     patterns += b''.join(sprite_pattern(mask, phase) for phase in (0,1)
                          for mask in (life, outlined_life(life)))+bytes(64)
     digits = life_counter.digit_masks(assets)
-    states = [header(assets, palette, i*5000, max(20000, i*5000)) for i in range(32)]
+    states = [header(assets, palette, i*5000, max(20000, i*5000),background=header_background) for i in range(32)]
     output.mkdir(parents=True)
+    (output/'rock-cells.bin').write_bytes(b''.join((0x9800+p['cell_y']*32+p['cell_x']).to_bytes(2,'little')
+        for p in rock_positions))
     banks = stage_one.tile_banks(stage_world)
     (output/'stage-world.bin').write_bytes(stage_world)
     (output/'stage-radar-x.bin').write_bytes(bytes(2+(x+VIEWPORT_HALF)*44//stage_one.WIDTH
@@ -184,13 +306,16 @@ def build(root, args):
         landmarks=stage_one.LANDMARKS, native_tiles_checked=checked,
         cells=1792, flags=cells.count(1), special_flags=cells.count(2),
         lucky_flags=cells.count(4), rocks=cells.count(3),
-        native_manifest=digest(native/'manifest.json')))
+        native_manifest=digest(native/'manifest.json'),
+        rock_fixture=(dict(original_parameter_round=3, positions=rock_positions,
+                           native_tiles_checked=rock_checked,
+                           manifest_sha256=digest(rock_reference/'manifest.json')) if rock_reference else None)))
     hud_bank = len(banks)+1
     # A single font bank supports every six-digit score, not 32 fixed values.
     pair_fonts = bytearray()
     for color in (index_for(palette,(0,151,222)), index_for(palette,(255,0,0))):
         for value in range(100):
-            pair = bytearray([black])*(16*8)
+            pair = bytearray([header_background])*(16*8)
             for column,digit in enumerate((value//10,value%10)):
                 glyph=assets.pixels['tiles'][digit*64:(digit+1)*64]
                 for y in range(8):
@@ -198,28 +323,194 @@ def build(root, args):
                         if assets.palette['lookup'][38*4+glyph[y*8+x]]:
                             pair[y*16+column*8+x]=color
             pair_fonts.extend(packed(pair))
-    data = packed(header(assets,palette,high=0))+pair_fonts
+    data = (packed(header(assets,palette,high=0,background=header_background)) if hud_enabled else bytes([black*17])*1024)+pair_fonts
     data += bytes(16384-len(data))
+    if tile_strips:
+        if any(data[0x3f00:0x3fc0]):raise ValueError('Demo digits overlap HUD fonts')
+        data=bytearray(data)
+        data[0x3f00:0x3fc0]=bytes(int(c) for i in range(32) for c in f'{i*5000:06d}')
     banks.append(bytes(data))
     resources = b''.join(fuel.gauge_patterns(i) for i in range(31))
     resources += bytes(4096-len(resources))
-    resources += radar.patterns(radar.bitmap([]))
-    resources += player_label_patterns(assets, palette)
+    resources += radar.patterns(radar.bitmap([],border=radar_border,square=radar_square))
+    resources += player_label_patterns(assets, palette,background=header_background)
     banks.append(resources+bytes(16384-len(resources)))
     player_bank=len(banks)+1
-    banks.extend(driver.build(output,program,(native/'video.bin').read_bytes(),assets))
-    atlas,ids,atlas_count=driver.atlas(stage_world)
+    banks.extend(driver.build(output,program,(native/'video.bin').read_bytes(),assets,rock_collision=stage>=2,scoring=stage>=5,fuel=stage>=6,lives=stage>=7,enemies=bool(enemy_count),enemy_count=enemy_count))
+    if player_blitter:
+        pixels=(output/'player-pixels.bin').read_bytes()
+        player_atlas=bytes(v for y in range(16) for frame in range(12)
+            for v in packed(pixels[frame*256+y*16:frame*256+y*16+16]))
+        data=bytearray(banks[player_bank])
+        if any(data[0x800:0x800+len(player_atlas)]):raise ValueError('Player blitter source overlaps bank resources')
+        data[0x800:0x800+len(player_atlas)]=player_atlas
+        if bitmap_radar:
+            blue=index_for(palette,(0,0,151));white=index_for(palette,(222,222,222))
+            image=bytearray([blue])*(48*80)
+            for x,y in flags:
+                y=2+(y-2)*76//54
+                for row in range(2):image[(y+row)*48+x:(y+row)*48+x+2]=bytes([white])*2
+            radar_data=packed(image)
+            if any(data[0xe00:0xe00+len(radar_data)]):raise ValueError('Bitmap radar source overlaps bank data')
+            data[0xe00:0xe00+len(radar_data)]=radar_data
+            (output/'radar-bitmap.bin').write_bytes(radar_data)
+            (output/'radar-bitmap-y.bin').write_bytes(bytes(255 if y==255 else min(78,2+max(0,y-2)*76//54) for y in range(256)))
+        banks[player_bank]=bytes(data)
+    death_reference=None
+    death_tiles=[]
+    death_ticks=0
+    flag_records=[]
+    empty_tiles=[]
+    if stage>=3:
+        from . import death
+        death_pairs,death_ticks,death_reference=death.acquire(root)
+        death_tiles=death.pixels(death_pairs,assets,palette)
+    if stage>=4:
+        from . import flags as collection
+        flag_records=collection.records((native/'video.bin').read_bytes(),cells)
+        empty_pairs=[stage_one.tile(program,bytes(1792),x,y,0,0) for y in range(3) for x in range(3)]
+        empty_tiles=death.pixels(empty_pairs,assets,palette)
+        if len(set(empty_tiles))!=1:raise ValueError('Original empty flag cell is not a uniform tile')
+        empty_tiles=empty_tiles[:1]
+    source_xy=bool(stage>=9 and enemy_count>=2)
+    atlas,ids,atlas_count,extra_ids=driver.atlas_with_tiles(stage_world,death_tiles+empty_tiles,force_source_xy=source_xy)
+    source_xy=bool(source_xy or atlas_count>32)
+    death_ids=extra_ids[:len(death_tiles)]
+    if stage>=6:
+        for i in range(0,9,3):
+            if death_ids[i]%32>29 or death_ids[i:i+3]!=list(range(death_ids[i],death_ids[i]+3)):
+                raise ValueError('Original explosion row is not contiguous in its command atlas')
+    empty_id=extra_ids[-1] if empty_tiles else 0
+    flag_row=0
+    if enemy_render:
+        # Three copies of the original empty tile occupy spare atlas slots.
+        # One 24x8 command replaces three individual collected-flag copies.
+        flag_row=atlas_count
+        if flag_row%32>29:flag_row+=32-flag_row%32
+        if flag_row+3>len(atlas)//32:raise ValueError('No spare atlas row for collected-flag brush')
+        atlas=bytearray(atlas)
+        for y in range(8):
+            at=(flag_row//32*8+y)*128+flag_row%32*4
+            atlas[at:at+12]=packed(empty_tiles[0][y*8:y*8+8])*3
+        atlas=bytes(atlas)
+    if stage>=4:ids=collection.encode_owners(ids,flag_records)
+    if stage>=9 and enemy_count>=2:
+        ids=driver.uniform_source_tags(atlas,ids)
+    if tile_strips:
+        from .tile_strips import candidates
+        ids=candidates(ids)
+    (output/'flag-records.bin').write_bytes(b''.join(f['address'].to_bytes(2,'little')+
+        bytes((f['kind'],f['hud_slot'],f['tile_x'],f['tile_y'])) for f in flag_records))
+    json_write(output/'flags.json',dict(records=flag_records,empty_tile=empty_id,
+        ownership_encoding='source-X bit 0 marker; source-Y high nibble slot+1' if stage>=4 else None))
+    (output/'death-sources.bin').write_bytes(bytes(v for i in death_ids for v in ((i%32)*8,16+i//32*8)))
+    (output/'death-pixels.bin').write_bytes(b''.join(death_tiles))
     (output/'stage-atlas.bin').write_bytes(atlas)
+    if stage>=8:
+        if len(atlas)>4096:raise ValueError('Command atlas exceeds spare player data-bank space')
+        data=bytearray(banks[player_bank])
+        if any(data[0x3000:]):raise ValueError('Player data-bank atlas region is not empty')
+        data[0x3000:0x3000+len(atlas)]=atlas
+        banks[player_bank]=bytes(data)
+    enemy_mask_bank=0
+    enemy_pair_bank=0
+    if enemy_render:
+        # Twelve facings x sixteen left clips x two mode-2 planes, 12 KiB.
+        # Precompute this exact masking operation outside the raster deadline.
+        enemy_mask_bank=len(banks)+1
+        masks=banks[player_bank][:1536]
+        def enemy_masks(index):
+            result=masks[index*128:index*128+64]
+            return bytes(a|b for a,b in zip(result[:32],result[32:]))+bytes(32) if enemy_planes==1 else result
+        clipped=b''.join(driver.clipped_masks(enemy_masks(index),clip)
+                         for index in range(12) for clip in range(16))
+        dot_patterns=b''.join(sprite_pattern(bytes(int(x<=px<x+2 and y<=py<y+2)
+                            for py in range(16) for px in range(16)),shift)
+                       for y in range(8) for x in range(8) for shift in (0,1))
+        if len(clipped)!=12288 or len(dot_patterns)!=4096:raise ValueError('Enemy mask/radar bank layout changed')
+        banks.append(clipped+dot_patterns)
+        if enemy_count>1 and not cells_only:
+            enemy_pair_bank=len(banks)+1
+            for diagonal in range(2):
+                patterns_pair=bytearray()
+                for dy in range(16):
+                    for dx in range(16):
+                        if dx>=15 or dy>=14:
+                            patterns_pair.extend(bytes(64))  # guarded, unreachable table entries
+                            continue
+                        dots=((0,dy),(dx,0)) if diagonal else ((0,0),(dx,dy))
+                        mask=bytes(int(any(ax<=x<ax+2 and ay<=y<ay+2 for ax,ay in dots))
+                                   for y in range(16) for x in range(16))
+                        patterns_pair.extend(b''.join(sprite_pattern(mask,phase) for phase in (0,1)))
+                if len(patterns_pair)!=16384:raise ValueError('Paired radar table layout changed')
+                banks.append(bytes(patterns_pair))
+    radar_cache_bank=0
+    radar_sat_bank=0
+    if cells_only:
+        from .radar_cells import dirty_table,base_variants
+        radar_cache_bank=len(banks)+1
+        variants,offsets=base_variants(flags,border=radar_border,square=radar_square)
+        (output/'radar-cell-flag-offsets.bin').write_bytes(offsets)
+        table=dirty_table()+variants
+        banks.append(table+bytes(16384-len(table)))
+        radar_sat_bank=len(banks)+1
+        coordinate_table=b''.join(sprite_attributes((scroll+11)&255,
+            points=dict(player=[2,2],enemy=[2,2]),cells_only=True,separate_player=radar_player)[:hud_slots*4] for scroll in range(256))
+        if len(coordinate_table)!=hud_slots*4*256:raise ValueError('Compact coordinate-table size changed')
+        (output/'radar-coordinates.bin').write_bytes(coordinate_table)
+        banks.append(coordinate_table+bytes(16384-len(coordinate_table)))
+    tile_data_bank=0
+    if tile_mode:
+        tile_data_bank=len(banks)+1
+        banks.append(tile_data['patterns']+tile_data['colors'])
+        ids=tile_data['banks']
+        (output/'tile-patterns.bin').write_bytes(tile_data['patterns'])
+        (output/'tile-colors.bin').write_bytes(tile_data['colors'])
     id_bank=len(banks)+1
     banks.extend(ids)
-    json_write(output/'stage-atlas.json',dict(tiles=atlas_count,vram=0x10800,id_bank=id_bank))
+    strip_info=None;strip_h_bank=strip_v_bank=0;strip_div3_addr=0
+    if tile_strips:
+        from .tile_strips import encode
+        strips=encode(stage_world)
+        strip_h_bank=len(banks)+1
+        htable=bytearray(strips['horizontal']['table'])
+        data_offset=0x1800
+        hdata=strips['horizontal']['pixels'];vdata=strips['vertical']['pixels']
+        div_offset=data_offset+len(hdata)+len(vdata)
+        if div_offset+256>16384:
+            raise ValueError('Strip graphics exceed spare horizontal-lookup bank space')
+        htable[16384+data_offset:16384+data_offset+len(hdata)]=hdata
+        voffset=data_offset+len(hdata)
+        htable[16384+voffset:16384+voffset+len(vdata)]=vdata
+        htable[16384+div_offset:16384+div_offset+256]=bytes(i//3 for i in range(256))
+        strip_div3_addr=0x8000+div_offset
+        banks.extend((bytes(htable[:16384]),bytes(htable[16384:])))
+        strip_v_bank=len(banks)+1;banks.append(strips['vertical']['table'])
+        init=[]
+        for axis,offset in (('horizontal',data_offset),('vertical',voffset)):
+            data=strips[axis];dest=data['vram']
+            (output/f'strip-{axis}.bin').write_bytes(data['pixels'])
+            init.extend((f'    ld a,{strip_h_bank+1}', '    ld ($7000),a',
+                f'    vdp_write 14,{dest//16384}',f'    ld a,{dest%16384&255}',
+                '    out ($99),a',f'    ld a,{64+(dest%16384>>8)}','    out ($99),a',
+                f'    ld hl,${0x8000+offset:04x}',f'    ld de,{len(data["pixels"])}','    call upload'))
+        init.extend(('    ld a,PLAYER_DATA_BANK','    ld ($7000),a','    ret'))
+        (output/'strip-init.inc').write_text('\n'.join(init)+'\n')
+        (output/'strip-div3.bin').write_bytes(bytes(i//3 for i in range(256)))
+        strip_info=dict(horizontal_unique=strips['horizontal']['unique'],vertical_unique=strips['vertical']['unique'],
+            vram_bytes=len(hdata)+len(vdata),horizontal_lookup_bank=strip_h_bank,vertical_lookup_bank=strip_v_bank,
+            source_pixels_unchanged=True,maximum_tiles_per_command=3)
+    json_write(output/'stage-atlas.json',dict(tiles=atlas_count,vram=0x10800,id_bank=id_bank,
+        bytes=len(atlas),rows=len(atlas)//128,
+        world_tile_address_encoding=('source-xy-solid-tags' if stage>=9 and enemy_count>=2 else 'source-xy') if source_xy else 'index8',
+        world_address_banks=len(ids)))
     (output/'player-radar-x.bin').write_bytes(bytes(2+(i*8+4)*44//stage_one.WIDTH for i in range(102)))
     (output/'player-radar-y.bin').write_bytes(bytes(2+(i*8+4)*54//stage_one.HEIGHT for i in range(174)))
     (output/'hud-states.bin').write_bytes(b''.join(packed(state) for state in states))
     (output/'life.bin').write_bytes(life)
     (output/'life-digits.bin').write_bytes(digits)
     (output/'sprite-patterns.bin').write_bytes(patterns)
-    (output/'radar-patterns.bin').write_bytes(radar.patterns(radar.bitmap([])))
+    (output/'radar-patterns.bin').write_bytes(radar.patterns(radar.bitmap([],border=radar_border,square=radar_square)))
     (output/'radar-enemies.bin').write_bytes(bytes(v for p in points for v in p['enemy']))
     (output/'hud-fuel-scale.bin').write_bytes(bytes(min(i,54)*30//54 for i in range(256)))
     (output/'hud-project-x.bin').write_bytes(bytes(2+x*44//64 for x in range(64)))
@@ -230,33 +521,76 @@ def build(root, args):
                                       height=radar.HEIGHT, scenes=points))
     white = index_for(palette, (222, 222, 222))
     red = index_for(palette, (255, 0, 0))
-    sprite_colors = bytes([white | 0x20])*(16*13) + bytes([red | 0x20])*16
+    sprite_colors = bytes([white | 0x20])*(16*12)
+    if radar_player:sprite_colors=bytes([black|0x20])*16+sprite_colors
+    if not cells_only:sprite_colors+=bytes([white|0x20])*16+bytes([red|0x20])*16
     sprite_colors += b''.join(bytes([c | 0x20])*16 for c in (white, yellow, yellow))
     sprite_colors += bytes([3|0x20])*16+bytes([9|0x60])*16
+    if bitmap_radar:sprite_colors=sprite_colors[14*16:]
+    if enemy_render:
+        sprite_colors+=(bytes([6|0x20])*16+(bytes([10|0x60])*16 if enemy_planes==2 else b''))*enemy_count
+        if enemy_count>1 and hud_enabled and not cells_only:sprite_colors+=bytes([red|0x20])*16
+    if bare_sat:sprite_colors=sprite_colors[15*16:]
     (output/'sprite-colors.bin').write_bytes(sprite_colors)
-    (output/'sprite-attributes.bin').write_bytes(sprite_attributes(0, points=dict(player=[2,2],enemy=[2,2])))
+    if stage>=9:
+        initial=patterns+radar.patterns(radar.bitmap([],border=radar_border,square=radar_square))
+        data=bytearray(banks[hud_bank])
+        if any(data[0x1800:0x1800+len(initial)]):raise ValueError('HUD initialization resources overlap')
+        data[0x1800:0x1800+len(initial)]=initial
+        banks[hud_bank]=bytes(data)
+    (output/'sprite-attributes.bin').write_bytes(bytes([216]) if bare_sat else sprite_attributes(0, points=dict(player=[2,2],enemy=[2,2]),cells_only=cells_only,bitmap_radar=bitmap_radar,separate_player=radar_player))
     (output/'palette.bin').write_bytes(palette)
     for n, bank in enumerate(banks, 1):
         (output/f'bank-{n}.bin').write_bytes(bank)
     size = 16384*(1 << len(banks).bit_length())
     (output/'config.inc').write_text(
-        f'HUD_WORK_BASE EQU $c000\nHUD_API_BASE EQU $c300\n'
+        ('    DEFINE HUD_ENEMY_METER 1\n' if enemy_render else '')+
+        ('    DEFINE HUD_COLLECTION_METER 1\n' if stage>=4 else '')+
+        ('    DEFINE HUD_SCORING_METER 1\n' if stage>=5 else '')+
+        ('    DEFINE HUD_FUEL_METER 1\n' if stage>=6 else '')+
+        f'TILE_MODE EQU {int(tile_mode)}\nTILE_DATA_BANK EQU {tile_data_bank}\nMAZE_R0 EQU {4 if tile_mode else 6}\nMAZE_R2 EQU {0x28 if tile_mode else 0x3f}\n'
+        f'HUD_WORK_BASE EQU $c000\nHUD_API_BASE EQU $c300\nHUD_ENABLED EQU {int(hud_enabled)}\n'
         f'VDP_R9 EQU {video_timing(args.hz)["vdp_r9"]}\nBLACK EQU {black}\n'
         f'HUD_BANK EQU {hud_bank}\nHUD_DATA_BANK EQU {hud_bank+1}\nBODY_TOP EQU {BODY_TOP}\nLIFE_Y EQU {LIFE_Y}\n'
         f'PLAYER_BANK EQU {player_bank}\nPLAYER_DATA_BANK EQU {player_bank+1}\n'
         f'STAGE_ID_BANK EQU {id_bank}\n'
+        f'STAGE_ATLAS_TILES EQU {atlas_count}\nSTAGE_SOURCE_XY EQU {int(source_xy)}\nSTAGE_ATLAS_BYTES EQU {len(atlas)}\n'
+        f'STAGE_BANKED_ATLAS EQU {int(stage>=8)}\nENEMY_COUNT EQU {enemy_count}\n'
+        f'ENEMY_RENDER EQU {int(enemy_render)}\n'
+        f'ENEMY_CONTACT EQU {int(enemy_contact)}\n'
+        f'ENEMY_MASK_BANK EQU {enemy_mask_bank}\n'
+        f'ENEMY_PAIR_BANK EQU {enemy_pair_bank}\nENEMY_PAIR_RADAR EQU {int(enemy_count>1 and enemy_render and not cells_only)}\n'
+        f'RADAR_CELLS_ONLY EQU {int(cells_only)}\nRADAR_CACHE_BANK EQU {radar_cache_bank}\n'
+        f'RADAR_PLAYER_SPRITE EQU {int(radar_player)}\nRADAR_MAP_SLOT EQU {int(radar_player)}\nRADAR_PLAYER_PATTERN EQU {232 if enemy_count>1 else 240}\n'
+        f'RADAR_SAT_BANK EQU {radar_sat_bank}\n'
+        f'PLAYER_BLITTER EQU {int(player_blitter)}\n'
+        f'RADAR_BLITTER EQU {int(bitmap_radar)}\n'
+        f'SPRITE_FLICKER EQU {int(flicker)}\nFLICKER_SLOTS EQU {24 if hud_enabled else 23}\n'
+        f'FLICKER_STRESS EQU {int(flicker_stress)}\n'
+        f'RADAR_BLUE EQU {index_for(palette,(0,0,151))}\n'
+        f'RASTER_GUARD EQU {int(enemy_render or player_blitter or tile_mode)}\nStage_GuardClosed EQU $c5e8\n'
+        f'STAGE_GUARD_LINE EQU {(140 if tile_strips and hud_enabled and cells_only else 196 if bare_sat or simple_maze or tile_strips else 202) if stage>=9 else 196}\n'
+        f'STAGE_SOLID_RUN_TILES EQU {8 if simple_maze else 4}\n'
+        f'RADAR_MARKER_QUANTUM EQU {marker_quantum}\nSTAGE_TILE_STRIPS EQU {int(tile_strips)}\nSTRIP_H_BANK EQU {strip_h_bank}\nSTRIP_V_BANK EQU {strip_v_bank}\n'
+        f'STRIP_DIV3_ADDR EQU ${strip_div3_addr:04x}\n'
+        f'FLAG_ROW_X EQU {flag_row%32*8}\nFLAG_ROW_Y EQU {16+flag_row//32*8}\n'
+        f'STAGE_CACHE_COLUMNS EQU {cache_columns}\nSTAGE_CACHE_GUARD EQU {cache_guard}\n'
+        f'INCREMENTAL_STAGE EQU {stage}\nROCK_COUNT EQU {len(rock_positions)}\n'
+        f'DEATH_HOLD_TICKS EQU {death_ticks}\n'
+        f'FLAG_EMPTY_X EQU {(empty_id%32)*8}\nFLAG_EMPTY_Y EQU {16+empty_id//32*8}\n'
         f'PLAYER_RATE EQU {round((video_timing(args.hz)["frame_seconds"]/.0165-1)*65536)}\n'
         f'LIFE_X0 EQU {LIFE_X[0]}\nLIFE_X1 EQU {LIFE_X[1]}\nMASK_SPRITES EQU {len(MASK_ROWS)}\n'
         f'VIEWPORT_WIDTH EQU {VIEWPORT_WIDTH}\nVIEWPORT_HALF EQU {VIEWPORT_HALF}\n'
         f'HORIZONTAL_ADJUST EQU {HORIZONTAL_ADJUST}\nPLAYER_X EQU {PLAYER_X}\n'
         f'PLAYER_LABEL_X EQU {PLAYER_LABEL_X}\nSCORE_X EQU {SCORE_X}\n'
-        f'FUEL_SLOT EQU {FUEL_SLOT}\nPLAYER_SLOT EQU {PLAYER_SLOT}\n'
-        f'FUEL_COLORS EQU $f400+{FUEL_SLOT}*16\nFUEL_ATTRIBUTES EQU $f600+{FUEL_SLOT}*4\n'
+        f'FUEL_SLOT EQU {fuel_slot}\nPLAYER_SLOT EQU {player_slot}\n'
+        f'HUD_STATIC_LIFE EQU {int(static_life)}\n'
+        f'FUEL_COLORS EQU $f400+{fuel_slot}*16\nFUEL_ATTRIBUTES EQU $f600+{fuel_slot}*4\n'
         f'PLAYER_COLORS EQU $f400+12*16\n'
-        f'SAT_BYTES EQU {HUD_SPRITES*4+1}\nPATTERN_BYTES EQU {len(patterns)}\n'
-        f'SPRITE_COLOR_BYTES EQU {len(sprite_colors)}\nWHITE EQU {white}\n'
+        f'SAT_BYTES EQU {hud_slots*4+1}\nPATTERN_BYTES EQU {len(patterns)}\n'
+        f'SPRITE_COLOR_BYTES EQU {len(sprite_colors)}\nWHITE EQU {white}\nRED EQU {red}\n'
         f'RADAR_X EQU {radar.X}\nRADAR_Y EQU {radar.Y}\n'
-        f'YELLOW EQU {yellow}\nFUEL_Y EQU {fuel.Y}\nLIFE_SPLIT EQU {LIFE_SPLIT}\n')
+        f'YELLOW EQU {yellow}\nFUEL_Y EQU {fuel_y}\nLIFE_SPLIT EQU {LIFE_SPLIT}\n')
     (output/'payload.inc').write_text(''.join(f'    INCBIN "bank-{n}.bin"\n' for n in range(1, len(banks)+1))
                                       + f'    defs {size}-$+16384,$ff\n')
     with (output/'config.inc').open('a') as config:
@@ -265,6 +599,24 @@ def build(root, args):
             f'STAGE_ROWS EQU {stage_one.TILE_ROWS}\n')
     shutil.copyfile(root/'src/stage-one-stream.inc', output/'stage-one-stream.inc')
     shutil.copyfile(root/'src/player.inc',output/'player.inc')
+    if player_blitter:shutil.copyfile(root/'src/bitmap-player.inc',output/'bitmap-player.inc')
+    if bitmap_radar:shutil.copyfile(root/'src/bitmap-radar.inc',output/'bitmap-radar.inc')
+    if flicker:shutil.copyfile(root/'src/sprite-flicker.inc',output/'sprite-flicker.inc')
+    if tile_mode:shutil.copyfile(root/'src/tilemap.inc',output/'tilemap.inc')
+    if stage>=9:shutil.copyfile(root/'src/sprite-upload.inc',output/'sprite-upload.inc')
+    shutil.copyfile(root/'src/rock-collision.inc',output/'rock-collision.inc')
+    shutil.copyfile(root/'src/death.inc',output/'death.inc')
+    shutil.copyfile(root/'src/flags.inc',output/'flags.inc')
+    shutil.copyfile(root/'src/score.inc',output/'score.inc')
+    shutil.copyfile(root/'src/fuel.inc',output/'fuel.inc')
+    shutil.copyfile(root/'src/lives.inc',output/'lives.inc')
+    if tile_strips:shutil.copyfile(root/'src/tile-strips.inc',output/'tile-strips.inc')
+    from .enemy_population import assembly as enemy_assembly
+    (output/'enemy.inc').write_text(enemy_assembly((root/'src/enemy.inc').read_text(),enemy_count,enemy_planes,compact=cells_only,player_slot=player_slot,radar_player=radar_player)
+                                  if enemy_render else (root/'src/enemy.inc').read_text())
+    if cells_only:shutil.copyfile(root/'src/radar-cells.inc',output/'radar-cells.inc')
+    if enemy_count>1 and enemy_render and not cells_only:
+        shutil.copyfile(root/'src/enemy-radar-pair.inc',output/'enemy-radar-pair.inc')
     (output/'stage-flower-phase.bin').write_bytes(bytes((i-256 if i>=224 else i)%3 for i in range(256)))
     for name in ('hud.inc','hud-api.inc','hud-demo.inc','hud-native.inc','hud-state.inc','hud-assets.inc','hud-raster.inc'):
         shutil.copyfile(root/'src'/name,output/name)
@@ -280,20 +632,93 @@ def build(root, args):
         raise ValueError('Unexpected raster cartridge size')
     json_write(output/'build.json', dict(schema_version=1, experiment='full-screen-hardware-raster',
         step_pixels=1, strip_border_flowers=False, timing=video_timing(args.hz),
+        incremental_stage=stage, hud_enabled=hud_enabled, full_arcade_loop=False,
+        scenery_style=scenery_style,
+        tile_strips=strip_info,
+        player_blitter=player_blitter,
+        radar_blitter=bitmap_radar,
+        sprite_flicker=(dict(mode='Alternate canonical priority / two complete enemy pairs in radar slots6..9, displaced cells in slots19..22',
+                            phases=2,phase_address=0xc7c0,source_sha256=digest(root/'src/sprite-flicker.inc'),
+                            stationary_stress_fixture=flicker_stress,
+                            hardware_sprite_limit_enabled=True,allocation_unchanged=True,
+                            scope='Priority rotation experiment; overloaded scanlines intentionally lose lower-priority pixels') if flicker else None),
+        hud_style=dict(header_background=header_background,radar_border=False if bitmap_radar else radar_border,radar_square=radar_square,radar_background='blue' if bitmap_radar else 'transparent',additional_sprite_slots=0,
+                       life_outline=not static_life,static_fuel_life_colors=static_life,
+                       radar_bitmap_size=[48,80] if bitmap_radar else None,
+                       radar_background_index=index_for(palette,(0,0,151)) if bitmap_radar else None,
+                       radar_marker_state_address=0xcf60 if cells_only and hud_enabled else None,
+                       radar_flag_state_address=0xcfa8 if cells_only and hud_enabled else None,
+                       radar_dirty_state_address=0xcf08 if cells_only and hud_enabled else None,
+                       radar_ready_state_address=0xcf12 if cells_only and hud_enabled else None,
+                       radar_cells_per_refresh=1 if cells_only else None,
+                       coordinates_direct_rom=bool(cells_only),
+                       radar_presentation_latency_refreshes=1 if cells_only else None,
+                       radar_upload_after_line=80 if cells_only and hud_enabled else None,
+                       radar_pending_refresh_limit=16 if cells_only else None,
+                       radar_coordinate_lookup_bank=radar_sat_bank if cells_only else None,
+                       radar_marker_quantum=marker_quantum,
+                       radar_player_sprite=radar_player,radar_player_slot=0 if radar_player else None,
+                       radar_player_pattern=232 if enemy_count>1 else 240,
+                       radar_player_blink_ticks=8 if radar_player else None,
+                       radar_player_blink_colors=['white','black'] if radar_player else None,
+                       radar_map_first_slot=int(radar_player),
+                       radar_cells_only=cells_only,radar_row_recoloring='Red enemies recolor white flags/frame on affected sprite rows; independent player alternates white/black above the map' if radar_player else 'Black player overrides red enemies overrides white flags/frame on affected sprite rows' if cells_only else None),
+        tile_mode=(dict(mode='SCREEN 4',tiles=tile_data['tiles'],changed_pixels=tile_data['changed_pixels'],
+                        total_pixels=len(stage_world),source_world_sha256=tile_data['source_world_sha256'],
+                        patterns_vram=0,colors_vram=0x4000,name_tables_vram=[0x2000,0xa000],
+                        sprite_slots_added=0,dimensions_unchanged=True) if tile_mode else None),
+        enemy_count=enemy_count,enemy_rendered=enemy_render,enemy_contact_applies_death=enemy_contact,atlas_banked=stage>=8,
+        rock_collision=stage>=2, rock_sprite_slots=0,
+        cache_columns=cache_columns,cache_horizontal_guard_tiles=cache_guard,
+        cache_solid_runs=bool(stage>=9 and enemy_count>=2),
+        cache_solid_run_tiles=8 if simple_maze else 4,
+        radar_work_phase='adaptive post-cache tail (140/196), next-refresh publication' if tile_strips and hud_enabled and cells_only else None,
+        gameplay_systems=['player movement', 'steering', 'wall collision', 'player animation']+
+                         (['static original rock bitmap fixture'] if stage >= 1 else [])+
+                         (['rock contact events'] if stage >= 2 else [])+
+                         (['bitmap explosion and logical death hold'] if stage >= 3 else [])+
+                         (['persistent flag collection'] if stage>=4 else [])+
+                         (['original flag points, digit carry and high score'] if stage>=5 else [])+
+                         (['original decimal fuel consumption, empty deceleration and bounded lucky conversion'] if stage>=6 else [])+
+                         (['original single-player life loss, same-round restart and stopped zero-life run'] if stage>=7 else [])+
+                         (['selected original enemy initialization, motion, facing, AI and virtual visibility'] if enemy_count else [])+
+                         (['original enemy silhouettes and live radar' if enemy_planes==1 else 'exact enemy sprite masks and live radar'] if enemy_render else [])+
+                         (['original enemy contact through explosion/lives'] if enemy_contact else []),
+        death=(dict(hold_ticks=death_ticks,anchor_bias=[-9,-8],width=24,height=24,
+                    display_state_address=0xc49a if stage>=9 else 0xc490,
+                    presentation_latency_refreshes=1 if stage>=9 else 0,
+                    sprite_slots=0,manifest_sha256=digest(death_reference/'manifest.json'),
+                    completion=('same-round restart or stopped zero-life run; final hold 96 ticks' if stage>=7 else
+                                'restore terrain and wait for diagnostic Home; lives/restart deferred to stage 07'))
+               if death_reference else None),
+        hud_values=(('live score/high score/fuel/lives and player/flag radar; enemy fixture' if stage>=7 else
+                     'live score/high score/fuel and player/flag radar; life/enemy fixtures' if stage>=6 else
+                     'live score/high score and player/flag radar; fuel/life/enemy fixtures' if stage>=5 else
+                     'live player/flag radar; score/fuel/life/enemy fixtures' if stage>=4 else 'diagnostic fixtures')
+                    if hud_enabled else 'disabled'),
+        scoring=(dict(adapter='Exact hundred-point carry groups; original high-score/bonus-life checks at reachable boundaries',
+                      original_increment=0x2119,original_checks=0x2064,lucky_fuel_conversion='bounded tick adapter' if stage>=6 else 'pending stage 06',
+                      publication='After dirty terrain; scoring reserves remaining guard work for that refresh') if stage>=5 else None),
         geometry=dict(width=256, height=212, header_height=HUD_HEIGHT, separator=[8, BODY_TOP],
                       maze=[LEFT_MASK, BODY_TOP, 256-RIGHT_MASK, 212], left_mask=LEFT_MASK,
                       right_mask=RIGHT_MASK, header=[LEFT_MASK, 0, 256, HUD_HEIGHT],
                       horizontal_adjust=HORIZONTAL_ADJUST, display_shift=DISPLAY_SHIFT,
                       framed_maze=[4, BODY_TOP, 252, 212]),
         sprites=dict(size=[16, 16], life_y=LIFE_Y, life_x=list(LIFE_X), layers_per_life=2,
+                     player_forbidden_y_bias=-1 if (stage>=9 or tile_mode) and not player_blitter else 0,
                      life_size=[16,16], life_magnification=1, life_split=LIFE_SPLIT,
-                     life_counter_slots=3, life_reuses_fuel_slots=list(range(FUEL_SLOT,FUEL_SLOT+3)),
-                     maximum_lives=9, margin_slots=0, radar_slots=14, hud_slots=HUD_SPRITES,
-                     player_slots=2, player_first_slot=PLAYER_SLOT, total_slots=TOTAL_SPRITES, free_slots=32-TOTAL_SPRITES,
+                     life_counter_slots=0 if bare_sat else 3, life_reuses_fuel_slots=[] if bare_sat else list(range(fuel_slot,fuel_slot+3)),
+                     maximum_lives=9, margin_slots=0, radar_slots=0 if bitmap_radar or bare_sat else 12+radar_player if cells_only else 14+int(enemy_count>1 and enemy_render and hud_enabled),
+                     hud_slots=hud_slots+int(enemy_count>1 and enemy_render and hud_enabled and not cells_only),
+                     player_slots=0 if player_blitter else 2, player_first_slot=player_slot,enemy_slots=enemy_planes*enemy_count if enemy_render else 0,
+                     extra_enemy_radar_slots=int(enemy_count>1 and enemy_render and hud_enabled and not cells_only),
+                     total_slots=base_slots-2*player_blitter+enemy_planes*enemy_count*enemy_render+int(enemy_count>1 and enemy_render and hud_enabled and not cells_only),
+                     free_slots=32-base_slots+2*player_blitter-enemy_planes*enemy_count*enemy_render-int(enemy_count>1 and enemy_render and hud_enabled and not cells_only),
                      black=black, yellow=yellow, white=white, red=red), colors=colors, size=size,
         scenes=[dict(number=s['number'], world_origin=stage_one.LANDMARKS[i])
                 for i,s in enumerate(scenes)],
         inputs=dict(assets=digest(args.assets/'manifest.json'),
+                    rock_fixture=digest(rock_reference/'manifest.json') if rock_reference else None,
                     captures=[digest(s['path']/'manifest.json') for s in scenes],
                     hud=[digest(p/'manifest.json') for p in (args.normal, args.overlap)]),
         source_sha256={p:digest(root/p) for p in ('src/raster-scroll.asm', 'scripts/msx/raster_scroll.py',
@@ -301,9 +726,36 @@ def build(root, args):
                        'scripts/msx/sprite_fuel.py', 'scripts/msx/sprite_lives.py',
                        'src/stage-one-stream.inc', 'src/hud.inc', 'src/hud-api.inc', 'src/hud-demo.inc', 'src/hud-native.inc', 'src/hud-state.inc', 'src/hud-assets.inc', 'src/hud-raster.inc', 'scripts/msx/stage_one.py',
                        'scripts/msx/stage_one_capture.lua')}, rom_sha256=digest(rom),
-        fuel=dict(rectangle=[fuel.X, fuel.Y, fuel.X+fuel.WIDTH, fuel.Y+fuel.HEIGHT],
-                  slots=list(range(FUEL_SLOT,FUEL_SLOT+3)), levels=list(fuel.LEVELS)),
-        scope='Original player movement, steering and walls with sprite HUD; enemy AI and remaining gameplay rules pending'))
+        rock_source_sha256={p:digest(root/p) for p in ('scripts/msx/rocks.py','scripts/msx/rocks_capture.lua','src/rock-collision.inc')} if stage >= 1 else None,
+        death_source_sha256={p:digest(root/p) for p in ('scripts/msx/death.py','scripts/msx/death_capture.lua','src/death.inc')} if stage>=3 else None,
+        flag_source_sha256={p:digest(root/p) for p in ('scripts/msx/flags.py','src/flags.inc')} if stage>=4 else None,
+        score_source_sha256={p:digest(root/p) for p in ('src/score.inc',)} if stage>=5 else None,
+        fuel_rules=(dict(source_sha256=digest(root/'src/fuel.inc'),consumption=0x1ecc,decrement=0x1f13,
+                         empty_deceleration=0x0482,clock='Fresh counter zero; consume before increment each 16.5 ms logical tick',
+                         lucky='Original round-dependent HALT/chunk cadence; saved fuel restored; last flag excluded',
+                         scope='No full arcade IRQ or foreground; post-flag difficulty parameter update deferred') if stage>=6 else None),
+        life_rules=(dict(source_sha256=digest(root/'src/lives.inc'),decrement=0x18da,refill_prefix=0x08e7,
+                         nonfinal_ticks=120,final_ticks=96,hud='Remaining count minus current car, presentation cap nine',
+                         persistence='Score, high score, award bits and collected flags retained; current-life flag ordinal resets',
+                         restart='Bounded scene reload, fresh active fuel clock; game-over presentation deferred to stage 11') if stage>=7 else None),
+        enemy_logic=(dict(source_sha256=digest(root/'src/enemy.inc'),count=enemy_count,ai=0x0cd6,
+                         initializer=0x0ab5,virtual_slots=6,registration=0x15bd,contact=0x038a,
+                         rendered=enemy_render,contact_applied=enemy_contact,
+                         sprite_planes=enemy_planes,
+                         paired_radar=enemy_count>1 and enemy_render and not cells_only,
+                         generator_sha256=digest(root/'scripts/msx/enemy_population.py') if enemy_count>1 else None,
+                         radar_pair_source_sha256=digest(root/'src/enemy-radar-pair.inc') if enemy_count>1 and enemy_render and not cells_only else None,
+                         color_adaptation='One red silhouette retaining every opaque source pixel' if enemy_planes==1 else None,
+                         palette=dict(body=6,window=10,black=14) if enemy_render else None,
+                         sentinel_bias='One presentation pixel upward only at forbidden SAT Y=216' if enemy_render else None,
+                         guard_deadline_scanline=(204 if stage>=9 else 196) if enemy_render else None,
+                         sprite_body_top=12 if enemy_render else None,
+                         score_publication='Pending flag score retained across a two-tick driving refresh or after footer; paused/dead states can drain' if enemy_render else None,
+                         scope='Selected original routines; exact masks/visibility with declared MSX presentation adapter' if enemy_render else
+                         'Logic-only diagnostic; car rendering and applying contact to death not enabled') if enemy_count else None),
+        fuel=dict(rectangle=[fuel.X, fuel_y, fuel.X+fuel.WIDTH, fuel_y+fuel.HEIGHT],
+                  slots=[] if bare_sat else list(range(fuel_slot,fuel_slot+3)), levels=list(fuel.LEVELS)),
+        scope='Incremental selected-original gameplay; enabled systems listed explicitly; full arcade foreground/IRQ absent'))
     require_ignored(root, [p for p in output.rglob('*') if p.is_file()])
     seal(output)
     print(f'{size} bytes, {len(banks)+1} banks: {rom}')

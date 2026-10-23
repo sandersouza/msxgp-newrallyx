@@ -77,6 +77,11 @@ Native_Reset:
     jp $0000
 Native_ResetFinalize:
     call $3e1d
+    IF NATIVE_VIDEO
+    ; Record completion without changing guest registers, flags or stack bytes.
+    ; The real RAM/ROM diagnostic still runs, but never reaches presentation.
+    ld (Native_PresentationArmed),sp
+    ENDIF
     ; Rejoin the original clear/entry sequence so its stack residue and
     ; return address have exactly the original values, not host addresses.
     jp $390b

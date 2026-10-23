@@ -471,4 +471,9 @@ Native_Fail:
 .halt:
     halt
     jr .halt
+    IF NATIVE_VIDEO
+    IF NATIVE_HWACTORS
+    INCLUDE "native-hardware-actors.inc"
+    ENDIF
+    ENDIF
 Native_LoaderEnd:
