@@ -6,6 +6,7 @@ local m=manager.machine
 local cpu=m.devices[':maincpu']
 local s=cpu.spaces['program']
 local root=assert(os.getenv('PLAYER_VERIFY_OUTPUT'))
+local camera=os.getenv('PLAYER_CAMERA')=='1'
 local f=assert(io.open(root..'/commands.bin','rb'));local commands=f:read('a');f:close()
 local frame,index,pending=0,0,false
 local active=false
@@ -30,11 +31,17 @@ local function issue()
   call(0x0c6c)
   -- Original initial forward speed; the test starts already driving upward.
   for _,v in ipairs({0x2a,0x27,0x80,0x22,0x69,0x80,0x22,0x2d,0x80}) do code[#code+1]=v end
+  if camera then for _,v in ipairs({0x21,0x0a,0x2d,0x22,0x52,0x80}) do code[#code+1]=v end end
   ticks=0
  end
  byte(0x9f80,joy)
  for n=1,count do
   call(0x0069);call(0x1052);ticks=ticks+1
+  if camera then
+   for _,a in ipairs({0x8050,0x8051}) do
+    for _,v in ipairs({0x3a,a%256,math.floor(a/256),0xc6,7,0xfe,15,0xd4,a==0x8050 and 0xbf or 7,a==0x8050 and 0x11 or 0x12}) do code[#code+1]=v end
+   end
+  end
   if ticks%4==0 then call(0x1ddf) end
  end
  code[#code+1]=0x76;code[#code+1]=0x18;code[#code+1]=0xfd
@@ -47,6 +54,10 @@ emu.register_frame_done(function()
   s:write_direct_u8(0x0c2c,0xc9)
   s:write_direct_u8(0x1074,0x00)
   s:write_direct_u8(0x10de,0x00)
+  if camera then
+   for _,a in ipairs({0x124f,0x1273,0x127e,0x12a8}) do s:write_direct_u8(a,0xc9) end
+   for _,a in ipairs({0x11bf,0x1207}) do s:write_direct_u8(a,0) end
+  end
   active=true;issue();return
  end
  if not active then return end

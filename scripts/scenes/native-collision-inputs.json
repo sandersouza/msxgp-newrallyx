@@ -1,0 +1,7 @@
+[
+  {"frame": 1800, "field": "Coin 1", "value": 1},
+  {"frame": 1804, "field": "Coin 1", "value": 0},
+  {"frame": 1860, "field": "1 Player Start", "value": 1},
+  {"frame": 1864, "field": "1 Player Start", "value": 0},
+  {"frame": 1900, "field": "P1 Down", "value": 1}
+]

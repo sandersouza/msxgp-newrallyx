@@ -67,3 +67,8 @@ class CliTests(unittest.TestCase):
             self.assertEqual(main(['reconstruct','--assets',str(assets),'--capture',str(capture),
                 '--output',str(output),'--root',str(root)]),2)
         self.assertEqual((output/'comparison.json').read_bytes(),before)
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            result=main(['reconstruct','--assets',str(assets),'--capture',str(capture),
+                         '--output',str(output),'--root',str(root),'--overwrite'])
+        self.assertEqual(result,1)  # same pixel differences, not an output-exists error
+        self.assertEqual((output/'comparison.json').read_bytes(),before)

@@ -17,6 +17,19 @@ def reference_machine(root, name):
             f'nrallyx_reference_machine {tcl(name)}')
 
 
+def scanout_recording_tcl(output, startup_pc):
+    """Force every raw video frame without changing guest clocks or state.
+
+    openMSX's automatic host deadline can skip a rendered frame even with both
+    frameskip settings zero. Recording keeps complete raw frames available.
+    Start at cartridge startup, after the video system has been initialized.
+    """
+    action=(f'if {{[catch {{record start -videoonly {tcl(output/"scanout.avi")}}} problem]}} '
+            '{puts stderr $problem;exit 2};set ::scanout_recording_started 1')
+    return (f'debug set_bp {startup_pc} '
+            '{![info exists ::scanout_recording_started]} {'+action+'}')
+
+
 def run(root, args):
     output = destination(root,args.output)
     if not args.bios.is_dir():
@@ -35,6 +48,7 @@ def run(root, args):
              '  puts stderr "BIOS/machine load failed: $problem. Check machine ROM SHA-1 requirements and --bios."',
              '  exit 2', '}',
              'set firmwareswitch off', 'set speed 100', 'set throttle on',
+             'set vsync off',
              'set z80_freq 3579545', 'set z80_freq_locked false',
              'set gamma 1.0', 'set brightness 0', 'set contrast 0',
              'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',

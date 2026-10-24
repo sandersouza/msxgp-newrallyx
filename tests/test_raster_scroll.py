@@ -3,7 +3,7 @@ from types import SimpleNamespace
 import unittest
 
 from scripts.msx.raster_scroll import (BODY_TOP, LIFE_X, LIFE_Y, LIFE_PATTERN, MASK_ROWS, compose, header,
-    index_for, outlined_life, palette_rgb, sprite_attributes, sprite_pattern)
+    index_for, outlined_life, palette_rgb, sprite_attributes, sprite_pattern, player_label_patterns)
 from scripts.msx import sprite_lives as counter
 from scripts.msx.screen5 import rgb333
 
@@ -20,6 +20,27 @@ def fixture():
 
 
 class RasterScrollTests(unittest.TestCase):
+    def test_slower_native_clock_preserves_elapsed_tick_count_and_rejects_impossible_cadence(self):
+        from scripts.msx.inputs import native_clock,video_timing
+        for hz,logic in ((50,None),(60,None),(50,55),(50,60)):
+            clock=native_clock(hz,logic);phase=0;ticks=0;frames=10000
+            for _ in range(frames):
+                phase+=clock['rate'];ticks+=1+(phase>>16);phase&=65535
+            # One final partial tick plus the half-unit 16-bit rate rounding.
+            self.assertLess(abs(ticks-frames*video_timing(hz)['frame_seconds']/clock['tick_seconds']),1+frames/131072)
+        with self.assertRaises(ValueError):native_clock(60,55)
+        with self.assertRaises(ValueError):native_clock(50,70)
+
+    def test_player_label_resources_keep_original_glyphs_after_alignment(self):
+        palette, assets = fixture()
+        encoded = player_label_patterns(assets, palette)
+        self.assertEqual(len(encoded), 64)
+        decoded = bytes(value for byte in encoded for value in (byte >> 4, byte & 15))
+        white, black = index_for(palette, (222,222,222)), index_for(palette, (0,0,0))
+        expected = bytes(white if assets.palette['lookup'][38*4+p] else black
+                         for digit in (1,2) for p in assets.pixels['tiles'][digit*64:(digit+1)*64])
+        self.assertEqual(decoded, expected)
+
     def test_single_line_score_fields_do_not_modify_labels_or_each_other(self):
         palette, assets = fixture()
         base = header(assets, palette)
@@ -27,8 +48,7 @@ class RasterScrollTests(unittest.TestCase):
         black = index_for(palette, (0, 0, 0))
         for y in range(8):
             self.assertEqual(base[y*256:y*256+8], bytes([black])*8)
-            self.assertEqual(base[y*256+248:(y+1)*256], bytes([black])*8)
-        for changed, allowed in ((header(assets, palette, score=5000), (200, 248)),
+        for changed, allowed in ((header(assets, palette, score=5000), (208, 256)),
                                  (header(assets, palette, high=25000), (72, 120))):
             positions = [i % 256 for i, (a, b) in enumerate(zip(base, changed)) if a != b]
             self.assertTrue(positions)
@@ -76,16 +96,13 @@ class RasterScrollTests(unittest.TestCase):
                     expected = {(ox+x,LIFE_Y+y) for y in range(16) for x in range(16) if bitmap[y*16+x]}
                     self.assertEqual(actual[slot],expected)
 
-    def test_right_mask_covers_every_visible_row_at_all_vertical_phases(self):
+    def test_no_sat_entries_are_allocated_to_a_right_mask(self):
         for cy in range(256):
             attributes = sprite_attributes(cy, lives=0)
-            covered = set()
-            for slot in range(len(MASK_ROWS)):
-                y, x, pattern, _ = attributes[slot*4:slot*4+4]
-                self.assertNotEqual(y, 216)
-                self.assertEqual((x, pattern), (248, 16))
-                covered.update((y+1-(cy-BODY_TOP)+row) & 255 for row in range(16))
-            self.assertTrue(set(range(BODY_TOP, 212)) <= covered)
+            self.assertEqual(attributes, bytes([216]))
+            hud = sprite_attributes(cy, points=dict(player=[2,2], enemy=[2,2]))
+            self.assertEqual(len(hud), 17*4+1)
+            self.assertTrue(all(hud[n+2] != 16 for n in range(0, len(hud)-1, 4)))
 
     def test_screen_oracle_crops_world_without_moving_header_or_mask(self):
         palette, assets = fixture()
@@ -94,11 +111,11 @@ class RasterScrollTests(unittest.TestCase):
         empty = bytes(256)
         image = compose(world, hud, empty, palette, cx=255, cy=255, lives=0, width=512)
         colors = palette_rgb(palette)
-        self.assertEqual(image.getpixel((8, BODY_TOP)), colors[world[255*512+255]])
-        self.assertEqual(image.getpixel((247, BODY_TOP+1)), colors[world[256*512+494]])
+        self.assertEqual(image.getpixel((4, BODY_TOP)), colors[world[255*512+255]])
+        self.assertEqual(image.getpixel((251, BODY_TOP+1)), colors[world[256*512+502]])
         self.assertEqual(image.getpixel((255, BODY_TOP+1)), colors[index_for(palette, (0, 0, 0))])
         self.assertEqual(image.getpixel((0, 100)), colors[index_for(palette, (0, 0, 0))])
-        self.assertEqual(image.getpixel((10, 2)), colors[hud[2*256+10]])
+        self.assertEqual(image.getpixel((10, 2)), colors[hud[2*256+14]])
 
 
 if __name__ == '__main__':

@@ -8,5 +8,8 @@
 - Never commit original ROMs, extracted assets, disassembly, or fixtures containing original game data. Keep them under ignored `references/` directories. Commit tools, documentation, metadata, and synthetic fixtures only.
 - Use contributor-supplied ROMs. Tools must not download or redistribute game ROMs.
 - Preserve original asset dimensions at 1:1 scale. Target 256x212 by reducing the maze viewport and rearranging the HUD/radar, while preserving world coordinates and game rules.
+- Preserve original scenery colors and graphics in active builds. Ask the user before applying any new reduction in graphical quality; earlier exploratory permission does not authorize further reductions. Small, measured timing concessions are acceptable without requiring exact arcade performance.
 - Prefer retaining original Z80 game logic and adapting hardware interfaces. Rendering and sound fidelity remain subject to measured feasibility.
+- Keep the HUD enabled in new gameplay and performance test builds. Run HUD-off builds or comparisons only when the user explicitly requests them.
+- Continue gameplay integration when sprite candidates exceed eight per scanline. Keep real hardware limits enabled and document any resulting culling; defer sprite optimization until it becomes a serious practical blocker. Preserve complete original car drawings.
 - Do not push, commit, or implement backlog items unless requested. Keep unrelated user changes intact.

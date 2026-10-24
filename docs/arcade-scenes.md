@@ -28,9 +28,17 @@ From the repository root:
 
 If assets already exist unchanged, reuse them; the extractor intentionally
 refuses existing output unless its documented overwrite option is supplied.
-Every scene/report destination must be new. Use `--output`, `--capture`,
-`--frames` to select paths and processing. There is no scene
-overwrite option. Choose fresh paths to preserve prior evidence. The `preview`
+Scene/report destinations must be new by default. Use `--output`, `--capture`,
+`--frames` to select paths and processing. `--overwrite` permits replacing only
+a complete, unchanged bundle with the same payload inventory. The Make targets
+forward this option with `OVERWRITE=1`, including all steps of `make prepare-scenes`.
+Modified or unrecognized bundles, extra entries, symlinks and tracked files are
+preserved and cause an error. A replacement is staged and sealed before the old
+bundle is moved to a temporary backup; installation failure restores that backup.
+After a process crash, inspect any `.NAME.backup-*`, `.NAME.staging-*` and
+`.NAME.lock` siblings before retrying. Restore a verified backup to the original
+destination if it is absent; remove a stale lock only after confirming the owning
+process has stopped. Choose fresh paths to preserve prior evidence. The `preview`
 command emits the preview/transforms without constraint analysis.
 
 Direct CLI equivalents:

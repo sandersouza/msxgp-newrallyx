@@ -43,6 +43,17 @@ def video_timing(hz):
                 lines=lines,cpu_cycles=cycles,frame_seconds=cycles/CPU_HZ)
 
 
+def native_clock(hz, logic_hz=None):
+    """Keep original ticks by default; permit an explicit slower test clock."""
+    period=.0165 if logic_hz is None else 1/logic_hz
+    frame=video_timing(hz)['frame_seconds']
+    if not frame/2<period<=frame or period<.0165:
+        raise ValueError('Native test clock must fit one or two ticks per refresh and cannot exceed the original speed')
+    return dict(tick_seconds=period,rate=round((frame/period-1)*65536),
+                original_tick_seconds=.0165,speed_ratio=.0165/period,
+                adapted=logic_hz is not None)
+
+
 def sources(args):
     palette, huds, colors = load_huds(args.normal, args.overlap)
     palette, huds = background_zero(palette, huds)

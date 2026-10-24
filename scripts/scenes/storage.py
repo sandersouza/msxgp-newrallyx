@@ -1,11 +1,12 @@
-"""Non-replacing staged publication below ignored local scene directories."""
+"""Staged publication with explicit verified replacement of local scene bundles."""
 import json
 from pathlib import Path
 import shutil
 import subprocess
 import tempfile
 import unicodedata
-from .bundle import digest
+import uuid
+from .bundle import digest, verify_manifest
 
 
 def require_ignored(root, paths):
@@ -41,7 +42,20 @@ def seal(path):
     json_write(path/'manifest.json', dict(schema_version=1, outputs=records))
 
 
-def safe_destination(root: Path, destination: Path):
+def verify_replacement(path, expected=None):
+    manifest=verify_manifest(path,expected)
+    names={record['path'] for record in manifest['outputs']}|{'manifest.json'}
+    directories={parent.as_posix() for name in names for parent in Path(name).parents
+                 if parent != Path('.')}
+    for item in path.rglob('*'):
+        name=item.relative_to(path).as_posix()
+        if (item.is_dir() and name not in directories
+                or not item.is_dir() and not item.is_file()):
+            raise ValueError('Bundle contains unknown directories or nonregular entries')
+    return manifest
+
+
+def safe_destination(root: Path, destination: Path, *, overwrite=False):
     root = root.resolve()
     if '..' in destination.parts:
         raise ValueError('Parent traversal is not allowed')
@@ -52,8 +66,8 @@ def safe_destination(root: Path, destination: Path):
     allowed = root/'references/scenes'
     if not dest.is_relative_to(allowed) or dest == allowed:
         raise ValueError('Output must be strictly below references/scenes')
-    if dest.exists():
-        raise ValueError('Output exists; select a fresh directory')
+    if dest.exists() and not overwrite:
+        raise ValueError('Output exists; select a fresh directory or use --overwrite for an unchanged complete bundle')
     def git(args, data=None):
         result = subprocess.run(['git','-C',str(root),*args], input=data, capture_output=True)
         if result.returncode not in (0,1):
@@ -67,17 +81,23 @@ def safe_destination(root: Path, destination: Path):
         if candidate == folded or candidate.startswith(folded+'/'):
             raise ValueError('Output aliases tracked data')
     require_ignored(root,[dest/'capture.json',dest/'probe.bin'])
+    if dest.exists():
+        verify_replacement(dest)
     return dest
 
 
-def publish_bundle(root: Path, destination: Path, writer, *, payloads=None):
-    dest = safe_destination(root, destination)
+def publish_bundle(root: Path, destination: Path, writer, *, payloads=None, overwrite=False):
+    dest = safe_destination(root, destination, overwrite=overwrite)
     planned=None
     if payloads is not None:
         planned=set(payloads)|{'manifest.json'}
         if any(Path(p).is_absolute() or '..' in Path(p).parts for p in planned):
             raise ValueError('Invalid planned output path')
         require_ignored(root,[dest/p for p in planned])
+    if overwrite and planned is None:
+        raise ValueError('Overwrite requires an explicit planned payload inventory')
+    if dest.exists():
+        verify_replacement(dest,planned-{'manifest.json'})
     dest.parent.mkdir(parents=True, exist_ok=True)
     lock = dest.with_name('.'+dest.name+'.lock')
     try:
@@ -85,8 +105,9 @@ def publish_bundle(root: Path, destination: Path, writer, *, payloads=None):
     except FileExistsError as error:
         raise ValueError('Output is locked by another run') from error
     stage = None
+    backup = dest.with_name('.'+dest.name+'.backup-'+uuid.uuid4().hex)
     try:
-        safe_destination(root, dest)
+        safe_destination(root, dest, overwrite=overwrite)
         stage = Path(tempfile.mkdtemp(prefix='.'+dest.name+'.staging-', dir=dest.parent))
         if planned is not None:
             require_ignored(root,[stage/p for p in planned])
@@ -96,11 +117,30 @@ def publish_bundle(root: Path, destination: Path, writer, *, payloads=None):
             raise ValueError('Generated output differs from planned inventory')
         require_ignored(root,[stage/p for p in actual]+[dest/p for p in actual])
         seal(stage)
+        verify_replacement(stage,planned-{'manifest.json'} if planned is not None else None)
+        safe_destination(root, dest, overwrite=overwrite)
         if dest.exists():
-            raise ValueError('Output appeared during publication')
-        stage.rename(dest)
+            verify_replacement(dest,planned-{'manifest.json'})
+            require_ignored(root,[backup/p for p in planned])
+            dest.rename(backup)
+        try:
+            stage.rename(dest)
+        except OSError as error:
+            if backup.exists():
+                try:
+                    backup.rename(dest)
+                except OSError as rollback:
+                    raise OSError(f'Publication and rollback failed; restore the old bundle from {backup} to {dest}: {rollback}') from error
+            raise
         stage = None
+        if backup.exists():
+            try:
+                shutil.rmtree(backup)
+            except OSError as error:
+                raise OSError(f'New bundle installed at {dest}; old backup retained at {backup}: {error}') from error
     finally:
-        if stage is not None:
-            shutil.rmtree(stage)
-        lock.rmdir()
+        try:
+            if stage is not None:
+                shutil.rmtree(stage)
+        finally:
+            lock.rmdir()

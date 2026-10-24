@@ -16,28 +16,32 @@ presentation calls inside a port; it is not a binary patch for the arcade ROM.
 
 | Item | Display and implementation | State owner |
 | --- | --- | --- |
-| HISCORE | White label, red six-digit value, left edge x=8; fixed bitmap header | Original record comparison and storage |
-| 1UP / 2UP | White label, cyan six-digit value, right edge x=248 | Original active-player selection and score arithmetic |
-| Radar frame and points | Transparent 48x58 overlay at (196,20); white frame and 2x2 points share a 3x4 matrix of twelve sprites | Original flag collection, point visibility and positions |
+| HISCORE | White label, red six-digit value, logical left edge x=8; fixed bitmap header | Original record comparison and storage |
+| 1UP / 2UP | White label, cyan six-digit value, logical right edge x=256 (physical x=252) | Original active-player selection and score arithmetic |
+| Radar frame and points | Transparent 48x58 overlay at logical (204,20); white frame and 2x2 points share a 3x4 matrix of twelve sprites | Original flag collection, point visibility and positions |
 | Radar player / enemy | Two separate 2x2 markers; player white/black blink, enemy red | Game positions; caller chooses whether the blink clock advances |
-| Fuel | White pump and yellow outlined gauge at (196,82), exactly 48x16 | Original fractional fuel, consumption, smoke cost, depletion and bonus rules |
-| Spare lives | One yellow original-size car with black outline at (212,194), white digit at (230,194) | Original car count and extra-life/death logic |
+| Fuel | White pump and yellow outlined gauge at logical (204,82), exactly 48x16 | Original fractional fuel, consumption, smoke cost, depletion and bonus rules |
+| Spare lives | One yellow original-size car with black outline at logical (220,194), white digit at (238,194) | Original car count and extra-life/death logic |
 
 ROUND is intentionally absent. Numeric glyphs and the car retain original pixel
 dimensions. The life digit is expanded from the existing eight-byte font mask
 into one fixed 16x16 pattern and its shifted variant only when the count changes.
 It does not allocate a sprite for each number or each spare life.
 
-All sprites use 16x16, 1x mode. Allocation is thirteen right-margin strips,
-twelve radar cells, two colored markers and three shared Fuel/life slots:
-**30 attributes, two free**. At row 176, the footer interrupt changes the last
+All sprites use 16x16, 1x mode. The native V9958 mask needs no right-margin
+sprites. Allocation is twelve radar cells, two colored markers and three shared
+Fuel/life slots: **17 HUD attributes**. At row 176, the footer interrupt changes the last
 three slots from Fuel to car/outline/digit. VBlank restores Fuel colors. This
 sharing is within each frame; it does not alternate HUD elements between frames.
 The staggered radar cells and shifted pattern variants respect the eight-sprite
 scanline limit and avoid the Y=216 terminator at every vertical scroll phase.
 Additional white points use the existing matrix and require no extra attributes.
-The [driving adapter](player.md) is a separate consumer of the two free slots;
-the complete driving display uses all 32 attributes.
+The [driving adapter](player.md) uses slots 17/18; the complete driving display
+uses 19 attributes and leaves 13 free. Slots 0–11 hold radar cells, 12/13 hold
+player/enemy markers, and 14–16 share Fuel/lives. Fixed R18=4 shifts the whole
+display four pixels left; overlay coordinates move eight logical pixels right
+to retain their inset against the widened maze. No per-frame R18 compensation
+or overscan masking is used.
 
 ## Public state API, version 1
 

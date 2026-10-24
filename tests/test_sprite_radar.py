@@ -10,6 +10,26 @@ def decode(raw):
 
 
 class SpriteRadarTests(unittest.TestCase):
+    def test_borderless_radar_keeps_flag_pixels_and_identical_resource_size(self):
+        flags=[(2,2),(15,14),(30,44)]
+        bare=radar.bitmap(flags,border=False)
+        self.assertEqual(sum(bare),12)
+        self.assertFalse(any(bare[y*radar.WIDTH] for y in range(radar.HEIGHT)))
+        self.assertEqual(len(radar.patterns(bare)),len(radar.patterns(radar.bitmap(flags))))
+    def test_square_frame_adds_only_corners_without_extra_sprite_resources(self):
+        flags=[(4,6)]
+        chamfered=radar.bitmap(flags)
+        square=radar.bitmap(flags,square=True)
+        corners={0,radar.WIDTH-1,(radar.HEIGHT-1)*radar.WIDTH,len(square)-1}
+        self.assertEqual({i for i,(a,b) in enumerate(zip(chamfered,square)) if a!=b},corners)
+        self.assertEqual(sum(square),2*(radar.WIDTH+radar.HEIGHT)-4+4)
+        self.assertEqual(square[10*radar.WIDTH+10],0)
+        self.assertEqual(len(radar.patterns(square)),len(radar.patterns(chamfered)))
+        canvas=bytearray([7])*(256*212)
+        radar.paint(canvas,flags,[10,10],[20,20],8,9,11,square=True)
+        self.assertEqual(canvas[radar.Y*256+radar.X],8)
+        self.assertEqual(canvas[(radar.Y+30)*256+radar.X+30],7)
+
     def test_projection_keeps_native_markers_inside_white_outline(self):
         self.assertEqual(radar.project(224,80), (2,2))
         for x in range(224,289):
@@ -55,25 +75,27 @@ class SpriteRadarTests(unittest.TestCase):
         # Reserve BOTH point slots on EVERY radar row: stronger than a fixed capture.
         for cy in range(256):
             attrs = sprite_attributes(cy,2,dict(player=[2,2],enemy=[2,2]))
-            self.assertEqual(len(attrs),121)
+            self.assertEqual(len(attrs),69)
             counts = [0]*256
-            for i in list(range(len(MASK_ROWS)+12))+list(range(27,30)):
+            for i in list(range(12))+list(range(14,17)):
                 y = attrs[i*4]
                 for row in range(16):
                     counts[(y+1-(cy-BODY_TOP)+row)&255] += 1
             for y in range(radar.Y,radar.Y+radar.HEIGHT+15):
                 counts[y] += 2
+            for y in range(108,124):
+                counts[y] += 2
             self.assertLessEqual(max(counts[BODY_TOP:LIFE_SPLIT]),8)
             lower = sprite_attributes(cy,2,dict(player=[2,2],enemy=[2,2]),footer=True)
             lower_counts = [0]*256
-            for i in range(30):
+            for i in range(17):
                 for row in range(16):
                     lower_counts[(lower[i*4]+1-(cy-BODY_TOP)+row)&255] += 1
             self.assertLessEqual(max(lower_counts[LIFE_SPLIT:212]),8)
             for lives in range(10):
                 short = sprite_attributes(cy,lives,dict(player=[2,2],enemy=[2,2]),footer=True)
                 self.assertEqual(short[-1],216)
-                self.assertEqual(len(short),121)
+                self.assertEqual(len(short),69)
 
     def test_transparent_background_and_white_frame_survive_marker_overlap(self):
         canvas = bytearray([7])*(256*212)

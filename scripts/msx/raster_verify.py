@@ -6,7 +6,8 @@ from PIL import Image, ImageChops
 from .build import destination
 from .emulator import tcl, reference_machine
 from .screen5 import packed
-from .raster_scroll import BODY_TOP, compose
+from .raster_scroll import BODY_TOP, compose, bordered
+from .display import VIEWPORT_WIDTH, VIEWPORT_HALF, HORIZONTAL_ADJUST
 from . import sprite_radar as radar
 from . import sprite_fuel as fuel
 from . import sprite_lives as life_counter
@@ -50,6 +51,25 @@ def stage_scenarios():
     return cases
 
 
+def rock_scenarios(positions):
+    """Keyboard-only edge clipping, reversal and cache eviction at each rock."""
+    cases=[dict(name='initial',kind='initial',row=0,mask=0,count=0)]
+    for i,point in enumerate(positions):
+        x,y=point['world_origin']
+        wx,wy=x-(VIEWPORT_WIDTH-24),y-80
+        if not 4 <= wx <= 568 or not 320 <= wy <= 1191:
+            raise ValueError('Rock focus route requires a supported interior original placement')
+        cases.append(dict(name=f'rock-{i}-top-left',kind='scene',row=0,mask=4,count=1,scene=1))
+        for label,dx,dy,count in [('horizontal',1,0,wx),('right-edge',0,1,wy),
+                ('edge-clipped',-1,0,4),('edge-return',1,0,4),
+                ('evict-horizontal',-1,0,wx),('reload-horizontal',1,0,wx),
+                ('evict-vertical',0,-1,320),('reload-vertical',0,1,320)]:
+            cases.append(dict(name=f'rock-{i}-{label}',kind='move',row=8,
+                              mask={(1,0):128,(-1,0):16,(0,1):64,(0,-1):32}[(dx,dy)],
+                              count=count,delta=[dx,dy]))
+    return cases
+
+
 def verify(root, args):
     output = destination(root, args.output)
     verify_manifest(args.rom.parent)
@@ -61,13 +81,16 @@ def verify(root, args):
     bios = {p.relative_to(args.bios).as_posix():digest(p) for p in sorted(args.bios.rglob('*')) if p.is_file()}
     require_ignored(root, [output/'session.tcl', output/'report.json'])
     output.mkdir(parents=True)
-    cases = stage_scenarios()
+    rock_fixture=read_json(args.rom.parent/'stage-one.json').get('rock_fixture')
+    if getattr(args,'rock_focus',False) and not rock_fixture:
+        raise ValueError('Rock focus requires a stage 01 rock fixture')
+    cases = rock_scenarios(rock_fixture['positions']) if getattr(args,'rock_focus',False) else stage_scenarios()
     actions = ' '.join('{'+f'{c["kind"]} {c["row"]} {c["mask"]} {c["count"]} {c.get("move_mask",0)} {int(c.get("fuel_key",False))} {int(c.get("life_key",False))}'+'}' for c in cases)
     lines = [
         'set save_settings_on_exit false',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
         reference_machine(root,args.machine), 'set firmwareswitch off', 'set speed 100', 'set throttle on',
-        'set z80_freq 3579545', 'set z80_freq_locked false', 'set cmdtiming real',
+        'set z80_freq 3579545', 'set z80_freq_locked false', 'set cmdtiming real', 'set vsync off',
         'set disablesprites false', 'set limitsprites true', 'set pause_on_lost_focus false',
         'set minframeskip 0', 'set maxframeskip 0', 'set gamma 1', 'set brightness 0', 'set contrast 0',
         'activate_input_layer -blocking raster_verification',
@@ -123,7 +146,7 @@ def verify(root, args):
         ' if {$v==1 || $v==3 || $v==5} {set irqstart [machine_info time]; return}',
         ' if {$v!=2 && $v!=4 && $v!=6} {return}',
         ' if {$::z80_freq!=3579545 || $::speed!=100 || $::cmdtiming ne "real"} {error "Timing changed"}',
-        ' foreach {reg expected} {0 22 1 98 2 95 8 42 23 0 25 0 26 0 27 0 19 7} {',
+        ' foreach {reg expected} {0 22 1 98 2 95 8 42 18 %d 23 0 25 0 26 0 27 0 19 7} {' % HORIZONTAL_ADJUST,
         '  if {$v==4 || $v==6} {switch $reg {0 {set expected [expr {$v==4?22:6}]} 2 {set expected 63} 8 {set expected 40} 19 {set expected [expr {([debug read memory 0xc007]-$rs_body_top+176)&255}]} 23 {set expected [expr {([debug read memory 0xc007]-$rs_body_top)&255}]} 25 {set expected 3} 26 {set expected [expr {(([debug read memory 0xc0b0]+256*[debug read memory 0xc0b1]-1)&511)>>3}]} 27 {set expected [expr {(-[debug read memory 0xc006])&7}]}}}',
         '  if {[debug read {VDP regs} $reg]!=$expected} {error "Raster register $reg: [debug read {VDP regs} $reg], expected $expected; world [debug read memory 0xc0b0],[debug read memory 0xc0b1],[debug read memory 0xc0b2],[debug read memory 0xc0b3]; raw [debug read memory 0xc006],[debug read memory 0xc007]; caches [debug read memory 0xc01a],[debug read memory 0xc01b]"}',
         ' }',
@@ -176,7 +199,7 @@ def analyze_stage(rom, output, cases):
             expected.update(wx=x,wy=y,lives=2,score=0,high=4,fuel=0)
         if 'delta' in case:
             n=case['count'] if kind=='move' else case.get('move_count',1)
-            expected['wx']=max(0,min(stage_one.WIDTH-240,expected['wx']+case['delta'][0]*n))
+            expected['wx']=max(0,min(stage_one.WIDTH-VIEWPORT_WIDTH,expected['wx']+case['delta'][0]*n))
             expected['wy']=max(0,min(stage_one.HEIGHT-201,expected['wy']+case['delta'][1]*n))
         if kind=='cadence': expected['cadence']=case['cadence']
         if kind=='life' or case.get('life_key'): expected['lives']=(expected['lives']+1)%10
@@ -186,8 +209,8 @@ def analyze_stage(rom, output, cases):
         actual=dict(scene=scene,wx=wx,wy=wy,lives=lives,score=score,high=high,cadence=cadence,fuel=fuel_state)
         if expected!=actual or paused!=1 or goal!=score or fuel_goal!=fuel_state or (cx,cy)!=((wx-8)&255,wy&255):
             raise ValueError(f'Stage keyboard mismatch {case["name"]}: {actual}, expected {expected}')
-        if ((px,py)!=(2+(wx+120)*44//stage_one.WIDTH,2+(wy+100)*54//stage_one.HEIGHT)
-                or (ignored_x,ignored_y)!=(wx+120,wy+100)
+        if ((px,py)!=(2+(wx+VIEWPORT_HALF)*44//stage_one.WIDTH,2+(wy+100)*54//stage_one.HEIGHT)
+                or (ignored_x,ignored_y)!=(wx+VIEWPORT_HALF,wy+100)
                 or color!=(info['sprites']['black'] if clock&16 else info['sprites']['white'])):
             raise ValueError(f'Stage radar camera mismatch {case["name"]}: {px},{py}')
         vram=(output/f'{i}.vram').read_bytes()
@@ -200,9 +223,10 @@ def analyze_stage(rom, output, cases):
         frame_points=dict(points[scene],player=[px,py])
         oracle=compose(world,bytes(p for b in hud for p in (b>>4,b&15)),life,palette,wx,wy,
                        lives,frame_points,color,fuel_state,digits,width=stage_one.WIDTH)
+        oracle=bordered(oracle,palette)
         oracle.save(output/f'expected-{i}.png')
         with Image.open(output/f'{i}.png') as raw:
-            active=raw.convert('RGB').crop((32,14,288,226))
+            active=raw.convert('RGB')
         active.save(output/f'active-{i}.png')
         diff=ImageChops.difference(active,oracle)
         if diff.getbbox():
@@ -241,12 +265,14 @@ def analyze_stage(rom, output, cases):
             x=int.from_bytes(record[:2],'little');y=int.from_bytes(record[2:4],'little')
             check_stage_pixels(record[4:],world,x,y,info['sprites']['black'],packed_world=packed_map)
             probes+=1
-    times['continuous_map_checks']=dict(frames=probes,pixels_per_frame=240*201)
+    times['continuous_map_checks']=dict(frames=probes,pixels_per_frame=VIEWPORT_WIDTH*201)
     target=info['timing']['frame_seconds']*1000
     if any(abs(value-target)>.02 for value in periods):
         raise ValueError('Stage streaming missed a movement refresh')
     times['held_movement_periods']=dict(samples=len(periods),min_ms=min(periods),max_ms=max(periods))
     json_write(output/'report.json',dict(schema_version=1,rom_sha256=digest(rom),cases=reports,
+        incremental_stage=info.get('incremental_stage'),rock_sprite_slots=info.get('rock_sprite_slots',0),
+        rock_collision=info.get('rock_collision',False),
         timings=times,native_tiles_checked=read_json(rom.parent/'stage-one.json')['native_tiles_checked'],
         scope='Original first-stage static map; real keyboard, settled RGB, visible VRAM and movement periods'))
     print(f'{len(reports)} exact full-stage keyboard/raster images: {output}/report.json')
@@ -256,7 +282,7 @@ def check_stage_pixels(vram, world, wx, wy, black, *, packed_world=None):
     from . import stage_one
     data = packed(world) if packed_world is None else packed_world
     odd=wx&1
-    size=120+odd
+    size=VIEWPORT_WIDTH//2+odd
     bx=(wx&511)//2
     for y in range(201):
         row=((wy+y)&255)*128
@@ -276,8 +302,3 @@ def check_stage_pixels(vram, world, wx, wy, black, *, packed_world=None):
             actual[-1]&=240;expected[-1]&=240
         if actual!=expected:
             raise ValueError(f'Stage cache mismatch at camera {wx},{wy}, local row {y}')
-    for x in range(8):
-        px=(wx+240+x)&511
-        address=(px//256)*32768+(wy&255)*128+(px%256)//2
-        if (vram[address] >> (0 if px&1 else 4))&15 != black:
-            raise ValueError('First-row right mask is not black')
