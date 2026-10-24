@@ -1,4 +1,5 @@
 # New Rally-X for MSX2+
+![](docs/image03.png)
 
 A work-in-progress port of the New Rally-X arcade game to MSX2+, focused on
 preserving the original graphics, game rules and gameplay speed.
