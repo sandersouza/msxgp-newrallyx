@@ -12,6 +12,10 @@ Stage_TryStrip:
     ld a,(tile_y)
     cp STAGE_ROWS
     jr nc,.no
+    IF FULL_GAME
+    call Full_TryWideStrip
+    ret c
+    ENDIF
     ld a,(Stage_RowBatch)
     cp 1
     jr z,.horizontal

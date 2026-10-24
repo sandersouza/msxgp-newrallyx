@@ -62,7 +62,7 @@ stage_position:
     ld a,(driving)
     or a
     call nz,stage_cache_bounds
-    IF INCREMENTAL_STAGE >= 9
+    IF INCREMENTAL_STAGE >= 9 && !FULL_GAME
     ; Columns and rows must own the same 32-row window, even while a row job
     ; lags a short camera reversal. Otherwise a column can erase a ring row
     ; which previous_y still considers valid and never queues for repair.
@@ -115,6 +115,9 @@ stage_position:
 .position_atomic:
     ENDIF
     ; Cache shifts are queued once per tile; jobs write only hidden guard tiles.
+    IF FULL_GAME
+    jp Full_StageQueue
+    ELSE
     ld a,(column_left)
     or a
     jr nz,.vertical
@@ -223,6 +226,7 @@ stage_position:
     ld a,STAGE_CACHE_COLUMNS
     ld (row_left),a
     ret
+    ENDIF
 stage_div8:
     srl h
     rr l
@@ -294,8 +298,17 @@ stage_stream_driving:
     call Stage_QueuePriority
     ENDIF
     IF RASTER_GUARD
+    IF FULL_GAME
+    ld b,4                   ; Bounded exact cell copies may finish across VBlank.
+    ld a,(Full_CameraBlocked)
+    or a
+    jp z,.effect_budget
+    ld b,8                   ; Urgent edges must not drain unrelated guard debt.
+    jp .effect_budget
+    ELSE
     ld b,64                  ; real raster deadline bounds invisible prefetch
     jp .effect_budget
+    ENDIF
     ENDIF
     IF INCREMENTAL_STAGE >= 4
     ld b,20
@@ -462,7 +475,7 @@ stage_stream_driving:
 .enemy_budgeted:
     ENDIF
 .next:
-    IF RASTER_GUARD
+    IF RASTER_GUARD && !FULL_GAME
     ld a,(Stage_GuardClosed)
     or a
     ret nz
@@ -538,6 +551,10 @@ stage_stream_driving:
     ld (column_y),a
 .draw:
     push bc
+    IF FULL_GAME
+    xor a
+    ld (Full_CacheWorked),a
+    ENDIF
     call stage_tile
     IF STAGE_SOLID_RUNS
     xor a
@@ -548,6 +565,11 @@ stage_stream_driving:
     nop
     IF !FULL_GAME
     di
+    ENDIF
+    IF FULL_GAME
+    ld a,(Full_CacheWorked)
+    or a
+    jp z,.next               ; Already-owned tiles consume no GPU work budget.
     ENDIF
     IF STAGE_SOLID_RUNS
     dec b
@@ -563,6 +585,15 @@ stage_stream_driving:
 Stage_QueuePriority:
     ei
     nop
+    IF FULL_GAME
+    ld a,(Full_CameraBlocked)
+    or a
+    jr z,.ordinary
+    and 1
+    ld (Stage_PreferRows),a
+    ret
+.ordinary:
+    ENDIF
     ld hl,(world_y)
     call stage_div8
     ld a,(previous_y)
@@ -600,6 +631,9 @@ Stage_QueuePriority:
 
     IF !FULL_GAME
 stage_load:
+    IF FULL_GAME
+    call Full_CacheClear
+    ENDIF
     IF STAGE_SOLID_RUNS
     xor a
     ld (Stage_RowBatch),a
@@ -663,6 +697,24 @@ stage_load:
 
     ENDIF
 stage_tile:
+    IF FULL_GAME
+    ld a,(Full_CameraBlocked)
+    or a
+    jr z,.ordinary_bounds
+    ld a,(Full_TargetTileX)
+    ld c,a
+    ld a,(tile_x)
+    sub c
+    cp 32
+    jr nc,.ordinary_bounds
+    ld a,(Full_TargetTileY)
+    ld c,a
+    ld a,(tile_y)
+    sub c
+    cp 26
+    jr c,.source             ; Urgent visible edges override stale guard bounds.
+.ordinary_bounds:
+    ENDIF
     ld a,(driving)
     or a
     jr z,.source
@@ -679,6 +731,10 @@ stage_tile:
     cp 32
     ret nc
 .source:
+    IF FULL_GAME
+    call Full_CacheProbe
+    ret c
+    ENDIF
     IF TILE_MODE
     jp TileMap_Copy
     ENDIF
@@ -849,6 +905,9 @@ stage_atlas_init:
     ENDIF
     jp upload
 stage_wait_command:
+    IF FULL_GAME
+    di                       ; Foreground cache work can now span VBlank.
+    ENDIF
     vdp_write 15,2
 .busy:
     in a,($99)
@@ -873,6 +932,9 @@ stage_wait_command:
     ; leaving S2 here avoids one redundant control transaction per cache tile.
     ret
 stage_copy_tile:
+    IF FULL_GAME
+    call Full_TurboOn
+    ENDIF
     IF INCREMENTAL_STAGE >= 9
     ei                      ; ROM lookup and RAM packet preparation own no VDP latch.
     nop
@@ -1020,6 +1082,11 @@ stage_copy_tile:
     ld (stage_command),a
     ENDIF
 stage_copy_destination:
+    IF FULL_GAME
+    call Full_TurboOff
+    call Full_CacheCommand
+    ret c
+    ENDIF
     ld a,(tile_x)
     and 31
     add a,a
@@ -1281,10 +1348,25 @@ Stage_SolidTile:
     inc hl
     IF FULL_GAME
     push bc
+    push hl
+    ld l,d
+    ld h,0
+    push de
+    ld de,stage_flower_phase
+    add hl,de
+    ld a,(hl)
+    pop de
+    pop hl
+    or a
+    jr nz,.same_object_row
     ld b,d
     ld a,(tile_y)
     ld c,a
     call Full_ObjectAtTile
+    jr .object_row_checked
+.same_object_row:
+    xor a
+.object_row_checked:
     pop bc
     or a
     jp nz,.emit
@@ -1322,7 +1404,11 @@ Stage_SolidTile:
     ld a,(Stage_RunLength)
     inc a
     ld (Stage_RunLength),a
+    IF FULL_GAME
+    jp .next
+    ELSE
     jr .next
+    ENDIF
 .column:
     ld a,(tile_y)
     ld d,a
@@ -1350,10 +1436,25 @@ Stage_SolidTile:
     inc h                    ; Source-address rows are exactly 256 bytes.
     IF FULL_GAME
     push bc
+    push hl
+    ld l,d
+    ld h,0
+    push de
+    ld de,stage_flower_phase
+    add hl,de
+    ld a,(hl)
+    pop de
+    pop hl
+    or a
+    jr nz,.same_object_column
     ld c,d
     ld a,(tile_x)
     ld b,a
     call Full_ObjectAtTile
+    jr .object_column_checked
+.same_object_column:
+    xor a
+.object_column_checked:
     pop bc
     or a
     jp nz,.emit
@@ -1391,7 +1492,11 @@ Stage_SolidTile:
     ld a,(Stage_RunLength)
     inc a
     ld (Stage_RunLength),a
+    IF FULL_GAME
+    jp .column_next
+    ELSE
     jr .column_next
+    ENDIF
 .emit:
     ld a,e
     rrca

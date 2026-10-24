@@ -10,7 +10,7 @@ from scripts.msx.player_verify import check_cache
 from scripts.msx.raster_scroll import header
 from scripts.msx.screen5 import packed
 from scripts.msx.stage_one import acquire
-from scripts.msx.smoke import paint,verify_publication_counts
+from scripts.msx.smoke import paint,verify_publication_counts,verify_logical_rows
 from scripts.scenes.bundle import digest,load_assets,read_json,verify_manifest
 from scripts.scenes.storage import require_ignored,json_write,seal
 from scripts.msx.build import destination
@@ -69,6 +69,8 @@ def main():
     frames=sorted(args.capture.glob('*.state'),key=lambda p:int(p.stem));visible=maximum=0
     for path in frames:
         state=path.read_bytes();vram=path.with_suffix('.vram').read_bytes()
+        if 'Smoke_LogicalRows' in syms:
+            verify_logical_rows(state[0x2400:0x2800],state[0x1160:0x1180])
         if irq and state[irq_at:irq_at+len(irq)]!=irq:raise ValueError('Natural scene overwrote raster IRQ code')
         image=world(program,state[0x2000:0x3000],state[0x534:0x53f],assets,palette)
         image,width,_=padded_world(image)
@@ -104,7 +106,7 @@ def main():
     verify_manifest(bundle);verify_manifest(args.capture)
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),natural_samples=len(frames),
         complete_enemy_images_checked=visible,maximum_enemy_planes_per_scanline=maximum,
-        cache_held_refreshes=held,observed_refreshes=len(rows),hold_percentage=100*held/len(rows),
+        cache_held_loops=held,observed_foreground_loops=len(rows),hold_percentage=100*held/len(rows),
         longest_consecutive_hold=longest,
         scope='Independent visible cache, published smoke and row counters, death/player patch, complete enemy masks/OR colors and eight-digit HUD VRAM. SAT/VRAM proof; rendered scanout and physical hardware are separate.'))
     require_ignored(root,[f for f in out.rglob('*') if f.is_file()]);seal(out)

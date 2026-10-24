@@ -1,111 +1,155 @@
-# Enemy rendering performance and fixed radar publication
+# Loaded-round performance and fixed radar publication
 
-This iteration addresses enemy-count scaling in every round, including stationary
-challenge cars. It preserves original graphics, dimensions, colors, complete car
-planes, source actor order, seven radar anchors, the HUD and real sprite limits.
-It does not establish full-game speed parity with the arcade.
+The current cartridge sustains **60.17–60.60 native ticks/s over eight naturally
+completed rounds** on the reference Panasonic, including both seven-enemy
+challenge rounds. The original tick is 16.5 ms (60.606 ticks/s). Complete car
+drawings, scenery pixels/colors, the HUD and real V9958 sprite limits remain
+enabled. Presentation averages **29.97–37.72 foreground loops/s**; these are
+separate measurements and do not establish 60 FPS.
 
-The qualified cartridge is SHA-256
-`73657624a1d74f7fa595454886ce82f21259bd6b7535839ac0722950e5db625a`.
+Qualified ROM SHA-256:
+`023a2aef99830088d44d0eed8989843bc12d26fe3c23c2669a9a7e3ef094d8da`.
 `make build` publishes this image at `references/build/newrallyx.rom` and
-`latest.rom`; `make run` launches it. The sealed delivery bundle is
-`references/build/default-62285febd96d4c8dbc70117afd0921ea/`.
+`latest.rom`; `make run` launches it. The independently rebuilt qualification
+bundle is `references/build/issue12-perf-qualified-v75/`. The default delivery
+bundle is `references/build/default-15b05a85f7b34433bf4ac5b565cf64d6/`;
+both ROMs have the same hash.
 
-## Changes and controlled costs
+## Measured cadence and concessions
 
-The complete-car adapter now accesses each 32-byte record through IX, replacing
-repeated transfers to/from a shared scratch record. Pure preparation/radar code
-runs in unused native-bank space, with a build guard against occupied bytes.
-Five source virtual OAM pointers are decoded once when the population is at
-least four. Visible pairs are packed in original actor order; hidden pairs
-consume no SAT upload. Attribute writes are skipped only for an identical pose
-at the same destination. Destination changes and hidden/reappearing actors
-invalidate publication state before the single trailing terminator.
+The external route uses real keyboard credit/start, steering and smoke inputs;
+it never writes guest state. Native tick counters are divided by actual emulated
+elapsed time during active play. Long active stalls stay in the denominator.
+Death, loading and bonus conversion are separate states. Physical VBlank counts,
+foreground loops, cache holds, clock debt and dropped ticks are recorded
+separately. An adaptive route changes with timing, so it is not a fixed sequence
+for exact before/after percentage claims.
 
-The benchmark invokes the same renderer with controlled one-to-seven actor
-fixtures, 200 samples per count and motion mode. The HUD, gameplay raster IRQs,
-3,579,545 Hz CPU, real VDP timing and sprite limits remain enabled. Five original
-virtual OAM pointers determine visible actors; all seven descriptors/radar
-anchors remain present. Costs include raster IRQ interruptions. The static and
-moving columns describe presentation fixtures, not original AI execution.
-
-| Actors | Static before / after (ms) | Change | Moving before / after (ms) | Change |
+| Displayed round | Enemies | Native ticks/s | Presentation loops/s | Lowest complete 5 s window, ticks/s |
 | --- | --- | --- | --- | --- |
-| 1 | 1.72 / 1.36 | -20.9% | 1.72 / 1.58 | -7.9% |
-| 2 | 3.51 / 2.77 | -21.1% | 3.51 / 3.22 | -8.4% |
-| 3 | 5.71 / 4.68 | -18.0% | 5.71 / 5.49 | -4.0% |
-| 4 | 7.53 / 6.72 | -10.7% | 7.53 / 7.62 | +1.2% |
-| 5 | 9.44 / 7.97 | -15.6% | 9.44 / 9.23 | -2.3% |
-| 6 | 11.40 / 8.54 | -25.1% | 11.42 / 9.80 | -14.2% |
-| 7 | 12.91 / 9.25 | -28.4% | 12.97 / 10.39 | -19.9% |
+| 1 | 1 | 60.583 | 37.72 | 60.51 |
+| 2 | 2 | 60.598 | 32.09 | 60.52 |
+| 3, challenge | 7 | 60.580 | 32.94 | 60.00 |
+| 4 | 3 | 60.517 | 32.89 | 59.40 |
+| 5 | 3 | 60.574 | 30.67 | 60.43 |
+| 6 | 4 | 60.573 | 29.97 | 59.63 |
+| 7, challenge | 7 | 60.171 | 33.47 | 58.48 |
+| 8 | 4 | 60.498 | 31.10 | 60.34 |
 
-Values are medians, not frame rates. IRQ phase affects medians: four moving
-actors show a small median regression while their minimum and p95 costs improve
-(6.83 to 6.22 ms; 8.40 to 7.83 ms). Report JSON retains minimum/median/p95
-cycles for all 2,800 calls per cartridge. The baseline is the previously approved
-`b180937f…` cartridge. No graphics reduction or HUD-off comparison was used.
+These values come from sealed `issue12-perf-qualified-route-v75/report.json`.
+The run passed a minimum **57 native ticks/s in every measured round**. Maximum
+individual active loop durations were 51–65 ms. Ten ticks were dropped at the
+bounded debt limit in round 7; other measured rounds dropped none. Independent
+scene evidence counts 243 cache holds in 10,421 foreground loops (2.33%), at most
+four consecutive. These are loop counts, not physical refreshes. Brief stutters
+remain; the reference run no longer has sustained enemy-count-dependent game
+speed loss.
 
-## Radar timing and memory ownership
+The prior v13 implementation measured approximately 55/45/37/39 native ticks/s
+in its first four loaded rounds. A current forced-3.58 MHz diagnostic still
+measures approximately 51–60 ticks/s over eight rounds. Routes differ, and the
+current 60-tick result **depends on the reference machine's factory turbo**.
+Unsupported MSX machines keep their base clock; equivalent throughput there
+has not been established.
 
-Foreground SAT writes previously raced the scroll latch under actor load.
-The maze IRQ now publishes the player dot and twelve fixed radar sprites after
-latching R23, in scan order before their fetches. Coordinates use that same
-scroll value. The existing sentinel-216 phase masks remain intact.
+## Scheduling, terrain and enemy work
 
-An observational trace compares live SAT with expected coordinates immediately
-before four radar band fetches and the earliest player-dot fetch. The prior
-four-round trace found 2,116 mismatches in 42,365 body samples. The current
-eight-round route found **zero in 123,198 body/dot samples**. These traces have
-different lengths; they demonstrate the old defect and the current timing gate,
-not a statistical matched-route improvement claim.
+VBlank elapsed time owns the native clock instead of each foreground loop.
+The scheduler retains at most twelve pending ticks and executes at most six
+per loop, using both the post-copy tail and otherwise idle header synchronization
+time. Native clocks remain together. A bounded camera/native separation prevents
+unlimited catch-up ahead of the displayed world.
 
-IRQ code occupies `$c5d2..$c637`, reclaimed from the former shared scratch area.
-The terrain deadline flag moves to `$c67c`; leaving it at `$c5e8` would overwrite
-an IRQ instruction. Static allocation tests reject that overlap. Natural-route
-write watchpoints reject modifications to IRQ code during play, and component,
-scene-reload and snapshot proofs compare code bytes with the sealed image.
-Cold code leaves 204 bytes below the existing `$f380` stack top.
+A temporary page0 RAM overlay uses a spare segment of the existing 128 KB mapper.
+Code occupies `$1000..$16b3`; 4,096 bytes at `$2000..$2fff` tag each torus tile
+with its exact world coordinates. Slot/subslot/mapper configuration is restored
+before BIOS-facing paths. Stream jobs skip owned tiles, finish the nearest
+incomplete hidden border first, and discard stale jobs which could alias the
+visible viewport. The camera advances only after every newly exposed tile is
+owned. Runtime observers check every visible tile at each camera validation,
+overlay code bytes and mapper restoration.
 
-## Qualification and remaining work
+Clean 24x24 original cells use one exact HMMM copy, or HMMV only when every source
+pixel has the same color. Exact 8x48 strips also combine eligible column work.
+Object ownership, native smoke, published smoke and explosion state reject unsafe
+batching. Conservative native smoke-row flags skip per-tile checks only when
+they prove an area empty; independent snapshots reject a hidden nonempty row.
 
-All evidence is ignored under `references/build/`:
+Enemy preparation reuses world/radar coordinates only for unchanged native
+coordinates. Already visible, unclipped complete masks reuse preparation when
+their source pose remains identical. Other cases take the complete adapter.
+Direct IX records, source-order SAT compaction and a single terminator retain
+the previous iteration's renderer improvements. Zero-velocity motion avoids
+redundant fractional arithmetic only within the original normalized range;
+the original cell-pointer writer still runs. Stationary seven-car AI reuses
+results from actual original calls under checked input/smoke/stun/startup guards.
+All other states execute original logic.
 
-| Bundle | Result |
+## Factory clock and raster ownership
+
+The game detects Panasonic switched device 8 and its turbo-available bit. Pure
+CPU scopes use the factory **5,369,318 Hz** mode. VDP transactions and raster IRQs
+use **3,579,545 Hz**; IRQ return restores an interrupted pure-CPU scope. The
+controller's turbo VDP wait behavior makes leaving turbo enabled during graphics
+work counterproductive. No clock is synthesized or forced on unsupported hardware.
+See the primary [openMSX Panasonic controller implementation](https://github.com/openMSX/openMSX/blob/RELEASE_21_0/src/MSXMatsushita.cc).
+
+The launcher follows machine-selected frequency. In openMSX,
+`z80_freq_locked true` uses the machine clock, while `false` forces the user's
+frequency value. Earlier pure-CPU experiments inadvertently ran at forced base
+frequency despite the controller's turbo status bit. Their throughput is excluded
+from factory-clock qualification. The current route records actual CPU frequency
+and instruction duration, checks native motion at 5.37 MHz, and checks every
+observed sprite upload, command wait and radar IRQ at 3.58 MHz. See the primary
+[CPU frequency selection code](https://github.com/openMSX/openMSX/blob/RELEASE_21_0/src/cpu/CPUCore.cc).
+
+The maze IRQ publishes the player dot and twelve radar body sprites after the
+R23 scroll latch, in scan order before their fetches. The eight-round run passed
+**74,798 live pre-fetch checks with zero mismatches**, including the player dot.
+Header reservation maximum was 7.285 ms over 14,960 reservations. IRQ code-write
+guards, cold-code canaries and exact scene/source-pixel checks also pass. The
+cold-code/stack gap is 132 bytes; allocator guards retain the 128-byte minimum.
+
+## Qualification and remaining review
+
+All original inputs and generated evidence remain ignored under `references/`.
+
+| Evidence bundle | Verified result |
 | --- | --- |
-| `issue12-render-cost-baseline-v2`, `issue12-render-cost-v13` | Controlled scaling, 2,800 samples per cartridge; native RAM, terrain and stack unchanged |
-| `issue12-perf-car-proof-v13` | 13,496 car cases, 8,085 visible; masks/colors/positions, clipping, cache reuse, compact destination changes and identical-pose reappearance; active raster IRQs |
-| `issue12-perf-route-v13` | Eight natural rounds, real credit/start/steering/smoke, no guest-state writes; radar timing gate and IRQ-code write guard pass |
-| `issue12-perf-evidence-v13` | 94 independent cache/smoke/HUD snapshots, 65 complete enemy images; code-byte canaries |
-| `issue12-perf-preparation-v13`, `issue12-perf-rules-v13`, `issue12-perf-ai-v13` | 508 exact preparations, 1,728 phase boundaries, 7,680 three-call original AI comparisons including fine-coordinate and key-change guards |
-| `issue12-perf-rounds-v13` | 254 seeded scene transitions, map/object/header checks and IRQ-code canaries |
-| `issue12-perf-session-v13`, `issue12-perf-state-v13`, `issue12-perf-attract-v13` | Two-player session/deaths, partial-board restoration/HUD boundaries and original cast/autonomous demo |
-| Authored tests | 357 synthetic tests pass |
+| `issue12-perf-qualified-route-v75` | Eight natural rounds; cadence, radar, header, tile ownership, mapper and code guards |
+| `issue12-perf-qualified-evidence-v75` | 41 independent cache/smoke/HUD snapshots and 34 complete enemy images |
+| `issue12-perf-factory-cars-v73` | 13,496 complete-car cases with active raster IRQs, clipping/cache/destination/reappearance checks |
+| `issue12-perf-smokerows-ai-v71` | 7,680 three-call original AI comparisons, including valid-but-empty smoke rows and key mutations |
+| `issue12-perf-factory-motion-v73` | 7,680 three-call original motion comparisons, including all fine-byte values and guarded fallbacks |
+| `issue12-perf-factory-clock-v73` | 384 executed elapsed-time clock cases: wrap, carries, pause and bounded debt/drop accounting |
+| `issue12-perf-factory-preparation-v74`, `issue12-perf-factory-rules-v74` | 508 exact original preparations and 1,728 original phase boundaries |
+| `issue12-perf-factory-rounds-v73` | 254 explicitly seeded scene transitions, maps/objects/headers and code canaries |
+| `issue12-perf-factory-session-v74`, `issue12-perf-factory-state-v74`, `issue12-perf-factory-attract-v74` | Real two-player sessions/deaths, partial-board restoration/HUD boundaries and original cast/autonomous attract |
+| Authored tests | 365 synthetic tests pass; original inputs remain outside the test fixtures |
 
-The eight-round route used 22,641 refreshes, with 6,245 cache holds (27.58%), at
-most four consecutive. Header reservation maximum was 7.289 ms. The adaptive
-input driver takes different paths as timing changes, so this is not a fixed
-whole-game comparison with the previous 25.97% route. Renderer savings do not
-establish improved total gameplay speed. Terrain backpressure and native work
-remain material performance targets. Issue #12 stays open.
-
-Maximum observed enemy occupancy remains ten planes per scanline; hardware
-culling still applies. SAT/VRAM/source-pixel checks do not prove complete loaded
-RGB scanout. A four-scene SDL capture attempt advanced emulator state but saved
-stale BIOS frontend images, so it is expressly excluded from visual acceptance.
-Physical hardware and loaded motion still need qualification.
+Seeded/component proofs are distinct from naturally completed rounds. Maximum
+observed enemy occupancy remains ten planes per scanline; real hardware culling
+persists. SAT/VRAM/source-pixel proofs do not establish complete loaded RGB
+scanout or physical-hardware acceptance. Those review gates remain open under
+#12/#27; they do not justify declaring the whole issue complete. Audio stays silent.
 
 The bounded `FULL_GAME=0` cartridge remains byte-identical to Issue 11:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
 
 ## Reproduce
 
-Use fresh ignored output directories and existing contributor-supplied inputs.
+Use fresh ignored output directories and contributor-supplied ROMs/BIOS.
 
 ```sh
 make build
-.venv/bin/python -B scripts/full_enemy_cost.py --rom references/build/default-62285febd96d4c8dbc70117afd0921ea/raster-scroll.rom --output references/build/my-enemy-cost
-.venv/bin/python -B scripts/full_enemy_probe.py --rom references/build/default-62285febd96d4c8dbc70117afd0921ea/raster-scroll.rom --output references/build/my-car-proof
-.venv/bin/python -B scripts/full_game_route.py --rom references/build/default-62285febd96d4c8dbc70117afd0921ea/raster-scroll.rom --output references/build/my-route --rounds 8 --avoid-enemies --radar-trace --require-stable-radar
-.venv/bin/python -B scripts/full_game_evidence.py --rom references/build/default-62285febd96d4c8dbc70117afd0921ea/raster-scroll.rom --capture references/build/my-route --output references/build/my-evidence
+make run
+ROM=references/build/issue12-perf-qualified-v75/raster-scroll.rom
+.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-route --rounds 8 --avoid-enemies --profile --radar-trace --require-stable-radar --minimum-native-hz 57
+.venv/bin/python -B scripts/full_game_evidence.py --rom "$ROM" --capture references/build/my-route --output references/build/my-evidence
+.venv/bin/python -B scripts/full_clock_probe.py --rom "$ROM" --output references/build/my-clock
 make test
 ```
+
+`--fixed-base-clock` is an explicit route diagnostic; keep the HUD enabled.
+The controlled renderer-only benchmark remains a separate tool and its old
+v13 medians do not describe the current whole-game cadence.

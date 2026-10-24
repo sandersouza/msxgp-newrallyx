@@ -60,7 +60,7 @@ def main():
     lines=['set save_settings_on_exit false','set renderer none','set sound_driver null',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),'set firmwareswitch off','set throttle off',
-        'set z80_freq 3579545','set z80_freq_locked false','set cmdtiming real','set limitsprites true',
+        'set z80_freq 3579545','set z80_freq_locked true','set cmdtiming real','set limitsprites true',
         f'cart {tcl(args.rom.resolve())} -romtype ASCII16','reset',f'set out {tcl(out)}',
         'set phase boot;set age 0;set count 0;set seeded 0',
         f'set fields {{{" ".join(str(0xe000+at) for at in fields)} {" ".join(str(syms["Flag_Active"]+i) for i in range(1,11))} {syms["Full_NewBoard"]}}}']

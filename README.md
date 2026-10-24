@@ -34,10 +34,11 @@ drawings, the full HUD and the real V9958 sprite limit.
 The eight-pixel header shows an eight-digit high score and score, the selected
 player and a three-digit round. The life digit shows spare cars, capped at nine.
 A 248x201 maze viewport preserves world coordinates. The original logical tick
-is 16.5 ms; heavy rendering can hold the simulation while the scenery cache
-recovers. Loaded scenes also incur hardware sprite culling. This is a measured
-adaptation, with [validation evidence and limits](docs/full-gameplay-inventory.md);
-it does not claim unconditional arcade frame/timing equivalence.
+is 16.5 ms. Elapsed-time scheduling, terrain ownership and cached enemy work keep
+the measured simulation at **60.17–60.60 ticks/s across eight natural rounds**
+on the reference Panasonic, including seven-enemy challenge rounds. Presentation
+averages 30–38 loops/s, with occasional short stalls and real hardware sprite
+culling. See [performance evidence and limits](docs/enemy-rendering-performance.md).
 
 ```sh
 make build
@@ -62,8 +63,10 @@ contracts and historical limitations are in the [checkpoint guide](docs/checkpoi
 They do not provide complete-game progression. `NATIVE=1` remains a compatibility
 alias for the bounded selected-routine reference.
 
-Validation uses openMSX 21.0 at the standard 3,579,545 Hz, 50 Hz VDP refresh,
-128 KB RAM mapper and 128 KB VRAM. The launcher uses an isolated FS-A1WSX
+Validation uses openMSX 21.0, 50 Hz VDP refresh, a 128 KB RAM mapper and 128 KB
+VRAM. The game detects the Panasonic's factory 5.37 MHz mode for pure CPU work;
+VDP access and raster IRQs use 3.58 MHz. Other machines retain their base clock;
+the reported cadence depends on the factory mode. The launcher uses an isolated FS-A1WSX
 configuration and contributor-supplied BIOS under `references/msxbios/`.
 See [setup](docs/setup.md#machine-and-contributor-supplied-bios).
 Physical hardware and loaded RGB scanout remain unqualified; the overnight

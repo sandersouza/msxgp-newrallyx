@@ -12,6 +12,7 @@ Enemy_Init:
     ENDIF
     IF FULL_GAME
     ld ($e3f1),a
+    ld ($e3f8),a
     ENDIF
     dec a
     ld (Enemy_Drawn),a

@@ -41,7 +41,8 @@ def run(root, args):
     require_ignored(root,[output/'session.tcl', output/'emulator.log'])
     output.mkdir(parents=True)
     env = dict(os.environ, OPENMSX_HOME=str(output/'home'), OPENMSX_USER_DATA=str(output/'userdata'))
-    # The process gets its own user data/settings/cache; no global configuration changes.
+    # Session-local settings. "Locked" uses the machine-selected clock, including
+    # factory CPU switching; false would force the user frequency override.
     lines = ['set save_settings_on_exit false',
              f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
              f'if {{[catch {{{reference_machine(root,args.machine)}}} problem]}} {{',
@@ -49,7 +50,7 @@ def run(root, args):
              '  exit 2', '}',
              'set firmwareswitch off', 'set speed 100', 'set throttle on',
              'set vsync off',
-             'set z80_freq 3579545', 'set z80_freq_locked false',
+             'set z80_freq 3579545', 'set z80_freq_locked true',
              'set gamma 1.0', 'set brightness 0', 'set contrast 0',
              'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',
              'set scanline 0', 'set blur 0', 'set noise 0',

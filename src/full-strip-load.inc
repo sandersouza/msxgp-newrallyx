@@ -19,4 +19,50 @@ Full_StripInit:
     ld de,$8000
     add hl,de
     ld de,(Full_VBytes)
-    jp upload
+    call upload
+    vdp_write 14,4
+    xor a
+    out ($99),a
+    ld a,$64
+    out ($99),a
+    ld a,(Full_WideHData)
+    ld de,(Full_WideHBytes)
+    call Full_UploadWide
+    vdp_write 14,6
+    xor a
+    out ($99),a
+    ld a,$4c
+    out ($99),a
+    ld a,(Full_WideVData)
+    ld de,(Full_WideVBytes)
+    jp Full_UploadWide
+Full_UploadWide:
+    ld ($7000),a
+    push af
+    ld hl,$8000
+    ld a,d
+    cp $40
+    jr c,.last
+    jr nz,.split
+    ld a,e
+    or a
+    jr z,.last
+.split:
+    ld bc,$4000
+    ex de,hl
+    or a
+    sbc hl,bc
+    push hl
+    ld hl,$8000
+    ld de,$4000
+    call upload
+    pop de
+    pop af
+    inc a
+    ld ($7000),a
+    push af
+    ld hl,$8000
+.last:
+    call upload
+    pop af
+    ret

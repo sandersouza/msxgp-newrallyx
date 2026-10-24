@@ -33,3 +33,10 @@ class FullMemoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'stack'):layout(symbols)
         symbols=self.symbols();symbols['Full_EnemyHotEnd']=0xc701
         with self.assertRaisesRegex(ValueError,'space'):layout(symbols)
+
+    def test_overlay_code_cannot_overwrite_world_tile_owners(self):
+        symbols=self.symbols()
+        symbols.update(Full_CacheEngineStart=0x1000,Full_CacheEngineEnd=0x1fff)
+        self.assertEqual(layout(symbols)['terrain_mapper']['tile_owners'],[0x2000,0x3000])
+        symbols['Full_CacheEngineEnd']=0x2001
+        with self.assertRaisesRegex(ValueError,'overlay'):layout(symbols)

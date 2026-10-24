@@ -26,7 +26,8 @@ def registration_table():
 
 def validate_extension_space(bank):
     """Do not replace native instructions when installing bank-local helpers."""
-    if len(bank)!=16384 or bank[0x3800:0x3f00]!=bytes([255])*0x700:
+    if (len(bank)!=16384 or bank[0x3800:0x3f00]!=bytes([255])*0x700 or
+            bank[0x3500:0x3600]!=bytes([255])*0x100):
         raise ValueError('Full enemy helpers overlap occupied native bank space')
 
 
@@ -165,7 +166,22 @@ def assembly(source):
     ld a,(Enemy_SatY)
     ld hl,Enemy_SAT''')
     first=body.index('FullEnemy_PrepareOne:\n');last=body.index('FullEnemy_DrawPrepared:\n')
+    for axis,world,offset,cell in [('Player_Axis','Enemy_WorldX',5,8),('Player_AxisY','Enemy_WorldY',7,10)]:
+        old=f'''    ld hl,(Full_EnemySource)
+    ld de,{cell}
+    add hl,de
+    ld a,(hl)
+    dec hl
+    dec hl
+    dec hl
+    call {axis}
+    ld ({world}),hl'''
+        new=f'    ld hl,({world})'
+        body=replace_once(body,old,new)
+    first=body.index('FullEnemy_PrepareOne:\n');last=body.index('FullEnemy_DrawPrepared:\n')
     native=indexed_records(body[first:last]).replace('FullEnemy_PrepareOne:','FullEnemyPrepareNative:').replace('FullEnemy_RadarOne:','FullEnemyRadarNative:')
+    native=native.replace('FullEnemyPrepareNative:\n','FullEnemyPrepareNative:\n    call FullEnemyWorldNative\n    call FullEnemyFastPose\n    ret c\n',1)
+    native=native.replace('FullEnemyRadarNative:\n','FullEnemyRadarNative:\n    ld a,(Full_EnemyWorldChanged)\n    or a\n    ret z\n',1)
     if '($7000)' in native:raise ValueError('Bank-local actor preparation changes its own mapper')
     wrappers='''FullEnemy_PrepareOne:
     ld a,PLAYER_BANK
@@ -175,6 +191,10 @@ FullEnemy_RadarOne:
     ld a,PLAYER_BANK
     ld ($7000),a
     jp FullEnemyRadarNative
+FullEnemy_WorldOne:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp FullEnemyWorldNative
 '''
     body=body[:first]+wrappers+indexed_records(body[last:])
     resident=core+'    IF ENEMY_RENDER\nEnemy_HitAddress EQU $c63c\n'+body+'\n    INCLUDE "full-enemy-loop.inc"\n'+end

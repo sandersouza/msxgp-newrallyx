@@ -9,6 +9,8 @@ Full_RegisteredMask EQU $c678
 Full_EnemySATCursor EQU $c67a
 Full_EnemySATDirty EQU $c67b
 Full_RegisteredCurrent EQU $c67d
+Full_EnemyWorldChanged EQU $c67e
+Full_EnemyWorldKeys EQU $db20 ; Four native coordinate bytes per actor; DB3C..3F spare.
 
 Full_EnemyBuildRegistration:
     ld a,PLAYER_BANK
@@ -111,8 +113,10 @@ FullEnemy_DrawOne:
     ld ($7000),a
     jp Full_EnemyDrawNative
 Full_EnemyPrepareRadar:
+    call Full_TurboOn
     call FullEnemy_PrepareOne
-    jp FullEnemy_RadarOne
+    call FullEnemy_RadarOne
+    jp Full_TurboOff
 Full_EnemyPatterns:
     db 192,200,208,216,224,232,248
 
@@ -141,6 +145,7 @@ Full_EnemyInactive:
 .parked:
     call Full_EnemyRecordAddress
     ld (hl),0
+    ld (ix+31),0            ; Hidden radar publication must not survive cache reuse.
     ld bc,$ffff
     call Full_EnemySetPoint
     ld hl,(Full_EnemyAction)

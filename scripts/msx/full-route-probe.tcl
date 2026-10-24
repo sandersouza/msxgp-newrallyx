@@ -11,7 +11,9 @@ set shots 0
 set skip_headers 0
 set events [open [file join $out events.tsv] w]
 set headers [open [file join $out headers.tsv] w]
+set cadence [open [file join $out cadence.tsv] w]
 proc u16 {a} {expr {[debug read memory $a]+256*[debug read memory [expr {$a+1}]]}}
+proc signed {a} {set n [debug read memory $a];expr {$n<128?$n:$n-256}}
 proc keys {mask fire} {
     keymatrixup 8 255
     keymatrixup 6 2
@@ -128,6 +130,7 @@ proc route_frame {} {
     set state [debug read memory 0xc7d0]
     set r [debug read memory 0xe1b0]
     set death [debug read memory 0xc490]
+    puts $::cadence "[machine_info time] $r $death [debug read memory 0xc724] [u16 0xc440] [u16 0xc71d] [debug read memory 0xe24e] [debug read memory 0xc472] @CLOCK_DUE@ @CAMERA_BLOCKED@ @CLOCK_DROPPED@ [debug read memory 0xc00a]"
     puts $::events "$::frames $r [debug read memory 0xc50b] [debug read memory 0xe00f] $death [u16 0xe26a] [u16 0xc711] [u16 0xc71d] [u16 0xc440] [debug read memory 0xe28b] [debug read memory 0xe289] [debug read memory 0xe24e] [debug read memory 0xc472]"
     if {$::frames>40000 || $state==2} {
         snapshot
@@ -144,16 +147,18 @@ proc route_frame {} {
     set deaths [debug read memory 0xc5c2]
     if {$deaths!=$::current_deaths} {set ::current_deaths $deaths;prepare_navigation}
     if {[debug read memory 0xc724] || [debug read memory 0xc009]} {keys 0 0;return}
-    set x [u16 0xc405];set y [u16 0xc407]
+    # Plan the next input from the current native position. The visible camera
+    # deliberately presents the preceding simulation snapshot.
+    set x [u16 0xc450];set y [u16 0xc452]
     if {abs($::tx-$x)<=6 && abs($::ty-$y)<=6} {
         navigate [expr {int(($::tx-36)/24)}] [expr {int(($::ty-36)/24)}]
     }
     set facing [debug read memory 0xe077]
     set behind 0
     for {set i 0} {$i<7} {incr i} {
-        set p [expr {0xce20+$i*32}]
-        set dx [expr {[u16 [expr {$p+2}]]-$x}]
-        set dy [expr {[u16 [expr {$p+4}]]-$y}]
+        set p [expr {0xe088+$i*32}]
+        set dx [expr {36+24*[debug read memory [expr {$p+8}]]+[signed [expr {$p+5}]]-$x}]
+        set dy [expr {36+24*[debug read memory [expr {$p+10}]]-[signed [expr {$p+7}]]-$y}]
         if {[u16 [expr {0xe089+$i*32}]] && ![debug read memory [expr {0xe09d+$i*32}]] &&
             (($facing==240 && $dy>24 && $dy<96 && abs($dx)<12) ||
              ($facing==242 && $dy< -24 && $dy> -96 && abs($dx)<12) ||

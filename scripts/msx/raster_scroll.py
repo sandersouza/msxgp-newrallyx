@@ -685,6 +685,10 @@ def build(root, args):
     if full_game:
         from .full_enemy import validate_extension_space
         validate_extension_space(banks[player_bank-1])
+    terrain_bank=0
+    if full_game:
+        terrain_bank=len(banks)+1
+        banks.append(bytes([255])*16384)
     for n, bank in enumerate(banks, 1):
         (output/f'bank-{n}.bin').write_bytes(bank)
     size = 16384*(1 << len(banks).bit_length())
@@ -721,14 +725,14 @@ def build(root, args):
         f'RADAR_BLUE EQU {index_for(palette,(0,0,151))}\n'
         f'RASTER_GUARD EQU {int(enemy_render or player_blitter or tile_mode)}\nStage_GuardClosed EQU ${0xc67c if full_game else 0xc5e8:04x}\n'
         f'STAGE_GUARD_LINE EQU {(202 if fast_player or smoke_runtime else 140 if tile_strips and hud_enabled and cells_only else 196 if bare_sat or simple_maze or tile_strips else 202) if stage>=9 else 196}\n'
-        f'STAGE_SOLID_RUN_TILES EQU {8 if simple_maze else 4}\n'
+        f'STAGE_SOLID_RUN_TILES EQU {8 if full_game or simple_maze else 4}\n'
         f'STAGE_SOLID_RUNS EQU {int(solid_runs)}\n'
         f'RADAR_MARKER_QUANTUM EQU {marker_quantum}\nSTAGE_TILE_STRIPS EQU {int(tile_strips)}\nSTRIP_H_BANK EQU {strip_h_bank}\nSTRIP_V_BANK EQU {strip_v_bank}\n'
         f'STRIP_DIV3_ADDR EQU ${strip_div3_addr:04x}\n'
         f'FLAG_ROW_X EQU {flag_row%32*8}\nFLAG_ROW_Y EQU {16+flag_row//32*8}\n'
         f'STAGE_CACHE_COLUMNS EQU {cache_columns}\nSTAGE_CACHE_GUARD EQU {cache_guard}\n'
         f'STAGE_CACHE_TOP_GUARD EQU 3\n'
-        f'INCREMENTAL_STAGE EQU {stage}\nFULL_GAME EQU {int(full_game)}\nROCK_COUNT EQU {len(rock_positions)}\n'
+        f'FULL_TERRAIN_BANK EQU {terrain_bank}\nINCREMENTAL_STAGE EQU {stage}\nFULL_GAME EQU {int(full_game)}\nROCK_COUNT EQU {len(rock_positions)}\n'
         f'SMOKE_RUNTIME EQU {int(smoke_runtime)}\n'
         f'DEATH_HOLD_TICKS EQU {death_ticks}\n'
         f'FLAG_EMPTY_X EQU {(empty_id%32)*8}\nFLAG_EMPTY_Y EQU {16+empty_id//32*8}\n'
@@ -748,7 +752,8 @@ def build(root, args):
         f'YELLOW EQU {yellow}\nFUEL_Y EQU {fuel_y}\nLIFE_SPLIT EQU {LIFE_SPLIT}\n')
     (output/'payload.inc').write_text(''.join(
         (f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n' if n==session_bank else
-         f'    INCBIN "bank-{n}.bin",0,$2800\n    INCLUDE "full-load.inc"\n    defs $400-(Full_LoadEnd-Full_LoadStart)-(Full_EnemyHotEnd-Full_EnemyHotStart)-(Full_RadarIRQEnd-Full_RadarIRQStart),$ff\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    DISP $ae00\n    INCLUDE "full-round-native.inc"\n    ASSERT $ <= $b000\n    defs $b000-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3000,$600\n    DISP $b600\n    INCLUDE "full-native-ai.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==player_bank else
+         '    DISP $1000\nFull_CacheEngineStart:\n    INCLUDE "full-terrain-engine.inc"\nFull_CacheEngineEnd:\n    ENT\n    defs $4000-(Full_CacheEngineEnd-Full_CacheEngineStart),$ff\n' if full_game and n==terrain_bank else
+         f'    INCBIN "bank-{n}.bin",0,$2800\n    INCLUDE "full-load.inc"\n    defs $400-(Full_LoadEnd-Full_LoadStart)-(Full_EnemyHotEnd-Full_EnemyHotStart)-(Full_RadarIRQEnd-Full_RadarIRQStart),$ff\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    DISP $ae00\n    INCLUDE "full-round-native.inc"\n    ASSERT $ <= $b000\n    defs $b000-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3000,$500\n    DISP $b500\n    INCLUDE "full-native-motion.inc"\n    ASSERT $ <= $b600\n    defs $b600-$,$ff\n    ENT\n    DISP $b600\n    INCLUDE "full-native-ai.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==player_bank else
          f'    INCBIN "bank-{n}.bin",0,$2c00\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2e00,$1200\n' if round_preparation and n==player_bank else
          f'    INCBIN "bank-{n}.bin"\n') for n in range(1, len(banks)+1))
                                       + f'    defs {size}-$+16384,$ff\n')
@@ -760,7 +765,7 @@ def build(root, args):
     if round_preparation:
         shutil.copyfile(root/'src/round-objects.inc', output/'round-objects.inc')
     if full_game:
-        for name in ('full-round-native.inc','full-native-ai.inc','full-round-runtime.inc'):
+        for name in ('full-round-native.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
             shutil.copyfile(root/'src'/name,output/name)
     shutil.copyfile(root/'src/player.inc',output/'player.inc')
     if smoke_runtime:shutil.copyfile(root/'src/smoke.inc',output/'smoke.inc')
@@ -816,7 +821,19 @@ def build(root, args):
     json_write(output/'build.json', dict(schema_version=1, experiment='full-screen-hardware-raster',
         step_pixels=1, strip_border_flowers=False, timing=video_timing(args.hz),
         incremental_stage=stage, hud_enabled=hud_enabled, full_arcade_loop=False,
-        native_clock=clock,full_game=full_game,full_memory=memory_layout,
+        native_clock=(dict(clock,basis='Elapsed physical VBlank counter',maximum_ticks_per_loop=6,
+            maximum_pending_ticks=12,maximum_elapsed_refreshes=8) if full_game else clock),
+        hardware_cpu_clock=(dict(controller='Factory Panasonic switched device 8, port 0x41',
+            detection='ID complement 0xF7 and turbo-available bit2 clear',
+            pure_cpu_hz=5369318,vdp_io_hz=3579545,
+            fallback='Unsupported machines retain their standard CPU clock',
+            emulator='z80_freq_locked true follows machine-selected frequency; false overrides it') if full_game else None),
+        terrain_ownership=(dict(mapper_code=[0x1000,0x2000],tile_tags=[0x2000,0x3000],
+            segment='Page3 segment XOR 1, temporarily mapped into page0',
+            cell_prefetch_pixels=[24,24],source_pixels_unchanged=True,
+            viewport_gate='Every newly exposed row/column must own its exact world coordinates',
+            native_smoke_rows=[0xd160,0xd180]) if full_game else None),
+        full_game=full_game,full_memory=memory_layout,
         session=(dict(state_address=0xc7d0,credits_address=0xc7d2,ready_address=0xc7dd,image_bank=session_image_bank,code_bank=session_bank,keys='5 credit, 1 one-player start'+(', 2 two-player start' if full_game else '')+'; arrows/joystick1 steering, Space/Ctrl/triggerA smoke, P pause, Home reset',
             direction_gate='Four-way, newest direction edge wins; simultaneous edges choose one direction',
             direction_state_addresses=[0xc7de,0xc7df],
@@ -828,8 +845,9 @@ def build(root, args):
             source_font_scale='1:1 original 8x8',next_round_enabled=full_game,
             player_capacity=2 if full_game else 1,attract_demo=full_game,
             attract_wait_refreshes=900 if full_game else None) if stage>=12 else None),
-        cache_backpressure=(dict(held_refresh_counter=0xc71d,vertical_debt_tiles=2,
-            horizontal_debt_tiles=cache_guard-1,scope='Hold all native simulation clocks for one refresh while hidden cache jobs recover; preserve original pixels and rules') if smoke_runtime else None),
+        cache_backpressure=(dict(held_refresh_counter=0xc71d,vertical_debt_tiles=None if full_game else 2,
+            horizontal_debt_tiles=None if full_game else cache_guard-1,
+            scope=('Hold the camera/native advance only for an incomplete newly exposed edge; retain bounded elapsed-time debt' if full_game else 'Hold all native simulation clocks for one refresh while hidden cache jobs recover; preserve original pixels and rules')) if smoke_runtime else None),
         completion_component=(dict(runtime_enabled=stage>=11,source_entry=0x1fa9,
             source_sha256=digest(root/'src/completion.inc'),scope='Original remaining-fuel conversion, normal/challenge progression and session transitions' if full_game else 'Initial normal round, original remaining-fuel conversion and explicit session transitions' if stage>=12 else 'Initial normal-round remaining-fuel conversion and explicit stopped segment; credit/start/game-over presentation pending' if stage>=11 else 'Isolated remaining-fuel converter; round completion and start/game-over not yet integrated') if completion_component else None),
         parameter_component=(dict(runtime_enabled=stage>=11,source_entry=0x1b1f,
@@ -909,7 +927,7 @@ def build(root, args):
         rock_collision=stage>=2, rock_sprite_slots=0,
         cache_columns=cache_columns,cache_horizontal_guard_tiles=cache_guard,
         cache_solid_runs=solid_runs,
-        cache_solid_run_tiles=8 if simple_maze else 4,
+        cache_solid_run_tiles=8 if full_game or simple_maze else 4,
         radar_work_phase='adaptive post-cache tail (140/196), next-refresh publication' if tile_strips and hud_enabled and cells_only and not smoke_runtime else None,
         gameplay_systems=['player movement', 'steering', 'wall collision', 'player animation']+
                          (['static original rock bitmap fixture'] if rock_positions else [])+
@@ -927,7 +945,7 @@ def build(root, args):
                          (['four original dynamic maps and original flag/rock placements','normal/challenge progression','alternating two-player boards','original cast and autonomous attract demonstration'] if full_game else []),
         stationary_ai_reuse=(dict(entry=0xb600,source_entry=0x0cd6,
             source_sha256=digest(root/'src/full-native-ai.inc'),
-            guards='Seven stationary cars, zero speeds, no smoke/stun/startup, legal axes, distinct player cell; six unchanged input keys',
+            guards='Seven stationary cars, zero speeds, empty conservative native smoke rows, no stun/startup, legal axes, distinct player cell; six unchanged input keys',
             fallback='Original transform for every other state',comparison_cases=7680) if full_game else None),
         death=(dict(hold_ticks=death_ticks,anchor_bias=[-9,-8],width=24,height=24,
                     display_state_address=0xc49a if stage>=9 else 0xc490,

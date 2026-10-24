@@ -20,6 +20,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--rom',type=Path,required=True);p.add_argument('--output',type=Path,required=True)
     p.add_argument('--reference',type=Path,default=Path('references/build/issue12-round-inventory-v13'))
+    p.add_argument('--motion',action='store_true',help='Compare three original movement calls, including all fine-byte values')
     args=p.parse_args();root=Path(__file__).resolve().parents[1];bundle=args.rom.resolve().parent
     verify_manifest(bundle);verify_manifest(args.reference)
     out=destination(root,args.output);require_ignored(root,[out/'cases.bin']);out.mkdir(parents=True)
@@ -29,9 +30,9 @@ def main():
     cases=[]
     for n,(position,axis,velocity,center,mask) in enumerate(itertools.product(
             ((5,8),(15,20),(25,50),(15,52),(15,1)),(0,255),(2,253),(0,1,255),range(128))):
-        cases.append([*position,axis,velocity,center,mask,(n//128)%10,(n//1024)%4,n%3])
+        cases.append([*position,axis,velocity,center,mask,(n//128)%11,(n//1024)%4,n%3])
     (out/'cases.bin').write_bytes(bytes(v for c in cases for v in c))
-    (out/'config.lua').write_text('return '+lua_literal(dict(output=str(out),cases=cases))+'\n')
+    (out/'config.lua').write_text('return '+lua_literal(dict(output=str(out),cases=cases,entry=0x69 if args.motion else 0xcd6,motion=int(args.motion)))+'\n')
     version=subprocess.check_output(['mame','-version'],text=True).strip()
     if not version.startswith('0.289 '):raise ValueError('AI oracle requires MAME 0.289')
     command=['mame','nrallyx','-noreadconfig','-noplugins','-nocheat','-rompath',str(root/'references/roms'),
@@ -55,7 +56,7 @@ def main():
     script=r'''
 proc execute {} {
     debug write memory 0x7000 @BANK@
-    set at 0xd150;foreach value {243 205 0 182 195 96 209} {debug write memory $at $value;incr at}
+    set at 0xd150;foreach value {@CALL@} {debug write memory $at $value;incr at}
     reg SP 0xc7f0;reg PC 0xd150
 }
 proc issue {} {
@@ -66,13 +67,24 @@ proc issue {} {
     set ::case $c
     lassign $c x y axis velocity center mask guard page mutate
     foreach at {0xe070 0xe072 0xe06b 0xe06a 0xe05b} value [list $x $y $axis $velocity $center] {debug write memory $at $value}
-    foreach at {0xe025 0xe026 0xe029 0xe02a 0xe3f1} {debug write memory $at 0}
+    foreach at {0xe025 0xe026 0xe029 0xe02a 0xe3f1 0xe3f8} {debug write memory $at 0}
     debug write memory 0xe24e 7;debug write memory 0xe28f [expr {0xb0+$page}]
-    debug write memory 0xc701 [expr {$guard==1}]
+    debug write memory 0xc701 [expr {$guard==1 || $guard==10}]
+    debug write_block memory 0xd160 [string repeat [binary format c [expr {$guard==1}]] 32]
+    if {$guard==10} {debug write_block memory 0xe400 [string repeat [binary format c 0] 1024]}
     for {set i 0} {$i<7} {incr i} {
         set p [expr {0xe088+$i*32}]
         foreach offset {0 1 2 19 21} {debug write memory [expr {$p+$offset}] 0}
         debug write memory [expr {$p+3}] [expr {($mask>>$i)&1?255:0}]
+        if {@MOTION@} {
+            foreach offset {4 5 6 7} multiplier {7 17 11 23} {
+                debug write memory [expr {$p+$offset}] [expr {($::index+$i*$multiplier)&255}]
+            }
+            if {($::index+$i)%3==1} {
+                debug write memory [expr {$p+1}] [expr {$::index&255}]
+                debug write memory [expr {$p+2}] $velocity
+            }
+        }
     }
     switch $guard {
         2 {debug write memory 0xe025 32;debug write memory 0xe026 2}
@@ -109,7 +121,7 @@ debug set_bp 0xd160 {$::started} {
     }
 }
 after time 240 {puts stderr "Native repeated-AI proof timeout";exit 2}
-'''.replace('@BANK@',str(syms['PLAYER_BANK'])).replace('@MAIN@',str(syms['main']))
+'''.replace('@BANK@',str(syms['PLAYER_BANK'])).replace('@MAIN@',str(syms['main'])).replace('@MOTION@',str(int(args.motion))).replace('@CALL@','243 205 105 128 195 96 209' if args.motion else '243 205 0 182 195 96 209')
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n'+script+'\n} p]} {puts stderr $p;exit 2}\n')
     with (out/'emulator.log').open('w') as log:
         subprocess.run(['openmsx','-script',str(out/'session.tcl')],check=True,timeout=180,
@@ -119,15 +131,16 @@ after time 240 {puts stderr "Native repeated-AI proof timeout";exit 2}
     if len(actual)!=len(original):raise ValueError('Incomplete native repeated-AI evidence')
     for n in range(len(cases)):
         expected=bytearray(relocated_seed(original[n*4096:(n+1)*4096]));observed=bytearray(actual[n*4096:(n+1)*4096])
-        expected[0x3f1:0x3f8]=observed[0x3f1:0x3f8]=bytes(7)
+        expected[0x3f1:0x3f9]=observed[0x3f1:0x3f9]=bytes(8)
         if observed!=expected:
             at=next(i for i,(a,b) in enumerate(zip(observed,expected)) if a!=b)
             raise ValueError(f'Original AI mismatch: case {n} {cases[n]}, offset {at:03x}: {observed[at]:02x}/{expected[at]:02x}')
     verify_manifest(bundle);verify_manifest(args.reference)
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),cases=len(cases),original_calls_per_case=3,
-        compared_bytes_per_case=4089,declared_host_scratch=[0xe3f1,0xe3f8],
+        compared_bytes_per_case=4088,declared_host_scratch=[0xe3f1,0xe3f9],
         stack_unchanged=True,vram_unchanged=True,player_shadow_unchanged=True,irq_trampoline_unchanged=True,
-        scope='Original repeated AI state versus guarded transform lookup: all seven direction combinations, four maps, centering/heading/velocity inputs, key changes and smoke/moving/stunned/startup/same-cell/invalid-axis fallbacks.'))
+        component='movement' if args.motion else 'AI',
+        scope=('Original repeated movement versus guarded zero-velocity adapter: all fine-byte values, fractional bytes, both axes, moving/stationary/startup/stun paths and player centering.' if args.motion else 'Original repeated AI state versus guarded transform lookup: all seven direction combinations, four maps, centering/heading/velocity inputs, key changes and smoke/moving/stunned/startup/same-cell/invalid-axis fallbacks.')))
     require_ignored(root,[f for f in out.rglob('*') if f.is_file()]);seal(out)
     print(f'{len(cases)} exact repeated original AI cases pass: {out}/report.json')
 

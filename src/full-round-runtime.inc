@@ -10,6 +10,13 @@ Full_Loading EQU $dfc8
 Full_Layout EQU $dfc9
 Full_Transitions EQU $dfca
 Full_RadarFlags EQU $dfd0
+Full_WideHBank EQU $d2d8
+Full_WideVBank EQU $d2d9
+Full_WideHData EQU $d2da
+Full_WideVData EQU $d2db
+Full_WideHBytes EQU $d2dc
+Full_WideVBytes EQU $d2de
+    INCLUDE "full-terrain-cache.inc"
 
 Full_CopyCold:
     ld a,PLAYER_BANK
@@ -29,6 +36,7 @@ Full_CopyCold:
     ld (Full_Transitions),a
     ld (Full_AttractClock),a
     ld (Full_AttractClock+1),a
+    call Full_CacheInitNative
     ret
 
 Full_NextRound:
@@ -56,62 +64,13 @@ Full_Div3:
 
 ; B/C=global tile X/Y. All input registers except AF survive; no bank change.
 Full_ObjectAtTile:
-    push de
-    push hl
-    ld a,b
-    cp 3
-    jr c,.none
-    cp 99
-    jr nc,.none
-    ld a,c
-    cp 3
-    jr c,.none
-    cp 171
-    jr nc,.none
-    ld l,c
-    ld h,$e3
-    ld a,(hl)
-    dec a
-    ld d,a
-    ld l,b
-    ld e,(hl)
-    dec e
-    ld a,d
-    rrca
-    rrca
-    rrca
-    rrca
-    and 3
-    add a,$dc
-    ld h,a
-    ld a,d
-    and 15
-    rlca
-    rlca
-    rlca
-    rlca
-    ld l,a
-    ld a,e
-    srl a
-    or l
-    ld l,a
-    ld d,(hl)
-    ld a,e
-    and 1
-    ld a,d
-    jr z,.even
-    rrca
-    rrca
-    rrca
-    rrca
-.even:
-    and 15
-    jr .done
-.none:
-    xor a
-.done:
-    pop hl
-    pop de
+    push iy
+    call Full_CacheEnter
+    call Full_ObjectAtTileNative
+    push af
+    call Full_CacheLeave
+    pop af
+    pop iy
     ret
 
 Full_TileSource:

@@ -24,12 +24,20 @@ Smoke_Queue EQU $c740          ; X,Y,next tile:0..8 full cloud,64..66 one dirty 
 Smoke_Thunk EQU $c7b0
 Smoke_Display EQU $d300        ; 2048 packed identity/ink bytes; IRQ stub D2D2 untouched
 Smoke_DisplayRows EQU $db00    ; nonzero cells per physical cache row
+    IF FULL_GAME
+Smoke_LogicalRows EQU $d160    ; Conservative native smoke presence, modulo32.
+    ENDIF
 Smoke_HeldFrames EQU $c71d    ; temporal concession; never hide stale terrain
 
 ; A native refresh moves less than one tile. Retain a final guard tile rather
 ; than presenting an unfinished row/column; simulation and its clocks hold
 ; together, while the renderer continues draining the existing hidden jobs.
 Smoke_CachePressure:
+    IF FULL_GAME
+    push iy
+    call Full_CacheEnter
+    jp Full_NativePressure
+    ELSE
     ld hl,(world_y)
     call stage_div8
     ld a,(previous_y)
@@ -50,6 +58,8 @@ Smoke_CachePressure:
     jr nc,.hold
     xor a
     ret
+    ENDIF
+    IF !FULL_GAME
 .hold:
     ld hl,(Smoke_HeldFrames)
     inc hl
@@ -57,6 +67,7 @@ Smoke_CachePressure:
     ld a,1
     or a
     ret
+    ENDIF
 
 Smoke_Init:
     xor a
@@ -99,6 +110,13 @@ Smoke_ClearRings:
     ld bc,1023
     ld (hl),a
     ldir
+    IF FULL_GAME
+    ld hl,Smoke_LogicalRows
+    ld de,Smoke_LogicalRows+1
+    ld bc,31
+    ld (hl),a
+    ldir
+    ENDIF
     ret
 
 ; Called before $0069 changes world coordinates. The physical coordinates and
@@ -198,6 +216,15 @@ Smoke_PreTick:
     inc b
     dec d
     jr nz,.clear_row
+    IF FULL_GAME
+    ld a,c
+    sub 10
+    and 31
+    or Smoke_LogicalRows & 255
+    ld l,a
+    ld h,Smoke_LogicalRows/256
+    ld (hl),0               ; Every native tile in this physical row was cleared.
+    ENDIF
     jr .store
 .jumped:
     ld a,2                   ; Diagnostic: normal movement cannot skip a tile.
@@ -314,6 +341,9 @@ Smoke_AfterNative:
     ld a,($e9f4)
     bit 4,a
     ret z
+    IF FULL_GAME
+    call Full_MarkLogicalSmokeRows
+    ENDIF
     ld hl,Smoke_Placements
     inc (hl)
     jr nz,.counted

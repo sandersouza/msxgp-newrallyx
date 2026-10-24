@@ -24,7 +24,7 @@ def main():
     lines=['set save_settings_on_exit false','set renderer none','set sound_driver null',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),'set firmwareswitch off','set throttle off',
-        'set z80_freq 3579545','set z80_freq_locked false','set cmdtiming real','set limitsprites true',
+        'set z80_freq 3579545','set z80_freq_locked true','set cmdtiming real','set limitsprites true',
         'activate_input_layer -blocking full_attract',f'cart {tcl(args.rom.resolve())} -romtype ASCII16',
         'reset',f'set out {tcl(out)}']
     script=r'''

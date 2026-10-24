@@ -146,6 +146,17 @@ Full_RestoreBody:
     ld de,Full_IDBank
     ld bc,12
     ldir
+    ld a,(Full_Layout)
+    ld l,a
+    ld h,0
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    ld de,Full_WideProfiles
+    add hl,de
+    ld de,Full_WideHBank
+    ld bc,8
+    ldir
     ld a,1
     ld ($e28b),a
     ld ($e020),a
@@ -170,3 +181,5 @@ Full_FlagRadarX:
     INCBIN "full-flag-radar-x.bin"
 Full_FlagRadarY:
     INCBIN "full-flag-radar-y.bin"
+Full_WideProfiles:
+    INCBIN "full-wide-profiles.bin"

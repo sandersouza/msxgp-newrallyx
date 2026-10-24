@@ -65,7 +65,7 @@ def main(argv=None):
         *(['set renderer none'] if args.headless else []),
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
         reference_machine(root,args.machine),'set firmwareswitch off','set throttle off','set pause_on_lost_focus false',
-        'set z80_freq 3579545','set z80_freq_locked false','set cmdtiming real','set limitsprites true',
+        'set z80_freq 3579545','set z80_freq_locked true','set cmdtiming real','set limitsprites true',
         'set gamma 1','set brightness 0','set contrast 0','set blur 0','set noise 0','set scanline 0',
         'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}','activate_input_layer -blocking full_probe',
         f'cart {tcl(args.rom.resolve())} -romtype ASCII16','reset',f'set out {tcl(out)}',

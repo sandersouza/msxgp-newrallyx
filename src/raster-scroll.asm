@@ -177,6 +177,10 @@ main:
     di
     ld a,b
     ld (frame_tick),a
+    IF FULL_GAME
+    xor a
+    ld (Full_IdleTicks),a
+    ENDIF
     IF SESSION_RUNTIME
     ld a,(Session_State)
     or a
@@ -198,7 +202,13 @@ main:
     ei                      ; Keyboard and frame RAM preparation own no VDP latch.
     nop
     ENDIF
+    IF FULL_GAME
+    call Full_TurboOn
+    ENDIF
     call keys
+    IF FULL_GAME
+    call Full_TurboOff
+    ENDIF
     IF !SESSION_RUNTIME
     di
     ENDIF
@@ -243,7 +253,9 @@ main:
     ENDIF
     call HUD_PrepareEarlyCoordinates
     IF FULL_GAME
+    call Full_TurboOn
     call HUD_FinishCoordinates ; Prepare fuel/life; maze IRQ owns fixed radar SAT.
+    call Full_TurboOff
     ENDIF
     ENDIF
     IF ENEMY_RENDER
@@ -316,7 +328,13 @@ Enemy_AfterPrepare:
     IF SPRITE_FLICKER
     di
     ENDIF
+    IF FULL_GAME
+    call Full_TurboOn
+    ENDIF
     call HUD_PrepareFrame
+    IF FULL_GAME
+    call Full_TurboOff
+    ENDIF
     IF SPRITE_FLICKER
     ei
     nop
@@ -382,6 +400,16 @@ Enemy_AfterPrepare:
     ld a,(line_count)
     cp b
     jr nz,.split_done
+    IF FULL_GAME
+    call Full_SimulationIdle
+    jr c,.split_wait
+    di                       ; The helper may have serviced the awaited header.
+    ld a,(line_before)
+    ld b,a
+    ld a,(line_count)
+    cp b
+    jr nz,.split_done
+    ENDIF
     ei
     halt
     jr .split_wait
@@ -410,7 +438,18 @@ Enemy_AfterPrepare:
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     call Radar_WaitPublish
     ENDIF
+    IF FULL_GAME
+    call Full_CacheEnter
+    ld a,1
+    ld (Full_CacheHeld),a
+    ENDIF
     call stage_stream
+    IF FULL_GAME
+    call Full_SimulationTail
+    xor a
+    ld (Full_CacheHeld),a
+    call Full_CacheLeave
+    ENDIF
     ld a,(driving)
     or a
     IF !TILE_MODE
@@ -446,6 +485,14 @@ Enemy_AfterPrepare:
 interrupt:
     push af
     push bc
+    IF FULL_GAME
+    ld a,(Full_TurboActive)
+    or a
+    jr z,.base_clock
+    ld a,1
+    out ($41),a
+.base_clock:
+    ENDIF
     ld b,15
     ld a,1
     call register
@@ -703,6 +750,14 @@ irq_return:
     or a
     call nz,Sprite_ResumeUpload
     ENDIF
+    IF FULL_GAME
+    ld a,(Full_TurboActive)
+    or a
+    jr z,.base_clock
+    xor a
+    out ($41),a
+.base_clock:
+    ENDIF
     pop bc
     pop af
     ei
@@ -717,7 +772,15 @@ register:
     INCLUDE "hud-demo.inc"
     IF !FULL_GAME
 show_scene:
+    IF FULL_GAME
+    call Full_TurboOff
+    ENDIF
     di
+    IF FULL_GAME
+    xor a
+    ld (Full_CacheReady),a
+    ld (Full_CameraBlocked),a
+    ENDIF
     IF SESSION_RUNTIME
     xor a
     ld (Session_PositionIRQ),a

@@ -278,6 +278,13 @@ def build(output, program, native, assets, *, rock_collision=False, scoring=Fals
     if any(not 0x2000<=p<0x2500 or p&255>247 for p in score_tables):
         raise ValueError('Unexpected original bonus-score table pointer/page boundary')
     code,patches=relocate(program,listing,rock_collision=rock_collision,scoring=scoring,score_tables=score_tables,fuel=fuel,lives=lives,enemies=enemies,enemy_count=enemy_count,smoke=smoke,smoke_notify=smoke_notify,parameters=parameters,round_preparation=round_preparation,attract=full_game)
+    if full_game:
+        if program[0x00f3:0x00f6]!=bytes.fromhex('dd6602'):
+            raise ValueError('Native movement adapter boundary changed')
+        code=bytearray(code)
+        code[0x00f3:0x00f6]=bytes((0xc3,0,0xb5))
+        code=bytes(code)
+        patches.append(dict(address=0x00f3,kind='guarded-zero-velocity-movement',target=0xb500))
     flags=list(dict.fromkeys(program[0x253a:0x2552]))
     if len(flags)!=12:raise ValueError('Unexpected native car animation cycle')
     lookup=bytes(flags.index(i) if i in flags else 255 for i in range(256))

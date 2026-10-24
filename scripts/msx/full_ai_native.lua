@@ -17,7 +17,8 @@ end
 local function execute()
     os.remove(current)
     cpu.state.HALT.value=0;cpu.state.IFF1.value=0;cpu.state.IFF2.value=0
-    cpu.state.SP.value=0x9ff0;cpu.state.PC.value=0x0cd6
+    s:write_u8(0x9ff0,0x2c);s:write_u8(0x9ff1,0x0c)
+    cpu.state.SP.value=0x9ff0;cpu.state.PC.value=config.entry or 0x0cd6
     cpu.debug:bpclear()
     cpu.debug:bpset(0x0c2c,'1','save '..string.format('%q',current)..',8000,1000;bpdisable;g')
     m.debugger.execution_state='run';issued=frame
@@ -37,8 +38,17 @@ local function issue()
         local p=0x8088+i*32
         for _,offset in ipairs({0,1,2,19,21}) do s:write_u8(p+offset,0) end
         s:write_u8(p+3,((c[6] >> i)&1)==1 and 255 or 0)
+        if config.motion==1 then
+            for offset,multiplier in pairs({[4]=7,[5]=17,[6]=11,[7]=23}) do
+                s:write_u8(p+offset,((index-1)+i*multiplier)&255)
+            end
+            if ((index-1)+i)%3==1 then
+                s:write_u8(p+1,(index-1)&255);s:write_u8(p+2,c[4])
+            end
+        end
     end
     local guard=c[7]
+    if guard==10 then for at=0x8400,0x87ff do s:write_u8(at,0) end end
     if guard==2 then s:write_u8(0x8025,0x20);s:write_u8(0x8026,2) end
     if guard==3 then s:write_u8(0x8088,1) end
     if guard==4 then s:write_u8(0x80c8+19,2) end

@@ -26,7 +26,12 @@ def layout(symbols):
     add('compact actor SAT cursor','Full_EnemySATCursor',1)
     add('actor destination invalidation','Full_EnemySATDirty',1)
     add('current actor registration','Full_RegisteredCurrent',1)
+    add('world coordinate keys',0xdb20,28)
+    add('world coordinate change flag',0xc67e,1)
+    add('wide terrain strip metadata',0xd2d8,9)
+    add('terrain mapper and native clock workspace',0xd2e1,31)
     add('eight-digit numeric state','hud_score_pending',64)
+    add('conservative native smoke rows',0xd160,32)
     add('fuel publication','hud_fuel_payload',128)
     add('wall snapshot',0xd200,44)
     add('inactive player','Full_Shadow',120)
@@ -43,7 +48,7 @@ def layout(symbols):
     add('round radar flags','Full_RadarFlags',20)
     add('tile division table',0xe300,240)
     add('native input',0xe3f0,1)
-    add('stationary AI keys','Full_AIValid',7)
+    add('stationary AI keys and valid masks','Full_AIValid',8)
     add('native smoke attributes',0xec00,1024)
     add('cold RAM code','Full_LoadStart',symbols['Full_LoadEnd']-symbols['Full_LoadStart'])
     for region in regions:
@@ -55,7 +60,15 @@ def layout(symbols):
             raise ValueError(f'Full-game RAM overlap: {left["name"]} / {right["name"]}')
     if symbols['Full_EnemyHotEnd']>0xc700 or 0xf380-symbols['Full_LoadEnd']<128:
         raise ValueError('Full-game executable buffers leave insufficient smoke/stack space')
-    return dict(regions=ordered,stack_top=0xf380,
+    overlay=None
+    if 'Full_CacheEngineStart' in symbols:
+        start,end=symbols['Full_CacheEngineStart'],symbols['Full_CacheEngineEnd']
+        if not 0x1000<=start<end<=0x2000:
+            raise ValueError('Terrain overlay code exceeds reserved mapper space')
+        overlay=dict(code=[start,end],tile_owners=[0x2000,0x3000],
+            segment='Page3 RAM mapper segment XOR 1; distinct spare segment on the required 128KB mapper',
+            mapping='Temporary page0 overlay; restore original primary, secondary and mapper selection; no BIOS calls while mapped')
+    return dict(regions=ordered,stack_top=0xf380,terrain_mapper=overlay,
         cold_code_stack_gap=0xf380-symbols['Full_LoadEnd'],ram_mapper_kb=128,vram_kb=128,
-        native_borrowed_bytes=dict(tile_division=[0xe300,0xe3f0],ai_keys=[0xe3f1,0xe3f8]),
+        native_borrowed_bytes=dict(tile_division=[0xe300,0xe3f0],ai_keys=[0xe3f1,0xe3f9]),
         scope='Additional full-game buffers; original selected-core/legacy renderer fields retain their existing contracts.')
