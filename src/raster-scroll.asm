@@ -28,6 +28,11 @@ key0        EQU $c019
 scroll_high EQU $c01a
 scroll_low  EQU $c01b
 scroll_y    EQU $c01c
+    IF FULL_GAME
+irq_scroll_y EQU $d2cc
+    ELSE
+irq_scroll_y EQU scroll_y
+    ENDIF
 irq_stage   EQU $c03c
 line_count  EQU $c03d
 vblank_count EQU $c03e
@@ -523,6 +528,9 @@ interrupt:
 maze_interrupt:
     ld a,3
     ld (irq_stage),a
+    IF FULL_GAME
+    call Full_LatchScrollY   ; Compute before the line6..9 register-latch window.
+    ENDIF
     IF INCREMENTAL_STAGE >= 9
     ; Reserve the split before foreground work can mask its exact deadline.
     ; Keep the complete seven-row font visible, then latch the maze registers.
@@ -540,12 +548,19 @@ maze_interrupt:
     vdp_write 25,3             ; two-page torus and the 8-pixel left mask
     vdp_write 26,(scroll_high)
     vdp_write 27,(scroll_low)
+    IF FULL_GAME
+    ld a,(irq_scroll_y)
+    out ($99),a
+    ld a,$97
+    out ($99),a
+    ELSE
     vdp_write 23,(scroll_y)
+    ENDIF
     vdp_write 2,MAZE_R2            ; SP2 requires R2.A15=1; maze pages 0/1
     IF INCREMENTAL_STAGE >= 9
     ; Prepare early, then latch display-on at a hardware line boundary. A
     ; variable foreground DI tail must not move the first visible maze row.
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,9
     ld b,19
     call register
@@ -565,7 +580,7 @@ maze_interrupt:
     ld a,1
     ENDIF
     ld (raster_phase),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     add a,80
     ELSE
@@ -587,7 +602,7 @@ radar_interrupt:
     IF STAGE_GUARD_LINE < LIFE_SPLIT
     ld a,5
     ld (raster_phase),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,STAGE_GUARD_LINE
     ld b,19
     call register
@@ -602,7 +617,7 @@ prefetch_guard_interrupt:
     ENDIF
     ld a,4
     ld (raster_phase),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,144
     ld b,19
     call register
@@ -612,7 +627,7 @@ radar_close_interrupt:
     ld (Radar_Scanned),a
     ld a,1
     ld (raster_phase),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,LIFE_SPLIT
     ld b,19
     call register
@@ -636,14 +651,14 @@ life_interrupt:
     vdp_write 0,MAZE_R0             ; The marker producer owns the remaining tail.
     jr .tail_ready
 .terrain_tail:
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,196
     ld b,19
     call register
     vdp_write 0,MAZE_R0+16
 .tail_ready:
     ELSE
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,STAGE_GUARD_LINE
     ld b,19
     call register

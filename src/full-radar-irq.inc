@@ -8,7 +8,7 @@ Full_RadarIRQ:
     out ($99),a
     ld a,$76
     out ($99),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,RADAR_Y-1
     ld d,a
     ld hl,Radar_PlayerPoint+1
@@ -25,6 +25,7 @@ Full_RadarIRQ:
 .body:
     call .sprite
     djnz .body
+    call Full_FuelIRQ
     pop de
     pop hl
     ret

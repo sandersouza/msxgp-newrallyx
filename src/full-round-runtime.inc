@@ -73,6 +73,16 @@ Full_ObjectAtTile:
     pop iy
     ret
 
+; The radar IRQ leaves its SAT pointer at fuel slot13. Restore all three
+; shared slots after the current R23 latch, every physical refresh.
+Full_FuelIRQ:
+    ld a,(irq_scroll_y)
+    call update_fuel_sat_value
+    ld hl,fuel_sat
+    ld bc,$0c98
+    otir
+    ret
+
 Full_TileSource:
     ld a,(tile_x)
     ld b,a

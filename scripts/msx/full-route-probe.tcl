@@ -150,7 +150,7 @@ proc route_frame {} {
     # Plan the next input from the current native position. The visible camera
     # deliberately presents the preceding simulation snapshot.
     set x [u16 0xc450];set y [u16 0xc452]
-    if {abs($::tx-$x)<=6 && abs($::ty-$y)<=6} {
+    if {abs($::tx-$x)<=$::steering_margin && abs($::ty-$y)<=$::steering_margin} {
         navigate [expr {int(($::tx-36)/24)}] [expr {int(($::ty-36)/24)}]
     }
     set facing [debug read memory 0xe077]

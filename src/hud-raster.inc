@@ -47,6 +47,12 @@
     ENDM
     MACRO HUD_FooterSprites
     push hl
+    IF FULL_GAME
+    push de
+    ld a,(irq_scroll_y)
+    call update_life_sat_value
+    pop de
+    ENDIF
     vdp_write 0,MAZE_R0
     vdp_write 14,7
     IF !HUD_STATIC_LIFE

@@ -420,6 +420,7 @@ point_masks:
 
 update_fuel_sat:
     ld a,(scroll_y)
+update_fuel_sat_value:
     add a,FUEL_Y-1
     ld d,a
     ld e,132
@@ -569,6 +570,7 @@ HUD_FuelPublishIRQ:
 
 update_life_sat:
     ld a,(scroll_y)
+update_life_sat_value:
     add a,LIFE_Y-1
     ld d,a
     ld e,156

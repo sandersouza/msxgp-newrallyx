@@ -2,10 +2,19 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from scripts.msx.cadence import analyze
+from scripts.msx.cadence import analyze,analyze_scroll
 
 
 class CadenceTests(unittest.TestCase):
+    def test_scroll_wrap_and_state_gaps_are_not_camera_jumps(self):
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/'camera.tsv'
+            path.write_text('0 2 0 0 253 253 0 0 0\n.02 2 0 0 3 3 0 0 0\n.04 2 1 0 80 80 0 0 0\n1 2 0 0 90 90 0 0 0\n1.02 2 0 0 111 111 0 0 0\n')
+            r=analyze_scroll(path)
+            self.assertEqual(r['adjacent_active_frames'],2)
+            self.assertEqual(r['maximum_vertical_step'],21)
+            self.assertEqual(r['steps_over_six_pixels'],1)
+
     def report(self,rows):
         with TemporaryDirectory() as directory:
             path=Path(directory)/'cadence.tsv'

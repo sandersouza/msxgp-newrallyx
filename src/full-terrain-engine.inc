@@ -20,6 +20,14 @@ Full_WorldAddress:
 ; Finish the nearest incomplete hidden edge before preparing a farther one.
 ; Exact ownership skips ready guard rows/columns without rebuilding queue debt.
 Full_StageQueueNative:
+    ld a,(Session_PositionIRQ)
+    or a
+    jr nz,.running
+    ld a,(scroll_y)
+    ld (irq_scroll_y),a
+    ld a,1
+    ld (Full_ScrollValid),a
+.running:
     call Full_TurboOn
     ld a,(Full_CameraBlocked)
     or a
@@ -232,15 +240,12 @@ Full_ClockAdvance:
 ; The final hidden copy can execute alongside one elapsed-time native tick.
 ; The caller retains this overlay until the resident continuation returns.
 Full_NativePressure:
-    ld a,(Full_CameraBlocked)
-    or a
-    jr z,.allow
     ld hl,(player_pending_x)
     ld de,(player_x)
     call .distance
     jr nc,.hold
     ld hl,(player_pending_y)
-    ld de,(player_y)
+    call Full_VisibleCentre
     call .distance
     jr nc,.hold
 .allow:
@@ -279,7 +284,7 @@ Full_SimulationTail:
     call Full_NativePressure.distance
     jr nc,.done
     ld hl,(player_pending_y)
-    ld de,(player_y)
+    call Full_VisibleCentre
     call Full_NativePressure.distance
     jr nc,.done
     call Full_CameraCheck
@@ -327,7 +332,7 @@ Full_SimulationIdleNative:
     call Full_NativePressure.distance
     jr nc,.done
     ld hl,(player_pending_y)
-    ld de,(player_y)
+    call Full_VisibleCentre
     call Full_NativePressure.distance
     jr nc,.done
     ld a,(Full_ClockDue)
@@ -492,6 +497,13 @@ Full_WorldOwned:
 ; replace the same physical tile while that physical location is on screen.
 Full_CacheTileSafe:
     ld hl,(world_y)
+    call .view
+    ret nc
+    call Full_VisibleCentre
+    ex de,hl
+    ld de,-105
+    add hl,de
+.view:
     call stage_div8
     ld a,(tile_y)
     sub l
@@ -551,6 +563,16 @@ Full_CellPrefetch:
     cp 30
     jp nc,.none
     ld hl,(world_y)
+    call stage_div8
+    ld a,(Full_CellTop)
+    sub l
+    add a,6
+    cp 36
+    jp nc,.none
+    call Full_VisibleCentre
+    ex de,hl
+    ld de,-105
+    add hl,de
     call stage_div8
     ld a,(Full_CellTop)
     sub l
@@ -762,7 +784,7 @@ Full_CameraValidate:
     call stage_div8
     ld a,b
     sub l
-    jr z,.ready
+    jp z,.ready
     call .delta
     ld a,(Full_CheckStep)
     inc a
@@ -775,12 +797,27 @@ Full_CameraValidate:
     ld a,(Full_Edge)
     ld e,a
     ld a,(Full_TargetTileY)
+    ld (Full_QueuedY),a
     ld d,a
+    call Full_CheckColumn
+    jr c,.missing_column
+    ; A horizontal turn can combine the new X with an interpolated older Y.
+    ; Prepare that column for both views before publishing the X movement.
+    call Full_VisibleCentre
+    ex de,hl
+    ld de,-105
+    add hl,de
+    call stage_div8
+    ld a,l
+    ld (Full_QueuedY),a
+    ld d,a
+    ld a,(Full_Edge)
+    ld e,a
     call Full_CheckColumn
     jr c,.missing_column
     ld hl,Full_CheckCount
     dec (hl)
-    jr z,.ready
+    jp z,.ready
     ld a,(Full_CheckStep)
     ld hl,Full_Edge
     add a,(hl)
@@ -798,13 +835,13 @@ Full_CameraValidate:
     cp (hl)
     jr nz,.queue_column
     ld a,(Stage_ColumnTop)
-    ld hl,Full_TargetTileY
+    ld hl,Full_QueuedY
     cp (hl)
-    jr z,.ready
+    jp z,.ready
 .queue_column:
     ld a,(Full_Edge)
     ld (column_x),a
-    ld a,(Full_TargetTileY)
+    ld a,(Full_QueuedY)
     ld (column_y),a
     ld (Stage_ColumnTop),a
     add a,26
@@ -963,4 +1000,26 @@ Full_ObjectAtTileNative:
 .done:
     pop hl
     pop de
+    ret
+
+; DE = centre of the currently latched view; preserve pending coordinates HL.
+Full_VisibleCentre:
+    push hl
+    ld de,(player_y)
+    ld a,(Full_ScrollValid)
+    or a
+    jr z,.done
+    ld a,(irq_scroll_y)
+    ld hl,scroll_y
+    sub (hl)
+    ld l,a
+    ld h,0
+    bit 7,a
+    jr z,.offset
+    dec h
+.offset:
+    add hl,de
+    ex de,hl
+.done:
+    pop hl
     ret

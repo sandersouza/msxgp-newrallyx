@@ -26,7 +26,7 @@ a 40-column terrain cache and the complete HUD. Factory Panasonic turbo is
 detected for pure CPU work; VDP access and raster IRQs retain 3,579,545 Hz.
 Other machines retain their base clock. Current performance qualification is
 in [enemy rendering performance](enemy-rendering-performance.md), including
-60.17–60.60 native ticks/s across eight naturally completed rounds. Presentation
+60.48–60.61 native ticks/s across six naturally completed rounds. Presentation
 loops are measured separately; this is not a 60 FPS claim.
 It requires the existing 128 KB main RAM mapper / 128 KB VRAM baseline.
 The former issue estimate's 64 KB RAM assumption was incorrect; this is not

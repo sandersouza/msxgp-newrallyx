@@ -35,9 +35,10 @@ The eight-pixel header shows an eight-digit high score and score, the selected
 player and a three-digit round. The life digit shows spare cars, capped at nine.
 A 248x201 maze viewport preserves world coordinates. The original logical tick
 is 16.5 ms. Elapsed-time scheduling, terrain ownership and cached enemy work keep
-the measured simulation at **60.17–60.60 ticks/s across eight natural rounds**
-on the reference Panasonic, including seven-enemy challenge rounds. Presentation
-averages 30–38 loops/s, with occasional short stalls and real hardware sprite
+the measured simulation at **60.48–60.61 ticks/s across six natural rounds**
+on the reference Panasonic, including a seven-enemy challenge. Vertical scroll
+advances at most six pixels per physical refresh; the fuel bar is restored on
+every refresh. Presentation averages 26–35 loops/s, with real hardware sprite
 culling. See [performance evidence and limits](docs/enemy-rendering-performance.md).
 
 ```sh

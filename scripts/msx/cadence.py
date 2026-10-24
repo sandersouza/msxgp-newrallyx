@@ -3,6 +3,22 @@ from collections import defaultdict
 import math
 
 
+def analyze_scroll(path):
+    """Measure adjacent physical-frame scroll steps, with modulo256 wrap."""
+    rows=[[float(v) for v in line.split()] for line in path.read_text().splitlines()]
+    steps=[];excluded=0
+    for old,new in zip(rows,rows[1:]):
+        if len(old)!=9 or len(new)!=9:raise ValueError('Unexpected camera sample width')
+        if old[1]!=new[1] or old[2:4]!=[0,0] or new[2:4]!=[0,0] or new[0]-old[0]>.03:
+            excluded+=1;continue
+        if new[0]<=old[0]:raise ValueError('Camera time did not advance')
+        steps.append(abs((int(new[4]-old[4])+128)%256-128))
+    if not steps:raise ValueError('Missing adjacent active camera frames')
+    return dict(adjacent_active_frames=len(steps),excluded_state_or_capture_gaps=excluded,
+        maximum_vertical_step=max(steps),steps_over_six_pixels=sum(v>6 for v in steps),
+        scope='R23 at the actual maze latch, adjacent active physical frames; cadence retains active elapsed stalls separately.')
+
+
 def analyze(path):
     rows=[]
     for line in path.read_text().splitlines():
