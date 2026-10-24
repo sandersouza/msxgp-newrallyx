@@ -85,6 +85,11 @@ Life_Frame:
     ld a,(driving)
     or a
     ret z
+    IF FULL_GAME
+    ld a,(Full_Attract)
+    or a
+    ret nz
+    ENDIF
     call Life_Publish
     ld a,(Death_State)
     cp 2
@@ -95,9 +100,25 @@ Life_Frame:
     ld a,(Life_State)
     or a
     ret nz
+    IF FULL_GAME
+    ld a,SESSION_BANK
+    ld ($7000),a
+    call $b812
+    cp 1
+    jp z,Full_NextRound
+    cp 3
+    jr nz,.turn_selected
+    ld a,2
+    ld (Full_Loading),a
+    jr .restart
+.turn_selected:
+    cp 2
+    jr nz,.restart
+    ELSE
     ld a,($e00f)
     or a
     jr nz,.restart
+    ENDIF
     ld a,2
     ld (Life_State),a
     xor a

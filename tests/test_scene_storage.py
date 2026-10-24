@@ -13,6 +13,13 @@ class StorageTests(unittest.TestCase):
         self.root, _, _ = temporary_repo(self)
         self.output = self.root/'references/scenes/test'
 
+    def test_emulator_machine_names_can_include_plus(self):
+        def writer(path):
+            (path/"C-BIOS_MSX2+").mkdir()
+            (path/"C-BIOS_MSX2+/cbios-msx2+.cmos").write_bytes(b"synthetic CMOS")
+        publish_bundle(self.root,self.output,writer)
+        verify_manifest(self.output)
+
     def test_publishes_and_preserves_existing(self):
         publish_bundle(self.root, self.output, lambda p: (p/'x').write_bytes(b'first'))
         with self.assertRaises(ValueError):

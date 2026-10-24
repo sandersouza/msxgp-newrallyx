@@ -2,8 +2,13 @@
 ; score and bonus-life accounting. Lucky fuel conversion belongs to stage 06.
     IF INCREMENTAL_STAGE >= 5
 Score_Seen EQU $c540
+    IF FULL_GAME
+Score_Digits EQU $d130
+Score_HighDigits EQU $d138
+    ELSE
 Score_Digits EQU $c541
 Score_HighDigits EQU $c547
+    ENDIF
 Score_Work EQU $c54d
 Score_HudPairs EQU $c54e
 Score_HighValid EQU $c54f
@@ -491,9 +496,15 @@ Score_Publish:
     ENDIF
 Score_ReadDigits:
     ld a,l
+    IF FULL_GAME
+    add a,4
+    ld l,a
+    ld b,4
+    ELSE
     add a,6
     ld l,a
     ld b,2
+    ENDIF
 .upper:
     ld a,(hl)
     and 15

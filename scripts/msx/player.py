@@ -15,6 +15,7 @@ ENEMY_CODE=((0x0010,0x0023),(0x022b,0x02eb),(0x038a,0x03c3),
             (0x04a0,0x04d7),(0x0ab5,0x0b0f),(0x0b63,0x0bd1),
             (0x0cd6,0x0e63),(0x1031,0x1052),(0x11bf,0x124f),
             (0x15bd,0x1685),(0x1885,0x18b1))
+ROUND_CODE=((0x03fd,0x043e),(0x0472,0x0482),(0x08bf,0x08d4),(0x0f24,0x0f3e),(0x1343,0x1417),(0x141b,0x143d))
 
 
 def clipped_masks(masks,clip):
@@ -40,7 +41,7 @@ def palette(encoded, buffers, *, enemy=False):
     return b''.join(encoded[i*2:i*2+2] for i in order),[b.translate(translation) for b in buffers]
 
 
-def relocate(program, listing, *, rock_collision=False, scoring=False, score_tables=(), fuel=False, lives=False,enemies=False,enemy_count=1,smoke=False,smoke_notify=False,parameters=False):
+def relocate(program, listing, *, rock_collision=False, scoring=False, score_tables=(), fuel=False, lives=False,enemies=False,enemy_count=1,smoke=False,smoke_notify=False,parameters=False,round_preparation=False,attract=False):
     """Relocate instruction operands, leaving fixed-point constants untouched."""
     bank=bytearray([255])*16384
     code_ranges=CODE+(((0x1774,0x17a6),) if rock_collision else ())
@@ -49,11 +50,17 @@ def relocate(program, listing, *, rock_collision=False, scoring=False, score_tab
     if lives:code_ranges+=((0x08e7,0x0908),(0x18da,0x18e8))
     if enemies:code_ranges+=ENEMY_CODE
     if parameters:code_ranges+=((0x1b1f,0x1b9c),)
+    if attract:code_ranges+=((0x1d9a,0x1ddf),)
+    if round_preparation:
+        if not parameters:raise ValueError('Round preparation requires original parameter dispatch')
+        code_ranges+=ROUND_CODE
     if smoke:
         if not fuel or not enemies:raise ValueError('Original smoke requires fuel and enemy components')
         code_ranges+=((0x0185,0x01f0),(0x0f5c,0x1052))
-    for first,last in code_ranges+((0x253a,0x2552),(0x3000,0x30e0))+tuple((p,p+8) for p in score_tables)+(((0x226f,0x227f),) if fuel else ())+(((0x2345,0x2505),) if parameters else ()):
+    for first,last in code_ranges+((0x253a,0x2552),(0x3000,0x3400 if round_preparation else 0x30e0))+(((0x1417,0x141b),) if round_preparation else ())+tuple((p,p+8) for p in score_tables)+(((0x226f,0x227f),) if fuel else ())+(((0x2345,0x2505),) if parameters else ()):
         bank[first:last]=program[first:last]
+    if attract:
+        bank[0x3400:0x3500]=program[0x3400:0x3500]
     patches=[]
     for line in listing.splitlines():
         match=re.search(r';([0-9a-f]{4})\s+((?:[0-9a-f]{2}\s+)+)',line)
@@ -81,10 +88,19 @@ def relocate(program, listing, *, rock_collision=False, scoring=False, score_tab
             new=value+0x6000
         elif address in (0x0188,0x1b8f,0x1de5,0x1eec,0x1ef3,0x1f80):  # Original ROM tables, not velocity constants.
             new=value+0x8000
+        elif round_preparation and address==0x13da:
+            new=value+0x8000  # Original fixed flag-exclusion coordinate table.
         if new!=value:
             bank[address+len(raw)-2:address+len(raw)]=new.to_bytes(2,'little')
             patches.append(dict(address=address,original=value,relocated=new))
     bank[0x0c2c]=0xc9  # Return from the native main-loop continuation to our caller.
+    if round_preparation:
+        if program[0x08d4:0x08d9]!=bytes((0x3e,3,0x32,0x81,0xa1)):
+            raise ValueError('Original round preparation hardware boundary changed')
+        bank[0x043e]=0xc9
+        patches.append(dict(address=0x043e,kind="round-phase-clock-return-before-arcade-io"))
+        bank[0x08d4]=0xc9
+        patches.append(dict(address=0x08d4,kind='round-preparation-return-before-hardware'))
     if parameters:
         if program[0x1b2f:0x1b34]!=bytes((0xf6,0x30,0x32,0x8f,0x82)):
             raise ValueError('Original parameter terrain-page instruction changed')
@@ -93,6 +109,11 @@ def relocate(program, listing, *, rock_collision=False, scoring=False, score_tab
         bank[0x1b2f:0x1b34]=bytes((0xcd,0x10,0xbf,0,0))
         bank[0x3f10:0x3f1a]=bytes((0xf6,0x30,0xf5,0xf6,0x80,0x32,0x8f,0xe2,0xf1,0xc9))
         patches.append(dict(address=0x1b2f,kind='terrain-page-store-only-relocation',target=0xbf10))
+    if attract:
+        if program[0x1dcf:0x1dd4]!=bytes((0x3e,0x34,0x32,0x8f,0x82)) or program[0x1dd9:0x1dde]!=bytes((0x3e,0x30,0x32,0x8f,0x82)):
+            raise ValueError("Original attract geometry boundaries changed")
+        bank[0x1dd0]=0xb4;bank[0x1dda]=0xb0
+        patches.append(dict(address=0x1dcf,kind="attract-guide-and-restored-terrain-relocation"))
     if smoke:
         if program[0x1045:0x1047]!=bytes((0x26,0x21)) or program[0x1027:0x1029]!=bytes((0xf6,0x8c)):
             raise ValueError('Original smoke tile-buffer addressing changed')
@@ -249,14 +270,21 @@ def atlas(world):
     return atlas_with_tiles(world)[:3]
 
 
-def build(output, program, native, assets, *, rock_collision=False, scoring=False, fuel=False, lives=False,enemies=False,enemy_count=1,smoke=False,smoke_notify=False,parameters=False):
+def build(output, program, native, assets, *, rock_collision=False, scoring=False, fuel=False, lives=False,enemies=False,enemy_count=1,smoke=False,smoke_notify=False,parameters=False,round_preparation=False,full_game=False):
     (output/'native-program.bin').write_bytes(program)
     listing=subprocess.check_output(['z80dasm','-a','-t','-g','0',str(output/'native-program.bin')],
                                     text=True,stderr=subprocess.DEVNULL)
     score_tables=[int.from_bytes(native[p:p+2],'little') for p in (0x1b3,0x1b9)] if scoring else []
     if any(not 0x2000<=p<0x2500 or p&255>247 for p in score_tables):
         raise ValueError('Unexpected original bonus-score table pointer/page boundary')
-    code,patches=relocate(program,listing,rock_collision=rock_collision,scoring=scoring,score_tables=score_tables,fuel=fuel,lives=lives,enemies=enemies,enemy_count=enemy_count,smoke=smoke,smoke_notify=smoke_notify,parameters=parameters)
+    code,patches=relocate(program,listing,rock_collision=rock_collision,scoring=scoring,score_tables=score_tables,fuel=fuel,lives=lives,enemies=enemies,enemy_count=enemy_count,smoke=smoke,smoke_notify=smoke_notify,parameters=parameters,round_preparation=round_preparation,attract=full_game)
+    if full_game:
+        if program[0x00f3:0x00f6]!=bytes.fromhex('dd6602'):
+            raise ValueError('Native movement adapter boundary changed')
+        code=bytearray(code)
+        code[0x00f3:0x00f6]=bytes((0xc3,0,0xb5))
+        code=bytes(code)
+        patches.append(dict(address=0x00f3,kind='guarded-zero-velocity-movement',target=0xb500))
     flags=list(dict.fromkeys(program[0x253a:0x2552]))
     if len(flags)!=12:raise ValueError('Unexpected native car animation cycle')
     lookup=bytes(flags.index(i) if i in flags else 255 for i in range(256))
@@ -300,17 +328,31 @@ def build(output, program, native, assets, *, rock_collision=False, scoring=Fals
     if parameters:
         for at in (0x28a,0x2d8):seed[at]=native[at]
         seed[0x2d2:0x2d4]=(int.from_bytes(native[0x2d2:0x2d4],'little')+0x8000).to_bytes(2,'little')
+    if full_game:
+        from .round_prepare_verify import relocated_seed
+        seed=bytearray(relocated_seed(native))
+        seed[0x20]=1
+        seed[0x99e:0x9a0]=(0xe3f0).to_bytes(2,'little')
+        seed[0x3f0]=255
     last_rows=b''.join(pixels[i*256+240:(i+1)*256] for i in range(len(flags)))
     data=bytes(masks)+last_rows+bytes(8192-len(masks)-len(last_rows))+seed+bytes(4096)
     (output/'player-flags.bin').write_bytes(lookup)
     (output/'player-pixels.bin').write_bytes(pixels)
     (output/'player-seed.bin').write_bytes(seed)
+    if round_preparation:
+        json_write(output/'round-preparation.json',dict(source_entry=0x08bf,source_boundary=0x08d4,
+            native_entry=0x88bf,code_ranges=ROUND_CODE,terrain_pages=[0x30,0x31,0x32,0x33],
+            object_build_entry=0xac00,object_lookup_entry=0xac03,object_scan_entry=0xac06,
+            object_map_address=0xdc00,object_map_bytes=896,
+            runtime_enabled=full_game,
+            scope='Original preparation with dynamic runtime progression' if full_game else 'Isolated increment, parameter and object placement component; runtime round transition not enabled'))
     json_write(output/'player.json',dict(flags=flags,patches=patches,
         code_ranges=CODE+(((0x1774,0x17a6),) if rock_collision else ())+
-                    (((0x1aa4,0x1aca),(0x1e62,0x1e6b),(0x2064,0x20e5),(0x210f,0x212b)) if scoring else ())+(((0x0482,0x04a0),(0x1ecc,0x1f8e)) if fuel else ())+(((0x08e7,0x0908),(0x18da,0x18e8)) if lives else ())+ (ENEMY_CODE if enemies else ())+(((0x0185,0x01f0),(0x0f5c,0x1052)) if smoke else ())+(((0x1b1f,0x1b9c),) if parameters else ()),
+                    (((0x1aa4,0x1aca),(0x1e62,0x1e6b),(0x2064,0x20e5),(0x210f,0x212b)) if scoring else ())+(((0x0482,0x04a0),(0x1ecc,0x1f8e)) if fuel else ())+(((0x08e7,0x0908),(0x18da,0x18e8)) if lives else ())+ (ENEMY_CODE if enemies else ())+(((0x0185,0x01f0),(0x0f5c,0x1052)) if smoke else ())+(((0x1b1f,0x1b9c),) if parameters else ())+(ROUND_CODE if round_preparation else ())+(((0x1d9a,0x1ddf),) if full_game else ()),
         rock_contact_geometry=rock_collision,scoring=scoring,fuel=fuel,lives=lives,enemies=enemies,score_tables=score_tables,native_ram=[0xe000,0xf000],input=0xe3f0,
         native_period_seconds=0.0165,speed_fixed=int.from_bytes(seed[0x27:0x29],'little'),
         palette=dict(blue=3,pale_yellow=9,black=11),slots=[PLAYER_SLOT,PLAYER_SLOT+1],pattern=180,
-        coordinate_origin=[36,36],scope=('Selected original movement and scoring routines for the bounded score adapter; no complete foreground loop'
+        coordinate_origin=[36,36],full_game=full_game,attract_guide_range=[0x3400,0x3500] if full_game else None,
+        scope=('Selected original gameplay routines with complete progression/session adapter; arcade foreground/IRQ replaced' if full_game else 'Selected original movement and scoring routines for the bounded score adapter; no complete foreground loop'
             if scoring else 'Original player movement, walls and steering; no enemy/flag/Fuel rules')))
     return code,data

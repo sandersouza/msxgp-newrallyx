@@ -12,6 +12,10 @@ Stage_TryStrip:
     ld a,(tile_y)
     cp STAGE_ROWS
     jr nc,.no
+    IF FULL_GAME
+    call Full_TryWideStrip
+    ret c
+    ENDIF
     ld a,(Stage_RowBatch)
     cp 1
     jr z,.horizontal
@@ -67,7 +71,14 @@ Stage_TryStrip:
     ld l,a
     and 128
     rlca
+    IF FULL_GAME
+    push hl
+    ld hl,Full_HBank
+    add a,(hl)
+    pop hl
+    ELSE
     add a,STRIP_H_BANK
+    ENDIF
     ld ($7000),a
     ld a,l
     and 127
@@ -147,7 +158,11 @@ Stage_TryStrip:
     ENDIF
     ld a,(tile_y)
     call Stage_StripDiv3
+    IF FULL_GAME
+    ld a,(Full_VBank)
+    ELSE
     ld a,STRIP_V_BANK
+    ENDIF
     ld ($7000),a
     ld a,c
     or $80
@@ -188,6 +203,17 @@ Stage_StripSource:
     ld (stage_command+2),a
     ret
 Stage_StripDiv3:
+    IF FULL_GAME
+    push hl
+    push de
+    push bc
+    call Full_Div3
+    pop bc
+    ld c,a
+    pop de
+    pop hl
+    ret
+    ELSE
     ASSERT (STRIP_DIV3_ADDR & 255) == 0
     ld l,a
     ld h,STRIP_DIV3_ADDR >> 8
@@ -195,6 +221,7 @@ Stage_StripDiv3:
     ld ($7000),a
     ld c,(hl)
     ret
+    ENDIF
 Stage_StripMod3:
     ld l,a
     ld h,0
@@ -203,4 +230,8 @@ Stage_StripMod3:
     ld a,(hl)
     ret
 Stage_StripInit:
+    IF FULL_GAME
+    jp Full_StripInit
+    ELSE
     INCLUDE "strip-init.inc"
+    ENDIF

@@ -5,6 +5,11 @@
     jp Session_FourWay
     jp Session_SaveMotion
     jp Session_RestoreMotion
+    IF FULL_GAME
+    jp Full_SessionDeath
+    jp Full_DrawRound
+    jp Full_DemoFrame
+    ENDIF
 
 ; Keep only movement/camera state. Fuel, score, enemy state and clocks still tick.
 Session_SaveMotion:
@@ -128,6 +133,23 @@ Session_Frame:
     ld ($e024),a
     call Session_DrawCredits
 .start:
+    IF FULL_GAME
+    ld a,(Session_Edges)
+    and 6
+    jr z,.waiting
+    ld b,1
+    bit 2,a
+    jr z,.one_player
+    inc b
+.one_player:
+    ld a,(Session_Credits)
+    cp b
+    jr c,.waiting
+    ld a,b
+    ld (Full_Players),a
+    ld a,(Session_Credits)
+    sub b
+    ELSE
     ld a,(Session_Edges)
     bit 1,a
     jr z,.waiting
@@ -135,6 +157,7 @@ Session_Frame:
     or a
     jr z,.waiting
     dec a
+    ENDIF
     ld (Session_Credits),a
     ld hl,$e060
     ld de,Session_High
@@ -145,10 +168,26 @@ Session_Frame:
     ld a,2                   ; Resident caller reloads the original initial state.
     ret
 .waiting:
+    IF FULL_GAME
+    call Full_AttractWait
+    ret
+    ENDIF
     ld a,1
     ret
 
 Session_AfterStart:
+    IF FULL_GAME
+    call Full_SessionInit
+    ld a,1
+    call HUD_SetPlayerNumber
+    ld a,(Full_Attract)
+    or a
+    jr z,.active_mode
+    xor a
+    ld ($e020),a
+    ld ($e021),a
+.active_mode:
+    ENDIF
     ld hl,Session_High
     ld de,$e060
     ld bc,8
@@ -167,6 +206,10 @@ Session_AfterStart:
     jp Score_Publish
 
 Session_Draw:
+    IF FULL_GAME
+    ld hl,0
+    ld (Full_AttractClock),hl
+    ENDIF
     ld (Session_Drawn),a
     xor a
     ld (Session_Ready),a
@@ -187,7 +230,11 @@ Session_Draw:
     vdp_write 14,4
     xor a
     out ($99),a
+    IF FULL_GAME
+    ld a,$44
+    ELSE
     ld a,$70
+    ENDIF
     out ($99),a
     ld a,(Session_State)
     dec a
@@ -204,16 +251,22 @@ Session_Draw:
     ld de,Session_Digits
     call Score_ReadDigits
     ld hl,Session_Digits
+    IF FULL_GAME
+    ld de,120/2
+    ELSE
     ld de,56*128+160/2
-    ld b,6
+    ENDIF
+    ld b,HUD_DIGITS
     call Session_Number
+    IF !FULL_GAME
     ld hl,$e0a0
     ld de,Session_Digits
     call Score_ReadDigits
     ld hl,Session_Digits
     ld de,80*128+160/2
-    ld b,6
+    ld b,HUD_DIGITS
     call Session_Number
+    ENDIF
     ld a,(ticks)
     ld b,a
 .wait_blank:
@@ -259,7 +312,11 @@ Session_DrawCredits:
     inc hl
     ld (hl),a
     ld hl,Session_Digits
+    IF FULL_GAME
+    ld de,192*128+160/2
+    ELSE
     ld de,152*128+160/2
+    ENDIF
     ld b,3
 Session_Number:
     push bc
@@ -274,6 +331,13 @@ Session_Number:
     add hl,hl
     add hl,hl
     ld bc,$b600
+    IF FULL_GAME
+    ld a,(Full_NumberBlack)
+    or a
+    jr z,.font_ready
+    ld bc,$b200
+.font_ready:
+    ENDIF
     add hl,bc
     ld b,8
 .row:
@@ -312,3 +376,7 @@ Session_Number:
     pop bc
     djnz Session_Number
     ret
+
+    IF FULL_GAME
+    INCLUDE "full-session.inc"
+    ENDIF

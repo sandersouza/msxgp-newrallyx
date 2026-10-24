@@ -28,6 +28,11 @@ key0        EQU $c019
 scroll_high EQU $c01a
 scroll_low  EQU $c01b
 scroll_y    EQU $c01c
+    IF FULL_GAME
+irq_scroll_y EQU $d2cc
+    ELSE
+irq_scroll_y EQU scroll_y
+    ENDIF
 irq_stage   EQU $c03c
 line_count  EQU $c03d
 vblank_count EQU $c03e
@@ -147,6 +152,9 @@ boot:
     ld (Life_Restarting),a
     ENDIF
 startup_mode:
+    IF FULL_GAME
+    call Full_CopyCold
+    ENDIF
     IF SESSION_RUNTIME
     call Session_Init
     ENDIF
@@ -174,6 +182,10 @@ main:
     di
     ld a,b
     ld (frame_tick),a
+    IF FULL_GAME
+    xor a
+    ld (Full_IdleTicks),a
+    ENDIF
     IF SESSION_RUNTIME
     ld a,(Session_State)
     or a
@@ -195,7 +207,13 @@ main:
     ei                      ; Keyboard and frame RAM preparation own no VDP latch.
     nop
     ENDIF
+    IF FULL_GAME
+    call Full_TurboOn
+    ENDIF
     call keys
+    IF FULL_GAME
+    call Full_TurboOff
+    ENDIF
     IF !SESSION_RUNTIME
     di
     ENDIF
@@ -239,9 +257,18 @@ main:
     call Player_Radar       ; Freeze the dot with this refresh's player position.
     ENDIF
     call HUD_PrepareEarlyCoordinates
+    IF FULL_GAME
+    call Full_TurboOn
+    call HUD_FinishCoordinates ; Prepare fuel/life; maze IRQ owns fixed radar SAT.
+    call Full_TurboOff
+    ENDIF
     ENDIF
     IF ENEMY_RENDER
+    IF FULL_GAME
+    call Full_EnemyFrame
+    ELSE
     call Enemy_Prepare
+    ENDIF
 Enemy_AfterPrepare:
     IF RADAR_PLAYER_SPRITE
     call Enemy_Radar
@@ -249,10 +276,16 @@ Enemy_AfterPrepare:
     ENDIF
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     IF ENEMY_RENDER
+    IF !FULL_GAME
     di
+    ENDIF
+    IF !FULL_GAME
     call Enemy_Draw         ; An enemy may begin at the first maze scanline.
     ENDIF
+    ENDIF
+    IF !FULL_GAME
     call HUD_FinishCoordinates
+    ENDIF
     ei
     nop
     ENDIF
@@ -300,7 +333,13 @@ Enemy_AfterPrepare:
     IF SPRITE_FLICKER
     di
     ENDIF
+    IF FULL_GAME
+    call Full_TurboOn
+    ENDIF
     call HUD_PrepareFrame
+    IF FULL_GAME
+    call Full_TurboOff
+    ENDIF
     IF SPRITE_FLICKER
     ei
     nop
@@ -366,6 +405,16 @@ Enemy_AfterPrepare:
     ld a,(line_count)
     cp b
     jr nz,.split_done
+    IF FULL_GAME
+    call Full_SimulationIdle
+    jr c,.split_wait
+    di                       ; The helper may have serviced the awaited header.
+    ld a,(line_before)
+    ld b,a
+    ld a,(line_count)
+    cp b
+    jr nz,.split_done
+    ENDIF
     ei
     halt
     jr .split_wait
@@ -394,7 +443,18 @@ Enemy_AfterPrepare:
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     call Radar_WaitPublish
     ENDIF
+    IF FULL_GAME
+    call Full_CacheEnter
+    ld a,1
+    ld (Full_CacheHeld),a
+    ENDIF
     call stage_stream
+    IF FULL_GAME
+    call Full_SimulationTail
+    xor a
+    ld (Full_CacheHeld),a
+    call Full_CacheLeave
+    ENDIF
     ld a,(driving)
     or a
     IF !TILE_MODE
@@ -430,6 +490,14 @@ Enemy_AfterPrepare:
 interrupt:
     push af
     push bc
+    IF FULL_GAME
+    ld a,(Full_TurboActive)
+    or a
+    jr z,.base_clock
+    ld a,1
+    out ($41),a
+.base_clock:
+    ENDIF
     ld b,15
     ld a,1
     call register
@@ -460,6 +528,9 @@ interrupt:
 maze_interrupt:
     ld a,3
     ld (irq_stage),a
+    IF FULL_GAME
+    call Full_LatchScrollY   ; Compute before the line6..9 register-latch window.
+    ENDIF
     IF INCREMENTAL_STAGE >= 9
     ; Reserve the split before foreground work can mask its exact deadline.
     ; Keep the complete seven-row font visible, then latch the maze registers.
@@ -477,12 +548,19 @@ maze_interrupt:
     vdp_write 25,3             ; two-page torus and the 8-pixel left mask
     vdp_write 26,(scroll_high)
     vdp_write 27,(scroll_low)
+    IF FULL_GAME
+    ld a,(irq_scroll_y)
+    out ($99),a
+    ld a,$97
+    out ($99),a
+    ELSE
     vdp_write 23,(scroll_y)
+    ENDIF
     vdp_write 2,MAZE_R2            ; SP2 requires R2.A15=1; maze pages 0/1
     IF INCREMENTAL_STAGE >= 9
     ; Prepare early, then latch display-on at a hardware line boundary. A
     ; variable foreground DI tail must not move the first visible maze row.
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,9
     ld b,19
     call register
@@ -493,13 +571,16 @@ maze_interrupt:
     jr z,.separator
     ENDIF
     vdp_write 1,$62
+    IF FULL_GAME
+    call Full_RadarIRQ
+    ENDIF
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     ld a,3
     ELSE
     ld a,1
     ENDIF
     ld (raster_phase),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     add a,80
     ELSE
@@ -521,7 +602,7 @@ radar_interrupt:
     IF STAGE_GUARD_LINE < LIFE_SPLIT
     ld a,5
     ld (raster_phase),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,STAGE_GUARD_LINE
     ld b,19
     call register
@@ -536,7 +617,7 @@ prefetch_guard_interrupt:
     ENDIF
     ld a,4
     ld (raster_phase),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,144
     ld b,19
     call register
@@ -546,7 +627,7 @@ radar_close_interrupt:
     ld (Radar_Scanned),a
     ld a,1
     ld (raster_phase),a
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,LIFE_SPLIT
     ld b,19
     call register
@@ -570,14 +651,14 @@ life_interrupt:
     vdp_write 0,MAZE_R0             ; The marker producer owns the remaining tail.
     jr .tail_ready
 .terrain_tail:
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,196
     ld b,19
     call register
     vdp_write 0,MAZE_R0+16
 .tail_ready:
     ELSE
-    ld a,(scroll_y)
+    ld a,(irq_scroll_y)
     add a,STAGE_GUARD_LINE
     ld b,19
     call register
@@ -649,7 +730,11 @@ vertical:
     ld b,19
     IF INCREMENTAL_STAGE >= 9
     IF SESSION_RUNTIME
+    IF FULL_GAME
+    xor a                     ; Full RAM producers yield before the header deadline.
+    ELSE
     ld a,1                    ; Reserve enough lead for a busy lucky-bonus DI tail.
+    ENDIF
     ELSE
     ld a,3                    ; Reserve split; wait for font end and line nine.
     ENDIF
@@ -680,6 +765,14 @@ irq_return:
     or a
     call nz,Sprite_ResumeUpload
     ENDIF
+    IF FULL_GAME
+    ld a,(Full_TurboActive)
+    or a
+    jr z,.base_clock
+    xor a
+    out ($41),a
+.base_clock:
+    ENDIF
     pop bc
     pop af
     ei
@@ -692,8 +785,17 @@ register:
     out ($99),a
     ret
     INCLUDE "hud-demo.inc"
+    IF !FULL_GAME
 show_scene:
+    IF FULL_GAME
+    call Full_TurboOff
+    ENDIF
     di
+    IF FULL_GAME
+    xor a
+    ld (Full_CacheReady),a
+    ld (Full_CameraBlocked),a
+    ENDIF
     IF SESSION_RUNTIME
     xor a
     ld (Session_PositionIRQ),a
@@ -722,6 +824,11 @@ show_scene:
     ENDIF
     call stage_load
     call HUD_Init
+    IF FULL_GAME
+    ld a,SESSION_BANK
+    ld ($7000),a
+    call $b815
+    ENDIF
     IF SPRITE_FLICKER
     call Flicker_Init
     ENDIF
@@ -738,6 +845,11 @@ show_scene:
     ENDIF
     IF HUD_ENABLED
     call hud_demo_reset
+    IF FULL_GAME
+    ld a,(Full_Player)
+    inc a
+    call HUD_SetPlayerNumber
+    ENDIF
     IF INCREMENTAL_STAGE >= 5
     ld a,(driving)
     or a
@@ -826,6 +938,7 @@ show_scene:
     call register
     ei
     ret
+    ENDIF
     IF !HUD_ENABLED
 ; Preserve the established car slot numbers while hiding every unused HUD entry.
 ; There is no Y=216 terminator before the car and no HUD work per refresh.
@@ -911,6 +1024,9 @@ upload:
     ENDIF
     IF SESSION_RUNTIME
     INCLUDE "session-loader.inc"
+    ENDIF
+    IF FULL_GAME
+    INCLUDE "full-round-runtime.inc"
     ENDIF
 palette:
     INCBIN "palette.bin"

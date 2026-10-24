@@ -26,10 +26,31 @@ player_patch_work EQU $c471
 player_steps EQU $c472
 
 Player_Init:
+    IF FULL_GAME
+    ld a,(Full_Loading)
+    cp 2
+    jr nz,.not_restoring
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call $ae06
+    call Full_RestoreFlagCells
+    jp Player_RestartNative
+.not_restoring:
+    ENDIF
     IF INCREMENTAL_STAGE >= 7
     ld a,(Life_Restarting)
     or a
     jp nz,Player_RestartNative
+    ENDIF
+    IF FULL_GAME
+    ld a,(Full_Loading)
+    or a
+    jr z,.fresh
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call $ae03
+    jr .systems
+.fresh:
     ENDIF
     ld a,PLAYER_DATA_BANK
     ld ($7000),a
@@ -39,6 +60,10 @@ Player_Init:
     ldir
     ld a,PLAYER_BANK
     ld ($7000),a
+    IF FULL_GAME
+    call $ae00
+.systems:
+    ENDIF
     IF INCREMENTAL_STAGE >= 2
     call Rock_Init
     ENDIF
@@ -110,13 +135,28 @@ Player_Advance:
     or a
     ret nz
     ld a,(player_steps)
+    IF FULL_GAME
+    cp 2
+    ret c
+    dec a
+    ld b,a
+    ELSE
     cp 2
     ret nz
+    ENDIF
     ld a,PLAYER_BANK
     ld ($7000),a
     ei
     nop
+    IF FULL_GAME
+.tick:
+    push bc
+    ENDIF
     call Player_Tick
+    IF FULL_GAME
+    pop bc
+    djnz .tick
+    ENDIF
     IF ENEMY_RENDER
     call Player_Position
     di
@@ -168,6 +208,9 @@ Player_AdvanceEarly:
     ld a,(driving)
     or a
     ret z
+    IF FULL_GAME
+    call Full_ClockFrame
+    ENDIF
     ld a,(paused)
     or a
     ret nz
@@ -176,6 +219,13 @@ Player_AdvanceEarly:
     ld (player_steps),a
     call Smoke_CachePressure
     ret nz                  ; Keep this coherent scene while hidden guards catch up.
+    ENDIF
+    IF FULL_GAME
+    ld a,(Full_ClockDue)
+    or a
+    ret z
+    dec a
+    ld (Full_ClockDue),a
     ENDIF
     call Player_Input
     ld a,PLAYER_BANK
@@ -187,11 +237,27 @@ Player_AdvanceEarly:
     ei
     nop
     call Player_Tick
+    IF FULL_GAME
+    ld a,(Full_ClockDue)
+    cp 1
+    jr c,.claim
+    ld a,1
+.claim:
+    ld b,a
+    ld a,(Full_ClockDue)
+    sub b
+    ld (Full_ClockDue),a
+    ld a,b
+    inc a
+    ld (player_steps),a
+    jr .ready
+    ELSE
     ld hl,(player_rate)
     ld de,PLAYER_RATE
     add hl,de
     ld (player_rate),hl
     jr nc,.ready
+    ENDIF
     ld a,2
     ld (player_steps),a
 .ready:
@@ -208,6 +274,11 @@ Player_AdvanceEarly:
     ENDIF
 
 Player_Tick:
+    IF FULL_GAME
+    call Full_TurboOn
+    call $8f24              ; Original IRQ PRNG advances in active/hold/bonus phases.
+    call $83fd              ; Original round phase clock shares the same tick.
+    ENDIF
     IF COMPLETION_RUNTIME
     ld a,(Round_State)
     or a
@@ -286,9 +357,21 @@ Player_CountTick:
     ld hl,(player_native_ticks)
     inc hl
     ld (player_native_ticks),hl
+    IF FULL_GAME
+    jp Full_TurboOff
+    ENDIF
     ret
 
 Player_Input:
+    IF FULL_GAME
+    ld a,(Full_Attract)
+    or a
+    jr z,.human
+    ld a,255
+    ld ($e3f0),a
+    ret
+.human:
+    ENDIF
     ; Native active-low joystick bits: up/down/right/left = 5/4/3/2.
     ld b,255
     ld a,(dy)
@@ -372,6 +455,10 @@ Player_Position:
     ld (player_pending_y),hl
     ret
 Player_Apply:
+    IF FULL_GAME
+    call Full_CameraCheck
+    ret c
+    ENDIF
     ld hl,(player_pending_x)
     ld (player_x),hl
     ld de,-VIEWPORT_HALF

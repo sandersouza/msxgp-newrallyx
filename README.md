@@ -5,9 +5,8 @@ A work-in-progress port of the New Rally-X arcade game to MSX2+, focused on
 preserving the original graphics, game rules and gameplay speed.
 
 The repository provides environment setup, original-graphics tools and a
-SCREEN 5 renderer with the complete original first-stage map and a controllable
-car using the original movement and wall collision. The complete game runtime
-is still in development.
+SCREEN 5 renderer integrating the original Z80 gameplay routines with dynamic
+rounds, enemies, smoke and one/two-player sessions. Sound synthesis remains pending.
 
 The port targets **at least 128 KB of RAM mapper and 128 KB VRAM**. The openMSX
 launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
@@ -24,203 +23,59 @@ launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
   Rendering performance and sound fidelity still require feasibility measurements
   on the target platform.
 
-The current runtime integrates original player movement, steering and wall
-collision. Enemy AI, collection, smoke, scoring/Fuel rules and sound remain
-pending.
-
 ## Current status
 
-| Area | Status |
-| --- | --- |
-| Development environment | macOS bootstrap with dependency and toolchain verification |
-| Z80 cross-assembly | Pinned sjasmplus with a synthetic cartridge smoke test |
-| Original graphics | ROM validation and extraction of tiles, sprites, dots and palette metadata |
-| Arcade reference validation | Local graphics comparisons documented in the extraction guide |
-| Current renderer | Complete original first-stage map with cached hardware scrolling, a fixed raster scoreboard and dynamic sprite HUD |
-| HUD integration | Reusable Z80 API for score, record, lives, Fuel and radar, with a read-only original-RAM adapter |
-| Player driving test | Starts automatically with original continuous movement, steering, wall collision and a following camera |
-| Gameplay and hardware adaptation | [Original Z80 map](docs/z80-native-analysis.md), [patch/allocation](docs/native-patching.md), [clock/input/state contracts](docs/native-runtime-contracts.md) and [native loader/mapper proof](docs/native-loader.md); complete native runtime pending |
-| Linux and Windows bootstrap | Detected, but setup is not implemented |
+The default `make build` cartridge provides silent normal/challenge rounds,
+original flag/rock placement on four maps, native enemies and smoke, fuel bonuses,
+death/restart, alternating two-player sessions, game over and an autonomous
+attract demonstration. It retains original-size graphics, the complete car
+drawings, the full HUD and the real V9958 sprite limit.
 
-`make build` generates the current default diagnostic at
-`references/build/newrallyx.rom`: full-screen hardware scrolling at 50 Hz, with
-one-pixel bounded camera movement across the complete 768x1344 maze, original
-flower borders, an eight-pixel scoreboard
-fixed by a line interrupt, and a yellow life icon with a black outline followed
-by a white remaining-life digit.
-The scoreboard places HISCORE: and its value on the left, and 1UP: and its value
-on the right, both aligned with the maze's inner edges. ROUND is deferred.
-Three separator rows contain the raster transition. The native V9958 left mask
-leaves a 248x201 maze; fixed R18 adjustment centres it without a right mask or
-asset rescaling. The HUD and car occupy 19 sprite slots, leaving 13 free.
-The ROM starts in the [driving test](docs/player.md): arrows steer the original
-car, releasing them retains movement, Space pauses and Home restarts. The camera
-and radar follow the car. Press **Enter** to switch to map inspection.
-In inspection mode, use arrows to scroll; Space pauses, Home reloads the selected starting point and
-1–5 jump to the starting area or the four map corners. Key 0
-cycles the life digit through 0–9, and 9 adds test points. A transparent 48x58 sprite radar
-overlays the upper right: white border/flags, a red enemy and a white/black
-blinking player. The radar tracks the car while driving and the viewport center during
-inspection; its patterns update every two refreshes. See [controls and verification](docs/raster-scroll.md).
-Press Enter again to restart driving.
-Directly below the radar, a white fuel-pump icon and yellow gauge share its
-48-pixel width. Press F to cycle the diagnostic fuel levels.
-The [HUD integration guide](docs/hud.md) documents every component, public calls,
-state formats, register preservation and original-routine replacement boundaries.
-The HUD adapter reads the original score, lives, Fuel and visibility state;
-the current keyboard producer supplies demonstration values separately.
-The [map guide](docs/stage-one-map.md) documents exact reconstruction, native Z80
-comparisons and the VRAM tile cache. The cartridge is 1 MB; its first build
-acquires and validates the original map through MAME 0.289. Complete-game and
-physical-hardware validation remain pending.
+The eight-pixel header shows an eight-digit high score and score, the selected
+player and a three-digit round. The life digit shows spare cars, capped at nine.
+A 248x201 maze viewport preserves world coordinates. The original logical tick
+is 16.5 ms. Elapsed-time scheduling, terrain ownership and cached enemy work keep
+the measured simulation at **60.48–60.61 ticks/s across six natural rounds**
+on the reference Panasonic, including a seven-enemy challenge. Vertical scroll
+advances at most six pixels per physical refresh; the fuel bar is restored on
+every refresh. Presentation averages 26–35 loops/s, with real hardware sprite
+culling. See [performance evidence and limits](docs/enemy-rendering-performance.md).
 
-`make run` opens the default ROM in openMSX and calls `make build` first if that
-file is missing. An existing ROM is reused; use `make build` to rebuild after
-source changes. Each build keeps its evidence in a fresh `references/build/default-*/`
-directory and publishes the default ROM only on success. Each launch uses fresh
-isolated settings in `references/build/run-*/`. The launcher uses Panasonic
-FS-A1WSX and contributor-supplied BIOS under `references/msxbios/`; see the
-[BIOS requirements](docs/setup.md#machine-and-contributor-supplied-bios).
+```sh
+make build
+make run
+```
 
-Select a test cartridge with `make run ROM=references/build/<test-build>/native.rom`.
-The selected file is launched directly; a missing test ROM reports an error.
-Omit `ROM` to use the default development cartridge.
-The approved Issue 11 build is **stage 12**, selected by plain `make build` and
-`make run`. Its ROM matches the user-tested v260 cartridge. The earlier driving
-reference remains available with `make build STAGE=8` or its named checkpoints.
+Press **5** for a credit, **1** for one player or **2** for two players (two
+credits). Both players use arrows or joystick1 on alternating turns. **Space**,
+Ctrl or triggerA releases smoke; **P** pauses; Home resets the development run.
+With no credits, the original cast screen periodically enters an automatic demo.
 
-The preserved **stage 08** build is the fast driving baseline plus an
-explicit bitmap-rock fixture. Normal first-stage initialization has no rocks;
-this test adds two original placement outputs and records diagnostic collision
-entry events without extra sprites. Selected original player movement/steering/wall routines remain active;
-the complete arcade foreground/IRQ loop is absent. Rock contact now triggers the
-original 24x24 bitmap explosion and one life loss. The hold lasts 120 logical
-ticks with lives remaining, 96 on the final life. Automatic restart preserves
-the same round's collected flags, score and high score, refills fuel and resets
-the new life's flag-point ordinal. The HUD shows actual spare cars. Flags are
-now collected once and removed from the bitmap/radar, including after cache
-reload. The score/high-score HUD now uses actual flag points and the special
-multiplier. Original decimal fuel consumption, empty-fuel deceleration and the
-round-dependent lucky countdown are now active; the gauge shows actual fuel.
-Lucky restores the pre-countdown fuel and is excluded when collected last.
-One original enemy now pursues the player, appears on the radar, and causes
-the same explosion/life loss on contact. Two additional sprite planes bring
-the total to 21 slots, with 11 free; the measured line peak remains eight.
-The score header has its original black background. The transparent radar has
-a square white border, using the same sprite patterns and instruction stream.
-A solid blue radar fill would require another layer or work during scrolling;
-the existing transparent background is retained under the zero-extra-cost constraint.
-Zero lives stops this fixture; Home starts a fresh test run. Additional enemies,
-credit/start/transition presentation remain pending in this reference. F and 0 fixture keys are
-disabled while driving. See the [fuel performance report](docs/fuel-performance-fix.md)
-and [one-enemy evidence and adaptations](docs/one-enemy-plan.md).
-Use `make build STAGE=0` to
-recreate the preserved movement-only baseline.
-`make run LATEST=1` selects approved session `11-r12-smoke-irq-v260`. Press **5**
-for credit and **1** to start. Arrows or joystick1 steer, **Space**, Ctrl or triggerA
-releases smoke, **P** pauses and Home resets the development run. Original
-graphics, complete sprite cars, normal sprite radar and HUD remain. All ten
-flags lead to the source fuel bonus and a clear screen; credit/start begins a
-new game with its high score retained. Game-over screens hide gameplay sprites.
-The fuel bar turns red below 10% (less than six original tank units); exactly
-10% stays yellow. The S flag blinks on the existing sprite radar. The life icon
-keeps its yellow silhouette and black outline. The footer uses three sprites,
-sharing the fuel gauge's three slots; peak allocation stays
-20 entries with twelve free. Keyboard/joystick directions pass through a four-way
-gate: a new direction wins over a still-held old direction. A corner guard rejects
-wall-center movement while retaining steering so the car can escape. Fuel patterns
-publish on VBlank, including the restored amount on the refresh after the L bonus.
-Score publication and input preparation keep raster interrupts serviceable;
-the extended L route and multi-key stress test check every header reservation.
-Smoke queue preparation and publication bookkeeping also service interrupts;
-explosions retain priority over smoke copies. Repeated Space firing is included
-in the header regression. Corner rejection preserves native centering as well
-as the newly selected direction.
-Occasional timing delays remain.
-Rebuild with `make build STAGE=12`. Later rounds/two players and sound remain
-outside this segment. See [validation and limits](docs/completion-integration-plan.md).
-The rock/smoke stress checkpoint remains available as
-`make run CHECKPOINT=11-r10-coherent-v207` (1,812 cache states/59 RGB, 2.26%
-held refreshes). See [checkpoints and limits](docs/checkpoints.md).
+Builds use fresh sealed directories under `references/build/default-*/` and
+publish `references/build/newrallyx.rom` only after success. `make run` reuses
+that file, building it only when missing. Rebuild after changing sources.
+`make run LATEST=1` launches the most recent sealed build; named historical
+cartridges remain available through `make checkpoints` and
+`make run CHECKPOINT=<name>`. An explicit `ROM=<path>` selects another cartridge.
 
-`make run CHECKPOINT=11-r09-two-gameplay-v152` selects two original enemies,
-complete car drawings/windows, sprite radar and full HUD at 50 Hz. The natural
-route passes 1,138 complete visible-cache states and 28 full RGB images. Its
-22 SAT entries leave ten free; line occupancy peaks at nine candidates with
-real hardware limits enabled. Main intervals have median 19.937 ms and maximum
-33.313 ms, so this is a test checkpoint with timing still unaccepted.
-Rebuild this population with `make build STAGE=9 ENEMIES=2`.
-The default `make run` cartridge remains the accepted one-enemy
-`11-r09-player-dot-50-v115` until explicitly rebuilt.
-The user rejected `11-outline-flicker-60-v144`: its row-color simplification
-removed upper window detail, and moving gameplay was slow with broken scenery.
-It is preserved only as failed experimental evidence. Any subsequent priority
-test must preserve the original dependent car planes together; stationary
-overflow success does not establish moving gameplay acceptance.
-See [the rejected experiment](docs/sprite-flicker-experiment.md).
-The rejected blue bitmap-radar test is preserved outside `LATEST` as
-`11-r09-radar-blitter-hud-v139`.
+`make build FULL_GAME=0` reconstructs the bounded Issue 11 stage12 reference.
+Earlier diagnostic stages remain available with `STAGE=0..11`; their controls,
+contracts and historical limitations are in the [checkpoint guide](docs/checkpoints.md).
+They do not provide complete-game progression. `NATIVE=1` remains a compatibility
+alias for the bounded selected-routine reference.
 
-The accepted reference is `make run CHECKPOINT=11-r09-player-dot-50-v115`: one original enemy with
-HUD at 50 Hz and the original 16.5 ms logical clock. Twelve radar sprites keep
-the map, flags and enemy dynamic; one independent player dot alternates white
-and black every eight native ticks, matching the original routine. Moving the
-player does not dirty the map cells. Twenty SAT slots are used, leaving twelve
-free. Both the 1,138-state contact/restart route (28 RGB images) and the
-1,600-state movement/cache control (39 RGB) pass the unchanged timing gate.
-Arrows steer, Space pauses and Home resets. Rebuild with `make build STAGE=9`.
-The two-enemy HUD-off reference remains
-`make run CHECKPOINT=11-r09-two-no-hud-v80` (60 Hz, six slots, 26 free).
-`ENEMIES=3` is a separate diagnostic: native logic and car/radar component
-proofs pass, but its moving predecessor corrupts the bottom scenery row. It
-is not selected by `LATEST`. Neither checkpoint completes #11. Sprite-line
-overflow alone no longer blocks gameplay integration, following the user's
-decision; keep hardware limits enabled and document resulting culling.
-The integrated bitmap-player test is available separately as
-`make run CHECKPOINT=11-r09-player-blitter-hud-v130`: eighteen sprites used,
-fourteen free, with the full HUD and one enemy. It passes natural-route pixels
-and cache but still fails timing and radar backlog. It remains available for
-future correction; the radar experiment uses the sprite car instead.
-New gameplay/performance tests keep the HUD enabled unless explicitly requested
-otherwise. See [the blitter evidence](docs/bitmap-blitter-experiments.md).
-The preserved stage 08 reference is `make run CHECKPOINT=11-r08-restored-v1`.
-See the
-[current checkpoint guide](docs/checkpoints.md).
-The preserved sprite priority experiment starts paused with two enemies over
-the radar: `make run CHECKPOINT=11-flicker-60-v6`; compare with
-`make run CHECKPOINT=11-flicker-50-v6`. Space resumes an unaccepted moving
-prototype, Home resets the controlled fixture. Rebuild with
-`make build STAGE=9 SPRITE_FLICKER=1 FLICKER_STRESS=1 HZ=60` (or `HZ=50`).
-Both rates pass controlled display/RGB checks; moving integration remains
-pending. Flicker changes priority and uses 24 slots/eight free, without lifting
-the hardware limit. See [evidence and limitations](docs/sprite-flicker-experiment.md).
-The previous rendering experiment uses the movement baseline with a bitmap
-player: `make build STAGE=0 PLAYER_BLITTER=1`, also supporting `NO_HUD=1`.
-`RADAR_BLITTER=1` additionally selects the **slow diagnostic** with a blue
-48x80 bitmap radar. The approved gameplay default is stage 12; see
-[blitter checkpoints, measurements and limitations](docs/bitmap-blitter-experiments.md).
-See the [incremental gameplay plan](docs/incremental-gameplay-plan.md).
-Use `make build NO_HUD=1` to compile this same baseline without HUD frame work;
-plain `make build` includes HUD. `NATIVE=1` remains a compatibility alias for the
-baseline and no longer starts the abandoned full-loop candidate.
-Both builds publish the default ROM and update `references/build/latest.rom`, a
-relative symlink to the sealed stage cartridge. Run it with `make run LATEST=1`.
-Historical full-runtime probe commands do not replace this active latest link.
-Missing latest builds fail explicitly;
-`LATEST`, `CHECKPOINT`, and an explicit `ROM` selection are mutually exclusive.
-Use `make checkpoints` to list published local test builds, then
-`make run CHECKPOINT=<name>` to launch one. Checkpoint names retain their exact
-cartridge/evidence hashes; later experiments receive new names. Cleaning the
-build directory removes these local checkpoints too.
-See the [checkpoint comparison guide](docs/checkpoints.md) for enabled components,
-controls and current validation limits.
+Validation uses openMSX 21.0, 50 Hz VDP refresh, a 128 KB RAM mapper and 128 KB
+VRAM. The game detects the Panasonic's factory 5.37 MHz mode for pure CPU work;
+VDP access and raster IRQs use 3.58 MHz. Other machines retain their base clock;
+the reported cadence depends on the factory mode. The launcher uses an isolated FS-A1WSX
+configuration and contributor-supplied BIOS under `references/msxbios/`.
+See [setup](docs/setup.md#machine-and-contributor-supplied-bios).
+Physical hardware and loaded RGB scanout remain unqualified; the overnight
+automated proofs check native state, timing, VRAM and sprite tables.
 
-Use `python3 -B scripts/clean.py --dry-run` to preview generated builds and
-`make clean` to remove all contents of `references/build/`, including ROMs, screenshots,
-reports and emulator session data. The build directory and its top-level
-`.gitkeep`, if present, are retained. Original ROMs, BIOS, extracted assets,
-scene captures, `.venv` and `.tools` are preserved. Cleaning also removes local
-evidence linked by the renderer guide; rebuild to recreate it.
+Use `python3 -B scripts/clean.py --dry-run` to inspect generated build contents.
+`make clean` removes local ROMs, checkpoints, reports and emulator sessions under
+`references/build/`; preserve evidence you need before cleaning.
 
 ## Quick start
 
@@ -286,7 +141,7 @@ make extract-graphics GRAPHICS_OUTPUT="references/assets/nrallyx-other"
 See [graphics extraction](docs/graphics-extraction.md) for input overrides,
 output formats, overwrite checks, recovery and optional MAME comparisons.
 
-### 4. Prepare scenes and run the diagnostic
+### 4. Prepare scenes and run the game
 
 Follow the [scene guide](docs/arcade-scenes.md) to capture the reference scenes,
 then analyze the normal and overlap captures to generate the approved bundles at `references/scenes/rom-input/normal` and
@@ -338,7 +193,8 @@ script CLIs.
 | --- | --- |
 | `docs/setup.md` | Environment prerequisites, toolchain, troubleshooting and validation evidence |
 | `docs/graphics-extraction.md` | ROM requirements, extraction schema, provenance and reference checks |
-| `docs/raster-scroll.md` | Current renderer, controls, memory ownership, integration contract and measured timing |
+| `docs/full-gameplay-inventory.md` | Complete-game integration, evidence and remaining limits |
+| `docs/raster-scroll.md` | Renderer baseline, controls, memory ownership, integration contract and measured timing |
 | `docs/hud.md` | Reusable HUD API, initialization, scheduling and original-game adapter |
 | `docs/player.md` | Original player movement, driving controls, sprites and raster integration |
 | `docs/stage-one-map.md` | Exact first-stage reconstruction, native checks and hidden-tile streaming |

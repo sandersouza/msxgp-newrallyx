@@ -180,9 +180,16 @@ OS/architecture. C/SDCC compilation is not required for this Z80 Assembly workfl
 
 ## Machine and contributor-supplied BIOS
 
-Local validation uses openMSX **21.0**, `Panasonic_FS-A1WSX`, V9958 with 128 KB
-VRAM and 64 KB RAM. The launcher sets the CPU to **3,579,545 Hz**, emulator speed
-100%, firmware off and a 212-line display. The cartridge itself sets 50 Hz
+Local validation uses openMSX **21.0**, a session-local `Panasonic_FS-A1WSX_NR128`
+configuration, V9958 with 128 KB VRAM and a 128 KB main RAM mapper. The launcher
+derives this configuration from `Panasonic_FS-A1WSX`; the standard 64 KB machine
+does not meet the established loader's mapper requirement. The launcher follows
+the machine's CPU clock, sets emulator speed 100%, firmware off and a 212-line
+display. The full game detects factory Panasonic turbo and uses **5,369,318 Hz
+for pure CPU work, 3,579,545 Hz for VDP access and raster IRQs**. Unsupported
+machines keep their base clock. In openMSX, `z80_freq_locked true` follows
+hardware clock switching; `false` forces the user's frequency override. The
+bounded reference retains its original base-clock behavior. The cartridge sets 50 Hz
 through VDP R9. Its BIOS calls require an MSX2 or later machine; the recorded
 integration target is MSX2+.
 

@@ -1,9 +1,29 @@
 """Independent pixel decoding of exact three-tile lookup/atlas contracts."""
 import unittest
-from scripts.msx.tile_strips import encode,candidates
+from scripts.msx.tile_strips import encode,candidates,encode_cells
 
 
 class TileStripTests(unittest.TestCase):
+    def test_complete_cells_reconstruct_every_synthetic_source_pixel(self):
+        width,height=96,72
+        world=bytes((x//5+y//7+x*y)%16 for y in range(height) for x in range(width))
+        data=encode_cells(world,width=width,height=height)
+        origin=data['vram']//128
+        for y in range(0,height,24):
+            for x in range(0,width,24):
+                at=y//24*128+x//24*2
+                sx,sy=data['table'][at:at+2];sy=(sy-origin)%256
+                actual=(bytes([data['table'][at+1]&15])*576 if sx==1 else
+                    bytes((data['pixels'][(sy+r)*128+(sx+c)//2]>>(0 if (sx+c)&1 else 4))&15
+                        for r in range(24) for c in range(24)))
+                expected=b''.join(world[(y+r)*width+x:(y+r)*width+x+24] for r in range(24))
+                self.assertEqual(actual,expected)
+
+    def test_uniform_complete_cells_use_their_exact_packed_fill_color(self):
+        world=bytes(color for y in range(24) for color in range(16) for x in range(24))
+        data=encode_cells(world,width=384,height=24)
+        for color in range(16):self.assertEqual(data['table'][color*2:color*2+2],bytes((1,color*17)))
+
     def test_source_addresses_reconstruct_every_synthetic_strip(self):
         width=height=48
         world=bytes((x//3+y//5)%16 for y in range(height) for x in range(width))
@@ -22,6 +42,23 @@ class TileStripTests(unittest.TestCase):
 
     def test_partial_world_cells_are_rejected(self):
         with self.assertRaises(ValueError):encode(bytes(32*48),width=32,height=48)
+
+    def test_overlapping_two_cell_strips_reconstruct_every_source_pixel(self):
+        width=height=96
+        world=bytes((x//7+y//11+x*y)%16 for y in range(height) for x in range(width))
+        for axis,data in encode(world,width=width,height=height,origins=(584,792),cells=2).items():
+            tw,th=(48,8) if axis=='horizontal' else (8,48)
+            dx,dy=(24,8) if axis=='horizontal' else (8,24)
+            stride=128 if axis=='horizontal' else 256
+            origin=data['vram']//128
+            for y in range(0,height-th+1,dy):
+                for x in range(0,width-tw+1,dx):
+                    at=y//dy*stride+x//dx*2;sx,sy=data['table'][at:at+2]
+                    sy=(sy-origin)%256
+                    actual=bytes((data['pixels'][(sy+r)*128+(sx+c)//2]>>(0 if (sx+c)&1 else 4))&15
+                        for r in range(th) for c in range(tw))
+                    expected=b''.join(world[(y+r)*width+x:(y+r)*width+x+tw] for r in range(th))
+                    self.assertEqual(actual,expected)
 
     def test_candidate_tags_keep_uniform_fills_and_flag_owners_out_of_strips(self):
         data=bytearray(bytes((0x62,0))*32768)

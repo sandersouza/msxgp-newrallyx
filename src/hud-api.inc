@@ -28,7 +28,7 @@ HUD_SetHiscore:
 hud_copy_number:
     push bc
     push hl
-    ld b,6
+    ld b,HUD_DIGITS
 .validate:
     ld a,(hl)
     cp 10
@@ -38,7 +38,7 @@ hud_copy_number:
     pop hl
     push hl
     push de
-    ld b,6
+    ld b,HUD_DIGITS
     ld c,0
 .compare:
     ld a,(de)
@@ -53,7 +53,7 @@ hud_copy_number:
     pop hl
     push hl
     push af
-    ld bc,6
+    ld bc,HUD_DIGITS
     ldir
     pop af
     pop hl
@@ -171,8 +171,15 @@ hud_fuel_scale:
 
 ; Private neutral-state reset, called by HUD_Init after resource uploads.
 HUD_InitState:
+    IF FULL_GAME
     ld hl,hud_score_pending
     ld de,hud_score_pending+1
+    ld bc,31
+    ld (hl),0
+    ldir
+    ENDIF
+    ld hl,HUD_API_BASE
+    ld de,HUD_API_BASE+1
     ld bc,37
     ld (hl),0
     ldir
@@ -347,6 +354,9 @@ hud_mark_pixel:
 
 ; Scheduled after the header split. Two dirty cells per frame bound VRAM work.
 HUD_FlushFlags:
+    IF FULL_GAME
+    call Radar_AllowIRQ
+    ENDIF
     IF RADAR_BLITTER
     xor a
     ld (hud_flags_dirty),a
@@ -439,7 +449,10 @@ HUD_FlushFlags:
     ret
 
 hud_render_cell:
-    IF RADAR_CELLS_ONLY
+    IF FULL_GAME
+    call Radar_AllowIRQ       ; Dynamic flag composition is RAM work.
+    ENDIF
+    IF RADAR_CELLS_ONLY && !FULL_GAME
     jp Radar_RebuildBase
     ENDIF
     ld a,HUD_DATA_BANK
@@ -482,7 +495,11 @@ hud_render_cell:
     sub 2
     ld (hud_cell_y),a
     ld hl,hud_flags
+    IF FULL_GAME
+    ld b,10
+    ELSE
     ld b,20
+    ENDIF
 .flag:
     push bc
     ld a,(hl)
@@ -492,6 +509,17 @@ hud_render_cell:
     push hl
     cp 255
     jr z,.next_flag
+    IF FULL_GAME
+    ld d,a
+    ld a,b
+    cp 1
+    jr nz,.visible_flag
+    ld hl,radar_clock
+    bit 5,(hl)
+    jr nz,.next_flag
+.visible_flag:
+    ld a,d
+    ENDIF
     ld (hud_pixel_x),a
     ld a,c
     ld (hud_pixel_y),a
@@ -687,6 +715,9 @@ HUD_FinishCoordinates:
     jp Radar_FinishCoordinates
     ENDIF
 HUD_DrawContent:
+    IF FULL_GAME
+    call Radar_AllowIRQ
+    ENDIF
     IFDEF HUD_SCORING_METER
     xor a
     ld (Score_HudPairs),a

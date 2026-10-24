@@ -7,11 +7,19 @@ Enemy_Visible EQU $c5d2
 Enemy_Init:
     xor a
     ld (Enemy_Contact),a
+    IF !FULL_GAME
     ld (Enemy_Visible),a
+    ENDIF
+    IF FULL_GAME
+    ld ($e3f1),a
+    ld ($e3f8),a
+    ENDIF
     dec a
     ld (Enemy_Drawn),a
+    IF !FULL_GAME
     ld a,ENEMY_COUNT
     ld ($e24e),a
+    ENDIF
     ld hl,$2d0a
     ld ($e052),hl
     ld hl,0
@@ -35,7 +43,11 @@ Enemy_AfterMove:
     call $838a              ; original strict +/-10 pixel contact on both axes
     ld a,(Enemy_Contact)
     or a
+    IF FULL_GAME
+    call z,$b600            ; guarded transform reuse; original code owns both outputs
+    ELSE
     call z,$8cd6            ; source AI does not run after a collision transfer
+    ENDIF
     ld a,($e050)
     add a,7
     cp 15
@@ -66,12 +78,18 @@ Enemy_Body EQU $c5e2
 Enemy_Window EQU $c5e3
 Enemy_LastEC EQU $c5e4
 Enemy_Index EQU $c5e5
+    IF FULL_GAME
+Enemy_TopRow EQU $c5e6
+Enemy_CacheTop EQU $c5e7
+Enemy_SAT EQU $c5e8          ; Codegen field names only; FULL_GAME uses IX records.
+    ELSE
 Enemy_RadarWork EQU $c5e6
 Enemy_GuardClosed EQU $c5e8
 Enemy_RadarSource EQU $c5ea
 Enemy_TopRow EQU $c5ec
 Enemy_CacheTop EQU $c5ed
 Enemy_SAT EQU $c600
+    ENDIF
 Enemy_Masks EQU $c620
 
 ; Eleven normal frames occupy otherwise unused pattern groups. The final group
