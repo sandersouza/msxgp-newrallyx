@@ -35,7 +35,7 @@ def verify_manifest(path, expected=None):
         if not isinstance(record,dict):
             raise ValueError('Invalid payload record')
         name = record.get('path', '')
-        if (not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_./-]+', name)
+        if (not isinstance(name, str) or not re.fullmatch(r'[A-Za-z0-9_./+-]+', name)
                 or any(p in ('', '.', '..') for p in name.split('/'))
                 or name.startswith('/') or name in names or name == 'manifest.json'):
             raise ValueError('Invalid payload path')

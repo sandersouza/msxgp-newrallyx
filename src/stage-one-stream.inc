@@ -542,7 +542,9 @@ stage_stream_driving:
     pop bc
     ei
     nop
+    IF !FULL_GAME
     di
+    ENDIF
     IF STAGE_SOLID_RUNS
     dec b
     jp nz,.next
@@ -586,10 +588,13 @@ Stage_QueuePriority:
     inc a
 .store:
     ld (Stage_PreferRows),a
+    IF !FULL_GAME
     di
+    ENDIF
     ret
     ENDIF
 
+    IF !FULL_GAME
 stage_load:
     IF STAGE_SOLID_RUNS
     xor a
@@ -652,6 +657,7 @@ stage_load:
     ld (row_left),a
     ret
 
+    ENDIF
 stage_tile:
     ld a,(driving)
     or a
@@ -818,7 +824,11 @@ stage_atlas_init:
     ld bc,15
     ldir
     IF STAGE_BANKED_ATLAS
+    IF FULL_GAME
+    ld a,(Full_ResourceBank)
+    ELSE
     ld a,PLAYER_DATA_BANK
+    ENDIF
     ld ($7000),a
     ENDIF
     vdp_write 14,4
@@ -826,8 +836,13 @@ stage_atlas_init:
     out ($99),a
     ld a,$48
     out ($99),a
+    IF FULL_GAME
+    ld hl,$8000
+    ld de,4096
+    ELSE
     ld hl,stage_atlas
     ld de,STAGE_ATLAS_BYTES
+    ENDIF
     jp upload
 stage_wait_command:
     vdp_write 15,2
@@ -870,6 +885,10 @@ stage_copy_tile:
     call Smoke_Source
     jp c,stage_copy_destination
     ENDIF
+    IF FULL_GAME
+    call Full_TileSource
+    jp c,stage_copy_destination
+    ENDIF
     ld a,(tile_x)
     ld c,a
     cp STAGE_COLUMNS
@@ -905,7 +924,14 @@ stage_copy_tile:
     and $c0
     rlca
     rlca
+    IF FULL_GAME
+    push hl
+    ld hl,Full_IDBank
+    add a,(hl)
+    pop hl
+    ELSE
     add a,STAGE_ID_BANK
+    ENDIF
     ld ($7000),a
     ld a,l
     and 63
@@ -1249,6 +1275,16 @@ Stage_SolidTile:
     jp nc,.emit
     inc hl
     inc hl
+    IF FULL_GAME
+    push bc
+    ld b,d
+    ld a,(tile_y)
+    ld c,a
+    call Full_ObjectAtTile
+    pop bc
+    or a
+    jp nz,.emit
+    ENDIF
     ld a,(hl)
     IF STAGE_TILE_STRIPS
     and $fb
@@ -1308,6 +1344,16 @@ Stage_SolidTile:
     cp 32
     jp nc,.emit
     inc h                    ; Source-address rows are exactly 256 bytes.
+    IF FULL_GAME
+    push bc
+    ld c,d
+    ld a,(tile_x)
+    ld b,a
+    call Full_ObjectAtTile
+    pop bc
+    or a
+    jp nz,.emit
+    ENDIF
     ld a,(hl)
     IF STAGE_TILE_STRIPS
     and $fb

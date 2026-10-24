@@ -369,6 +369,20 @@ Smoke_PreparePlacement:
     ld a,c
     cp STAGE_ROWS
     jr nc,.denied
+    IF FULL_GAME
+    call Full_ObjectAtTile
+    or a
+    jr z,.base_permission
+    cp 15
+    jr z,.denied
+    ld l,a
+    ld h,Flag_Active/256
+    ld a,(hl)
+    or a
+    jp z,.allowed
+    jr .denied
+.base_permission:
+    ENDIF
     ld h,0
     ld l,c
     add hl,hl
@@ -382,9 +396,17 @@ Smoke_PreparePlacement:
     ld e,a
     ld d,0
     add hl,de
+    IF FULL_GAME
+    ld de,$9000
+    ELSE
     ld de,$8700
+    ENDIF
     add hl,de
+    IF FULL_GAME
+    ld a,(Full_ResourceBank)
+    ELSE
     ld a,PLAYER_DATA_BANK
+    ENDIF
     ld ($7000),a
     ld d,(hl)
     ld a,b

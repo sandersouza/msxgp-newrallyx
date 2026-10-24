@@ -147,6 +147,9 @@ boot:
     ld (Life_Restarting),a
     ENDIF
 startup_mode:
+    IF FULL_GAME
+    call Full_CopyCold
+    ENDIF
     IF SESSION_RUNTIME
     call Session_Init
     ENDIF
@@ -241,7 +244,11 @@ main:
     call HUD_PrepareEarlyCoordinates
     ENDIF
     IF ENEMY_RENDER
+    IF FULL_GAME
+    call Full_EnemyFrame
+    ELSE
     call Enemy_Prepare
+    ENDIF
 Enemy_AfterPrepare:
     IF RADAR_PLAYER_SPRITE
     call Enemy_Radar
@@ -249,8 +256,12 @@ Enemy_AfterPrepare:
     ENDIF
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     IF ENEMY_RENDER
+    IF !FULL_GAME
     di
+    ENDIF
+    IF !FULL_GAME
     call Enemy_Draw         ; An enemy may begin at the first maze scanline.
+    ENDIF
     ENDIF
     call HUD_FinishCoordinates
     ei
@@ -649,7 +660,11 @@ vertical:
     ld b,19
     IF INCREMENTAL_STAGE >= 9
     IF SESSION_RUNTIME
+    IF FULL_GAME
+    xor a                     ; Full RAM producers yield before the header deadline.
+    ELSE
     ld a,1                    ; Reserve enough lead for a busy lucky-bonus DI tail.
+    ENDIF
     ELSE
     ld a,3                    ; Reserve split; wait for font end and line nine.
     ENDIF
@@ -692,6 +707,7 @@ register:
     out ($99),a
     ret
     INCLUDE "hud-demo.inc"
+    IF !FULL_GAME
 show_scene:
     di
     IF SESSION_RUNTIME
@@ -722,6 +738,11 @@ show_scene:
     ENDIF
     call stage_load
     call HUD_Init
+    IF FULL_GAME
+    ld a,SESSION_BANK
+    ld ($7000),a
+    call $b815
+    ENDIF
     IF SPRITE_FLICKER
     call Flicker_Init
     ENDIF
@@ -738,6 +759,11 @@ show_scene:
     ENDIF
     IF HUD_ENABLED
     call hud_demo_reset
+    IF FULL_GAME
+    ld a,(Full_Player)
+    inc a
+    call HUD_SetPlayerNumber
+    ENDIF
     IF INCREMENTAL_STAGE >= 5
     ld a,(driving)
     or a
@@ -826,6 +852,7 @@ show_scene:
     call register
     ei
     ret
+    ENDIF
     IF !HUD_ENABLED
 ; Preserve the established car slot numbers while hiding every unused HUD entry.
 ; There is no Y=216 terminator before the car and no HUD work per refresh.
@@ -911,6 +938,9 @@ upload:
     ENDIF
     IF SESSION_RUNTIME
     INCLUDE "session-loader.inc"
+    ENDIF
+    IF FULL_GAME
+    INCLUDE "full-round-runtime.inc"
     ENDIF
 palette:
     INCBIN "palette.bin"

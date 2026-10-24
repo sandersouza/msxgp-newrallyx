@@ -2,7 +2,7 @@
 from .screen5 import packed
 
 
-def encode(world,*,width=816,height=1392):
+def encode(world,*,width=816,height=1392,origins=(544,768)):
     if len(world)!=width*height or width%24 or height%24:
         raise ValueError('Strip atlas requires complete 24-pixel cells')
     result={}
@@ -26,7 +26,7 @@ def encode(world,*,width=816,height=1392):
                 atlas[start:start+tw]=tile[r*tw:(r+1)*tw]
         stride=128 if horizontal else 256
         table=bytearray(32768 if horizontal else 16384)
-        origin=544 if horizontal else 768
+        origin=origins[0 if horizontal else 1]
         if origin+atlas_height>(768 if horizontal else 1000):
             raise ValueError('Strip atlas exceeds reserved VRAM')
         for row in range(rows):

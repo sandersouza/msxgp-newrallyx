@@ -8,10 +8,15 @@ Enemy_Init:
     xor a
     ld (Enemy_Contact),a
     ld (Enemy_Visible),a
+    IF FULL_GAME
+    ld ($e3f1),a
+    ENDIF
     dec a
     ld (Enemy_Drawn),a
+    IF !FULL_GAME
     ld a,ENEMY_COUNT
     ld ($e24e),a
+    ENDIF
     ld hl,$2d0a
     ld ($e052),hl
     ld hl,0
@@ -35,7 +40,11 @@ Enemy_AfterMove:
     call $838a              ; original strict +/-10 pixel contact on both axes
     ld a,(Enemy_Contact)
     or a
+    IF FULL_GAME
+    call z,$b600            ; guarded transform reuse; original code owns both outputs
+    ELSE
     call z,$8cd6            ; source AI does not run after a collision transfer
+    ENDIF
     ld a,($e050)
     add a,7
     cp 15

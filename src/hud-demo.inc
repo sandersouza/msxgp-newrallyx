@@ -300,13 +300,19 @@ hud_demo_reset:
     ld a,HUD_BANK
     ld ($7000),a
     ENDIF
+    IF !FULL_GAME
     ld hl,hud_demo_digits+4*6
     call HUD_SetHiscore
+    ENDIF
     ld a,2
     call HUD_SetLives
     ld a,54
     call HUD_SetFuel
+    IF FULL_GAME
+    ld hl,Full_RadarFlags
+    ELSE
     ld hl,hud_demo_initial_flags
+    ENDIF
     ld e,0
 .flag:
     push de

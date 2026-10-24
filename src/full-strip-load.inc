@@ -1,0 +1,22 @@
+Full_StripInit:
+    ld a,(Full_HBank)
+    inc a
+    ld ($7000),a
+    vdp_write 14,4
+    xor a
+    out ($99),a
+    ld a,$58
+    out ($99),a
+    ld hl,$9800
+    ld de,(Full_HBytes)
+    call upload
+    vdp_write 14,6
+    xor a
+    out ($99),a
+    ld a,$40
+    out ($99),a
+    ld hl,(Full_VOffset)
+    ld de,$8000
+    add hl,de
+    ld de,(Full_VBytes)
+    jp upload

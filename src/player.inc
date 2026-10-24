@@ -26,10 +26,31 @@ player_patch_work EQU $c471
 player_steps EQU $c472
 
 Player_Init:
+    IF FULL_GAME
+    ld a,(Full_Loading)
+    cp 2
+    jr nz,.not_restoring
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call $ae06
+    call Full_RestoreFlagCells
+    jp Player_RestartNative
+.not_restoring:
+    ENDIF
     IF INCREMENTAL_STAGE >= 7
     ld a,(Life_Restarting)
     or a
     jp nz,Player_RestartNative
+    ENDIF
+    IF FULL_GAME
+    ld a,(Full_Loading)
+    or a
+    jr z,.fresh
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call $ae03
+    jr .systems
+.fresh:
     ENDIF
     ld a,PLAYER_DATA_BANK
     ld ($7000),a
@@ -39,6 +60,10 @@ Player_Init:
     ldir
     ld a,PLAYER_BANK
     ld ($7000),a
+    IF FULL_GAME
+    call $ae00
+.systems:
+    ENDIF
     IF INCREMENTAL_STAGE >= 2
     call Rock_Init
     ENDIF
@@ -208,6 +233,10 @@ Player_AdvanceEarly:
     ENDIF
 
 Player_Tick:
+    IF FULL_GAME
+    call $8f24              ; Original IRQ PRNG advances in active/hold/bonus phases.
+    call $83fd              ; Original round phase clock shares the same tick.
+    ENDIF
     IF COMPLETION_RUNTIME
     ld a,(Round_State)
     or a
@@ -289,6 +318,15 @@ Player_CountTick:
     ret
 
 Player_Input:
+    IF FULL_GAME
+    ld a,(Full_Attract)
+    or a
+    jr z,.human
+    ld a,255
+    ld ($e3f0),a
+    ret
+.human:
+    ENDIF
     ; Native active-low joystick bits: up/down/right/left = 5/4/3/2.
     ld b,255
     ld a,(dy)
