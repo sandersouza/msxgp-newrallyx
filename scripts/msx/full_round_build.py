@@ -70,4 +70,6 @@ def cold_source(root):
             (root/'src/full-enemy-records.inc').read_text()+
             '    ASSERT $ <= $f300\nFull_LoadEnd:\n    ENT\n'+
             '    DISP $c680\nFull_EnemyHotStart:\n'+(root/'src/full-enemy-hot.inc').read_text()+
-            '    ASSERT $ <= $c700\nFull_EnemyHotEnd:\n    ENT\n')
+            '    ASSERT $ <= $c700\nFull_EnemyHotEnd:\n    ENT\n'+
+            '    DISP $c5d2\nFull_RadarIRQStart:\n'+(root/'src/full-radar-irq.inc').read_text()+
+            '    ASSERT $ <= $c63c\nFull_RadarIRQEnd:\n    ENT\n')

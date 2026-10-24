@@ -21,6 +21,9 @@ Full_CopyCold:
     ld de,$c680
     ld bc,Full_EnemyHotEnd-Full_EnemyHotStart
     ldir
+    ld de,Full_RadarIRQStart
+    ld bc,Full_RadarIRQEnd-Full_RadarIRQStart
+    ldir
     xor a
     ld (Full_Loading),a
     ld (Full_Transitions),a

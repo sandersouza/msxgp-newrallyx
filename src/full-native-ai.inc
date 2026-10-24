@@ -161,11 +161,7 @@ Full_AIKeyAddresses:
 Full_EnemyTerminator:
     di
     vdp_write 14,7
-    ld a,(Full_EnemyIndex)
-    rlca
-    rlca
-    rlca
-    add a,PLAYER_SLOT*4+8
+    ld a,(Full_EnemySATCursor)
     out ($99),a
     ld a,$76
     out ($99),a
@@ -174,3 +170,67 @@ Full_EnemyTerminator:
     ei
     nop
     ret
+
+; Decode the source's five virtual OAM pointers once per presentation snapshot.
+; The seven radar anchors remain independent of native OAM visibility.
+Full_BuildRegistrationNative:
+    ld a,($e24e)
+    cp 4
+    ret c
+    xor a
+    ld (Full_RegisteredMask),a
+    ld hl,$e004
+    ld b,5
+    ld c,0
+.slot:
+    ld e,(hl)
+    inc hl
+    ld a,(hl)
+    inc hl
+    sub $e0
+    cp 2
+    jr nc,.next
+    add a,Full_RegistrationTable/256
+    ld d,a
+    ld a,(de)
+    or c
+    ld c,a
+.next:
+    djnz .slot
+    ld a,c
+    ld (Full_RegisteredMask),a
+    ret
+
+    ASSERT $ <= $b800
+    defs $b800-$,$ff
+Full_RegistrationTable:
+    INCBIN "full-registration.bin"
+Full_EnemyDrawNative:
+    ld a,(driving)
+    or a
+    jr z,.hidden
+    ld a,(ix+0)
+    or a
+    jr z,.hidden
+    ld a,(Full_EnemySATCursor)
+    ld (Full_EnemySATByte),a
+    cp (ix+30)
+    ld (ix+30),a
+    jr z,.same_slot
+    ld a,255
+    ld (ix+18),a
+    ld a,1
+    jr .dirty
+.same_slot:
+    xor a
+.dirty:
+    ld (Full_EnemySATDirty),a
+    ld a,(Full_EnemySATCursor)
+    add a,8
+    ld (Full_EnemySATCursor),a
+    jp FullEnemy_DrawPrepared ; Tail call: drawing may switch the resource bank.
+.hidden:
+    ld (ix+30),255
+    ret
+
+    INCLUDE "full-enemy-prepare.inc"

@@ -5,6 +5,53 @@ Full_EnemyPattern EQU $c672
 Full_EnemySATByte EQU $c673
 Full_EnemyIndex EQU $c674
 Full_EnemyAction EQU $c676
+Full_RegisteredMask EQU $c678
+Full_EnemySATCursor EQU $c67a
+Full_EnemySATDirty EQU $c67b
+Full_RegisteredCurrent EQU $c67d
+
+Full_EnemyBuildRegistration:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp Full_BuildRegistrationNative
+Full_EnemyRegistered:
+    ld a,($e24e)
+    cp 4
+    jr nc,.mask
+    ld hl,(Full_EnemySource)
+    ld de,11
+    add hl,de
+    ex de,hl
+    ld hl,$e004
+    ld b,5
+.slot:
+    ld a,(hl)
+    inc hl
+    cp e
+    jr nz,.other
+    ld a,(hl)
+    cp d
+    jr z,.found
+.other:
+    inc hl
+    djnz .slot
+    xor a
+    ret
+.found:
+    ld a,1
+    or a
+    ret
+.mask:
+    ld a,(Full_EnemyIndex)
+    ld e,a
+    ld d,0
+    ld hl,Full_EnemyBits
+    add hl,de
+    ld a,(Full_RegisteredMask)
+    and (hl)
+    ret
+Full_EnemyBits:
+    db 1,2,4,8,16,32,64
 
 Enemy_InitPatterns:
     call FullEnemy_InitShared
@@ -50,20 +97,26 @@ Full_EnemyFrame:
     ld a,(player_steps)
     or a
     ret z
+    ld a,PLAYER_SLOT*4+8
+    ld (Full_EnemySATCursor),a
+    call Full_EnemyBuildRegistration
     ld hl,Full_EnemyFrameOne
     call Full_EnemyLoop
     jp Full_EnemyTerminatorResident
 Full_EnemyFrameOne:
     call Full_EnemyPrepareRadar
     jp FullEnemy_DrawOne
+FullEnemy_DrawOne:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp Full_EnemyDrawNative
 Full_EnemyPrepareRadar:
     call FullEnemy_PrepareOne
     jp FullEnemy_RadarOne
 Full_EnemyPatterns:
     db 192,200,208,216,224,232,248
 
-; Parked descriptors have no radar point or visible sprite. Reuse their caches
-; without loading/saving thirty bytes three times per refresh.
+; Parked descriptors have no radar point or visible sprite. Retain their caches.
 Full_EnemyInactive:
     call Full_EnemyFar
     ret c
@@ -75,7 +128,7 @@ Full_EnemyInactive:
     call Full_EnemyRecordAddress
     ld a,(hl)
     or a
-    jr z,.hide_only          ; Hidden prepared poses need no thirty-byte copy.
+    jr z,.hide_only          ; Hidden prepared poses need no drawing work.
 .native:
     ld hl,(Full_EnemySource)
     ld de,10
@@ -101,34 +154,7 @@ Full_EnemyInactive:
     sbc hl,de
     jr nz,.skip
 .hide_only:
-    call Full_EnemyRecordAddress
-    ld de,22
-    add hl,de
-    ld a,(scroll_y)
-    add a,211
-    cp 216
-    jr nz,.hide
-    inc a
-.hide:
-    cp (hl)
-    jr z,.skip               ; Same scroll and already hidden: retain the exact SAT.
-    ld (hl),a
-    push hl
-    inc hl
-    inc hl
-    inc hl
-    inc hl
-    ld (hl),a
-    pop hl
-    di
-    vdp_write 14,7
-    ei
-    nop
-    ld a,(Full_EnemySATByte)
-    ld e,a
-    ld d,$76
-    ld b,8
-    call Sprite_Upload
+    ld (ix+30),255          ; A former destination may now contain the list terminator.
 .skip:
     scf
     ret

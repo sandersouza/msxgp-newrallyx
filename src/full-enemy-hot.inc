@@ -1,6 +1,5 @@
 Full_EnemyLoop:
     ei
-    nop
     ld (Full_EnemyAction),hl
     xor a
     ld (Full_EnemyIndex),a
@@ -8,14 +7,10 @@ Full_EnemyLoop:
     call Full_EnemySelect
     call Full_EnemyInactive
     jr c,.next
-    call Full_EnemyLoad
     call .dispatch
     ei
-    nop
-    call Full_EnemySave
 .next:
     ei
-    nop
     ld hl,Full_EnemyIndex
     inc (hl)
     ld a,(hl)
@@ -35,12 +30,6 @@ Full_EnemySelect:
     ld a,(hl)
     ld (Full_EnemyPattern),a
     ld a,(Full_EnemyIndex)
-    add a,a
-    add a,a
-    add a,a
-    add a,PLAYER_SLOT*4+8
-    ld (Full_EnemySATByte),a
-    ld a,(Full_EnemyIndex)
     ld l,a
     ld h,0
     add hl,hl
@@ -51,6 +40,11 @@ Full_EnemySelect:
     ld de,$e088
     add hl,de
     ld (Full_EnemySource),hl
+    call Full_EnemyRegistered
+    ld (Full_RegisteredCurrent),a
+    call Full_EnemyRecordAddress
+    push hl
+    pop ix
     ret
 Full_EnemySetPoint:
     ld a,(Full_EnemyIndex)
@@ -66,12 +60,15 @@ Enemy_Prepare:
     ld a,(player_steps)
     or a
     ret z
+    call Full_EnemyBuildRegistration
     ld hl,Full_EnemyPrepareRadar
     jp Full_EnemyLoop
 Enemy_Draw:
     ld a,(player_steps)
     or a
     ret z
+    ld a,PLAYER_SLOT*4+8
+    ld (Full_EnemySATCursor),a
     ld hl,FullEnemy_DrawOne
     call Full_EnemyLoop
 Enemy_DrawDone:

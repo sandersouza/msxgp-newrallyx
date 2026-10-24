@@ -9,33 +9,8 @@ Full_EnemyRecordAddress:
     ld l,a
     ld h,Full_EnemyRecords/256
     ret
-Full_EnemyLoad:
-    call Full_EnemyRecordAddress
-    ld de,Enemy_Visible
-    ld bc,20
-    ldir
-    ld de,Enemy_TopRow
-    ld bc,2
-    ldir
-    ld de,Enemy_SAT
-    ld bc,8
-    ldir
-    ret
-Full_EnemySave:
-    call Full_EnemyRecordAddress
-    ex de,hl
-    ld hl,Enemy_Visible
-    ld bc,20
-    ldir
-    ld hl,Enemy_TopRow
-    ld bc,2
-    ldir
-    ld hl,Enemy_SAT
-    ld bc,8
-    ldir
-    ret
 
-; Conservative cell rejection avoids copying a complete sprite record for a
+; Conservative cell rejection avoids preparing/drawing a complete record for a
 ; car which cannot touch the viewport. Exact world/radar positions still update.
 Full_EnemyFar:
     ld hl,(Full_EnemyAction)
@@ -46,6 +21,9 @@ Full_EnemyFar:
     or a
     ret
 .frame:
+    ld a,(Full_RegisteredCurrent)
+    or a
+    jr z,.far               ; Unregistered cars still retain their exact radar anchors.
     ld hl,(Full_EnemySource)
     ld de,8
     add hl,de
@@ -72,7 +50,8 @@ Full_EnemyFar:
     dec hl
     dec hl
     call Player_Axis
-    ld (Enemy_WorldX),hl
+    ld (ix+2),l
+    ld (ix+3),h
     ld hl,(Full_EnemySource)
     ld de,10
     add hl,de
@@ -81,14 +60,8 @@ Full_EnemyFar:
     dec hl
     dec hl
     call Player_AxisY
-    ld (Enemy_WorldY),hl
-    call Full_EnemyRecordAddress
-    ld (hl),0
-    inc hl
-    inc hl
-    ex de,hl
-    ld hl,Enemy_WorldX
-    ld bc,4
-    ldir
+    ld (ix+4),l
+    ld (ix+5),h
+    ld (ix+0),0
     call FullEnemy_RadarOne
     jp Full_EnemyInactive.hide_only

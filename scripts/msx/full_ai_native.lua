@@ -45,6 +45,8 @@ local function issue()
     if guard==5 then s:write_u8(0x80e8+21,1) end
     if guard==6 then s:write_u8(0x80a8+1,1) end
     if guard==7 then s:write_u8(0x8108+3,7) end
+    if guard==8 then s:write_u8(0x8088+5,1) end
+    if guard==9 then s:write_u8(0x8088+7,255) end
     execute()
 end
 m.debugger.execution_state='run'
@@ -58,7 +60,10 @@ emu.register_frame_done(function()
         if step==3 then result:write(bytes);issue()
         else
             restore(bytes);step=step+1
-            if step==3 and config.cases[index][9]==1 then s:write_u8(0x8070,s:read_u8(0x8070)+1) end
+            if step==3 then
+                if config.cases[index][9]==1 then s:write_u8(0x8070,s:read_u8(0x8070)+1) end
+                if config.cases[index][9]==2 then s:write_u8(0x805b,(s:read_u8(0x805b)+1)&255) end
+            end
             execute()
         end
     elseif frame-issued>120 then error('Original repeated-AI fixture timed out') end

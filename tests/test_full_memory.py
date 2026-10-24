@@ -6,6 +6,12 @@ from scripts.msx.full_memory import layout
 class FullMemoryTests(unittest.TestCase):
     def symbols(self):
         return dict(RADAR_PLAYER_PATTERN=240,Full_EnemyHotStart=0xc680,Full_EnemyHotEnd=0xc700,
+            Enemy_Visible=0xc5d2,Full_RadarIRQStart=0xc5d2,Full_RadarIRQEnd=0xc63a,
+            Enemy_HitAddress=0xc63c,Full_RegisteredMask=0xc678,Stage_PreferRows=0xc679,
+            Full_EnemySATCursor=0xc67a,
+            Full_EnemySATDirty=0xc67b,
+            Full_RegisteredCurrent=0xc67d,
+            Stage_GuardClosed=0xc67c,
             hud_score_pending=0xd110,hud_fuel_payload=0xd180,Full_Shadow=0xd230,
             Full_AITable0=0xd2a8,Full_AIBefore=0xd2c4,Full_AITick=0xd2cb,
             Smoke_Display=0xd300,Smoke_DisplayRows=0xdb00,
@@ -19,6 +25,8 @@ class FullMemoryTests(unittest.TestCase):
         self.assertEqual(result['native_borrowed_bytes']['tile_division'],[0xe300,0xe3f0])
 
     def test_rejects_overlap_and_cold_stack_encroachment(self):
+        symbols=self.symbols();symbols['Stage_GuardClosed']=0xc5e8
+        with self.assertRaisesRegex(ValueError,'overlap'):layout(symbols)
         symbols=self.symbols();symbols['Full_AITick']=0xd2d2
         with self.assertRaisesRegex(ValueError,'overlap'):layout(symbols)
         symbols=self.symbols();symbols['Full_LoadEnd']=0xf310

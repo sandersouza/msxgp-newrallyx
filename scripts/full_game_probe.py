@@ -19,6 +19,7 @@ from scripts.msx.screen5 import packed
 from scripts.msx.raster_scroll import header
 from scripts.scenes.bundle import load_assets,verify_manifest,digest
 from scripts.scenes.storage import json_write,require_ignored,seal
+from scripts.msx.full_memory import irq_image
 
 
 def world(program,video,active,assets,palette):
@@ -59,6 +60,7 @@ def main(argv=None):
     bundle=args.rom.resolve().parent;verify_manifest(bundle)
     out=destination(root,args.output);require_ignored(root,[out/'1.state']);out.mkdir(parents=True)
     syms=symbols(bundle/'raster-scroll.sym')
+    irq=irq_image(bundle,syms);irq_at=syms.get('Full_RadarIRQStart',0)-0xc000
     lines=['set save_settings_on_exit false','set sound_driver null',
         *(['set renderer none'] if args.headless else []),
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
@@ -102,6 +104,7 @@ def main(argv=None):
     palette=(bundle/'palette.bin').read_bytes()
     for n in range(1,args.rounds+1):
         state=(out/f'{n}.state').read_bytes();video=state[0x2000:0x3000]
+        if irq and state[irq_at:irq_at+len(irq)]!=irq:raise ValueError('Round reload overwrote raster IRQ code')
         image=world(program,video,state[0x534:0x53f],assets,palette)
         data,width,_=padded_world(image)
         wx=int.from_bytes(state[0xb0:0xb2],'little');wy=int.from_bytes(state[0xb2:0xb4],'little')

@@ -29,7 +29,7 @@ def main():
     cases=[]
     for n,(position,axis,velocity,center,mask) in enumerate(itertools.product(
             ((5,8),(15,20),(25,50),(15,52),(15,1)),(0,255),(2,253),(0,1,255),range(128))):
-        cases.append([*position,axis,velocity,center,mask,(n//128)%8,(n//1024)%4,n%2])
+        cases.append([*position,axis,velocity,center,mask,(n//128)%10,(n//1024)%4,n%3])
     (out/'cases.bin').write_bytes(bytes(v for c in cases for v in c))
     (out/'config.lua').write_text('return '+lua_literal(dict(output=str(out),cases=cases))+'\n')
     version=subprocess.check_output(['mame','-version'],text=True).strip()
@@ -81,6 +81,8 @@ proc issue {} {
         5 {debug write memory 0xe0fd 1}
         6 {debug write memory 0xe0a9 1}
         7 {debug write memory 0xe10b 7}
+        8 {debug write memory 0xe08d 1}
+        9 {debug write memory 0xe08f 255}
     }
     execute
 }
@@ -97,7 +99,12 @@ debug set_bp 0xd160 {$::started} {
         incr ::index;issue
     } else {
         incr ::step
-        if {$::step==3 && [lindex $::case 8]} {debug write memory 0xe070 [expr {[debug read memory 0xe070]+1}]}
+        if {$::step==3} {
+            switch [lindex $::case 8] {
+                1 {debug write memory 0xe070 [expr {[debug read memory 0xe070]+1}]}
+                2 {debug write memory 0xe05b [expr {([debug read memory 0xe05b]+1)&255}]}
+            }
+        }
         execute
     }
 }

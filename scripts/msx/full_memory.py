@@ -1,6 +1,15 @@
 """Validate disjoint active buffers in the complete selected-routine runtime."""
 
 
+def irq_image(bundle,symbols):
+    if 'Full_RadarIRQStart' not in symbols:return b''
+    offset=symbols['PLAYER_BANK']*16384+0x2800
+    offset+=symbols['Full_LoadEnd']-symbols['Full_LoadStart']
+    offset+=symbols['Full_EnemyHotEnd']-symbols['Full_EnemyHotStart']
+    size=symbols['Full_RadarIRQEnd']-symbols['Full_RadarIRQStart']
+    return (bundle/'raster-scroll.rom').read_bytes()[offset:offset+size]
+
+
 def layout(symbols):
     from .full_enemy import pattern_plan
     pattern_plan(radar_pattern=symbols['RADAR_PLAYER_PATTERN'])
@@ -9,6 +18,14 @@ def layout(symbols):
         address=symbols[start] if isinstance(start,str) else start
         regions.append(dict(name=name,start=address,end=address+size))
     add('actor hot code','Full_EnemyHotStart',symbols['Full_EnemyHotEnd']-symbols['Full_EnemyHotStart'])
+    add('fixed radar IRQ code','Full_RadarIRQStart',symbols['Full_RadarIRQEnd']-symbols['Full_RadarIRQStart'])
+    add('collision identity','Enemy_HitAddress',2)
+    add('registered actor mask','Full_RegisteredMask',1)
+    add('terrain queue preference','Stage_PreferRows',1)
+    add('terrain deadline flag','Stage_GuardClosed',1)
+    add('compact actor SAT cursor','Full_EnemySATCursor',1)
+    add('actor destination invalidation','Full_EnemySATDirty',1)
+    add('current actor registration','Full_RegisteredCurrent',1)
     add('eight-digit numeric state','hud_score_pending',64)
     add('fuel publication','hud_fuel_payload',128)
     add('wall snapshot',0xd200,44)

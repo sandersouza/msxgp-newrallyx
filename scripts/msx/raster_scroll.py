@@ -682,6 +682,9 @@ def build(root, args):
         session_image_bank=len(banks)+1;session_bank=session_image_bank+1
         first,second=resources(assets,black,white,full_game=full_game,root=root,palette=palette)
         banks.extend((first,second))
+    if full_game:
+        from .full_enemy import validate_extension_space
+        validate_extension_space(banks[player_bank-1])
     for n, bank in enumerate(banks, 1):
         (output/f'bank-{n}.bin').write_bytes(bank)
     size = 16384*(1 << len(banks).bit_length())
@@ -716,7 +719,7 @@ def build(root, args):
         f'OUTLINE_FLICKER EQU {int(outline_flicker)}\n'
         f'FLICKER_STRESS EQU {int(flicker_stress)}\n'
         f'RADAR_BLUE EQU {index_for(palette,(0,0,151))}\n'
-        f'RASTER_GUARD EQU {int(enemy_render or player_blitter or tile_mode)}\nStage_GuardClosed EQU $c5e8\n'
+        f'RASTER_GUARD EQU {int(enemy_render or player_blitter or tile_mode)}\nStage_GuardClosed EQU ${0xc67c if full_game else 0xc5e8:04x}\n'
         f'STAGE_GUARD_LINE EQU {(202 if fast_player or smoke_runtime else 140 if tile_strips and hud_enabled and cells_only else 196 if bare_sat or simple_maze or tile_strips else 202) if stage>=9 else 196}\n'
         f'STAGE_SOLID_RUN_TILES EQU {8 if simple_maze else 4}\n'
         f'STAGE_SOLID_RUNS EQU {int(solid_runs)}\n'
@@ -745,7 +748,7 @@ def build(root, args):
         f'YELLOW EQU {yellow}\nFUEL_Y EQU {fuel_y}\nLIFE_SPLIT EQU {LIFE_SPLIT}\n')
     (output/'payload.inc').write_text(''.join(
         (f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n' if n==session_bank else
-         f'    INCBIN "bank-{n}.bin",0,$2800\n    INCLUDE "full-load.inc"\n    defs $400-(Full_LoadEnd-Full_LoadStart)-(Full_EnemyHotEnd-Full_EnemyHotStart),$ff\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    DISP $ae00\n    INCLUDE "full-round-native.inc"\n    ASSERT $ <= $b000\n    defs $b000-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3000,$600\n    DISP $b600\n    INCLUDE "full-native-ai.inc"\n    ASSERT $ <= $b800\n    defs $b800-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3800,$800\n' if full_game and n==player_bank else
+         f'    INCBIN "bank-{n}.bin",0,$2800\n    INCLUDE "full-load.inc"\n    defs $400-(Full_LoadEnd-Full_LoadStart)-(Full_EnemyHotEnd-Full_EnemyHotStart)-(Full_RadarIRQEnd-Full_RadarIRQStart),$ff\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    DISP $ae00\n    INCLUDE "full-round-native.inc"\n    ASSERT $ <= $b000\n    defs $b000-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3000,$600\n    DISP $b600\n    INCLUDE "full-native-ai.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==player_bank else
          f'    INCBIN "bank-{n}.bin",0,$2c00\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2e00,$1200\n' if round_preparation and n==player_bank else
          f'    INCBIN "bank-{n}.bin"\n') for n in range(1, len(banks)+1))
                                       + f'    defs {size}-$+16384,$ff\n')
@@ -779,8 +782,11 @@ def build(root, args):
     if tile_strips:shutil.copyfile(root/'src/tile-strips.inc',output/'tile-strips.inc')
     from .enemy_population import assembly as enemy_assembly
     if full_game:
-        from .full_enemy import assembly as full_enemy_assembly
-        (output/'enemy.inc').write_text(full_enemy_assembly((root/'src/enemy.inc').read_text()))
+        from .full_enemy import assembly as full_enemy_assembly,registration_table
+        (output/'full-registration.bin').write_bytes(registration_table())
+        resident,native_prepare=full_enemy_assembly((root/'src/enemy.inc').read_text())
+        (output/'enemy.inc').write_text(resident)
+        (output/'full-enemy-prepare.inc').write_text(native_prepare)
         shutil.copyfile(root/'src/full-enemy-loop.inc',output/'full-enemy-loop.inc')
     else:
         (output/'enemy.inc').write_text(enemy_assembly((root/'src/enemy.inc').read_text(),enemy_count,enemy_planes,compact=cells_only,player_slot=player_slot,radar_player=radar_player and not player_blitter,player_blitter=player_blitter)
@@ -893,6 +899,13 @@ def build(root, args):
                         patterns_vram=0,colors_vram=0x4000,name_tables_vram=[0x2000,0xa000],
                         sprite_slots_added=0,dimensions_unchanged=True) if tile_mode else None),
         enemy_count=enemy_count,enemy_rendered=enemy_render,enemy_contact_applies_death=enemy_contact,atlas_banked=stage>=8,
+        full_enemy_presentation=(dict(records=0xce20,record_bytes=32,capacity=7,
+            access='Direct IX-indexed records; no shared actor scratch copies',
+            sat='Visible complete pairs in original actor order, one trailing terminator',
+            unchanged_attributes='Skip only identical attributes at the same destination',
+            source_registration='Five original virtual OAM pointers; seven independent radar anchors',
+            radar_coordinates='Maze IRQ after R23 latch; player dot and twelve body sprites',
+            hardware_sprite_limit_enabled=True) if full_game else None),
         rock_collision=stage>=2, rock_sprite_slots=0,
         cache_columns=cache_columns,cache_horizontal_guard_tiles=cache_guard,
         cache_solid_runs=solid_runs,

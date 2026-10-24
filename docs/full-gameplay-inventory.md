@@ -82,8 +82,9 @@ prepares a fresh board. Shared game over waits until neither player has cars.
 Seven original enemy descriptors remain active according to native population.
 Their full two-plane masks, original colors, facings, clipping, source OAM
 registration, colliding-car identity and radar coordinates are retained.
-One shared renderer uses seven separate prepared/SAT/cache records. A single
-end marker follows the population; hiding an earlier actor cannot terminate
+One shared renderer accesses seven prepared/SAT/cache records directly through
+IX. Visible complete sprite pairs retain original actor order, followed by one
+end marker; hiding an earlier actor cannot terminate
 the sprite table before a later visible actor. Conservative offscreen rejection
 skips presentation work while preserving exact world/radar positions.
 
@@ -116,15 +117,16 @@ bounded silent converter. Arcade rendering, intro/READY presentation waits and
 the long source attract scheduler are replaced by the MSX scene/session adapter.
 Audio remains silent; this does not establish original elapsed wall-clock timing.
 
-## Evidence and practical limits
+## Original delivery evidence and practical limits
 
 All generated evidence below is local and ignored under `references/build/`.
-The complete delivery candidate has SHA-256:
+The original delivery candidate, retained as the performance baseline, has SHA-256:
 
 `b180937fac5ebf0d66f8d98c129e5fbeb26d2e98bd2e7bc463f3bb3dac1bf983`
 
-It is published by `make build` at `references/build/newrallyx.rom` and also
-retained in `default-de4ca124d2384584b1cb1051490619c1/`.
+It is retained in `default-de4ca124d2384584b1cb1051490619c1/`. The current
+`make build` candidate and its separate performance qualification are documented
+in [enemy rendering performance](enemy-rendering-performance.md).
 
 | Evidence | Result and boundary |
 | --- | --- |
@@ -175,7 +177,7 @@ not qualified or replaced with invented progression rules.
 
 Assembly asserts enforce bank limits. `full-memory.json` checks additional RAM
 regions for overlap, keeps actor hot code below `$c700`, preserves input
-`$e3f0` and the IM2 jump, and retains 147 bytes between cold code and the
+`$e3f0` and the IM2 jump, and retains 204 bytes between cold code and the
 `$f380` stack top. This is a static workspace bound, not an exhaustive dynamic
 stack-depth proof. Native component proofs also check their stack/canaries.
 

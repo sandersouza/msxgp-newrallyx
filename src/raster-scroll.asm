@@ -242,6 +242,9 @@ main:
     call Player_Radar       ; Freeze the dot with this refresh's player position.
     ENDIF
     call HUD_PrepareEarlyCoordinates
+    IF FULL_GAME
+    call HUD_FinishCoordinates ; Prepare fuel/life; maze IRQ owns fixed radar SAT.
+    ENDIF
     ENDIF
     IF ENEMY_RENDER
     IF FULL_GAME
@@ -263,7 +266,9 @@ Enemy_AfterPrepare:
     call Enemy_Draw         ; An enemy may begin at the first maze scanline.
     ENDIF
     ENDIF
+    IF !FULL_GAME
     call HUD_FinishCoordinates
+    ENDIF
     ei
     nop
     ENDIF
@@ -504,6 +509,9 @@ maze_interrupt:
     jr z,.separator
     ENDIF
     vdp_write 1,$62
+    IF FULL_GAME
+    call Full_RadarIRQ
+    ENDIF
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     ld a,3
     ELSE

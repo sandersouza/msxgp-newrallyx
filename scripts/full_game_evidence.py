@@ -15,6 +15,7 @@ from scripts.scenes.bundle import digest,load_assets,read_json,verify_manifest
 from scripts.scenes.storage import require_ignored,json_write,seal
 from scripts.msx.build import destination
 from scripts.msx.hud_verify import symbols
+from scripts.msx.full_memory import irq_image
 
 
 def number(data):
@@ -22,13 +23,15 @@ def number(data):
     return int(''.join(map(str,data)))
 
 
-def actors(state,vram,pixels,scroll):
+def actors(state,vram,pixels,scroll,compact=False):
     visible=0;candidates=[0]*212
     count=state[0x224e]
     for i in range(count):
         record=state[0xe20+i*32:0xe40+i*32]
         if not record[0]:continue
-        visible+=1;slot=18+i*2
+        slot=state[0xe20+i*32+30]//4 if compact else 18+i*2
+        if compact and slot!=18+visible*2:raise ValueError('Visible actor order changed during SAT compaction')
+        visible+=1
         sat=vram[0x1f600+slot*4:0x1f600+slot*4+8]
         if any(vram[0x1f600+s*4]==216 for s in range(slot+2)):
             raise ValueError('SAT terminator hides a visible natural enemy')
@@ -61,10 +64,12 @@ def main():
     program,_=acquire(root);assets=load_assets(root/'references/assets/nrallyx');palette=(bundle/'palette.bin').read_bytes()
     death=(bundle/'death-pixels.bin').read_bytes();smoke=(bundle/'smoke-pixels.bin').read_bytes()
     pixels=(bundle/'player-pixels.bin').read_bytes();flags=read_json(bundle/'player.json')['flags']
-    scroll_address=symbols(bundle/'raster-scroll.sym')['scroll_y']-0xc000
+    syms=symbols(bundle/'raster-scroll.sym');scroll_address=syms['scroll_y']-0xc000
+    irq=irq_image(bundle,syms);irq_at=syms.get('Full_RadarIRQStart',0)-0xc000
     frames=sorted(args.capture.glob('*.state'),key=lambda p:int(p.stem));visible=maximum=0
     for path in frames:
         state=path.read_bytes();vram=path.with_suffix('.vram').read_bytes()
+        if irq and state[irq_at:irq_at+len(irq)]!=irq:raise ValueError('Natural scene overwrote raster IRQ code')
         image=world(program,state[0x2000:0x3000],state[0x534:0x53f],assets,palette)
         image,width,_=padded_world(image)
         display=state[0x1300:0x1b00]
@@ -86,7 +91,7 @@ def main():
                 bitmap[at]=bitmap[at]&15|color<<4 if (px-8+x)%2==0 else bitmap[at]&240|color
         wx=int.from_bytes(state[0xb0:0xb2],'little',signed=True);wy=int.from_bytes(state[0xb2:0xb4],'little',signed=True)
         check_cache(vram,bitmap,width,wx,wy,path.stem)
-        v,c=actors(state,vram,pixels,state[scroll_address]);visible+=v;maximum=max(maximum,c)
+        v,c=actors(state,vram,pixels,state[scroll_address],'Full_EnemySATCursor' in syms);visible+=v;maximum=max(maximum,c)
         expected=packed(header(assets,palette,number(state[0x1120:0x1128]),number(state[0x1128:0x1130]),
             player=state[0x7ec]+1,full_game=True,round_=(state[0x21b0]-1)&255))
         if vram[0x10000:0x10400]!=expected:raise ValueError(f'Natural eight-digit header differs from published values: {path.stem}')

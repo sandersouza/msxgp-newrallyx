@@ -16,7 +16,11 @@ camera_page EQU $c0be
 tile_vram_bank EQU $c455
 cache_left EQU $c46f
 cache_top EQU $c470
+    IF FULL_GAME
+Stage_PreferRows EQU $c679
+    ELSE
 Stage_PreferRows EQU $c5e9
+    ENDIF
 Stage_ColumnTop EQU $cf1a
 Stage_ColumnEnd EQU $cf1b
 Stage_RowLeft EQU $cf1c

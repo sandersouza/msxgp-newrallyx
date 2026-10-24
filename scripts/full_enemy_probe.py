@@ -13,6 +13,7 @@ from scripts.msx.emulator import reference_machine,tcl
 from scripts.msx.hud_verify import symbols
 from scripts.msx.enemy_presentation_verify import cases_for
 from scripts.msx.raster_scroll import sprite_pattern
+from scripts.msx.full_memory import irq_image
 from scripts.scenes.bundle import digest,read_json,verify_manifest
 from scripts.scenes.storage import require_ignored,json_write,seal
 
@@ -30,6 +31,8 @@ def main():
         y.to_bytes(2,'little',signed=True)+bytes((scroll,registered,dead,contact))
         for actor,f,x,y,scroll,registered,dead,contact in cases))
     syms=symbols(bundle/'raster-scroll.sym')
+    irq=irq_image(bundle,syms)
+    (out/'irq-code.bin').write_bytes(irq)
     entry=syms['Full_EnemyFrame']
     code=bytes((243,205,entry&255,entry>>8,0,0,0,195,96,209))
     (out/'code.bin').write_bytes(code)
@@ -38,11 +41,14 @@ def main():
         reference_machine(root,'Panasonic_FS-A1WSX'),'set firmwareswitch off','set throttle off',
         'set z80_freq 3579545','set z80_freq_locked false','set cmdtiming real','set limitsprites true',
         f'cart {tcl(args.rom.resolve())} -romtype ASCII16','reset',f'set out {tcl(out)}',
-        'foreach n {cases code} {set f [open [file join $out "$n.bin"] rb];set data($n) [read $f];close $f}',
+        f'set compact {int("Full_EnemySATCursor" in syms)}',
+        'foreach n {cases code irq-code} {set f [open [file join $out "$n.bin"] rb];set data($n) [read $f];close $f}',
+        f'set irq_start {syms.get("Full_RadarIRQStart",0)}',
         'set index 0;set started 0;set sentinel 0;set result [open [file join $out result.bin] wb]']
     script=r'''
 proc issue {} {
     if {$::index==[string length $::data(cases)]/10} {
+        if {[string length $::data(irq-code)] && [debug read_block memory $::irq_start [string length $::data(irq-code)]] ne $::data(irq-code)} {error "Actor rendering overwrote raster IRQ code"}
         if {[debug read_block VRAM 0 65536] ne $::scene} {error "Enemy presentation changed terrain"}
         set f [open [file join $::out radar-mask.bin] wb]
         puts -nonewline $f [debug read_block VRAM @RADARMASK@ 64];close $f
@@ -55,7 +61,7 @@ proc issue {} {
     set wx [expr {384+$x-124}];set wy [expr {1236+$y-108}]
     set cx [expr {($wx-36+12)/24}];set cy [expr {($wy-36+12)/24}]
     for {set i 0} {$i<7} {incr i} {debug write memory [expr {0xe092+$i*32}] 100}
-    set p [expr {0xe088+$actor*32}];set ::slot [expr {18+$actor*2}]
+    set p [expr {0xe088+$actor*32}];set ::slot [expr {$::compact?18:18+$actor*2}]
     foreach {at v} [list 0xc400 1 0xc472 1 0xe24e 7 0xc405 128 0xc406 1 0xc407 212 0xc408 4 @SCROLL@ $scroll \
         [expr {$p+8}] $cx [expr {$p+10}] $cy [expr {$p+5}] [expr {($wx-36-24*$cx)&255}] \
         [expr {$p+7}] [expr {(-($wy-36-24*$cy))&255}] [expr {$p+15}] $flag 0xc490 $dead 0xc5d0 $contact \
@@ -66,6 +72,8 @@ proc issue {} {
     reg SP 0xf380;reg PC 0xd150
 }
 debug set_bp @MAIN@ {!$::started} {
+    if {[string length $::data(irq-code)] && [debug read_block memory $::irq_start [string length $::data(irq-code)]] ne $::data(irq-code)} {error "Scene initialization overwrote raster IRQ code"}
+    debug write memory 0xc7d0 0
     set ::started 1;set ::scene [debug read_block VRAM 0 65536]
     foreach {at value} {0xc400 1 0xc472 1 0xe24e 7 0xc405 128 0xc406 1 0xc407 212 0xc408 4 @SCROLL@ 0 0xc490 0 0xc5d0 0} {
         debug write memory $at $value
@@ -87,10 +95,20 @@ debug set_bp 0xd160 {$::started} {
         debug write memory 0xe092 100
         set ::sentinel 2;reg PC 0xd150
     } elseif {$::sentinel==2} {
-        for {set i 0} {$i<24} {incr i} {
+        for {set i 0} {$i<($::compact?20:24)} {incr i} {
             if {[debug read VRAM [expr {0x1f600+$i*4}]]==216} {error "A newly hidden car terminated SAT before a later visible car"}
         }
         if {![debug read memory 0xce60]} {error "SAT regression fixture lacks its later visible car"}
+        if {$::compact && ([debug read VRAM 0x1f650]!=216 || [debug read memory 0xce7e]!=72)} {
+            error "Compacted car did not move before the single end marker"
+        }
+        debug write memory 0xe0d2 100;set ::sentinel 3;reg PC 0xd150
+    } elseif {$::sentinel==3} {
+        if {$::compact && [debug read VRAM 0x1f648]!=216} {error "Empty compact list retained an actor"}
+        debug write memory 0xe0d2 50;set ::sentinel 4;reg PC 0xd150
+    } elseif {$::sentinel==4} {
+        set slot [expr {$::compact?18:22}]
+        if {[debug read VRAM [expr {0x1f600+$slot*4}]]==216 || ![debug read memory 0xce60]} {error "Reappearing identical pose retained a stale SAT terminator"}
         set ::sentinel 0;issue
     } else {
     if {[reg SP]!=0xf380} {error "Enemy presentation damaged stack"}
@@ -127,12 +145,16 @@ after time 600 {puts stderr "Full enemy presentation timeout";exit 2}
         data=raw[n*size:(n+1)*size];record,sat,colors,masks=data[:32],data[32:40],data[40:72],data[72:136]
         expected=bool(registered and not(dead and contact) and -7<=x<=255 and -4<=y<=211)
         if bool(record[0])!=expected:raise ValueError(f'Actor {actor} visibility mismatch in case {n}')
+        if not expected and 'Full_EnemySATCursor' in syms:
+            if sat[0]!=216:raise ValueError(f'Empty actor list lacks its terminator: {n}')
+            continue
         if not expected:
             hidden=(scroll+211)&255;hidden+=int(hidden==216)
             if sat[0]!=hidden or sat[4]!=hidden:raise ValueError(f'Hidden actor remained visible: {n}')
             continue
         visible+=1;bias=int((scroll+y-1)&255==216)
-        if 216 in data[136:136+18+actor*2+2]:
+        active_end=20 if 'Full_EnemySATCursor' in syms else 18+actor*2+2
+        if 216 in data[136:136+active_end]:
             raise ValueError(f'Early SAT terminator hides actor {actor}: {n}')
         ec=128 if x<0 else 0;ay=(scroll+y-1-bias)&255;ax=x+(32 if ec else 0)
         if sat[:2]!=bytes((ay,ax)) or sat[4:6]!=bytes((ay,ax)):raise ValueError(f'Actor SAT mismatch: {n}')

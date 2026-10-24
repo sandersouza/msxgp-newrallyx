@@ -18,11 +18,63 @@ def pattern_plan(*,radar_pattern=240):
     return common,victims
 
 
+def registration_table():
+    result=bytearray(512)
+    for actor in range(7):result[0x93+actor*32]=1<<actor
+    return bytes(result)
+
+
+def validate_extension_space(bank):
+    """Do not replace native instructions when installing bank-local helpers."""
+    if len(bank)!=16384 or bank[0x3800:0x3f00]!=bytes([255])*0x700:
+        raise ValueError('Full enemy helpers overlap occupied native bank space')
+
+
+RECORD_FIELDS=dict(Enemy_Visible=0,Enemy_Flag=1,Enemy_WorldX=2,Enemy_WorldY=4,
+    Enemy_DrawX=6,Enemy_DrawY=8,Enemy_Clip=10,Enemy_EC=11,Enemy_SatY=12,
+    Enemy_Work=13,Enemy_Cache=14,Enemy_CacheClip=15,Enemy_Body=16,
+    Enemy_Window=17,Enemy_LastEC=18,Enemy_Index=19,Enemy_TopRow=20,
+    Enemy_CacheTop=21,Enemy_SAT=22)
+
+
+def indexed_records(text):
+    """Compile private complete-car fields against the current IX record.
+
+    Field-address materialization preserves DE, including a prepared VDP write
+    destination. Runtime callees preserve IX, including raster IRQs.
+    """
+    fields='|'.join(RECORD_FIELDS)
+    pattern=re.compile(r'^(\s*)ld (a|bc|de|hl),\(('+fields+r')(?:\+(\d+))?\)(.*)$',re.M)
+    def read(m):
+        indent,reg,name,extra,comment=m.groups();at=RECORD_FIELDS[name]+int(extra or 0)
+        if len(reg)==1:return f'{indent}ld {reg},(ix+{at}){comment}'
+        return f'{indent}ld {reg[1]},(ix+{at})\n{indent}ld {reg[0]},(ix+{at+1}){comment}'
+    text=pattern.sub(read,text)
+    pattern=re.compile(r'^(\s*)ld \(('+fields+r')(?:\+(\d+))?\),(a|bc|de|hl)(.*)$',re.M)
+    def write(m):
+        indent,name,extra,reg,comment=m.groups();at=RECORD_FIELDS[name]+int(extra or 0)
+        if len(reg)==1:return f'{indent}ld (ix+{at}),{reg}{comment}'
+        return f'{indent}ld (ix+{at}),{reg[1]}\n{indent}ld (ix+{at+1}),{reg[0]}{comment}'
+    text=pattern.sub(write,text)
+    pattern=re.compile(r'^(\s*)ld hl,('+fields+r')\b(.*)$',re.M)
+    text=pattern.sub(lambda m:f'{m[1]}push de\n{m[1]}push ix\n{m[1]}pop hl\n{m[1]}ld de,{RECORD_FIELDS[m[2]]}\n{m[1]}add hl,de\n{m[1]}pop de{m[3]}',text)
+    if re.search(r'\b(?:'+fields+r')\b',text):raise ValueError('Uncompiled private actor field reference')
+    return text
+
+
 def assembly(source):
     core,body=source.split('    IF ENEMY_RENDER\n',1)
     end='    ENDIF\n    ENDIF\n'
     if not body.endswith(end):raise ValueError('Enemy adapter boundary changed')
     body=compact_patterns(body[:-len(end)])
+    body=replace_once(body,'''    xor a
+    ld (Enemy_CacheClip),a
+    ld (Enemy_LastEC),a
+    ld a,10
+    ld (Enemy_Cache),a
+    ld a,255
+    ld (Enemy_CacheTop),a
+    ret''','''    ret                      ; Per-actor records own all prepared/cache fields.''')
     common,_=pattern_plan()
     body=replace_once(body,COMPACT_PATTERNS,'    db '+','.join(str(v) for pair in common for v in pair))
     for old,new in (('Enemy_InitPatterns','FullEnemy_InitShared'),('Enemy_Prepare','FullEnemy_PrepareOne'),
@@ -50,10 +102,22 @@ def assembly(source):
     or a
     sbc hl,de
     ret z''')
-    body=replace_once(body,'    ld hl,$e004\n    ld b,5',
-        '    ld de,(Full_EnemySource)\n    ld a,e\n    add a,11\n    ld e,a\n    ld hl,$e004\n    ld b,5')
-    body=replace_once(body,'cp $93','cp e')
-    body=replace_once(body,'cp $e0','cp d')
+    body=replace_once(body,'''    ld hl,$e004
+    ld b,5
+.registered:
+    ld a,(hl)
+    inc hl
+    cp $93
+    jr nz,.other
+    ld a,(hl)
+    cp $e0
+    jr z,.bounds
+.other:
+    inc hl
+    djnz .registered
+    ret''','''    ld a,(Full_RegisteredCurrent)
+    or a
+    ret z''')
     body=body.replace('ld a,248','ld a,(Full_EnemyPattern)')
     body=replace_once(body,'ld a,252','ld a,(Full_EnemyPattern)\n    add a,4')
     body=replace_once(body,'''    ld a,c
@@ -72,4 +136,46 @@ def assembly(source):
     body=replace_once(body,'ld a,19*4','ld a,(Full_EnemySATByte)')
     body=replace_once(body,'    ld a,216\n    out ($98),a\n    ret','    ret')
     body=body.replace('jp HUD_SetEnemy','jp Full_EnemySetPoint')
-    return core+'    IF ENEMY_RENDER\nEnemy_HitAddress EQU $c63c\n'+body+'\n    INCLUDE "full-enemy-loop.inc"\n'+end
+    body=body.replace('FullEnemy_DrawOne:','FullEnemy_DrawPrepared:')
+    body=replace_once(body,'''FullEnemy_DrawPrepared:
+    ld a,(driving)
+    or a
+    ret z''','''FullEnemy_DrawPrepared:''')
+    body=replace_once(body,'''.x:
+    ld b,a
+    ld a,(Enemy_SatY)
+    ld hl,Enemy_SAT''','''.x:
+    ld b,a
+    ld a,(Full_EnemySATDirty)
+    or a
+    jr nz,.sat_changed
+    ld a,(Enemy_SatY)
+    cp (ix+22)
+    jr nz,.sat_changed
+    ld a,b
+    cp (ix+23)
+    jr nz,.sat_changed
+    ld a,(Enemy_Body)
+    cp (ix+24)
+    jr nz,.sat_changed
+    ld a,(Enemy_Window)
+    cp (ix+28)
+    ret z
+.sat_changed:
+    ld a,(Enemy_SatY)
+    ld hl,Enemy_SAT''')
+    first=body.index('FullEnemy_PrepareOne:\n');last=body.index('FullEnemy_DrawPrepared:\n')
+    native=indexed_records(body[first:last]).replace('FullEnemy_PrepareOne:','FullEnemyPrepareNative:').replace('FullEnemy_RadarOne:','FullEnemyRadarNative:')
+    if '($7000)' in native:raise ValueError('Bank-local actor preparation changes its own mapper')
+    wrappers='''FullEnemy_PrepareOne:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp FullEnemyPrepareNative
+FullEnemy_RadarOne:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp FullEnemyRadarNative
+'''
+    body=body[:first]+wrappers+indexed_records(body[last:])
+    resident=core+'    IF ENEMY_RENDER\nEnemy_HitAddress EQU $c63c\n'+body+'\n    INCLUDE "full-enemy-loop.inc"\n'+end
+    return resident,native

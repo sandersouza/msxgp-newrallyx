@@ -394,10 +394,12 @@ Radar_EarlyCoordinates:
     call Radar_AllowIRQ
     IF RADAR_PLAYER_SPRITE
     call Radar_PlayerCoordinates
+    IF !FULL_GAME
     ld hl,Radar_PlayerSAT
     ld de,$7600
     ld b,4
     call Sprite_Upload
+    ENDIF
     ENDIF
     ld a,RADAR_SAT_BANK
     ld ($7000),a
@@ -421,6 +423,9 @@ Radar_EarlyCoordinates:
     ld de,$8000
     add hl,de
     ld (Radar_CoordinateSource),hl
+    IF FULL_GAME
+    ret                     ; Maze IRQ owns every fixed-screen radar SAT entry.
+    ELSE
     IF RADAR_PLAYER_SPRITE
     ld de,4
     add hl,de
@@ -428,6 +433,7 @@ Radar_EarlyCoordinates:
     ld de,$7600+RADAR_MAP_SLOT*4
     ld b,12                 ; First radar band precedes every moving actor upload.
     jp Sprite_Upload
+    ENDIF
 Radar_FinishCoordinates:
     call Radar_AllowIRQ
     ld a,RADAR_SAT_BANK
@@ -441,11 +447,15 @@ Radar_FinishCoordinates:
     ldir
     call update_life_sat
     pop hl                   ; Body attributes stream directly from the ROM table.
+    IF FULL_GAME
+    ret
+    ELSE
     ld de,12+RADAR_MAP_SLOT*4
     add hl,de
     ld de,$760c+RADAR_MAP_SLOT*4
     ld b,48
     jp Sprite_Upload
+    ENDIF
 
     IF RADAR_PLAYER_SPRITE
 Radar_PlayerCoordinates:
@@ -1213,3 +1223,7 @@ Radar_Next16:
 Radar_Origins:
     db 0,254,16,255,32,0,0,13,16,14,32,15
     db 0,28,16,29,32,30,0,43,16,44,32,45
+    IF FULL_GAME
+Full_RadarHiddenPoint:
+    db 255,192
+    ENDIF
