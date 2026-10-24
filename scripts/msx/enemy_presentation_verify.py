@@ -23,7 +23,7 @@ def verify(root,args):
     bundle=args.rom.parent;verify_manifest(bundle);info=read_json(bundle/'build.json')
     if not info.get('enemy_rendered') or not info.get('enemy_contact_applies_death'):
         raise ValueError('Presentation proof requires the complete one-enemy adapter')
-    slot=info['sprites']['player_first_slot']+2
+    slot=info['sprites']['player_first_slot']+(0 if info.get('player_blitter') else 2)
     out=destination(root,args.output);require_ignored(root,[out/'cases.bin']);out.mkdir(parents=True)
     flags=read_json(bundle/'player.json')['flags'];cases=cases_for(flags)
     data=b''.join(bytes([f])+x.to_bytes(2,'little',signed=True)+y.to_bytes(2,'little',signed=True)

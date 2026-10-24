@@ -67,6 +67,9 @@ Score_Frame:
 Score_AfterFuelBegin:
     call Fuel_Frame
     ENDIF
+    IF COMPLETION_RUNTIME
+    call Parameters_Update
+    ENDIF
 Score_AfterUpdate:
     di
     pop bc
@@ -432,6 +435,9 @@ Score_Compare:
 
 Score_Publish:
     IF HUD_ENABLED
+    IF SESSION_RUNTIME
+    call Radar_AllowIRQ      ; Numeric RAM producers are never consumed by the ISR.
+    ENDIF
     ld hl,$e0a0
     ld de,Score_Digits
     call Score_ReadDigits
@@ -450,7 +456,9 @@ Score_Publish:
     djnz .compare_high
     ld a,i
     push af
+    IF !SESSION_RUNTIME
     di
+    ENDIF
     ld hl,Score_Digits
     call HUD_SetScore
     jr .restore_irq
@@ -466,7 +474,9 @@ Score_Publish:
     call Score_ReadDigits
     ld a,i
     push af
+    IF !SESSION_RUNTIME
     di
+    ENDIF
     ld hl,Score_Digits
     call HUD_SetScore
     ld hl,Score_HighDigits

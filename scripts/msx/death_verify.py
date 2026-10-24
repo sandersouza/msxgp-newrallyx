@@ -139,7 +139,8 @@ def verify(root,args):
     return out
 
 
-def verify_images(args,out):
+def verify_images(args,out,*,mismatches=None):
+    """Compare every full image; optional diagnostics collect rather than accept errors."""
     bundle=args.rom.parent;info=read_json(bundle/'build.json');palette=(bundle/'palette.bin').read_bytes()
     world=(bundle/'stage-world.bin').read_bytes();tiles=(bundle/'death-pixels.bin').read_bytes()
     assets=load_assets(args.assets);black=info['sprites']['black'];enabled=info['hud_enabled'];images=0
@@ -156,11 +157,22 @@ def verify_images(args,out):
         ram=path.read_bytes();state=ram[info.get('death',{}).get('display_state_address',0xc490)-0xc000]
         wx=int.from_bytes(ram[0xb0:0xb2],'little',signed=True);wy=int.from_bytes(ram[0xb2:0xb4],'little',signed=True)
         pixels=bytearray(padded)
+        flag_at=(info.get('flag_display_state_address') or 0xc500)-0xc000
         for n,f in enumerate(records,1):
-            if ram[0x500+n]:continue
+            if ram[flag_at+n]:continue
             for y in range(24):
                 start=(f['tile_y']*8+y+256)*width+f['tile_x']*8+256
                 pixels[start:start+24]=empty[y%8*8:y%8*8+8]*3
+        if (info.get('smoke_component') or {}).get('runtime_enabled'):
+            if info['smoke_component'].get('logical_row_presence_address'):
+                from .smoke import verify_logical_rows
+                verify_logical_rows(ram[0x2400:0x2800],ram[0x1b20:0x1b40])
+            from .smoke import paint as smoke_paint
+            at=info['smoke_component'].get('publication_counts_address')
+            if at:
+                from .smoke import verify_publication_counts
+                verify_publication_counts(ram[0x1300:0x1b00],ram[at-0xc000:at-0xc000+32])
+            smoke_paint(pixels,width,256,ram[0x1300:0x1b00],(bundle/'smoke-pixels.bin').read_bytes())
         if state==1:
             ax,ay=ram[0x492]*8,ram[0x493]*8
             for n in range(9):
@@ -194,34 +206,52 @@ def verify_images(args,out):
         if points['cells_only']:
             points['player']=list(ram[0xf00:0xf02]);points['enemy']=list(ram[0xf02:0xf04])
             points['extra_enemies']=[ram[0xf04:0xf06]] if info.get('enemy_count',0)>1 else []
+        if info.get('player_blitter') and state==0:
+            from .display import PLAYER_X
+            flags=read_json(bundle/'player.json')['flags'];sprites=(bundle/'player-pixels.bin').read_bytes()
+            actors.insert(0,(sprites[flags.index(ram[0x409])*256:][:256],PLAYER_X,108))
         if info.get('incremental_stage',0)>=5:
             score=int(''.join(str(ram[0x20a0+j]&15) for j in (6,7,0,1,2,3)))
             high=int(''.join(str(ram[0x2060+j]&15) for j in (6,7,0,1,2,3)))
             numeric=header(assets,palette,score,high)
             if info.get('enemy_rendered'):
-                numeric=header(assets,palette,int(''.join(map(str,ram[0x30c:0x312]))),int(''.join(map(str,ram[0x312:0x318]))),background=style.get('header_background'))
+                # The hidden header page can change after its scanlines have
+                # passed. Use the digits observed at that frame's header split.
+                digits=path.with_suffix('.header').read_bytes() if path.with_suffix('.header').exists() else ram[0x30c:0x318]
+                if len(digits)!=12 or any(d>9 for d in digits):
+                    raise ValueError(f'Invalid displayed header digits at {path.stem}')
+                numeric=header(assets,palette,int(''.join(map(str,digits[:6]))),int(''.join(map(str,digits[6:]))),background=style.get('header_background'))
         else:numeric=header(assets,palette)
         expected=compose(pixels,numeric if enabled else bytes([black])*(256*8),
             (bundle/'life.bin').read_bytes(),palette,wx+256,wy+256,ram[0xa5] if info.get('incremental_stage',0)>=7 else 2,points if enabled else None,ram[0x97],
             life_digits=(bundle/'life-digits.bin').read_bytes() if enabled else None,width=width,
             fuel_pixels=(ram[0x325] if info.get('incremental_stage',0)>=6 else 30) if enabled else None,actors=actors,
             actor_top=info.get('enemy_logic',{}).get('sprite_body_top',11) if info.get('enemy_rendered') else 11,
-            radar_back_points=[ram[0x638:0x63a]] if info.get('enemy_count',0)>1 and enabled and not merged and not points['cells_only'] else (),
-            life_outline=style.get('life_outline',True))
-        if info.get('sprite_flicker'):
-            expected=compose(pixels,numeric if enabled else bytes([black])*(256*8),
+            radar_back_points=([ram[0x690:0x692]] if info.get('enemy_count',0)==3 and enabled else
+                [ram[0x638:0x63a]] if info.get('enemy_count',0)>1 and enabled and not merged and not points['cells_only'] else ()),
+            life_outline=style.get('life_outline',True),
+            fuel_color=ram[style['fuel_color_state_address']-0xc000]&15 if style.get('fuel_color_state_address') else None)
+        overflow=set()
+        if info.get('sprite_flicker') or info.get('allow_sprite_overflow'):
+            background=compose(pixels,numeric if enabled else bytes([black])*(256*8),
                 (bundle/'life.bin').read_bytes(),palette,wx+256,wy+256,width=width)
-            from .sprite_flicker import paint
+            from .sprite_flicker import paint,overflow_rows
             fuel_slot=info['sprites']['life_reuses_fuel_slots'][0]
-            expected=paint(expected,ram,path.with_suffix('.vram').read_bytes(),info,palette,
+            vram=path.with_suffix('.vram').read_bytes()
+            hardware=paint(background,ram,vram,info,palette,
                 (bundle/'sprite-colors.bin').read_bytes()[fuel_slot*16:(fuel_slot+3)*16])
-        if state==0 and not info.get('sprite_flicker'):
+            if info.get('sprite_flicker'):expected=hardware
+            else:
+                overflow=overflow_rows(ram,vram,info)
+                for y in overflow:expected.paste(hardware.crop((0,y,256,y+1)),(0,y))
+        if state==0 and not info.get('sprite_flicker') and not info.get('player_blitter'):
             from .raster_scroll import palette_rgb
             from .display import PLAYER_X,DISPLAY_SHIFT
             flags=read_json(bundle/'player.json')['flags'];sprites=(bundle/'player-pixels.bin').read_bytes()
             car=sprites[flags.index(ram[0x409])*256:][:256];colors=palette_rgb(palette)
             car_bias=info['sprites'].get('player_forbidden_y_bias',0) if (ram[0x1c]+107)&255==216 else 0
             for y in range(16):
+                if 108+y+car_bias in overflow:continue
                 for x in range(16):
                     if car[y*16+x]:expected.putpixel((PLAYER_X+DISPLAY_SHIFT+x,108+y+car_bias),colors[car[y*16+x]])
         expected=bordered(expected,palette)
@@ -229,7 +259,15 @@ def verify_images(args,out):
         diff=ImageChops.difference(actual,expected)
         if diff.getbbox():
             expected.save(path.with_name(path.stem+'-expected.png'));diff.save(path.with_name(path.stem+'-diff.png'))
-            raise ValueError(f'Death RGB mismatch at {path.stem}, state {state}: {diff.getbbox()}')
+            if mismatches is None:
+                raise ValueError(f'Death RGB mismatch at {path.stem}, state {state}: {diff.getbbox()}')
+            from .display import DISPLAY_SHIFT
+            from . import sprite_radar
+            outside=diff.copy()
+            x=32+DISPLAY_SHIFT+sprite_radar.X;y=14+sprite_radar.Y
+            outside.paste((0,0,0),(x,y,x+sprite_radar.WIDTH,y+sprite_radar.HEIGHT))
+            mismatches.append(dict(image=path.stem,state=state,bbox=diff.getbbox(),
+                outside_radar_bbox=outside.getbbox(),pixels=sum(any(p) for p in diff.getdata())))
         vram=path.with_suffix('.vram').read_bytes();stop=next((i for i in range(32) if vram[0x1f600+i*4]==216),32)
         if stop!=(info['sprites']['total_slots'] if info.get('enemy_rendered') else 17 if state else 19):raise ValueError('Death did not hide/restore only player slots')
         images+=1

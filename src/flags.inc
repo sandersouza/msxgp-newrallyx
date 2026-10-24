@@ -11,6 +11,15 @@ Flag_Y EQU $c510
 Flag_HudWork EQU $c511
 Flag_HudPending EQU $c512
 Flag_Cells EQU $c520            ; original compact two-byte address scan
+    IF PLAYER_FAST_BLITTER || SMOKE_RUNTIME
+Flag_DisplayActive EQU $c534
+Flag_Frame:
+    ld hl,Flag_Active
+    ld de,Flag_DisplayActive
+    ld bc,11
+    ldir
+    ret
+    ENDIF
 Flag_Init:
     xor a
     ld (Flag_Active),a
@@ -28,6 +37,9 @@ Flag_Init:
     ld (hl),a
     inc hl
     djnz .clear
+    IF PLAYER_FAST_BLITTER || SMOKE_RUNTIME
+    call Flag_Frame
+    ENDIF
     ld hl,Flag_Records
     ld de,Flag_Cells
     ld b,10
@@ -96,6 +108,9 @@ Flag_Update:
     ld (Flag_Y),a
     ld a,9
     ld (Flag_Jobs),a
+    IF SMOKE_RUNTIME
+    call Smoke_CollectedFlag
+    ENDIF
     pop hl
     IF HUD_ENABLED
     ld a,(hl)                 ; HUD uses its established row-major flag slots
@@ -143,6 +158,9 @@ Flag_Source:
     rrca
     rrca
     and 15
+    IF PLAYER_FAST_BLITTER || SMOKE_RUNTIME
+    add a,Flag_DisplayActive&255
+    ENDIF
     ld l,a
     ld h,Flag_Active/256
     ld a,(hl)
@@ -164,7 +182,19 @@ Flag_Stream:
     ld a,(Flag_Jobs)
     or a
     ret z
+    IF PLAYER_FAST_BLITTER || SMOKE_RUNTIME
+    ld a,(Flag_Last)
+    add a,Flag_DisplayActive&255
+    ld l,a
+    ld h,Flag_DisplayActive/256
+    ld a,(hl)
+    or a
+    ret nz                  ; Publish collection with the next display snapshot.
+    ENDIF
     push bc
+    IF PLAYER_FAST_BLITTER
+    call Bitmap_Restore     ; Saved terrain must precede collection publication.
+    ELSE
     ; Remove the optional car row before replacing its underlying terrain. Its
     ; saved bytes may still contain the flag and must not be restored afterwards.
     ld a,(player_patch_valid)
@@ -175,6 +205,7 @@ Flag_Stream:
     xor a
     ld (player_patch_valid),a
 .unpatched:
+    ENDIF
     pop bc
     IF ENEMY_RENDER
     jp Flag_StreamRows
@@ -211,12 +242,18 @@ Flag_Stream:
     ; Reapply the optional last car row after all dirty terrain jobs. The caller
     ; reserves six jobs for any patch work, including this collection refresh.
     push bc
+    IF !PLAYER_FAST_BLITTER
     call Player_Patch
+    ENDIF
     pop bc
     ret
     IF ENEMY_RENDER
 Flag_RowWidth EQU $c513
 Flag_StreamRows:
+    IF SESSION_RUNTIME
+    ei                      ; RAM brush preparation must not delay the header split.
+    nop
+    ENDIF
     ld a,9
     ld hl,Flag_Jobs
     sub (hl)
@@ -237,6 +274,9 @@ Flag_StreamRows:
     ld (tile_y),a
     ld a,(Flag_X)
     ld (tile_x),a
+    IF SMOKE_RUNTIME
+    call Smoke_ClearPublishedRow
+    ENDIF
     and 31
     ld c,24
     cp 30
@@ -290,7 +330,9 @@ Flag_StreamRows:
     ld (hl),a
     jp nz,Flag_StreamRows
     push bc
+    IF !PLAYER_FAST_BLITTER
     call Player_Patch
+    ENDIF
     pop bc
     ret
     ENDIF

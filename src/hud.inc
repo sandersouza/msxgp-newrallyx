@@ -151,6 +151,9 @@ update_lives:
     ENDIF
     ENDIF
     ENDIF
+    IF RADAR_BLITTER
+    call BitmapRadar_Player
+    ENDIF
     ld de,fuel_sat
     ld b,12
 .fuel:
@@ -452,6 +455,60 @@ update_fuel_sat:
     ret
 
 update_fuel:
+    IF HUD_ALERTS
+    ld a,(hud_fuel_pixels)
+    ld c,a
+    ld a,(hud_fuel_ready)
+    or a
+    ld a,(hud_fuel_drawn)
+    jr z,.compare
+    ld a,(hud_fuel_queued)
+.compare:
+    cp c
+    ret z
+    xor a
+    ld (hud_fuel_ready),a     ; Invalidate before an interruptible RAM copy.
+    ld a,HUD_DATA_BANK
+    ld ($7000),a
+    ld a,c
+    ld (hud_fuel_queued),a
+    ld h,a
+    ld l,0
+    srl h
+    rr l
+    ld de,fuel_states
+    add hl,de
+    ld de,hud_fuel_payload
+    ld bc,128
+    call Radar_AllowIRQ
+    ldir
+    ld a,(hud_fuel_color)
+    ld (hud_fuel_queued_color),a
+    ld a,1
+    ld (hud_fuel_ready),a     ; Publish the complete payload on the next VBlank.
+    ret
+
+; ISR only: no mapper changes, no EI, no partially copied foreground payload.
+HUD_FuelPublishIRQ:
+    ld a,(hud_fuel_ready)
+    or a
+    ret z
+    vdp_write 14,7
+    ld a,$60
+    out ($99),a
+    ld a,$7c
+    out ($99),a
+    ld hl,hud_fuel_payload
+    ld bc,$8098
+    otir
+    ld a,(hud_fuel_queued)
+    ld (hud_fuel_drawn),a
+    ld a,(hud_fuel_queued_color)
+    ld (hud_fuel_color_drawn),a
+    xor a
+    ld (hud_fuel_ready),a
+    ret
+    ELSE
     ld a,(hud_fuel_pixels)
     ld c,a
     ld a,(hud_fuel_drawn)
@@ -501,6 +558,7 @@ update_fuel:
     ld a,(ticks)
     ld (fuel_at),a
     ret
+    ENDIF
 
 update_life_sat:
     ld a,(scroll_y)
@@ -546,7 +604,7 @@ update_life_sat:
     inc hl
     ld (hl),0
     ret
-    ENDIF
+    ELSE
     ld hl,life_sat
     ld (hl),d
     inc hl
@@ -574,6 +632,7 @@ update_life_sat:
     inc hl
     ld (hl),0
     ret
+    ENDIF
 
 ; One fixed sprite slot; expand only the selected eight asset rows on a change.
 update_life_digit:

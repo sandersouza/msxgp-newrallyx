@@ -77,6 +77,20 @@ HUD_SetLives:
 ; A = original gauge's whole fuel units. The native gauge clips at 54.
 ; Fractional fuel, depletion flags, smoke cost and bonus conversion stay in game logic.
 HUD_SetFuel:
+    IF HUD_ALERTS
+    push af
+    cp 6                    ; Original full tank is60 units; exactly10% stays yellow.
+    ld a,YELLOW|$20
+    jr nc,.color
+    ld a,RED|$20
+.color:
+    ld (hud_fuel_color),a
+    pop af
+    cp 54
+    jr c,.scale
+    ld a,54
+.scale:
+    ENDIF
     push hl
     push de
     ld l,a
@@ -167,6 +181,14 @@ HUD_InitState:
     ld (radar_clock),a
     ld (hud_fuel_pixels),a
     ld (hud_fuel_drawn),a
+    IF HUD_ALERTS
+    ld a,YELLOW|$20
+    ld (hud_fuel_color),a
+    ld (hud_fuel_color_drawn),a
+    xor a
+    ld (hud_fuel_ready),a
+    ld (hud_fuel_queued),a
+    ENDIF
     ld hl,hud_flags
     ld b,40
     ld a,255
@@ -596,17 +618,34 @@ HUD_Tick:
     push hl
     ld hl,radar_clock
     inc (hl)
+    IF HUD_ALERTS
+    ld a,(hl)
+    and 31
+    jr nz,.done
+    push bc
+    push de
+    ld bc,(hud_flags+RADAR_SPECIAL_FLAG_OFFSET)
+    ld a,b
+    ld b,c
+    ld c,a
+    call hud_mark_flag       ; Only dirty the S flag's existing radar cells.
+    pop de
+    pop bc
+.done:
+    ENDIF
     pop hl
     ret
 
 ; Renderer-owned phases. These clobber AF/BC/DE/HL/IX; preserve IY and AF'/BC'/DE'/HL'.
 HUD_PrepareFrame:
     IFDEF HUD_FUEL_METER
+    IF !PLAYER_FAST_BLITTER
     xor a
     ld (Fuel_HudWork),a
     ENDIF
+    ENDIF
     IF RADAR_CELLS_ONLY
-    IF STAGE_TILE_STRIPS
+    IF STAGE_TILE_STRIPS && !SMOKE_RUNTIME
     ; Ordinary marker payloads are produced after terrain's raster deadline.
     ; Blank-screen initialization still drains every cell before unblanking.
     ld a,(Radar_Initializing)
@@ -619,6 +658,11 @@ HUD_PrepareFrame:
     call Radar_Prepare
     ELSE
     call Radar_Prepare
+    ENDIF
+    IF PLAYER_FAST_BLITTER
+    ld a,(Radar_Initializing)
+    or a
+    ret z                   ; Ordinary fuel publication precedes the bitmap car.
     ENDIF
     jp update_fuel
     ELSE

@@ -254,8 +254,8 @@ def _video_sources(output, renderer, meta):
     config = (renderer / 'config.inc').read_text()
     config = re.sub(r'^HUD_BANK EQU .*$', 'HUD_BANK EQU 2', config, flags=re.M)
     config = re.sub(r'^HUD_STATIC_LIFE EQU .*\n?', '', config, flags=re.M)
-    config = re.sub(r'^(?:MAZE_R0|MAZE_R2|TILE_MODE) EQU .*\n?', '', config, flags=re.M)
-    config += '\nHUD_STATIC_LIFE EQU 0\nTILE_MODE EQU 0\nMAZE_R0 EQU 6\nMAZE_R2 EQU $3f\n'
+    config = re.sub(r'^(?:MAZE_R0|MAZE_R2|TILE_MODE|PLAYER_FAST_BLITTER|OUTLINE_FLICKER) EQU .*\n?', '', config, flags=re.M)
+    config += '\nHUD_STATIC_LIFE EQU 0\nTILE_MODE EQU 0\nPLAYER_FAST_BLITTER EQU 0\nOUTLINE_FLICKER EQU 0\nMAZE_R0 EQU 6\nMAZE_R2 EQU $3f\n'
     config = re.sub(r'^HUD_DATA_BANK EQU .*$', 'HUD_DATA_BANK EQU 3', config, flags=re.M)
     (output / 'native-video-config.inc').write_text(config)
     for name in ('native-video.inc', 'native-input.inc', 'native-actors.inc', 'native-presentation.inc', 'native-solid.inc', 'native-radar.inc', 'native-hud-io.inc', 'native-strips.inc', 'native-hardware-actors.inc'):

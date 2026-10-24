@@ -7,10 +7,16 @@ Flicker_Upload EQU Sprite_Upload
 Flicker_Init:
     xor a
     ld (Flicker_Phase),a
+    IF OUTLINE_FLICKER
+    call Outline_Init
+    ENDIF
     IF FLICKER_STRESS
     jp Flicker_StressInit
     ENDIF
     ret
+    IF OUTLINE_FLICKER
+    INCLUDE "outline-flicker.inc"
+    ELSE
 Flicker_Publish:
     ei
     nop
@@ -91,6 +97,7 @@ Flicker_Publish:
     call Flicker_Upload
 Flicker_Done:
     ret
+    ENDIF
 
     INCLUDE "sprite-upload.inc"
 Flicker_Terminator:

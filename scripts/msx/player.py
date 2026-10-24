@@ -40,7 +40,7 @@ def palette(encoded, buffers, *, enemy=False):
     return b''.join(encoded[i*2:i*2+2] for i in order),[b.translate(translation) for b in buffers]
 
 
-def relocate(program, listing, *, rock_collision=False, scoring=False, score_tables=(), fuel=False, lives=False,enemies=False,enemy_count=1):
+def relocate(program, listing, *, rock_collision=False, scoring=False, score_tables=(), fuel=False, lives=False,enemies=False,enemy_count=1,smoke=False,smoke_notify=False,parameters=False):
     """Relocate instruction operands, leaving fixed-point constants untouched."""
     bank=bytearray([255])*16384
     code_ranges=CODE+(((0x1774,0x17a6),) if rock_collision else ())
@@ -48,7 +48,11 @@ def relocate(program, listing, *, rock_collision=False, scoring=False, score_tab
     if fuel:code_ranges+=((0x0482,0x04a0),(0x1ecc,0x1f8e))
     if lives:code_ranges+=((0x08e7,0x0908),(0x18da,0x18e8))
     if enemies:code_ranges+=ENEMY_CODE
-    for first,last in code_ranges+((0x253a,0x2552),(0x3000,0x30e0))+tuple((p,p+8) for p in score_tables)+(((0x226f,0x227f),) if fuel else ()):
+    if parameters:code_ranges+=((0x1b1f,0x1b9c),)
+    if smoke:
+        if not fuel or not enemies:raise ValueError('Original smoke requires fuel and enemy components')
+        code_ranges+=((0x0185,0x01f0),(0x0f5c,0x1052))
+    for first,last in code_ranges+((0x253a,0x2552),(0x3000,0x30e0))+tuple((p,p+8) for p in score_tables)+(((0x226f,0x227f),) if fuel else ())+(((0x2345,0x2505),) if parameters else ()):
         bank[first:last]=program[first:last]
     patches=[]
     for line in listing.splitlines():
@@ -75,12 +79,34 @@ def relocate(program, listing, *, rock_collision=False, scoring=False, score_tab
             new=value+0x8000
         elif text.startswith('ld ') and 0x8000<=value<0x9000:
             new=value+0x6000
-        elif address in (0x1de5,0x1eec,0x1ef3,0x1f80):  # Original ROM tables, not velocity constants.
+        elif address in (0x0188,0x1b8f,0x1de5,0x1eec,0x1ef3,0x1f80):  # Original ROM tables, not velocity constants.
             new=value+0x8000
         if new!=value:
             bank[address+len(raw)-2:address+len(raw)]=new.to_bytes(2,'little')
             patches.append(dict(address=address,original=value,relocated=new))
     bank[0x0c2c]=0xc9  # Return from the native main-loop continuation to our caller.
+    if parameters:
+        if program[0x1b2f:0x1b34]!=bytes((0xf6,0x30,0x32,0x8f,0x82)):
+            raise ValueError('Original parameter terrain-page instruction changed')
+        # The original A is reused for wall color immediately after this store.
+        # Relocate the stored page only, preserving the original A and flags.
+        bank[0x1b2f:0x1b34]=bytes((0xcd,0x10,0xbf,0,0))
+        bank[0x3f10:0x3f1a]=bytes((0xf6,0x30,0xf5,0xf6,0x80,0x32,0x8f,0xe2,0xf1,0xc9))
+        patches.append(dict(address=0x1b2f,kind='terrain-page-store-only-relocation',target=0xbf10))
+    if smoke:
+        if program[0x1045:0x1047]!=bytes((0x26,0x21)) or program[0x1027:0x1029]!=bytes((0xf6,0x8c)):
+            raise ValueError('Original smoke tile-buffer addressing changed')
+        bank[0x1046]=0x39   # Two RL H operations form E400..E7ff instead of8400..87ff.
+        bank[0x1028]=0xec   # Paired attribute ring is EC00..EFff.
+        patches.extend((dict(address=0x1045,kind='smoke-code-buffer-relocation',target=0xe400),
+                        dict(address=0x1027,kind='smoke-attribute-buffer-relocation',target=0xec00)))
+        if smoke_notify:
+            if program[0x1c9:0x1cc]!=bytes((6,3,0x54)):raise ValueError('Original smoke recovery hook changed')
+            if program[0x1a0:0x1a4]!=bytes((0xdd,0x36,0x15,0)):raise ValueError('Original smoke stun-expiry hook changed')
+            bank[0x1c9:0x1cc]=bytes((0xcd,0xb0,0xc7))
+            bank[0x1a0:0x1a4]=bytes((0xcd,0xb3,0xc7,0))
+            patches.append(dict(address=0x1c9,kind='notify-host-before-original-smoke-clear',target=0xc7b0))
+            patches.append(dict(address=0x1a0,kind='notify-host-of-original-stun-expiry',target=0xc7b3))
     if rock_collision:
         bank[0x17a6]=0xc9  # Return the original contact cell; later systems stay absent.
         patches.append(dict(address=0x17a6,kind='contact-cell-return-before-flag-scan'))
@@ -138,7 +164,7 @@ def padded_world(world, width=816, height=1392, *, pad=256, flower=24):
     return result,stride,rows
 
 
-def atlas_with_tiles(world, extra_tiles=(),*,force_source_xy=False):
+def atlas_with_tiles(world, extra_tiles=(),*,force_source_xy=False,grouped_rows=()):
     """Deduplicate exact 8x8 pixels; command copies never rescale the source."""
     unique=[];indices={};table=bytearray(128*174)
     for y in range(174):
@@ -148,11 +174,24 @@ def atlas_with_tiles(world, extra_tiles=(),*,force_source_xy=False):
                 indices[tile]=len(unique);unique.append(tile)
             table[y*128+x]=indices[tile]
     extra_ids=[]
-    for tile in extra_tiles:
+    grouped_rows=set(grouped_rows)
+    if any(i<0 or i+3>len(extra_tiles) for i in grouped_rows) or any(i+1 in grouped_rows or i+2 in grouped_rows for i in grouped_rows):
+        raise ValueError('Invalid grouped atlas rows')
+    i=0
+    while i<len(extra_tiles):
+        if i in grouped_rows:
+            row=extra_tiles[i:i+3]
+            if any(len(tile)!=64 for tile in row):raise ValueError('Atlas tiles must contain exactly 8x8 pixels')
+            while len(unique)%32>29:unique.append(bytes(64))
+            extra_ids.extend(range(len(unique),len(unique)+3))
+            unique.extend(row);i+=3
+            continue
+        tile=extra_tiles[i]
         if len(tile)!=64:raise ValueError('Atlas tiles must contain exactly 8x8 pixels')
         if tile not in indices:
             indices[tile]=len(unique);unique.append(tile)
         extra_ids.append(indices[tile])
+        i+=1
     if len(unique)>64:raise ValueError('Command atlas exceeds its reserved 64 tiles')
     rows=8 if len(unique)<=32 and not force_source_xy else 16
     image=bytearray(256*rows)
@@ -210,14 +249,14 @@ def atlas(world):
     return atlas_with_tiles(world)[:3]
 
 
-def build(output, program, native, assets, *, rock_collision=False, scoring=False, fuel=False, lives=False,enemies=False,enemy_count=1):
+def build(output, program, native, assets, *, rock_collision=False, scoring=False, fuel=False, lives=False,enemies=False,enemy_count=1,smoke=False,smoke_notify=False,parameters=False):
     (output/'native-program.bin').write_bytes(program)
     listing=subprocess.check_output(['z80dasm','-a','-t','-g','0',str(output/'native-program.bin')],
                                     text=True,stderr=subprocess.DEVNULL)
     score_tables=[int.from_bytes(native[p:p+2],'little') for p in (0x1b3,0x1b9)] if scoring else []
     if any(not 0x2000<=p<0x2500 or p&255>247 for p in score_tables):
         raise ValueError('Unexpected original bonus-score table pointer/page boundary')
-    code,patches=relocate(program,listing,rock_collision=rock_collision,scoring=scoring,score_tables=score_tables,fuel=fuel,lives=lives,enemies=enemies,enemy_count=enemy_count)
+    code,patches=relocate(program,listing,rock_collision=rock_collision,scoring=scoring,score_tables=score_tables,fuel=fuel,lives=lives,enemies=enemies,enemy_count=enemy_count,smoke=smoke,smoke_notify=smoke_notify,parameters=parameters)
     flags=list(dict.fromkeys(program[0x253a:0x2552]))
     if len(flags)!=12:raise ValueError('Unexpected native car animation cycle')
     lookup=bytes(flags.index(i) if i in flags else 255 for i in range(256))
@@ -258,6 +297,9 @@ def build(output, program, native, assets, *, rock_collision=False, scoring=Fals
         for at,target in ((0x98a,0xe1b0),(0x98c,0xe271),(0x98e,0xe26a),(0x99a,0xe289),(0x99c,0xe28b)):
             seed[at:at+2]=target.to_bytes(2,'little')
     if lives:seed[0x25:0x2d]=native[0x25:0x2d]
+    if parameters:
+        for at in (0x28a,0x2d8):seed[at]=native[at]
+        seed[0x2d2:0x2d4]=(int.from_bytes(native[0x2d2:0x2d4],'little')+0x8000).to_bytes(2,'little')
     last_rows=b''.join(pixels[i*256+240:(i+1)*256] for i in range(len(flags)))
     data=bytes(masks)+last_rows+bytes(8192-len(masks)-len(last_rows))+seed+bytes(4096)
     (output/'player-flags.bin').write_bytes(lookup)
@@ -265,7 +307,7 @@ def build(output, program, native, assets, *, rock_collision=False, scoring=Fals
     (output/'player-seed.bin').write_bytes(seed)
     json_write(output/'player.json',dict(flags=flags,patches=patches,
         code_ranges=CODE+(((0x1774,0x17a6),) if rock_collision else ())+
-                    (((0x1aa4,0x1aca),(0x1e62,0x1e6b),(0x2064,0x20e5),(0x210f,0x212b)) if scoring else ())+(((0x0482,0x04a0),(0x1ecc,0x1f8e)) if fuel else ())+(((0x08e7,0x0908),(0x18da,0x18e8)) if lives else ())+ (ENEMY_CODE if enemies else ()),
+                    (((0x1aa4,0x1aca),(0x1e62,0x1e6b),(0x2064,0x20e5),(0x210f,0x212b)) if scoring else ())+(((0x0482,0x04a0),(0x1ecc,0x1f8e)) if fuel else ())+(((0x08e7,0x0908),(0x18da,0x18e8)) if lives else ())+ (ENEMY_CODE if enemies else ())+(((0x0185,0x01f0),(0x0f5c,0x1052)) if smoke else ())+(((0x1b1f,0x1b9c),) if parameters else ()),
         rock_contact_geometry=rock_collision,scoring=scoring,fuel=fuel,lives=lives,enemies=enemies,score_tables=score_tables,native_ram=[0xe000,0xf000],input=0xe3f0,
         native_period_seconds=0.0165,speed_fixed=int.from_bytes(seed[0x27:0x29],'little'),
         palette=dict(blue=3,pale_yellow=9,black=11),slots=[PLAYER_SLOT,PLAYER_SLOT+1],pattern=180,

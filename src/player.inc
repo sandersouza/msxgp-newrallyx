@@ -58,6 +58,14 @@ Player_Init:
     call Life_Init
     ENDIF
 .native:
+    IF SMOKE_RUNTIME
+    call Smoke_Init
+    ENDIF
+    IF COMPLETION_RUNTIME
+    call $9b1f
+    ld a,(Flag_Count)
+    ld (Parameters_Seen),a
+    ENDIF
     call $8c6c               ; Original player initialization.
     IF ENEMY_COUNT
     call Enemy_Init
@@ -153,12 +161,22 @@ Player_Advance:
 ; Current scroll/SAT have already been prepared. Use the blank interval for the
 ; first tick; publish only pending world coordinates, as in the previous loop.
 Player_AdvanceEarly:
+    IF SESSION_RUNTIME
+    ei                      ; Cache checks and input selection own no VDP latch.
+    nop
+    ENDIF
     ld a,(driving)
     or a
     ret z
     ld a,(paused)
     or a
     ret nz
+    IF SMOKE_RUNTIME
+    xor a
+    ld (player_steps),a
+    call Smoke_CachePressure
+    ret nz                  ; Keep this coherent scene while hidden guards catch up.
+    ENDIF
     call Player_Input
     ld a,PLAYER_BANK
     ld ($7000),a
@@ -190,6 +208,14 @@ Player_AdvanceEarly:
     ENDIF
 
 Player_Tick:
+    IF COMPLETION_RUNTIME
+    ld a,(Round_State)
+    or a
+    jr z,.round_active
+    call Round_Tick
+    jp Player_CountTick
+.round_active:
+    ENDIF
     IF INCREMENTAL_STAGE >= 3
     ld a,(Death_State)
     or a
@@ -209,8 +235,26 @@ Player_AfterFuel:
     call Enemy_PreMove
 Player_AfterEnemyCleanup:
     ENDIF
+    IF SMOKE_RUNTIME
+    call Smoke_PreTick
+    ENDIF
+    IF SESSION_RUNTIME
+    ld a,SESSION_BANK
+    ld ($7000),a
+    call $b80c
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    ENDIF
     call $8069               ; Original fractional movement, then steering/wall probes.
+    IF SMOKE_RUNTIME
+    call Smoke_Tick
+    ENDIF
     call $9052
+    IF SESSION_RUNTIME
+    ld a,(Session_GuardActive)
+    or a
+    call nz,Player_ValidateMotion
+    ENDIF
     ld hl,player_animation
     inc (hl)
     ld a,(hl)
@@ -265,9 +309,57 @@ Player_Input:
 .left:
     res 2,b
 .done:
+    IF SESSION_RUNTIME
+    ld a,SESSION_BANK
+    ld ($7000),a
+    ld a,b
+    cpl
+    and $3c
+    call $b809               ; Four-way gate; caller maps PLAYER_BANK immediately.
+    ENDIF
+    IF SMOKE_RUNTIME
+    ld a,(Smoke_Key)
+    or a
+    jr z,.smoke_input_done
+    res 1,b
+.smoke_input_done:
+    ENDIF
     ld a,b
     ld ($e3f0),a
     ret
+
+    IF SESSION_RUNTIME
+; Rapid keyboard reversals can place both signed offsets across an inside
+; corner. Reject only that position, using the original contact and wall map.
+Player_ValidateMotion:
+    call $9774
+    ld a,d
+    and 7
+    add a,a
+    add a,a
+    add a,a
+    ld c,a
+    ld a,e
+    rlca
+    rlca
+    rlca
+    and 7
+    or c
+    ld c,a
+    ld a,e
+    and 31
+    ld d,a
+    ld e,c
+    xor a
+    call $94e0
+    ret nc
+    ld a,SESSION_BANK
+    ld ($7000),a
+    call $b80f
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    ret
+    ENDIF
 
 Player_Position:
     ld a,($e070)            ; Cell X, signed pixel offset X.
@@ -353,6 +445,10 @@ Player_Radar:
 
 Player_Draw:
     IF PLAYER_BLITTER
+    IF INCREMENTAL_STAGE >= 9
+    ld a,($e077)
+    ld (player_drawn),a      ; Snapshot before the next original simulation tick.
+    ENDIF
     ret                     ; HUD SAT terminator remains before the freed car slots.
     ELSE
     ld a,(driving)

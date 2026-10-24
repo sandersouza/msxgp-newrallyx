@@ -21,6 +21,11 @@ Rock_Update:
     ; PLAYER_BANK is already mapped by Player_Advance, as for movement/steering.
     call $9774
     ld (Rock_ProbeCell),de
+    IF ROCK_COUNT == 0
+    xor a
+    ld (Rock_Contact),a
+    ret
+    ELSE
     ld hl,Rock_Cells
     ld b,ROCK_COUNT
     ld c,1
@@ -51,6 +56,7 @@ Rock_Update:
     ld hl,(Rock_ProbeCell)
     ld (Rock_LastCell),hl
     ret
+    ENDIF
 Rock_Cells:
     INCBIN "rock-cells.bin"
     ASSERT $-Rock_Cells == ROCK_COUNT*2

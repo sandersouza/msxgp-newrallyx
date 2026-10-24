@@ -58,6 +58,7 @@ class ProjectTests(unittest.TestCase):
             bundles = []
 
             def builder(root, args):
+                self.assertEqual(args.stage, 12)
                 bundles.append(args.output)
                 args.output.mkdir(parents=True)
                 rom = args.output/'raster-scroll.rom'
@@ -121,10 +122,14 @@ class ProjectTests(unittest.TestCase):
                 self.assertTrue(renderer.call_args.args[1].sprite_flicker)
                 self.assertTrue(renderer.call_args.args[1].flicker_stress)
                 self.assertEqual(resolve_latest(root),rom_flicker)
+                rom_population=project.build(root,stage=9,enemies=3)
+                self.assertEqual(renderer.call_args.args[1].enemies,3)
+                self.assertFalse(renderer.call_args.args[1].no_hud)
+                self.assertEqual(resolve_latest(root),rom_population)
                 renderer.side_effect = ValueError('Assembly failed')
                 with self.assertRaisesRegex(ValueError, 'Assembly failed'):
                     project.build(root, no_hud=True)
-                self.assertEqual(resolve_latest(root), rom_flicker)
+                self.assertEqual(resolve_latest(root), rom_population)
             self.assertEqual(default.read_bytes(), b'AB HUD on')
 
     def test_make_no_hud_native_and_latest_flags_reach_cli_without_default_build(self):
@@ -135,15 +140,16 @@ class ProjectTests(unittest.TestCase):
             (root/'scripts/project.py').write_text(
                 "import json,sys\nfrom pathlib import Path\n"
                 "with Path('calls').open('a') as log: log.write(json.dumps(sys.argv[1:])+'\\n')\n")
-            for args in [('build', 'NO_HUD=1'), ('build', 'NATIVE=1'), ('run', 'LATEST=1'), ('build','STAGE=1'),('build','STAGE=0','PLAYER_BLITTER=1','RADAR_BLITTER=1'),('build','STAGE=9','HZ=60','SPRITE_FLICKER=1','FLICKER_STRESS=1')]:
+            for args in [('build', 'NO_HUD=1'), ('build', 'NATIVE=1'), ('run', 'LATEST=1'), ('build','STAGE=1'),('build','STAGE=0','PLAYER_BLITTER=1','RADAR_BLITTER=1'),('build','STAGE=9','HZ=60','SPRITE_FLICKER=1','FLICKER_STRESS=1'),('build','STAGE=9','ENEMIES=3')]:
                 result = subprocess.run(['make', *args, f'PYTHON={sys.executable}'],
                                         cwd=root, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
             calls = [json.loads(line) for line in (root/'calls').read_text().splitlines()]
-            self.assertEqual(calls, [['build', '--no-hud','--stage','8'],
-                                    ['build', '--native','--stage','8'], ['run', '--latest'],
+            self.assertEqual(calls, [['build', '--no-hud','--stage','12'],
+                                    ['build', '--native','--stage','12'], ['run', '--latest'],
                                     ['build','--stage','1'],['build','--player-blitter','--radar-blitter','--stage','0'],
-                                    ['build','--sprite-flicker','--flicker-stress','--hz','60','--stage','9']])
+                                    ['build','--sprite-flicker','--flicker-stress','--hz','60','--stage','9'],
+                                    ['build','--stage','9','--enemies','3']])
 
 
 if __name__ == '__main__':

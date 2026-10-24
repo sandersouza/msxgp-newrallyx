@@ -33,3 +33,13 @@ def encode_owners(banks, flags):
                 if data[at]&7 or data[at+1] not in (16,24):raise ValueError('Invalid atlas source coordinates')
                 data[at]|=1;data[at+1]=(index<<4)|(data[at+1]&15)
     return [bytes(data[i:i+16384]) for i in range(0,len(data),16384)]
+
+
+def verify_display_snapshots(logical,display,ticks):
+    """Require exactly the preceding logical snapshot, including reset boundaries."""
+    if len(logical)!=len(display) or len(logical)!=len(ticks)*11 or not ticks:
+        raise ValueError('Incomplete flag presentation snapshots')
+    for i,tick in enumerate(ticks):
+        source=i if i==0 or tick<ticks[i-1] else i-1
+        if display[i*11:(i+1)*11]!=logical[source*11:(source+1)*11]:
+            raise ValueError(f'Flag presentation exceeded one refresh at frame {i}')

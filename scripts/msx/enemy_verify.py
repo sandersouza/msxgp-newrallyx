@@ -27,7 +27,7 @@ def cases_for():
 def verify(root,args):
     bundle=args.rom.parent;verify_manifest(bundle);info=read_json(bundle/'build.json')
     count=info.get('enemy_count')
-    if info.get('incremental_stage') not in (8,9) or count not in (1,2):raise ValueError('Enemy proof requires stage 08/09 with one or two enemies')
+    if info.get('incremental_stage') not in (8,9,10) or count not in (1,2,3):raise ValueError('Enemy proof requires stage 08/09 with one to three enemies')
     out=destination(root,args.output);require_ignored(root,[out/'cases.bin']);out.mkdir(parents=True)
     cases=cases_for();(out/'cases.bin').write_bytes(bytes(v for c in cases for v in c))
     seed=bytearray(source_seed(bundle));seed[0x28f]=0x30;seed[0x99e:0x9a0]=(0x9f40).to_bytes(2,'little')

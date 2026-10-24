@@ -49,6 +49,18 @@ Stage_TryStrip:
     sub c
     cp STAGE_CACHE_COLUMNS
     jp nc,.no
+    IF SMOKE_RUNTIME
+    ld a,(tile_x)
+    inc a
+    ld b,a
+    ld a,(tile_y)
+    ld c,a
+    call Smoke_Batchable
+    jp nz,.no
+    inc b
+    call Smoke_Batchable
+    jp nz,.no
+    ENDIF
     ld a,(tile_x)
     call Stage_StripDiv3
     ld a,(tile_y)
@@ -121,6 +133,18 @@ Stage_TryStrip:
     sub c
     cp 32
     jp nc,.no
+    IF SMOKE_RUNTIME
+    ld a,(tile_x)
+    ld b,a
+    ld a,(tile_y)
+    inc a
+    ld c,a
+    call Smoke_Batchable
+    jp nz,.no
+    inc c
+    call Smoke_Batchable
+    jp nz,.no
+    ENDIF
     ld a,(tile_y)
     call Stage_StripDiv3
     ld a,STRIP_V_BANK

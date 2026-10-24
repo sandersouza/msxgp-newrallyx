@@ -2,6 +2,27 @@
 
 ## Decision and scope
 
+Current session candidate: Stage12, `11-r12-smoke-irq-v260`. Original scenery
+colors, full car drawings and the sprite HUD/radar are preserved. Selective
+native logic now covers smoke, all flags/score/fuel, lives, original post-flag
+parameters, first-round fuel bonus, credit/start and clear/game-over screens.
+The previous v229 keyboard route passes 3,576 cache states,44 gameplay RGB images,
+two menu images and fresh-game reset; nine native gameplay frames match their
+joystick counterparts. Brief cache-pressure holds preserve coherent scenery
+(0.53% of observed session refreshes). Exact-cadence diagnostics still fail;
+the user allows small timing concessions and requires prior approval for any
+future graphics-quality reduction. See [delivery evidence](completion-integration-plan.md).
+
+The current revision retains the red fuel warning, blinking S and outlined life
+icon. Space releases smoke; P pauses. Four-way input prioritizes a new direction
+over a still-held direction; corner protection retains steering while rejecting
+wall penetration. Fuel publishes on VBlank. The extended L reproduction checks
+the restored gauge and every header split after the bonus; a16,000-refresh
+multi-key test checks movement and raster deadlines. Peak allocation remains20.
+Repeated Space firing also exercises every header deadline. Smoke bookkeeping
+services interrupts, and smoke copies preserve explosion priority. The corner
+guard retains the original centering decision alongside the selected direction.
+
 User decision, 2026-10-22: stop integrating the complete arcade foreground/IRQ
 loop and then hiding presentation layers. Return to the controllable maze/HUD/
 wall-collision build available before issue 11 and add gameplay systems one at a
@@ -23,6 +44,14 @@ in build metadata and test reports.
 
 ## Execution sequence
 
+User amendment, 2026-10-23: continue implementing gameplay even when more than
+eight sprite candidates share a scanline. Keep the real hardware selection
+limit enabled, measure and document culling, and defer sprite optimization
+unless it becomes a serious practical blocker. Preserve original complete
+car drawings. This supersedes sprite-line overflow as a stage-advancement
+gate; it does not waive scenery correctness, original rules or honest timing
+measurements. Keep the HUD enabled in all new builds unless requested otherwise.
+
 Each row adds one behavior to the preceding accepted checkpoint. No next row is
 integrated while the current row fails correctness or performance. Collision
 death is introduced after rocks so it has a real collision source; enemy-car
@@ -38,7 +67,7 @@ collisions later reuse that same death state.
 | 05 | Score | Apply original scoring/BCD rules to collection events. Validate normal, special/lucky and carry cases; publish actual score/high score through the existing HUD. Disable the score demo fixture. |
 | 06 | Fuel | Original consumption timing, collection effects and empty-fuel transition. Replace the fuel demo fixture. Test full/empty, pause and collection boundaries independently of score. |
 | 07 | Lives and restart | Original life loss and stage restart state; update the actual lives HUD. Validate explosion completion, one decrement, restart and zero lives. |
-| 08 | One enemy | Add one visible enemy and its selected original update routines. Respect sprite-line and total-slot limits; show its real radar point. Test pathing, near misses and collision through the existing death sequence. |
+| 08 | One enemy | Add one visible enemy and its selected original update routines. Keep the hardware sprite limits enabled and report culling; show its real radar point. Test pathing, near misses and collision through the existing death sequence. |
 | 09 | Remaining enemies | Add one enemy at a time up to the original population, measuring each increment. Keep original behavior and priority; identify the exact count/routine that breaches the budget. |
 | 10 | Smoke | Original activation, resource/rate limits, lifetime and effect on enemies. Test creation/expiry and worst simultaneous population; publish the sprite budget. |
 | 11 | First-stage completion and transitions | Remaining flags, completion bonus, stage transition and game-over behavior for the agreed playable slice. Title/credit/start integration is separate from the driving baseline and cannot restart the complete foreground loop. |
@@ -198,7 +227,23 @@ dimensions, world coordinates and gameplay rules, and document the tradeoff.
   tests pass. V4 ROM bytes equal the V2/V3 proof candidates. See
   [the plan and evidence](lives-restart-plan.md). Game-over/credit presentation
   and source difficulty/enemy dispatch remain pending.
-- Stages 08–11: pending.
+- Stage 08: accepted one-enemy reference `11-r09-player-dot-50-v115`; see
+  [the current checkpoint evidence](checkpoints.md).
+- Stage 09: two-enemy test `11-r09-two-gameplay-v152` passes complete scenery
+  and RGB/contact/restart checks. Peak nine candidates is now allowed; main
+  interval maximum 33.313 ms still fails the timing gate. Third-enemy native
+  logic/car/radar components pass, but moving cache fails; it stays diagnostic.
+  Original round-one population remains one, so these population stress
+  candidates do not replace the accepted first-round reference. Continue
+  smoke integration from that reference and retain measured population limits.
+- Stage 10: original keyboard smoke is available as experimental
+  `11-r10-smoke-v171` / `LATEST`. The complete 1,452-state cache / 47-RGB
+  keyboard route and 1,712 live original-call comparisons pass. Three clouds,
+  fuel charge, 136-tick stun, recovery, pause and Home are active with no
+  additional sprites. Main maximum is 28.147 ms; strict timing, worst repeated
+  firing and combined population stress remain open. See
+  [the integration evidence](smoke-integration-plan.md).
+- Stage 11: pending.
 - Manual feedback: the user confirmed normal speed and right-edge graphics for
   the stage 02 rock/contact checkpoint. Later stages have emulator evidence;
   they have not been labelled manually approved.

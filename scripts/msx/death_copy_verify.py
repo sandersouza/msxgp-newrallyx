@@ -18,8 +18,8 @@ def verify(root,args,*,kind='death'):
     cases=[(x,y,b) for x in range(64) for y in (0,29,30,31) for b in (1,9)]
     (out/'cases.bin').write_bytes(bytes(v for c in cases for v in c))
     syms=symbols(bundle/'raster-scroll.sym')
-    call,wait=syms['Flag_StreamRows' if kind=='flags' else 'Death_StreamRows'],syms['stage_wait_command']
-    jobs,ax,ay=(0xc50e,0xc50f,0xc510) if kind=='flags' else (0xc494,0xc492,0xc493)
+    call,wait=syms['Smoke_Stream' if kind=='smoke' else 'Flag_StreamRows' if kind=='flags' else 'Death_StreamRows'],syms['stage_wait_command']
+    jobs,ax,ay=(0xc70e,0xc740,0xc741) if kind=='smoke' else (0xc50e,0xc50f,0xc510) if kind=='flags' else (0xc494,0xc492,0xc493)
     code=[0xf3,0x06,9,0xcd,call&255,call>>8,0xcd,wait&255,wait>>8,0x76]
     lines=['set save_settings_on_exit false','set renderer none','set sound_driver null',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',reference_machine(root,args.machine),
@@ -31,13 +31,18 @@ def verify(root,args,*,kind='death'):
         ' if {$::index==[string length $::cases]/3} {close $::cache;close $::costs;exit 0;return}',
         ' binary scan [string range $::cases [expr {$::index*3}] [expr {$::index*3+2}]] cu* c;lassign $c x y budget',
         ' debug write_block VRAM 0 [string repeat [binary format c 170] 65536]',
-        f' foreach {{a v}} [list 0xc400 0 0xc418 0 0xc490 {int(kind=="death")} {ax} $x {ay} $y {jobs} 9 0xc602 $budget] {{debug write memory $a $v}}',
+        f' foreach {{a v}} [list 0xc400 {int(kind=="smoke")} 0xc418 0 0xc490 {int(kind=="death")} {ax} $x {ay} $y {jobs} {1 if kind=="smoke" else 9} 0xc602 $budget] {{debug write memory $a $v}}',
+        *([' debug write_block memory 0xe400 [string repeat [binary format c 0] 1024]',
+           ' debug write_block memory 0xd300 [string repeat [binary format c 0] 2048];debug write_block memory 0xdb00 [string repeat [binary format c 0] 32]',
+           ' foreach {a v} [list 0xc701 1 0xc702 $x 0xc703 $y 0xc70c 0 0xc70d 1 0xc70f 0 0xc742 0 0xc5e8 0 0xc46f [expr {($x-4)&255}] 0xc470 [expr {($y-3)&255}]] {debug write memory $a $v}',
+           ' for {set sy 0} {$sy<3} {incr sy} {for {set sx 0} {$sx<3} {incr sx} {debug write memory [expr {0xe400+((($y+$sy-10)&31)*32)+(($x+$sx-3)&31)}] [expr {189+$sy*3+$sx}]}}'] if kind=='smoke' else []),
         f' debug write memory {info.get("death",{}).get("display_state_address",0xc490)} {int(kind=="death")}',
         ' set ::begin [machine_info time];reg SP 0xc7f0;reg PC 0xc600','}',
         f'debug set_bp {syms["main"]} {{!$::started}} {{set ::started 1;',
         *[f'debug write memory {0xc600+i} {v}' for i,v in enumerate(code)],'issue','}',
         'debug set_bp 0xc609 {$::started} {',
-        f' if {{[reg SP]!=0xc7f0 || [debug read memory {jobs}]!=0 || [debug read memory 0xc468]!=8 || [reg B]!=0}} {{error "Grouped copy state/stack/budget invalid"}}',
+        *([f' if {{[debug read memory {jobs}]}} {{debug write memory {syms["Stage_GuardClosed"]} 0;reg SP 0xc7f0;reg PC 0xc600;return}}'] if kind=='smoke' else []),
+        f' if {{[reg SP]!=0xc7f0 || [debug read memory {jobs}]!=0 || [debug read memory 0xc468]!=8'+('' if kind=='smoke' else ' || [reg B]!=0')+f'}} {{puts stderr "Grouped copy invalid case$::index SP[reg SP] jobs[debug read memory {jobs}] width[debug read memory 0xc468] B[reg B]";exit 2}}',
         ' puts -nonewline $::cache [debug read_block VRAM 0 65536]',
         ' puts $::costs "$::index [expr {round(([machine_info time]-$::begin)*3579545)}]"',
         ' incr ::index;issue','}',
@@ -49,6 +54,7 @@ def verify(root,args,*,kind='death'):
         subprocess.run([args.openmsx,'-script',str(out/'session.tcl')],stdout=log,stderr=subprocess.STDOUT,check=True,timeout=120,
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
     tiles=(bundle/'death-pixels.bin').read_bytes()
+    if kind=='smoke':tiles=(bundle/'smoke-pixels.bin').read_bytes()
     if kind=='flags':
         from .stage_one import acquire,reconstruct
         program,reference=acquire(root);cells,_,_=reconstruct(program,reference);cell=cells.index(0)

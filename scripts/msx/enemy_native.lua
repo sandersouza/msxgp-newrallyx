@@ -2,7 +2,7 @@
 local m=manager.machine;local cpu=m.devices[':maincpu'];local s=cpu.spaces['program']
 local root=assert(os.getenv('ENEMY_OUTPUT'))
 local count=tonumber(os.getenv('ENEMY_COUNT') or '1')
-assert(count==1 or count==2,'Unsupported diagnostic population')
+assert(count>=1 and count<=3,'Unsupported diagnostic population')
 local function load(n) local f=assert(io.open(root..'/'..n,'rb'));local d=f:read('a');f:close();return d end
 local cases=load('cases.bin');local seed=load('source-seed.bin')
 local out=assert(io.open(root..'/original.bin','wb'))

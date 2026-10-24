@@ -206,17 +206,42 @@ def check_cache_frames(root,bundle,out):
     empty=bytes(world[(ty*8+y)*816+tx*8+x] for y in range(8) for x in range(8))
     records=read_json(bundle/'flags.json')['records'];tiles=(bundle/'death-pixels.bin').read_bytes()
     flags=read_json(bundle/'player.json')['flags'];sprites=(bundle/'player-pixels.bin').read_bytes();maps={}
+    blitter=read_json(bundle/'build.json').get('player_blitter',False)
+    smoke=bool((read_json(bundle/'build.json').get('smoke_component') or {}).get('runtime_enabled'))
     raw=(out/'motion.bin').read_bytes();size=FRAME_BYTES+19
     if len(raw)%size:raise ValueError('Incomplete life motion data')
     count=len(raw)//size
+    smoke_display=(out/'smoke-display.bin').read_bytes() if smoke else None
+    if smoke and len(smoke_display)!=count*2048:raise ValueError('Missing continuous smoke publication state')
+    counted=bool((read_json(bundle/'build.json').get('smoke_component') or {}).get('publication_counts_address'))
+    smoke_counts=(out/'smoke-counts.bin').read_bytes() if counted else None
+    if counted and len(smoke_counts)!=count*32:raise ValueError('Missing continuous smoke publication counts')
+    logical_rows=bool((read_json(bundle/'build.json').get('smoke_component') or {}).get('logical_row_presence_address'))
+    native_rows=(out/'smoke-native-rows.bin').read_bytes() if logical_rows else None
+    if logical_rows and len(native_rows)!=count*32:raise ValueError('Missing continuous native smoke row presence')
     presented=(out/'presentation.bin').read_bytes() if (out/'presentation.bin').exists() else None
     if presented is not None and (len(presented)!=count or any(s>2 for s in presented)):
         raise ValueError('Incomplete/invalid presentation-state trace')
+    flag_display=(out/'flag-display.bin').read_bytes() if (out/'flag-display.bin').exists() else None
+    if read_json(bundle/'build.json').get('flag_display_state_address') and (flag_display is None or len(flag_display)!=count*11):
+        raise ValueError('Missing displayed flag-state trace')
+    if flag_display is not None:
+        from .flags import verify_display_snapshots
+        verify_display_snapshots(b''.join(raw[i*size+FRAME_BYTES:i*size+FRAME_BYTES+11] for i in range(count)),
+            flag_display,[int.from_bytes(raw[i*size+4160:i*size+4162],'little') for i in range(count)])
     with (out/'cache.bin').open('rb') as f:
         for i in range(count):
             r=raw[i*size:(i+1)*size];active=r[FRAME_BYTES:FRAME_BYTES+11];state,age,ax,ay,_=r[FRAME_BYTES+11:FRAME_BYTES+16]
+            if flag_display is not None:active=flag_display[i*11:(i+1)*11]
             if presented is not None:state=presented[i]
-            key=(active,ax if state==1 else -1,ay if state==1 else -1)
+            display=smoke_display[i*2048:(i+1)*2048] if smoke else None
+            if counted:
+                from .smoke import verify_publication_counts
+                verify_publication_counts(display,smoke_counts[i*32:(i+1)*32])
+            if logical_rows:
+                from .smoke import verify_logical_rows
+                verify_logical_rows(r[0x400:0x800],native_rows[i*32:(i+1)*32])
+            key=(active,ax if state==1 else -1,ay if state==1 else -1,display)
             if key not in maps:
                 image=bytearray(padded)
                 for n,flag in enumerate(records,1):
@@ -224,6 +249,9 @@ def check_cache_frames(root,bundle,out):
                     for y in range(24):
                         start=(flag['tile_y']*8+y+256)*width+flag['tile_x']*8+256
                         image[start:start+24]=empty[y%8*8:y%8*8+8]*3
+                if smoke:
+                    from .smoke import paint as smoke_paint
+                    smoke_paint(image,width,256,display,(bundle/'smoke-pixels.bin').read_bytes())
                 if state==1:
                     for n in range(9):
                         for y in range(8):
@@ -231,13 +259,21 @@ def check_cache_frames(root,bundle,out):
                             image[start:start+8]=tiles[n*64+y*8:n*64+y*8+8]
                 maps[key]=packed(image)
             bitmap=bytearray(maps[key])
+            wx=int.from_bytes(r[FRAME_BYTES-4:FRAME_BYTES-2],'little',signed=True);wy=int.from_bytes(r[FRAME_BYTES-2:FRAME_BYTES],'little',signed=True)
+            if blitter and state==0:
+                from .display import PLAYER_X
+                car=sprites[flags.index(r[4105])*256:][:256]
+                for y in range(16):
+                    for x,color in enumerate(car[y*16:y*16+16]):
+                        if not color:continue
+                        px=wx+PLAYER_X-8+x;py=wy+97+y;at=(py+256)*(width//2)+(px+256)//2
+                        bitmap[at]=bitmap[at]&15|color<<4 if px%2==0 else bitmap[at]&240|color
             if r[4120]:
                 px=int.from_bytes(r[4101:4103],'little');py=int.from_bytes(r[4103:4105],'little');car=sprites[flags.index(r[4105])*256:][:256]
                 for x,color in enumerate(car[240:]):
                     if not color:continue
                     at=(py+7+256)*(width//2)+(px-8+x+256)//2
                     bitmap[at]=bitmap[at]&15|color<<4 if (px-8+x)%2==0 else bitmap[at]&240|color
-            wx=int.from_bytes(r[FRAME_BYTES-4:FRAME_BYTES-2],'little',signed=True);wy=int.from_bytes(r[FRAME_BYTES-2:FRAME_BYTES],'little',signed=True)
             check_cache(f.read(65536),bitmap,width,wx,wy,i)
         if f.read(1):raise ValueError('Extra life cache captures')
     return count

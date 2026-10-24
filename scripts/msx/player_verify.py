@@ -114,7 +114,8 @@ def verify(root,args):
                     f'debug set_bp {syms[end]} {{[reg IM]==2 && [info exists ::{name}_begin]}} {{puts $::components "{name} $::step [expr {{round(([machine_info time]-$::{name}_begin)*3579545)}}]";unset ::{name}_begin}}'])
         script='\n'.join(lines)+'\n'
         script=script.replace('set gpu [open', 'set components [open [file join $out components.tsv] w];set flags [open [file join $out flags.bin] wb]\nset gpu [open')
-        script=script.replace('snapshot $::motion;', 'puts -nonewline $::flags [debug read_block memory 0xc500 11];snapshot $::motion;')
+        flag_address=info.get('flag_display_state_address') or 0xc500
+        script=script.replace('snapshot $::motion;', f'puts -nonewline $::flags [debug read_block memory {flag_address} 11];snapshot $::motion;')
         script=script.replace('set ::shot($::step) [debug read_block memory 0xc000 12288];',
             'set ::shot($::step) [debug read_block memory 0xc000 12288];set ::shotflags($::step) $::hudflags;')
         script=script.replace('unset ::shot($n)',
@@ -125,7 +126,8 @@ def verify(root,args):
         from .hud_verify import symbols
         syms=symbols(args.rom.parent/'raster-scroll.sym')
         script='set blitcost [open '+tcl(output/'blitter.tsv')+' w]\n'+script
-        for name,begin,end in (('restore','Bitmap_Restore','Bitmap_Draw'),('draw','Bitmap_Draw','main.split_wait'),('native','Player_Advance','stage_stream'),('guard','stage_stream','stage_wait_command')):
+        split=next(name for name in syms if name.endswith('.split_wait'))
+        for name,begin,end in (('restore','Bitmap_Restore','Bitmap_Draw'),('draw','Bitmap_Draw',split),('native','Player_Advance','stage_stream'),('guard','stage_stream','stage_wait_command')):
             script+=f'\ndebug set_bp {syms[begin]} {{[info exists ::begin]}} {{set ::blit_{name} [machine_info time]}}\n'
             script+=f'debug set_bp {syms[end]} {{[info exists ::blit_{name}]}} {{puts $::blitcost "{name} $::step [expr {{1000*([machine_info time]-$::blit_{name})}}]";unset ::blit_{name}}}\n'
         script+=f'debug set_bp {syms["stage_stream"]} {{[info exists ::begin]}} {{set ::blit_stream [machine_info time]}}\n'
@@ -163,7 +165,8 @@ def verify(root,args):
     records=[raw[i:i+FRAME_BYTES] for i in range(0,len(raw),FRAME_BYTES)]
     if len(records)!=1600 or any(len(r)!=FRAME_BYTES for r in records):raise ValueError('Incomplete MSX movement trace')
     commands=bytearray();previous=0;phase=0
-    rate=round((read_json(args.rom.parent/'build.json')['timing']['frame_seconds']/.0165-1)*65536)
+    build_info=read_json(args.rom.parent/'build.json')
+    rate=(build_info.get('native_clock') or {}).get('rate',round((build_info['timing']['frame_seconds']/.0165-1)*65536))
     for i,r in enumerate(records):
         ticks=int.from_bytes(r[4096+64:4096+66],'little')
         reset=i==0 or ticks<previous
@@ -311,9 +314,13 @@ def analyze(args,output,records,*,images_required=True):
                 points['separate_player']=list(ram[0xf38:0xf3a])
                 points['separate_player_visible']=bool(ram[0xf3a])
                 points['separate_player_color']=ram[0xf3b]
+        if info.get('player_blitter'):
+            car=sprites[flags.index(ram[0x409])*256:][:256]
+            actors.insert(0,(car,PLAYER_X,108))
         image_world=padded
         if collection:
-            image_world=collected_pixels(padded,ram[0x500:0x50b],width,256)
+            flag_at=(info.get('flag_display_state_address') or 0xc500)-0xc000
+            image_world=collected_pixels(padded,ram[flag_at:flag_at+11],width,256)
             shown=path.with_suffix('.hudflags').read_bytes()
             hidden={f['hud_slot'] for n,f in enumerate(flag_records,1) if not shown[n]}
             points['flags']=[p for n,p in enumerate(points['flags']) if n not in hidden]
@@ -328,14 +335,15 @@ def analyze(args,output,records,*,images_required=True):
             life_digits=(bundle/'life-digits.bin').read_bytes() if hud_enabled else None,
             width=width,fuel_pixels=(ram[0x325] if info.get('incremental_stage',0)>=6 else 30) if hud_enabled else None,actors=actors,
             actor_top=info.get('enemy_logic',{}).get('sprite_body_top',11) if info.get('enemy_rendered') else 11,
-            radar_back_points=[ram[0x638:0x63a]] if info.get('enemy_count',0)>1 and hud_enabled and not merged and not points['cells_only'] else (),
+            radar_back_points=([ram[0x690:0x692]] if info.get('enemy_count',0)==3 and hud_enabled else
+                [ram[0x638:0x63a]] if info.get('enemy_count',0)>1 and hud_enabled and not merged and not points['cells_only'] else ()),
             life_outline=style.get('life_outline',True))
         colors=__import__('scripts.msx.raster_scroll',fromlist=['palette_rgb']).palette_rgb(palette)
         car=sprites[flags.index(ram[0x409])*256:][:256]
         car_bias=info['sprites'].get('player_forbidden_y_bias',0) if (ram[0x1c]+107)&255==216 else 0
         for y in range(16):
             for x in range(16):
-                if car[y*16+x]:expected.putpixel((PLAYER_X+DISPLAY_SHIFT+x,108+y+car_bias),colors[car[y*16+x]])
+                if car[y*16+x] and not info.get('player_blitter'):expected.putpixel((PLAYER_X+DISPLAY_SHIFT+x,108+y+car_bias),colors[car[y*16+x]])
         expected=bordered(expected,palette)
         with Image.open(path.with_suffix('.png')) as image:actual=image.convert('RGB')
         diff=ImageChops.difference(actual,expected)

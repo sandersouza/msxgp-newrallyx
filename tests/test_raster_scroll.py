@@ -20,6 +20,17 @@ def fixture():
 
 
 class RasterScrollTests(unittest.TestCase):
+    def test_slower_native_clock_preserves_elapsed_tick_count_and_rejects_impossible_cadence(self):
+        from scripts.msx.inputs import native_clock,video_timing
+        for hz,logic in ((50,None),(60,None),(50,55),(50,60)):
+            clock=native_clock(hz,logic);phase=0;ticks=0;frames=10000
+            for _ in range(frames):
+                phase+=clock['rate'];ticks+=1+(phase>>16);phase&=65535
+            # One final partial tick plus the half-unit 16-bit rate rounding.
+            self.assertLess(abs(ticks-frames*video_timing(hz)['frame_seconds']/clock['tick_seconds']),1+frames/131072)
+        with self.assertRaises(ValueError):native_clock(60,55)
+        with self.assertRaises(ValueError):native_clock(50,70)
+
     def test_player_label_resources_keep_original_glyphs_after_alignment(self):
         palette, assets = fixture()
         encoded = player_label_patterns(assets, palette)

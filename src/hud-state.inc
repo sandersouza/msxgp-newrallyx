@@ -52,8 +52,14 @@ hud_native_stage     EQU HUD_API_BASE+$080
 hud_native_source    EQU HUD_API_BASE+$08e
 hud_scan_cell        EQU HUD_API_BASE+$097
 HUD_API_VERSION      EQU 1
-HUD_API_BYTES        EQU $9a
+HUD_API_BYTES        EQU $9a+HUD_ALERTS*5
 HUD_WORK_BYTES       EQU $29c
 HUD_NATIVE_BYTES     EQU $1000
 hud_player_number    EQU HUD_API_BASE+$098
 hud_player_number_drawn EQU HUD_API_BASE+$099
+hud_fuel_color       EQU HUD_API_BASE+$09a
+hud_fuel_color_drawn EQU HUD_API_BASE+$09b
+hud_fuel_queued      EQU HUD_API_BASE+$09c
+hud_fuel_ready       EQU HUD_API_BASE+$09d
+hud_fuel_queued_color EQU HUD_API_BASE+$09e
+hud_fuel_payload     EQU $d180 ; Outside the D000..D100 IM2 vector and D2D2 jump.

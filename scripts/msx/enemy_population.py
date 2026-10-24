@@ -1,4 +1,4 @@
-"""Unroll the authored presentation adapter for the two-enemy experiment.
+"""Unroll the authored presentation adapter for the incremental enemy population.
 
 Only host assembly is generated here. Native population initialization and AI
 remain one original call over every descriptor. Stage 08 uses its source verbatim.
@@ -17,7 +17,7 @@ def actor_images(ram,pixels,flags,count,planes=2):
     result=[]
     translation=bytes(6 if i==3 else 10 if i==9 else 14 if i==11 else i for i in range(256))
     for actor in reversed(range(count)):
-        at=0x5d0 if actor==0 else 0x640
+        at=0x5d0 if actor==0 else 0x640+(actor-1)*0x30
         if not ram[at+2]:continue
         image=pixels[flags.index(ram[at+3])*256:][:256].translate(translation)
         if planes==1:image=bytes(6 if p else 0 for p in image)
@@ -35,16 +35,65 @@ def compact_patterns(source):
         '    db 0,4,8,12,16,188,192,196,200,204,208,212\n    db 216,220,224,228,232,236,240,244,248,252',COMPACT_PATTERNS)
 
 
-def assembly(source, count, planes=2,*,compact=False,player_slot=15,radar_player=False):
+def assembly(source, count, planes=2,*,compact=False,player_slot=15,radar_player=False,player_blitter=False):
+    if count==3:
+        if not compact or planes!=2 or player_blitter:
+            raise ValueError('Three enemies require the normal compact HUD and complete sprite cars')
+        pair=assembly(source,2,planes,compact=True,player_slot=player_slot,radar_player=radar_player)
+        start=pair.index('Enemy2_Visible EQU')
+        end=pair.index('Enemy_InitPatterns:\n',start)
+        variant_end=pair.index('; The extra dot',start)
+        third=pair[start:variant_end].replace('Enemy2_','Enemy3_')
+        # Pair aliases precede its two adapters, so the extracted block contains
+        # exactly one presentation adapter and no native/core wrapper code.
+        third=re.sub(r'\$c6([45][0-9a-f])',lambda m:f'${int(m[0][1:],16)+0x30:04x}',third)
+        third=replace_once(third,'Enemy3_SAT EQU $c610','Enemy3_SAT EQU $c620')
+        third=replace_once(third,'Enemy3_Masks EQU $c624','Enemy3_Masks EQU $c628')
+        for old in ('e0b0','e0b2','e0ad','e0af','e0b7'):
+            third=third.replace('$'+old,f'${int(old,16)+32:04x}')
+        third=replace_once(third,'cp $b3','cp $d3')
+        third=replace_once(third,'$e0b6','$e0d6')
+        third=third.replace('ld a,248','ld a,224').replace('ld a,252','ld a,228')
+        third=replace_once(third,'add a,$c0','add a,$00')
+        old=player_slot+4;new=player_slot+6
+        third=replace_once(third,f'ld a,{old}*4',f'ld a,{new}*4')
+        third=replace_once(third,f'ld a,${old*16&255:02x}\n    out ($99),a',f'ld a,${new*16&255:02x}\n    out ($99),a')
+        pair=pair[:end]+third+pair[end:]
+        pair=pair.replace('ld d,10','ld d,8').replace('cp 10\n    jr nc,.dynamic','cp 8\n    jr nc,.dynamic')
+        pair=replace_once(pair,'    call Enemy2_InitPatterns','    call Enemy2_InitPatterns\n    call Enemy3_InitPatterns')
+        pair=replace_once(pair,'    ld a,255\n    ld (Enemy2_PointX),a',
+            '    ld a,255\n    ld (Enemy3_PointX),a\n    ld (Enemy3_PointY),a\n    ld (Enemy2_PointX),a')
+        pair=replace_once(pair,'    ld (Enemy2_PointDrawnY),a','    ld (Enemy2_PointDrawnY),a\n    ld (Enemy3_PointDrawnX),a\n    ld (Enemy3_PointDrawnY),a')
+        pair=replace_once(pair,'    jp Enemy2_Prepare','    call Enemy2_Prepare\n    jp Enemy3_Prepare')
+        pair=replace_once(pair,'    jp Enemy2_Radar','    call Enemy2_Radar\n    jp Enemy3_Radar')
+        pair=replace_once(pair,'    ret\nEnemy_DrawDone:','    call Enemy3_Draw\n    jp Enemy3_DrawPoint\nEnemy_DrawDone:')
+        extra=WRAPPERS[WRAPPERS.index('Enemy2_DrawPoint:\n'):]
+        extra=extra.replace('Enemy2_','Enemy3_').replace('$c620','$c694').replace('ld c,232','ld c,216')
+        extra=extra.replace('ld a,$40\n    out ($99),a','ld a,$c0\n    out ($99),a').replace('ld a,$7f\n    out ($99),a','ld a,$7e\n    out ($99),a').replace('$7f40','$7ec0')
+        extra=replace_once(extra,'ld a,23*4','ld a,24*4')
+        state='''Enemy3_PointX EQU $c690
+Enemy3_PointY EQU $c691
+Enemy3_PointDrawnX EQU $c692
+Enemy3_PointDrawnY EQU $c693
+Enemy3_SetPoint:
+    ld a,b
+    ld (Enemy3_PointX),a
+    ld a,c
+    ld (Enemy3_PointY),a
+    ret
+'''
+        ending='    ENDIF\n    ENDIF\n'
+        return pair[:-len(ending)]+state+extra+ending
     if count==1:
-        if not compact:return source
-        source=compact_patterns(source)
-        preloaded=11 if radar_player else 12
-        source=replace_once(source,'ld d,11',f'ld d,{preloaded}')
-        source=replace_once(source,'cp 10\n    jr nc,.dynamic',f'cp {preloaded}\n    jr nc,.dynamic')
-        target=player_slot+2
+        if compact:
+            source=compact_patterns(source)
+            preloaded=11 if radar_player else 12
+            source=replace_once(source,'ld d,11',f'ld d,{preloaded}')
+            source=replace_once(source,'cp 10\n    jr nc,.dynamic',f'cp {preloaded}\n    jr nc,.dynamic')
+        target=player_slot+(0 if player_blitter else 2)
         source=replace_once(source,'ld a,19*4',f'ld a,{target}*4')
-        return replace_once(source,'ld a,$30\n    out ($99),a',f'ld a,${target*16&255:02x}\n    out ($99),a')
+        source=replace_once(source,'ld a,$30\n    out ($99),a',f'ld a,${target*16&255:02x}\n    out ($99),a')
+        return replace_once(source,'ld a,$75\n    out ($99),a',f'ld a,${0x74+target//16:02x}\n    out ($99),a')
     if count!=2 or planes not in (1,2):raise ValueError('Validate two enemies before increasing the experiment')
     core,body=source.split('    IF ENEMY_RENDER\n',1)
     ending='    ENDIF\n    ENDIF\n'
@@ -84,7 +133,7 @@ def assembly(source, count, planes=2,*,compact=False,player_slot=15,radar_player
             text=replace_once(text,'ld d,8',f'ld d,{preloaded}')
             text=replace_once(text,'cp 8\n    jr nc,.dynamic',f'cp {preloaded}\n    jr nc,.dynamic')
             slot=19+index*planes
-            target=player_slot+2+index*planes
+            target=player_slot+(0 if player_blitter else 2)+index*planes
             text=replace_once(text,f'ld a,{slot}*4',f'ld a,{target}*4')
             old=(slot*16)&255;new=(target*16)&255
             text=replace_once(text,f'ld a,${old:02x}\n    out ($99),a',f'ld a,${new:02x}\n    out ($99),a')
@@ -155,6 +204,8 @@ Enemy_InitPatterns:
     call Enemy1_InitPatterns
     call Enemy2_InitPatterns
     ld a,255
+    ld (Enemy2_PointX),a
+    ld (Enemy2_PointY),a
     ld (Enemy2_PointDrawnX),a
     ld (Enemy2_PointDrawnY),a
     ret

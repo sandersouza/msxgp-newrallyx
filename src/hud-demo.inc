@@ -9,10 +9,27 @@ read_keys:
     cpl
     ret
 keys:
+    IF SMOKE_RUNTIME
+    ld a,6
+    call read_keys
+    and 2                   ; Ctrl: active-low native smoke input bit1.
+    ld (Smoke_Key),a
+    ENDIF
     ld a,8
     call read_keys
     ld (key8),a
+    IF SESSION_RUNTIME
     and 1
+    add a,a
+    ld hl,Smoke_Key
+    or (hl)                 ; Space is primary smoke; Ctrl remains an alias.
+    ld (hl),a
+    ld a,4
+    call read_keys
+    and 32                  ; P pauses; Space remains available during gameplay.
+    ELSE
+    and 1
+    ENDIF
     ld b,a
     ld a,(last_space)
     xor b
@@ -24,6 +41,7 @@ keys:
     xor 1
     ld (paused),a
 .no_pause:
+    IF !SESSION_RUNTIME
     ld a,7
     call read_keys
     and 128
@@ -40,6 +58,7 @@ keys:
     xor a
     ld (scene),a
     call show_scene
+    ENDIF
 .no_enter:
     ld a,(key8)
     and 2
@@ -186,7 +205,11 @@ keys:
 .no_up:
     ld a,b
     ld (dy),a
+    IF SESSION_RUNTIME
+    jp Session_Joystick
+    ELSE
     ret
+    ENDIF
 
 
 hud_demo_numbers:

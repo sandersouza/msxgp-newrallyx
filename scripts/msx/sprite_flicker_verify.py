@@ -13,6 +13,9 @@ from .sprite_flicker import permutation,selected
 
 def verify(root,args):
     bundle=args.rom.parent;verify_manifest(bundle);info=read_json(bundle/'build.json')
+    if info.get('outline_flicker'):
+        from .outline_flicker_verify import verify as verify_outline
+        return verify_outline(root,args)
     if not info.get('sprite_flicker'):raise ValueError('Flicker cartridge required')
     out=destination(root,args.output);require_ignored(root,[out/'results.bin']);out.mkdir(parents=True)
     syms=symbols(bundle/'raster-scroll.sym');slots=info['sprites']['total_slots']

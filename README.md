@@ -84,7 +84,11 @@ FS-A1WSX and contributor-supplied BIOS under `references/msxbios/`; see the
 Select a test cartridge with `make run ROM=references/build/<test-build>/native.rom`.
 The selected file is launched directly; a missing test ROM reports an error.
 Omit `ROM` to use the default development cartridge.
-The active issue 11 build is **stage 08**, the fast driving baseline plus an
+The approved Issue 11 build is **stage 12**, selected by plain `make build` and
+`make run`. Its ROM matches the user-tested v260 cartridge. The earlier driving
+reference remains available with `make build STAGE=8` or its named checkpoints.
+
+The preserved **stage 08** build is the fast driving baseline plus an
 explicit bitmap-rock fixture. Normal first-stage initialization has no rocks;
 this test adds two original placement outputs and records diagnostic collision
 entry events without extra sprites. Selected original player movement/steering/wall routines remain active;
@@ -106,12 +110,57 @@ a square white border, using the same sprite patterns and instruction stream.
 A solid blue radar fill would require another layer or work during scrolling;
 the existing transparent background is retained under the zero-extra-cost constraint.
 Zero lives stops this fixture; Home starts a fresh test run. Additional enemies,
-smoke and credit/start/transition presentation remain pending. F and 0 fixture keys are
+credit/start/transition presentation remain pending in this reference. F and 0 fixture keys are
 disabled while driving. See the [fuel performance report](docs/fuel-performance-fix.md)
 and [one-enemy evidence and adaptations](docs/one-enemy-plan.md).
 Use `make build STAGE=0` to
 recreate the preserved movement-only baseline.
-The current `LATEST` is `11-r09-player-dot-50-v115`: one original enemy with
+`make run LATEST=1` selects approved session `11-r12-smoke-irq-v260`. Press **5**
+for credit and **1** to start. Arrows or joystick1 steer, **Space**, Ctrl or triggerA
+releases smoke, **P** pauses and Home resets the development run. Original
+graphics, complete sprite cars, normal sprite radar and HUD remain. All ten
+flags lead to the source fuel bonus and a clear screen; credit/start begins a
+new game with its high score retained. Game-over screens hide gameplay sprites.
+The fuel bar turns red below 10% (less than six original tank units); exactly
+10% stays yellow. The S flag blinks on the existing sprite radar. The life icon
+keeps its yellow silhouette and black outline. The footer uses three sprites,
+sharing the fuel gauge's three slots; peak allocation stays
+20 entries with twelve free. Keyboard/joystick directions pass through a four-way
+gate: a new direction wins over a still-held old direction. A corner guard rejects
+wall-center movement while retaining steering so the car can escape. Fuel patterns
+publish on VBlank, including the restored amount on the refresh after the L bonus.
+Score publication and input preparation keep raster interrupts serviceable;
+the extended L route and multi-key stress test check every header reservation.
+Smoke queue preparation and publication bookkeeping also service interrupts;
+explosions retain priority over smoke copies. Repeated Space firing is included
+in the header regression. Corner rejection preserves native centering as well
+as the newly selected direction.
+Occasional timing delays remain.
+Rebuild with `make build STAGE=12`. Later rounds/two players and sound remain
+outside this segment. See [validation and limits](docs/completion-integration-plan.md).
+The rock/smoke stress checkpoint remains available as
+`make run CHECKPOINT=11-r10-coherent-v207` (1,812 cache states/59 RGB, 2.26%
+held refreshes). See [checkpoints and limits](docs/checkpoints.md).
+
+`make run CHECKPOINT=11-r09-two-gameplay-v152` selects two original enemies,
+complete car drawings/windows, sprite radar and full HUD at 50 Hz. The natural
+route passes 1,138 complete visible-cache states and 28 full RGB images. Its
+22 SAT entries leave ten free; line occupancy peaks at nine candidates with
+real hardware limits enabled. Main intervals have median 19.937 ms and maximum
+33.313 ms, so this is a test checkpoint with timing still unaccepted.
+Rebuild this population with `make build STAGE=9 ENEMIES=2`.
+The default `make run` cartridge remains the accepted one-enemy
+`11-r09-player-dot-50-v115` until explicitly rebuilt.
+The user rejected `11-outline-flicker-60-v144`: its row-color simplification
+removed upper window detail, and moving gameplay was slow with broken scenery.
+It is preserved only as failed experimental evidence. Any subsequent priority
+test must preserve the original dependent car planes together; stationary
+overflow success does not establish moving gameplay acceptance.
+See [the rejected experiment](docs/sprite-flicker-experiment.md).
+The rejected blue bitmap-radar test is preserved outside `LATEST` as
+`11-r09-radar-blitter-hud-v139`.
+
+The accepted reference is `make run CHECKPOINT=11-r09-player-dot-50-v115`: one original enemy with
 HUD at 50 Hz and the original 16.5 ms logical clock. Twelve radar sprites keep
 the map, flags and enemy dynamic; one independent player dot alternates white
 and black every eight native ticks, matching the original routine. Moving the
@@ -121,7 +170,18 @@ free. Both the 1,138-state contact/restart route (28 RGB images) and the
 Arrows steer, Space pauses and Home resets. Rebuild with `make build STAGE=9`.
 The two-enemy HUD-off reference remains
 `make run CHECKPOINT=11-r09-two-no-hud-v80` (60 Hz, six slots, 26 free).
-Two enemies with HUD remain under investigation; this does not complete #11.
+`ENEMIES=3` is a separate diagnostic: native logic and car/radar component
+proofs pass, but its moving predecessor corrupts the bottom scenery row. It
+is not selected by `LATEST`. Neither checkpoint completes #11. Sprite-line
+overflow alone no longer blocks gameplay integration, following the user's
+decision; keep hardware limits enabled and document resulting culling.
+The integrated bitmap-player test is available separately as
+`make run CHECKPOINT=11-r09-player-blitter-hud-v130`: eighteen sprites used,
+fourteen free, with the full HUD and one enemy. It passes natural-route pixels
+and cache but still fails timing and radar backlog. It remains available for
+future correction; the radar experiment uses the sprite car instead.
+New gameplay/performance tests keep the HUD enabled unless explicitly requested
+otherwise. See [the blitter evidence](docs/bitmap-blitter-experiments.md).
 The preserved stage 08 reference is `make run CHECKPOINT=11-r08-restored-v1`.
 See the
 [current checkpoint guide](docs/checkpoints.md).
@@ -136,7 +196,7 @@ the hardware limit. See [evidence and limitations](docs/sprite-flicker-experimen
 The previous rendering experiment uses the movement baseline with a bitmap
 player: `make build STAGE=0 PLAYER_BLITTER=1`, also supporting `NO_HUD=1`.
 `RADAR_BLITTER=1` additionally selects the **slow diagnostic** with a blue
-48x80 bitmap radar. The accepted gameplay default remains stage 08; see
+48x80 bitmap radar. The approved gameplay default is stage 12; see
 [blitter checkpoints, measurements and limitations](docs/bitmap-blitter-experiments.md).
 See the [incremental gameplay plan](docs/incremental-gameplay-plan.md).
 Use `make build NO_HUD=1` to compile this same baseline without HUD frame work;

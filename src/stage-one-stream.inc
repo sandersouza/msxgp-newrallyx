@@ -63,13 +63,16 @@ stage_position:
     ; lags a short camera reversal. Otherwise a column can erase a ring row
     ; which previous_y still considers valid and never queues for repair.
     ld a,(previous_y)
-    sub 3
+    sub STAGE_CACHE_TOP_GUARD
     ld (cache_top),a
-    IF ENEMY_COUNT >= 2
+    IF ENEMY_COUNT >= 2 || SMOKE_RUNTIME
     ld a,(previous_x)
     sub STAGE_CACHE_GUARD
     ld (cache_left),a
     ENDIF
+    ENDIF
+    IF SESSION_RUNTIME
+    di                      ; Only the actual scroll snapshot needs atomicity.
     ENDIF
     ld hl,(world_x)
     ld de,-8
@@ -99,6 +102,14 @@ stage_position:
     ld (camera_y),a
     sub BODY_TOP
     ld (scroll_y),a
+    IF SESSION_RUNTIME
+    ld a,(Session_PositionIRQ)
+    or a
+    jr z,.position_atomic
+    ei
+    nop
+.position_atomic:
+    ENDIF
     ; Cache shifts are queued once per tile; jobs write only hidden guard tiles.
     ld a,(column_left)
     or a
@@ -116,7 +127,7 @@ stage_position:
     jr nz,.left
     inc a
     ld (previous_x),a
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF INCREMENTAL_STAGE >= 9 && (ENEMY_COUNT >= 2 || SMOKE_RUNTIME)
     push af
     sub STAGE_CACHE_GUARD
     ld (cache_left),a
@@ -128,14 +139,14 @@ stage_position:
     dec a
     ld (previous_x),a
     sub STAGE_CACHE_GUARD
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF INCREMENTAL_STAGE >= 9 && (ENEMY_COUNT >= 2 || SMOKE_RUNTIME)
     ld (cache_left),a
     ENDIF
 .column:
     ld (column_x),a
     IF INCREMENTAL_STAGE >= 9
     ld a,(previous_y)
-    sub 3
+    sub STAGE_CACHE_TOP_GUARD
     ld (Stage_ColumnTop),a
     add a,32
     ld (Stage_ColumnEnd),a
@@ -147,7 +158,7 @@ stage_position:
     ld hl,(world_y)
     call stage_div8
     ld a,l
-    sub 3
+    sub STAGE_CACHE_TOP_GUARD
     ld (column_y),a
     ENDIF
     ld a,32
@@ -171,22 +182,22 @@ stage_position:
     ld (previous_y),a
     IF INCREMENTAL_STAGE >= 9
     push af
-    sub 3
+    sub STAGE_CACHE_TOP_GUARD
     ld (cache_top),a
     pop af
     ENDIF
-    add a,28
+    add a,32-STAGE_CACHE_TOP_GUARD-1
     jr .row
 .up:
     dec a
     ld (previous_y),a
     IF INCREMENTAL_STAGE >= 9
     push af
-    sub 3
+    sub STAGE_CACHE_TOP_GUARD
     ld (cache_top),a
     pop af
     ENDIF
-    sub 3
+    sub STAGE_CACHE_TOP_GUARD
 .row:
     ld (row_y),a
     ld hl,(world_x)
@@ -194,7 +205,7 @@ stage_position:
     ld a,l
     IF INCREMENTAL_STAGE >= 9
     ld (row_x),a             ; Queue visible columns before the left guard.
-    IF ENEMY_COUNT >= 2
+    IF ENEMY_COUNT >= 2 || SMOKE_RUNTIME
     ld a,(previous_x)
     ENDIF
     sub STAGE_CACHE_GUARD
@@ -495,13 +506,13 @@ stage_stream_driving:
     ld (row_x),a
     ld a,(row_y)
     ld (tile_y),a
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF STAGE_SOLID_RUNS
     ld a,1
     ld (Stage_RowBatch),a
     ENDIF
     jr .draw
 .column:
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF STAGE_SOLID_RUNS
     ld a,2
     ld (Stage_RowBatch),a
     ld a,(column_left)
@@ -524,7 +535,7 @@ stage_stream_driving:
 .draw:
     push bc
     call stage_tile
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF STAGE_SOLID_RUNS
     xor a
     ld (Stage_RowBatch),a
     ENDIF
@@ -532,7 +543,7 @@ stage_stream_driving:
     ei
     nop
     di
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF STAGE_SOLID_RUNS
     dec b
     jp nz,.next
     ELSE
@@ -553,8 +564,8 @@ Stage_QueuePriority:
     jp p,.vertical_abs
     neg
 .vertical_abs:
-    IF STAGE_CACHE_GUARD >= 3
-    add a,STAGE_CACHE_GUARD-3
+    IF STAGE_CACHE_GUARD >= STAGE_CACHE_TOP_GUARD
+    add a,STAGE_CACHE_GUARD-STAGE_CACHE_TOP_GUARD
     ENDIF
     ld b,a
     ld hl,(world_x)
@@ -564,8 +575,8 @@ Stage_QueuePriority:
     jp p,.horizontal_abs
     neg
 .horizontal_abs:
-    IF STAGE_CACHE_GUARD < 3
-    add a,3-STAGE_CACHE_GUARD
+    IF STAGE_CACHE_GUARD < STAGE_CACHE_TOP_GUARD
+    add a,STAGE_CACHE_TOP_GUARD-STAGE_CACHE_GUARD
     ENDIF
     cp b
     ld a,0
@@ -580,7 +591,7 @@ Stage_QueuePriority:
     ENDIF
 
 stage_load:
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF STAGE_SOLID_RUNS
     xor a
     ld (Stage_RowBatch),a
     ENDIF
@@ -617,7 +628,7 @@ stage_load:
     call stage_div8
     ld a,l
     ld (previous_y),a
-    sub 3
+    sub STAGE_CACHE_TOP_GUARD
     ld (tile_y),a
     ld b,32
 .y:
@@ -663,7 +674,18 @@ stage_tile:
     ENDIF
     ld a,(driving)
     or a
+    IF SMOKE_RUNTIME
+    jr z,.static_source
+    ld a,(Smoke_Valid)
+    or a
+    jp z,stage_copy_tile
+    call Smoke_CaptureCode
+    call stage_copy_tile
+    jp Smoke_RecordDisplay
+.static_source:
+    ELSE
     jp nz,stage_copy_tile
+    ENDIF
     ; Source uses global coordinates; destination uses modulo 64x32 tiles.
     ld a,(tile_x)
     cp STAGE_COLUMNS
@@ -844,6 +866,10 @@ stage_copy_tile:
     jp c,stage_copy_destination
 .terrain:
     ENDIF
+    IF SMOKE_RUNTIME
+    call Smoke_Source
+    jp c,stage_copy_destination
+    ENDIF
     ld a,(tile_x)
     ld c,a
     cp STAGE_COLUMNS
@@ -853,6 +879,16 @@ stage_copy_tile:
     jr nc,.flower
     jr .id
 .flower:
+    IF SMOKE_RUNTIME
+    push bc
+    push de
+    push hl
+    call Stage_TryFlowerRow
+    pop hl
+    pop de
+    pop bc
+    ret c
+    ENDIF
     ld hl,stage_flower_phase
     ld e,c
     ld d,0
@@ -912,7 +948,7 @@ stage_copy_tile:
 .not_strip_candidate:
     and $fb                 ; Strip tags are lookup metadata, never source X.
     ENDIF
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF STAGE_SOLID_RUNS
     bit 1,a
     jp nz,Stage_SolidTile
     ENDIF
@@ -995,7 +1031,181 @@ stage_copy_destination:
     ENDIF
 stage_copy_done:
     ret
-    IF INCREMENTAL_STAGE >= 9 && ENEMY_COUNT >= 2
+    IF SMOKE_RUNTIME
+; Outside-world flowers repeat in exact three-tile rows. Copy those pixels
+; together instead of spending three command transactions on each new row.
+Stage_TryFlowerRow:
+    ld a,(Stage_RowBatch)
+    cp 1
+    jr z,.horizontal
+    cp 2
+    jp z,.vertical
+    jp .no
+.horizontal:
+    ld a,(row_left)
+    cp 2
+    jp c,.no
+    ld a,(tile_x)
+    and 31
+    cp 30
+    jp nc,.no
+    ld a,(tile_x)
+    ld l,a
+    ld h,0
+    ld de,stage_flower_phase
+    add hl,de
+    ld a,(hl)
+    or a
+    jp nz,.no
+    ld a,(tile_x)
+    inc a
+    ld b,a
+    ld a,(row_x)
+    cp b
+    jp nz,.no
+    inc a
+    ld hl,Stage_RowEnd
+    cp (hl)
+    jp z,.no
+    ld a,(cache_left)
+    ld d,a
+    ld a,(tile_x)
+    add a,2
+    sub d
+    cp STAGE_CACHE_COLUMNS
+    jp nc,.no
+    ld a,(tile_y)
+    ld c,a
+    call Smoke_Batchable
+    jp nz,.no
+    inc b
+    call Smoke_Batchable
+    jp nz,.no
+    ld a,(tile_y)
+    ld l,a
+    ld h,0
+    ld de,stage_flower_phase
+    add hl,de
+    ld a,(hl)
+    add a,a
+    ld l,a
+    ld h,0
+    ld de,Stage_FlowerSources
+    add hl,de
+    ld a,(hl)
+    ld (stage_command),a
+    inc hl
+    ld a,(hl)
+    ld (stage_command+2),a
+    ld a,24
+    ld (stage_command+8),a
+    call stage_copy_destination
+    ld a,8
+    ld (stage_command+8),a
+    ld hl,row_left
+    dec (hl)
+    dec (hl)
+    ld a,(row_x)
+    add a,2
+    ld hl,Stage_RowEnd
+    cp (hl)
+    jr nz,.cursor
+    ld a,(Stage_RowLeft)
+.cursor:
+    ld (row_x),a
+    scf
+    ret
+.vertical:
+    ld a,(column_left)
+    cp 2
+    jp c,.no
+    ld a,(tile_y)
+    and 31
+    cp 30
+    jp nc,.no
+    ld a,(tile_y)
+    ld l,a
+    ld h,0
+    ld de,stage_flower_phase
+    add hl,de
+    ld a,(hl)
+    or a
+    jp nz,.no
+    ld a,(tile_y)
+    inc a
+    ld c,a
+    ld a,(column_y)
+    cp c
+    jp nz,.no
+    inc a
+    ld hl,Stage_ColumnEnd
+    cp (hl)
+    jp z,.no
+    ld a,(cache_top)
+    ld d,a
+    ld a,(tile_y)
+    add a,2
+    sub d
+    cp 32
+    jp nc,.no
+    ld a,(tile_x)
+    ld b,a
+    call Smoke_Batchable
+    jp nz,.no
+    inc c
+    call Smoke_Batchable
+    jp nz,.no
+    ld a,(tile_x)
+    ld l,a
+    ld h,0
+    ld de,stage_flower_phase
+    add hl,de
+    ld a,(hl)
+    add a,a
+    ld l,a
+    ld h,0
+    ld de,Stage_FlowerVerticalSources
+    add hl,de
+    ld a,(hl)
+    ld (stage_command),a
+    inc hl
+    ld a,(hl)
+    ld (stage_command+2),a
+    IF STAGE_TILE_STRIPS
+    ld a,3
+    ld (stage_command+3),a
+    ENDIF
+    ld a,24
+    ld (stage_command+10),a
+    call stage_copy_destination
+    ld a,8
+    ld (stage_command+10),a
+    IF STAGE_TILE_STRIPS
+    ld a,2
+    ld (stage_command+3),a
+    ENDIF
+    ld hl,column_left
+    dec (hl)
+    dec (hl)
+    ld a,(column_y)
+    add a,2
+    ld hl,Stage_ColumnEnd
+    cp (hl)
+    jr nz,.column_cursor
+    ld a,(Stage_ColumnTop)
+.column_cursor:
+    ld (column_y),a
+    scf
+    ret
+.no:
+    or a
+    ret
+Stage_FlowerSources:
+    INCBIN "flower-sources.bin"
+Stage_FlowerVerticalSources:
+    INCBIN "flower-vertical-sources.bin"
+    ENDIF
+    IF STAGE_SOLID_RUNS
 ; Adjacent exact solid tiles share one fill command. Stop at owner/texture,
 ; queue wrap, world bounds and the physical 256-pixel page boundary.
 Stage_SolidTile:
@@ -1045,6 +1255,15 @@ Stage_SolidTile:
     ENDIF
     cp e
     jp nz,.emit
+    IF SMOKE_RUNTIME
+    push bc
+    ld b,d
+    ld a,(tile_y)
+    ld c,a
+    call Smoke_Batchable
+    pop bc
+    jp nz,.emit
+    ENDIF
     ld a,(row_left)
     dec a
     ld (row_left),a
@@ -1095,6 +1314,15 @@ Stage_SolidTile:
     ENDIF
     cp e
     jp nz,.emit
+    IF SMOKE_RUNTIME
+    push bc
+    ld c,d
+    ld a,(tile_x)
+    ld b,a
+    call Smoke_Batchable
+    pop bc
+    jp nz,.emit
+    ENDIF
     ld a,(column_left)
     dec a
     ld (column_left),a
@@ -1172,13 +1400,17 @@ stage_cache_bounds:
     ld hl,(world_y)
     call stage_div8
     ld a,l
-    sub 3
+    sub STAGE_CACHE_TOP_GUARD
     ld (cache_top),a
     ret
 stage_landmarks:
     INCBIN "stage-landmarks.bin"
 
 stage_radar:
+    IF STAGE_RADAR_BANK
+    ld a,STAGE_RADAR_BANK
+    ld ($7000),a
+    ENDIF
     ; Coordinate tables keep projection out of the pre-header raster budget.
     ld hl,(world_x)
     ld de,VIEWPORT_HALF
@@ -1200,10 +1432,15 @@ stage_radar:
     pop af
     ld b,a
     jp HUD_SetPlayer
+    IF STAGE_RADAR_BANK
+stage_radar_x EQU $8000
+stage_radar_y EQU $8000+STAGE_WIDTH-VIEWPORT_WIDTH+1
+    ELSE
 stage_radar_x:
     INCBIN "stage-radar-x.bin"
 stage_radar_y:
     INCBIN "stage-radar-y.bin"
+    ENDIF
 
     IF TILE_MODE
     INCLUDE "tilemap.inc"

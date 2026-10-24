@@ -1,5 +1,6 @@
-; Full-copy diagnostic, deliberately separate from the accepted fast renderer.
-; This tests the whole 48x80 opaque overlay cost, including terrain restoration.
+; Experimental 48x80 opaque radar, deliberately separate from the accepted HUD.
+; Both byte phases use HMMM; odd X restores the two outside edge pixels.
+; Full save-under copies remain expensive: do not assume raster acceptance.
 RadarBitmap_X EQU $c740
 RadarBitmap_Y EQU $c742
 RadarBitmap_Valid EQU $c743
@@ -7,10 +8,17 @@ RadarBitmap_Last EQU $c744
 RadarBitmap_Bank EQU $c748
 RadarBitmap_Rows EQU $c749
 RadarBitmap_Work EQU $c74a
+RadarBitmap_Colors EQU $c74c
+RadarBitmap_UploadWidth EQU $c74f
+RadarBitmap_Flags EQU $c750
 
 BitmapRadar_FrameRestore:
     xor a
     ld (RadarBitmap_Work),a
+    call BitmapRadar_Base
+    ld a,(RadarBitmap_Work)
+    or a
+    jr nz,.changed
     ld a,(RadarBitmap_Valid)
     or a
     jr z,.changed
@@ -41,17 +49,6 @@ BitmapRadar_FrameRestore:
     ld a,c
     cp (hl)
     jr nz,.changed
-    ld a,(hud_player_x)
-    ld b,a
-    ld a,(hud_player_y)
-    call BitmapRadar_Project
-    ld hl,RadarBitmap_Last+2
-    ld a,b
-    cp (hl)
-    jr nz,.changed
-    inc hl
-    ld a,c
-    cp (hl)
     ret z
 .changed:
     ld a,1
@@ -66,6 +63,11 @@ BitmapRadar_FrameDraw:
 BitmapRadar_Init:
     xor a
     ld (RadarBitmap_Valid),a
+    ld hl,RadarBitmap_Flags
+    ld de,RadarBitmap_Flags+1
+    ld bc,39
+    ld (hl),254
+    ldir
     ld a,255
     ld hl,RadarBitmap_Last
     ld (hl),a
@@ -86,6 +88,26 @@ BitmapRadar_Upload:
     ld a,PLAYER_DATA_BANK
     ld ($7000),a
     ld hl,$8e00
+    ld a,24
+    ld (RadarBitmap_UploadWidth),a
+    push de
+    call BitmapRadar_UploadRows
+    pop de
+    ld a,e
+    add a,32                ; shifted 50-pixel phase at X64, same Y
+    ld e,a
+    ld a,25
+    ld (RadarBitmap_UploadWidth),a
+    ; The source pointer follows the unshifted 1920 bytes.
+    ; Restore the original page after the first upload crosses a 16KiB bank.
+    ld a,d
+    cp $78
+    ld a,5
+    jr nz,.bank
+    inc a
+.bank:
+    ld (RadarBitmap_Bank),a
+BitmapRadar_UploadRows:
     ld a,80
     ld (RadarBitmap_Rows),a
 .row:
@@ -96,7 +118,9 @@ BitmapRadar_Upload:
     out ($99),a
     ld a,d
     out ($99),a
-    ld bc,$1898
+    ld a,(RadarBitmap_UploadWidth)
+    ld b,a
+    ld c,$98
     otir
     ld a,e
     add a,128
@@ -133,6 +157,7 @@ BitmapRadar_Restore:
     ld (RadarBitmap_Valid),a
     ret
 BitmapRadar_Draw:
+    call BitmapRadar_Base
     call BitmapRadar_Points
     ld hl,(world_x)
     ld de,RADAR_X-8
@@ -157,9 +182,42 @@ BitmapRadar_Draw:
     ld (Blit_Width),a
     xor a
     ld (Blit_Save),a
-    ld a,$90                ; IMP includes palette zero: radar is fully opaque.
+    ld a,(Blit_X)
+    and 1
+    jr z,.even
+    ld hl,(Blit_X)
+    dec hl
+    ld (Blit_X),hl
+    ld hl,64
+    ld (Blit_LinearX),hl
+    ld a,50
+    ld (Blit_Width),a
+.even:
+    ld a,$d0                ; Full bytes, using the matching source phase.
     ld (Blit_Code),a
     call Bitmap_Rect
+    ld a,(RadarBitmap_X)
+    and 1
+    jr z,.done
+    ; HMMM's odd phase includes two neighboring pixels. Restore both from the
+    ; freshly saved background rather than overwriting the surrounding maze.
+    ld a,1
+    ld (Blit_Width),a
+    ld hl,800
+    ld (Blit_LinearY),hl
+    ld hl,0
+    ld (Blit_LinearX),hl
+    ld a,$90
+    ld (Blit_Code),a
+    call Bitmap_Rect
+    ld hl,(Blit_X)
+    ld de,49
+    add hl,de
+    ld (Blit_X),hl
+    ld hl,49
+    ld (Blit_LinearX),hl
+    call Bitmap_Rect
+.done:
     ld a,1
     ld (RadarBitmap_Valid),a
     ret
@@ -182,12 +240,10 @@ BitmapRadar_Parameters:
     ld (Blit_Code),a
     ret
 
-; Restore both old marker footprints from the pristine source, then add red
-; enemy / black player in that priority order. No game sprites are involved.
+; Only the enemy lives in the bitmap. The player's blinking dot remains a
+; separate sprite so it never makes the large bitmap dirty by itself.
 BitmapRadar_Points:
     ld hl,RadarBitmap_Last
-    call BitmapRadar_ClearPoint
-    ld hl,RadarBitmap_Last+2
     call BitmapRadar_ClearPoint
     ld a,(hud_enemy_x)
     ld b,a
@@ -198,17 +254,159 @@ BitmapRadar_Points:
     ld a,c
     ld (RadarBitmap_Last+1),a
     ld a,RED
-    call BitmapRadar_FillPoint
+    jp BitmapRadar_FillPoint
+
+; Rebuild the off-screen base only when the public flag list changes. This
+; includes collection, life restart and hidden flags, without sprite cells.
+BitmapRadar_Base:
+    ld hl,hud_flags
+    ld de,RadarBitmap_Flags
+    ld b,40
+.compare:
+    ld a,(de)
+    cp (hl)
+    jr nz,.changed
+    inc hl
+    inc de
+    djnz .compare
+    ret
+.changed:
+    ld hl,hud_flags
+    ld de,RadarBitmap_Flags
+    ld bc,40
+    ldir
+    ld a,1
+    ld (RadarBitmap_Work),a
+    ld hl,Blit_Packet
+    ld de,Blit_Packet+1
+    ld bc,14
+    ld (hl),0
+    ldir
+    ld hl,880
+    ld (Blit_Packet+6),hl
+    ld a,114               ; both phases, including their untouched padding
+    ld (Blit_Packet+8),a
+    ld a,80
+    ld (Blit_Packet+10),a
+    ld a,RADAR_BLUE*17
+    ld (Blit_Packet+12),a
+    ld a,$c0
+    ld (Blit_Packet+14),a
+    call BitmapRadar_Submit
+    ld hl,RadarBitmap_Flags
+    ld d,20
+.flag:
+    push de
+    push hl
+    ld b,(hl)
+    inc hl
+    ld a,(hl)
+    call BitmapRadar_Project
+    ld a,b
+    cp 255
+    jr z,.next
+    call BitmapRadar_PointPacket
+    ld hl,(Blit_Packet+6)
+    ld de,176
+    add hl,de
+    ld (Blit_Packet+6),hl
+    ld a,WHITE
+    ld (Blit_Packet+12),a
+    ld a,$80
+    ld (Blit_Packet+14),a
+    call BitmapRadar_FillPair
+.next:
+    pop hl
+    inc hl
+    inc hl
+    pop de
+    dec d
+    jr nz,.flag
+    ld hl,0
+    ld (Blit_Packet),hl
+    ld (Blit_Packet+4),hl
+    ld hl,880
+    ld (Blit_Packet+2),hl
+    ld hl,704
+    ld (Blit_Packet+6),hl
+    ld hl,114
+    ld (Blit_Packet+8),hl
+    ld hl,80
+    ld (Blit_Packet+10),hl
+    ld a,$d0
+    ld (Blit_Packet+14),a
+    call BitmapRadar_Submit
+    ld a,255
+    ld (RadarBitmap_Last),a
+    ld (RadarBitmap_Last+1),a
+    ret
+
+; HL=SAT entry, returned at the following fuel entry. Native eight-tick
+; white/black cadence and shifted pattern avoid the Y=216 terminator exactly.
+BitmapRadar_Player:
+    push hl
     ld a,(hud_player_x)
     ld b,a
     ld a,(hud_player_y)
     call BitmapRadar_Project
+    pop hl
     ld a,b
-    ld (RadarBitmap_Last+2),a
-    ld a,c
-    ld (RadarBitmap_Last+3),a
+    cp 255
+    jr z,.hidden
+    ld a,(scroll_y)
+    add a,RADAR_Y-1
+    add a,c
+    jr .position
+.hidden:
+    ld a,(scroll_y)
+    add a,211
+.position:
+    ld c,116
+    cp 216
+    jr nz,.safe
+    dec a
+    ld c,120
+.safe:
+    ld (hl),a
+    inc hl
+    ld a,b
+    add a,RADAR_X
+    ld (hl),a
+    inc hl
+    ld (hl),c
+    inc hl
+    ld (hl),0
+    inc hl
+    push hl
+    ld a,(player_native_ticks)
+    and 8
+    ld a,WHITE
+    jr z,.color
     ld a,BLACK
-    jp BitmapRadar_FillPoint
+.color:
+    or $20
+    ld hl,RadarBitmap_Colors
+    ld (hl),a
+    inc hl
+    ld (hl),a
+    inc hl
+    ld (hl),a
+    ld hl,RadarBitmap_Colors
+    IF INCREMENTAL_STAGE >= 9
+    ld de,$7400
+    ld b,3
+    call Sprite_Upload
+    ELSE
+    vdp_write 14,7
+    xor a
+    out ($99),a
+    ld a,$74
+    out ($99),a
+    ld bc,$0398
+    otir
+    ENDIF
+    pop hl
+    ret
 BitmapRadar_Project:
     ; B=x, A=old 58-pixel Y. Preserve the original two-pixel marker dimensions.
     ld l,a
@@ -236,7 +434,11 @@ BitmapRadar_ClearPoint:
     ld (Blit_Packet),a
     ld a,$90
     ld (Blit_Packet+14),a
-    jp BitmapRadar_Submit
+    call BitmapRadar_Submit
+    ld a,(Blit_Packet)
+    add a,65
+    ld (Blit_Packet),a
+    jr BitmapRadar_SecondPoint
 BitmapRadar_FillPoint:
     ld e,a
     ld a,b
@@ -249,6 +451,12 @@ BitmapRadar_FillPoint:
     ld (Blit_Packet+12),a
     ld a,$80
     ld (Blit_Packet+14),a
+BitmapRadar_FillPair:
+    call BitmapRadar_Submit
+BitmapRadar_SecondPoint:
+    ld a,(Blit_Packet+4)
+    add a,65
+    ld (Blit_Packet+4),a
     jp BitmapRadar_Submit
 BitmapRadar_PointPacket:
     push bc

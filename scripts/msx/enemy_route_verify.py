@@ -16,6 +16,7 @@ from .lives_route_verify import check_cache_frames
 def verify(root,args):
     bundle=args.rom.parent;verify_manifest(bundle);info=read_json(bundle/'build.json')
     population=info.get('enemy_count',1);slots=info['sprites']['total_slots']
+    sat_address='[expr {128512-2048*[debug read memory 0xc7c1]}]' if info.get('outline_flicker') else '128512'
     fuel_slot=next(iter(info['sprites']['life_reuses_fuel_slots']),0)
     if not info.get('enemy_contact_applies_death'):raise ValueError('Enemy route needs complete stage 08')
     out=destination(root,args.output);require_ignored(root,[out/'motion.bin']);out.mkdir(parents=True)
@@ -38,18 +39,22 @@ def verify(root,args):
         ' puts -nonewline $::motion_out [debug read_block memory 0xc0b0 4];puts -nonewline $::motion_out [debug read_block memory 0xc500 11]',
         ' puts -nonewline $::motion_out [debug read_block memory 0xc490 5];puts -nonewline $::motion_out [debug read_block memory 0xc5c0 3]',
         f' puts -nonewline $::presentation_out [debug read_block memory {info.get("death",{}).get("display_state_address",0xc490)} 1]',
+        *([' puts -nonewline $::smoke_display_out [debug read_block memory 0xd300 2048]'] if (info.get('smoke_component') or {}).get('runtime_enabled') else []),
+        *([' puts -nonewline $::smoke_counts_out [debug read_block memory 0xdb00 32]'] if (info.get('smoke_component') or {}).get('publication_counts_address') else []),
+        *([' puts -nonewline $::smoke_rows_out [debug read_block memory 0xdb20 32]'] if (info.get('smoke_component') or {}).get('logical_row_presence_address') else []),
+        *([f' puts -nonewline $::flag_display_out [debug read_block memory {info["flag_display_state_address"]} 11]'] if info.get('flag_display_state_address') else []),
         *([f' puts -nonewline $::radar_queue_out [debug read_block memory {info["hud_style"]["radar_dirty_state_address"]} 2];puts -nonewline $::radar_queue_out [debug read_block memory {syms["hud_flags_dirty"]} 2]'] if info.get('hud_style',{}).get('radar_dirty_state_address') else []),
         *([f' puts -nonewline $::radar_queue_out [debug read_block memory {info["hud_style"]["radar_ready_state_address"]} 2]'] if info.get('hud_style',{}).get('radar_ready_state_address') else []),
         ' puts -nonewline $::cache_out [debug read_block VRAM 0 65536]','}',
         'proc occupancy {} {',
-        f' binary scan [debug read_block VRAM 128512 {slots*4}] cu* attrs',
+        f' binary scan [debug read_block VRAM {sat_address} {slots*4}] cu* attrs',
         ' binary scan [debug read_block memory 0xc290 12] cu* footer;set sy [debug read memory 0xc01c];array set counts {};set peak 0',
         f' for {{set slot 0}} {{$slot<{slots}}} {{incr slot}} {{',
         '  foreach band {0 1} {',
         f'   set ay [lindex $attrs [expr {{$slot*4}}]];if {{$band && $slot>={fuel_slot} && $slot<={fuel_slot+2} && {int(info["hud_enabled"])}}} {{set ay [lindex $footer [expr {{($slot-{fuel_slot})*4}}]]}}',
         f'   if {{$ay==216}} {{error "Enemy SAT truncated before slot {slots}"}}',
         '   for {set row 0} {$row<16} {incr row} {set y [expr {($ay+1-$sy+$row)&255}];if {$y<11 || $y>=212 || ($band && $y<176) || (!$band && $y>=176)} {continue};if {![info exists counts($y)]} {set counts($y) 0};incr counts($y);if {$counts($y)>$peak} {set peak $counts($y)}}','  }',' }',
-        f' if {{$peak>8 && {int(not bool(info.get("sprite_flicker")))}}} {{',
+        f' if {{$peak>8 && {int(not bool(info.get("sprite_flicker") or info.get("allow_sprite_overflow")))}}} {{',
         '  set f [open [file join $::out sprite-budget-failure.txt] w];puts $f "frame $::frames scroll $sy peak $peak";puts $f "SAT $attrs";puts $f "footer $footer";foreach y [lsort -integer [array names counts]] {if {$counts($y)>8} {puts $f "row $y count $counts($y)"}};close $f',
         '  set f [open [file join $::out sprite-budget-failure.state] wb];puts -nonewline $f [debug read_block memory 0xc000 12288];close $f',
         '  error "Enemy sprite-line budget exceeded: $peak"',' };puts $::occupancy_out "$::frames $peak"','}',
@@ -117,6 +122,17 @@ def verify(root,args):
         'set VDP.too_fast_vram_access_callback {puts stderr "Enemy route VRAM timing violation";exit 2}',
         'after time 90 {puts stderr "Enemy route timeout";exit 2}']
     lines.insert(0,f'set component_out [open {tcl(out/"components.tsv")} w]')
+    if (info.get('smoke_component') or {}).get('publication_counts_address'):
+        lines.insert(0,f'set smoke_counts_out [open {tcl(out/"smoke-counts.bin")} wb]')
+    if (info.get('smoke_component') or {}).get('logical_row_presence_address'):
+        lines.insert(0,f'set smoke_rows_out [open {tcl(out/"smoke-native-rows.bin")} wb]')
+        lines=[line.replace('record stop;exit 0','close $::smoke_rows_out;record stop;exit 0') for line in lines]
+    if (info.get('smoke_component') or {}).get('runtime_enabled'):
+        lines.insert(0,f'set smoke_display_out [open {tcl(out/"smoke-display.bin")} wb]')
+        lines=[line.replace('record stop;exit 0','close $::smoke_display_out;record stop;exit 0') for line in lines]
+    if info.get('flag_display_state_address'):
+        lines.insert(0,f'set flag_display_out [open {tcl(out/"flag-display.bin")} wb]')
+        lines=[line.replace('record stop;exit 0','close $::flag_display_out;record stop;exit 0') for line in lines]
     pairs=[('ram_prepare','main.position','Enemy_AfterPrepare'),
            ('actors','Player_Draw','HUD_PrepareFrame'),
            ('early','Player_AdvanceEarly',next(name for name in syms if name.endswith('.split_wait'))),
@@ -143,6 +159,8 @@ def verify(root,args):
             ' set ::contact_input "$dx $dy $ptr $flag"']
         lines=[line.replace('[debug read memory 0xe24e]!=1',f'[debug read memory 0xe24e]!={population}') for line in lines]
     lines=[line.replace('after frame {exit 0}','after frame {record stop;exit 0}') for line in lines]
+    if info.get('flag_display_state_address'):
+        lines=[line.replace('record stop;exit 0','close $::flag_display_out;record stop;exit 0') for line in lines]
     lines.append(scanout_recording_tcl(out,syms['startup_mode']))
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n} problem]} {puts stderr $problem;exit 2}\n')
     inputs=input_records(validate_roms(root/'references/roms/nrallyx',load_metadata()))
@@ -157,6 +175,7 @@ def verify(root,args):
 
 def analyze(root,args,out,inputs,bios):
     info=read_json(args.rom.parent/'build.json')
+    slots=info['sprites']['total_slots']
     ticks=[list(map(int,r.split())) for r in (out/'ticks.bin').read_text().splitlines()]
     dead=[r for r in ticks if r[1]]
     if not dead or dead[0][2]!=0 or [r[2] for r in dead[1:]]!=list(range(1,121)):
@@ -171,7 +190,7 @@ def analyze(root,args,out,inputs,bios):
         radar_queue=queue_metrics(out/'radar_queue.bin',frames,info['hud_style']['radar_pending_refresh_limit'],3 if info['hud_style'].get('radar_ready_state_address') else 2)
     events=[r.split() for r in (out/'events.bin').read_text().splitlines()]
     occupancy=[list(map(int,r.split())) for r in (out/'occupancy.bin').read_text().splitlines()]
-    allowed_candidates=slots if info.get('sprite_flicker') else 8
+    allowed_candidates=slots if info.get('sprite_flicker') or info.get('allow_sprite_overflow') else 8
     if len(occupancy)!=frames or [r[0] for r in occupancy]!=list(range(frames)) or any(not 0<=r[1]<=allowed_candidates for r in occupancy):
         raise ValueError('Missing continuous sprite-line occupancy evidence')
     if sum(r[1]=='pause' and r[5]=='1' for r in events)!=40:raise ValueError('Enemy pause proof incomplete')

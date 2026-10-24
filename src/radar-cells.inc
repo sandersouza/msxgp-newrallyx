@@ -71,7 +71,7 @@ Radar_Init:
     inc hl
     djnz .last
     xor a
-    IF ENEMY_COUNT >= 2
+    IF ENEMY_COUNT >= 2 || SMOKE_RUNTIME
     ld (Radar_DeferAge),a
     ld (Radar_PublishAge),a
     ENDIF
@@ -184,7 +184,7 @@ Radar_PrepareQueued:
     ld a,(paused)
     or a
     jr nz,.budget_ready
-    IF ENEMY_COUNT >= 2 && !STAGE_TILE_STRIPS
+    IF (ENEMY_COUNT >= 2 && !STAGE_TILE_STRIPS) || SMOKE_RUNTIME
     ; Let terrain catch up before optional marker composition. Dirty markers
     ; remain queued and retain the existing sixteen-refresh acceptance limit.
     ld a,(player_steps)
@@ -208,7 +208,7 @@ Radar_PrepareQueued:
     ld a,(player_steps)
     cp 2
     jr nz,.budget_ready
-    IF ENEMY_COUNT >= 2 && !STAGE_TILE_STRIPS
+    IF (ENEMY_COUNT >= 2 && !STAGE_TILE_STRIPS) || SMOKE_RUNTIME
     jr .defer
 .pressure:
     ld a,(Radar_DeferAge)
@@ -250,7 +250,7 @@ Radar_PrepareQueued:
     rr l
     jr nc,.skip
     push hl
-    IF ENEMY_COUNT >= 2
+    IF ENEMY_COUNT >= 2 || SMOKE_RUNTIME
     xor a
     ld (Radar_DeferAge),a
     ENDIF
@@ -280,7 +280,7 @@ Radar_PrepareQueued:
 ; The same pending mask determines tail reservation and actual composition.
 Radar_DirtyMask:
     ld hl,(Radar_Dirty)
-    IF STAGE_TILE_STRIPS
+    IF STAGE_TILE_STRIPS && !SMOKE_RUNTIME
     ; A just-uploaded cell still owns its staged metadata until next-frame
     ; commit. Tail composition must not overwrite that display snapshot.
     ld a,(Radar_PendingCell)
@@ -314,7 +314,7 @@ Radar_DirtyMask:
     or l
     ret
 
-    IF STAGE_TILE_STRIPS
+    IF STAGE_TILE_STRIPS && !SMOKE_RUNTIME
 Radar_TailBudget:
     xor a
     ld (Radar_TailWork),a
@@ -583,6 +583,15 @@ Radar_RebuildBase:
 Radar_FlagVisible:
     cp 255
     jr z,.hidden
+    IF HUD_ALERTS
+    cp RADAR_SPECIAL_FLAG_OFFSET
+    jr nz,.ordinary
+    ld a,(radar_clock)
+    and 32
+    jr nz,.hidden
+    ld a,RADAR_SPECIAL_FLAG_OFFSET
+.ordinary:
+    ENDIF
     push hl
     ld l,a
     ld h,0
@@ -767,7 +776,14 @@ Radar_Commit:
 ; A cell is uploaded only after its last raster line. The CPU state that
 ; describes the visible points advances at the next frame boundary.
 Radar_WaitPublish:
-    IF STAGE_TILE_STRIPS
+    IF PLAYER_FAST_BLITTER
+    ; Retain terrain priority in this unaccepted integration experiment.
+    ld a,(row_left)
+    ld hl,column_left
+    or (hl)
+    ret nz
+    ENDIF
+    IF STAGE_TILE_STRIPS || SMOKE_RUNTIME
     ld a,(Stage_GuardClosed)
     or a
     ret nz                  ; A late native tick may already have crossed VBlank.
@@ -776,7 +792,7 @@ Radar_WaitPublish:
     ld a,h
     or l
     ret z
-    IF ENEMY_COUNT >= 2
+    IF ENEMY_COUNT >= 2 || SMOKE_RUNTIME
     ld a,(Radar_Initializing)
     or a
     jr nz,.wait
@@ -797,7 +813,7 @@ Radar_WaitPublish:
     ENDIF
 .wait:
     di
-    IF STAGE_TILE_STRIPS
+    IF STAGE_TILE_STRIPS || SMOKE_RUNTIME
     ld a,(Stage_GuardClosed)
     or a
     ret nz                  ; Never sleep into the next frame's radar window.
@@ -863,7 +879,7 @@ Radar_PublishReady:
     push hl
     ld a,(Radar_PublishCell)
     ld (hud_cell),a
-    IF ENEMY_COUNT >= 2
+    IF ENEMY_COUNT >= 2 || SMOKE_RUNTIME
     xor a
     ld (Radar_PublishAge),a
     ENDIF

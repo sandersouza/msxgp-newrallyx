@@ -1,8 +1,213 @@
 # Local test checkpoints
 
-## Current test: independent blinking player radar sprite
+## Approved session delivery
 
-`make run LATEST=1` selects `11-r09-player-dot-50-v115`. One original enemy,
+`make run LATEST=1` selects `11-r12-smoke-irq-v260`. Press **5** for credit and **1**
+to start. Arrows/joystick1 steer; **Space**, Ctrl or triggerA releases smoke;
+**P** pauses; Home resets. The full HUD stays enabled. Fuel below six of sixty
+native units turns red; exactly10% remains yellow. The S radar marker alternates
+visibility every32 gameplay refreshes, with no additional sprites. The life
+icon retains its yellow silhouette and black outline. Three footer sprites reuse the
+three fuel slots, so peak allocation remains20 with twelve free.
+
+The four-way input gate prioritizes the newest held direction. Corner protection
+rejects a wall-center position without discarding a newly selected escape direction.
+Fuel patterns queue in RAM and publish on VBlank; the L route checks 95 post-bonus
+refreshes and restores the displayed amount after one refresh. Numeric publication,
+input preparation and cache calculations keep interrupts serviceable. Only the
+scroll-register snapshot and VDP transactions remain atomic.
+
+The smoke regression keeps queue selection and publication bookkeeping
+interruptible, including the RAM checks following the final VDP command. Smoke
+row batching yields to the per-tile explosion source while a death effect is
+active. A rejected corner step retains the original perpendicular centering
+decision, allowing escape during repeated smoke/multi-key stress.
+
+Validation: two 16,000-refresh multi-key runs, including 477 Space smoke
+placements, 1,193 complete smoke-route cache states and 95 full RGB images
+(88 with settled smoke). Another L route passes 329 full RGB images; the
+complete first-round session passes 3,606 cache states/44 gameplay RGB/2 menus.
+All observed header reservations stay in their refresh; standard clocks and
+hardware sprite limits remain enabled. See [the delivery notes](completion-integration-plan.md).
+
+The approved reference alias is `make run CHECKPOINT=11-r12-approved-v260`.
+Plain `make build`/`make run` also select this session. The final delivery suite
+passes all 337 authored unit tests; the fresh default ROM is byte-identical to
+the approved v260 cartridge.
+
+## Previous session candidate
+
+`make run CHECKPOINT=11-r12-session-v229` selects the previous candidate, SHA-256
+`db1c96881666b54e3ed7fcda39ee8029bbde76aac133b78f1ed27e78ff2e034e`.
+Press **5** for credit and **1** to start. Arrows or joystick1 steer, Ctrl or
+triggerA releases smoke, Space pauses and Home resets the development run.
+Original maze graphics, complete car sprites and the full sprite HUD/radar
+remain. The first normal round ends with the source fuel bonus and an explicit
+clear screen; another credit/start begins a new game with its high score retained.
+Game-over screens disable radar/fuel/car sprites. Rebuild with `make build STAGE=12`.
+
+The real keyboard route passes 3,576 full cache states, 44 complete gameplay
+RGB images, two full menu RGB images and 197 exact original bonus ticks, then
+starts a fresh game. A separate keyboard enemy-pursuit route reaches all three
+actual deaths, original 120/120/96-tick holds and the actual game-over screen.
+UI edge cases pass five full RGB images; the input adapter passes 144 emulated
+joystick/output/keyboard cases and nine complete native gameplay-frame pairs
+equal to keyboard input. All 334 unit tests pass.
+
+Cache backpressure holds all native clocks together on 19/3,576 observed
+refreshes (0.53%), never consecutively in this route. Main-start median is
+19.937 ms, p95 20.857 ms and maximum 39.873 ms. Original pixels/rules remain;
+small timing concessions are explicit, while exact-cadence diagnostics remain
+failing. Later rounds, challenge stages, two players, sound and physical MSX/
+controller validation are outside this candidate. Twenty sprite entries leave
+twelve free; real scanline culling remains enabled. See the
+[full validation and reproduction record](completion-integration-plan.md).
+
+The user approved v260 on 2026-10-24. Plain `make build` now selects Stage12;
+`newrallyx.rom` and LATEST reproduce that approved ROM. Stage8/9 references and
+all named historical checkpoints remain available. Entries below retain their
+historical controls, timing results and default-build decisions.
+
+## Preserved test: original graphics and coherent first-round completion
+
+`make run CHECKPOINT=11-r11-coherent-v207` selects experimental first-round v207, SHA-256
+`2d6799cbc4c7dc94a05b0c275b7fb5c78404485146a26496683dfb6fae458d70`.
+Arrows steer, Ctrl releases smoke, Space pauses and Home resets. Original
+scenery colors, complete sprite cars, sprite radar and HUD remain enabled.
+The initial normal round uses its original rock-free board. Ten flags lead to
+the original remaining-fuel bonus and a stopped segment; credit/start UI is
+being implemented separately. Rebuild with `make build STAGE=11`.
+
+The complete keyboard route passes 3,582 visible-cache states, 44 full RGB
+images, 197 exact original bonus ticks and two 40-refresh pauses. When hidden
+cache jobs approach the viewport, all native simulation clocks hold together
+for a refresh while rendering catches up. This occurred on 13/3,582 refreshes
+(0.36%), at most one consecutively; motion/tick freeze is checked independently.
+Main median is 19.937 ms, p95 20.855 ms, maximum 46.288 ms. Exact cadence still
+fails; the user permits small measured timing concessions, preserving graphics.
+
+`make run CHECKPOINT=11-r10-coherent-v207` retains the two-rock test fixture.
+Repeated smoke, rock death/restart, pause and Home pass 1,812 visible-cache
+states, 59 full RGB images and 1,984 exact original smoke calls. Cache holds
+occur on 41/1,812 refreshes (2.26%), at most three consecutively. Components
+pass 1,254 original smoke cases, 490 flag/cloud overlaps, 40 publication-row
+canaries, 960 queue cases and 512 complete VRAM copy canaries. Rebuild with
+`make build STAGE=10`. No additional sprites or graphical simplification.
+
+These earlier builds were evaluation candidates while v115 remained the default.
+Older timing and quality experiments remain archived below.
+
+## Archived test: original keyboard smoke v171
+
+`make run CHECKPOINT=11-r10-smoke-v171` selects experimental smoke v171, SHA-256
+`1a95221238b3ddd501e82d74d6572f696d42b3e463fc45d8d6eb010a79d4c829`.
+Arrows steer; **Ctrl** releases smoke; Space pauses; Home resets. Original
+debounce, three-cloud request, fuel charge and 136-tick enemy stun/recovery
+are active. Clouds use nine original bitmap tiles with zero extra sprites.
+Complete sprite cars, normal sprite radar and the HUD remain; 20 SAT entries
+are used, 12 free. Rebuild with `make build STAGE=10`.
+
+Keyboard proof: 1,452 complete cache states, 47 full RGB images and all 1,712
+live smoke calls match independent original replay. Components pass 1,254
+native cases, 490 original flag/cloud overlaps, 40 publication-row canaries
+and 480 queue wrap/dedup/full cases. All 328 unit tests pass. Main-start median
+19.936612 ms, p95 20.560993 ms, maximum 28.146873 ms; strict timing acceptance
+is still false. Raster phases have zero missed refreshes. See
+[scope and remaining checks](smoke-integration-plan.md). The accepted default
+ROM remains v115; the new smoke cartridge is an evaluation checkpoint.
+
+## Population test: two complete sprite enemies
+
+`make run CHECKPOINT=11-r09-two-gameplay-v152` selects the population test, SHA-256
+`9989a2de827a1fffe362dd2b0a37e29df8afe1a2b60bf130910247bc619f31b8`.
+Two original enemies retain complete two-plane cars, including windows; the
+normal sprite radar and HUD stay enabled at 50 Hz. The second radar point is
+initialized hidden before the first map composition, preventing startup ghost
+ink. Twenty-two SAT entries leave ten free. The measured peak is nine
+candidates, with overflow on 15 of 1,138 sampled refreshes and hardware limits
+enabled. User decision: this culling does not block gameplay integration.
+
+The natural keyboard route passes 1,138 entire visible-cache states, 28 full
+RGB images, 1,206 contact comparisons, pause/explosion/120-tick hold/restart
+and Home. Native logic passes 2,643 exact original states; presentation passes
+3,856 simultaneous-car vectors. Main intervals: median 19.936612 ms,
+p95 20.499812 ms, maximum 33.312893 ms. The unchanged timing gate still fails;
+this is an experimental test checkpoint, not performance acceptance.
+Sealed evidence: `references/build/issue11-population-evidence-v154`.
+Rebuild with `make build STAGE=9 ENEMIES=2`.
+
+`11-r09-three-gameplay-v153` is diagnostic only: 2,643 native states and
+5,784 presentation vectors pass, including its independent third radar point
+and car cache ownership. It uses 25 SAT entries/seven free. The moving v148
+predecessor fails cache at frame 219, bottom visible row 199; reducing the
+invisible cache to 36 columns in v150 still fails at frame 222. Neither
+three-enemy moving candidate is accepted or selected as latest. Their failures
+are distinct from normal sprite-line culling.
+
+## Accepted reference: restored complete sprite cars
+
+`make run` currently retains the accepted
+`11-r09-player-dot-50-v115`. Its unchanged SHA-256 is:
+`b2868101cb54555503dd787274b252a952a73ddd5381df5d2d54803a0e45d3d8`.
+This restores the original full car drawing, including its window, sprite
+radar, full HUD and one enemy at 50 Hz.
+
+## Rejected experiment: independent outlines
+
+The user rejected `11-outline-flicker-60-v144` after observing slow movement,
+broken scenery and missing upper car window detail. It is not `LATEST`.
+The majority-color conversion merged body/window colors and is unsuitable;
+future priority tests must keep the original dependent car planes together.
+The following measurements are historical component/stationary evidence only.
+
+`make run CHECKPOINT=11-outline-flicker-60-v144` selects the rejected experiment.
+It starts paused with two enemies deliberately over the sprite radar. Four
+body-first orders share lower priority among independent black car ink and
+radar sprites. Body colors use one majority original ink per row; black pixels
+retain their original geometry and no longer depend on adjacent CC planes.
+The full HUD stays enabled, with 24 entries used/eight free. The hardware
+still selects at most eight sprites per line and stores at most 32 entries.
+
+At 60 Hz, 120 controlled refreshes and ten complete RGB captures pass with
+nine candidates on overloaded lines. Both enemy bodies survive every sampled
+line; both complete contours survive 82.8125%. Buffered table selection avoids
+half-completed color/attribute transactions. All 3,072 transactions pass;
+original native enemy logic passes 2,643 states; 323 unit tests pass.
+
+This is not moving gameplay acceptance. The moving control fails full RGB
+at a death and has about 33.377 ms median navigating main intervals. Space
+releases the fixture into that unaccepted path; Home restores it. Use the
+accepted v115 checkpoint below for normal gameplay. Rebuild with:
+
+```sh
+make build STAGE=9 OUTLINE_FLICKER=1 FLICKER_STRESS=1 HZ=60
+```
+
+See [the flicker evidence](sprite-flicker-experiment.md).
+
+## Preserved rejected experiment: blue bitmap radar
+
+`make run CHECKPOINT=11-r09-radar-blitter-hud-v139` selects the experimental
+`11-r09-radar-blitter-hud-v139`. The car uses two original sprite planes;
+the radar is a borderless 48x80 blue bitmap (equivalent to 3x5 sprites).
+Flags and the red enemy point update in the bitmap. The player's independent
+sprite still alternates white/black every eight native ticks. Fuel is moved
+below the taller radar; the score header remains black. HUD stays enabled.
+Eight slots are allocated (one marker, three fuel/life, two player and two
+enemy), leaving 24 free: twelve fewer than v115.
+
+This checkpoint is **not performance accepted**. A 300-iteration keyboard
+smoke test records approximately 60 ms median main intervals; raster/HUD
+publication remains late. Pixel/restore proofs pass 540 complete 64KiB
+canaries, including both torus wraps, odd X and three flag-list variants.
+The marker passes 1,024 coordinate/color/hidden cases; enemy presentation
+passes 1,928 cases. These are component proofs, not full gameplay acceptance.
+Rebuild with `make build STAGE=9 RADAR_BLITTER=1`.
+See [the experiment and evidence](bitmap-blitter-experiments.md).
+
+## Accepted reference: independent blinking player radar sprite
+
+`make run CHECKPOINT=11-r09-player-dot-50-v115` selects the accepted reference. One original enemy,
 the complete HUD and maze viewport run at 50 Hz, retaining the original
 16.5 ms simulation clock. The radar uses twelve dynamic composite sprites for
 the frame, flags and enemy, plus one higher-priority 2x2 player sprite.
@@ -33,6 +238,17 @@ sixteen-refresh limit.
 Rebuild with `make build STAGE=9`; normal `make build` remains stage 08.
 The two-enemy no-HUD and previous 60 Hz HUD checkpoints remain available below.
 Stage 09 population acceptance, smoke and completion/start remain open.
+
+## Experimental bitmap player with HUD
+
+The current bitmap-player integration is separately testable using
+`make run CHECKPOINT=11-r09-player-blitter-hud-v130`. It keeps the full HUD,
+one enemy and the independent blinking radar point, using 18 sprites with 14
+free. This experimental ROM passes natural-route cache/RGB but fails timing
+and radar backlog; it is not `LATEST`. See
+[the measured blitter integration](bitmap-blitter-experiments.md).
+New gameplay/performance runs require HUD enabled unless the user explicitly
+requests otherwise. The HUD-off results below remain historical references.
 
 ## Preserved two-enemy test without HUD
 
@@ -111,7 +327,7 @@ component passes 540 scene/wrap cases, but full-copy moving performance fails.
 It is not the selected latest build. See [methods, commands and measured
 limitations](bitmap-blitter-experiments.md).
 
-## Active incremental build: stage 08
+## Preserved incremental build: stage 08
 
 `11-r08-enemy-v25` / `11-r08-no-hud-v25` add one original enemy: initialization,
 AI, movement/facing, six-slot virtual visibility, real radar position and contact

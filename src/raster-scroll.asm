@@ -147,6 +147,9 @@ boot:
     ld (Life_Restarting),a
     ENDIF
 startup_mode:
+    IF SESSION_RUNTIME
+    call Session_Init
+    ENDIF
     ld a,1                   ; The default development ROM starts with the car active.
     ld (driving),a
     call show_scene
@@ -171,10 +174,15 @@ main:
     di
     ld a,b
     ld (frame_tick),a
+    IF SESSION_RUNTIME
+    ld a,(Session_State)
+    or a
+    jp nz,Session_Main
+    ENDIF
     IF RASTER_GUARD
     xor a
     ld (Stage_GuardClosed),a
-    IF STAGE_TILE_STRIPS && RADAR_CELLS_ONLY && HUD_ENABLED
+    IF STAGE_TILE_STRIPS && RADAR_CELLS_ONLY && HUD_ENABLED && !SMOKE_RUNTIME
     inc a
     ld (Radar_TailWork),a
     ENDIF
@@ -183,9 +191,18 @@ main:
     ld (marker),a
     ld a,(line_count)
     ld (line_before),a
+    IF SESSION_RUNTIME
+    ei                      ; Keyboard and frame RAM preparation own no VDP latch.
+    nop
+    ENDIF
     call keys
+    IF !SESSION_RUNTIME
     di
+    ENDIF
     IF INCREMENTAL_STAGE >= 9
+    IF PLAYER_FAST_BLITTER || SMOKE_RUNTIME
+    call Flag_Frame
+    ENDIF
     IF RADAR_CELLS_ONLY && HUD_ENABLED
     call Radar_CommitPublished
     ENDIF
@@ -206,6 +223,12 @@ main:
     jr nz,.position
     call Player_Update
 .position:
+    IF SESSION_RUNTIME
+    ld a,1
+    ld (Session_PositionIRQ),a
+    ei                      ; Cache-bound calculations do not own a VDP latch.
+    nop
+    ENDIF
     call stage_position
     IF RADAR_CELLS_ONLY || SPRITE_FLICKER
     ei
@@ -250,7 +273,25 @@ Enemy_AfterPrepare:
     call Player_Patch
     ld b,64
     call Death_Stream
+    IF SMOKE_RUNTIME
+    ; Publish the previous native tick's collection before its scanlines.
+    ; New collections remain visible until the next presentation snapshot.
+    ld b,64
+    call Flag_Stream
+    ENDIF
+    IF PLAYER_FAST_BLITTER
+    ld b,64
+    call Flag_Stream
+    xor a
+    ld (Fuel_HudWork),a
+    call update_fuel        ; Fuel sprites are fetched before the player's band.
+    call Bitmap_Draw        ; Finish this snapshot before advancing simulation.
+    ENDIF
     call Player_AdvanceEarly
+    IF SMOKE_RUNTIME
+    ld b,3                  ; One cloud row, before its central scanlines.
+    call Smoke_Stream       ; Bound burst work; full clouds publish over refreshes.
+    ENDIF
     ld b,64
     call Flag_Stream
     call Score_ReservedFrame
@@ -302,17 +343,17 @@ Enemy_AfterPrepare:
     ENDIF
     ENDIF
     ENDIF
-    IF PLAYER_BLITTER
-    ; The previous player band has passed. Spend the blank interval on VDP
-    ; save/restore/draw rather than extending the visible guard-work phase.
     IF RADAR_BLITTER
     call BitmapRadar_FrameRestore
     ENDIF
+    IF PLAYER_BLITTER && !PLAYER_FAST_BLITTER
+    ; The previous player band has passed. Spend the blank interval on VDP
+    ; save/restore/draw rather than extending the visible guard-work phase.
     call Bitmap_Restore
     call Bitmap_Draw
+    ENDIF
     IF RADAR_BLITTER
     call BitmapRadar_FrameDraw
-    ENDIF
     ENDIF
     ; The numeric HUD lives on a hidden page during the maze. Patch it after
     ; the split, keeping the larger sprite population out of the raster deadline.
@@ -359,7 +400,11 @@ Enemy_AfterPrepare:
     IF !TILE_MODE
     call nz,stage_wait_command
     ENDIF
-    IF STAGE_TILE_STRIPS && RADAR_CELLS_ONLY && HUD_ENABLED
+    IF SESSION_RUNTIME
+    ei                      ; Finished VDP work; fuel/life/session checks are RAM work.
+    nop
+    ENDIF
+    IF STAGE_TILE_STRIPS && RADAR_CELLS_ONLY && HUD_ENABLED && !SMOKE_RUNTIME
     ; The next refresh publishes these payloads in its safe radar window.
     ; Use the tail instead of displacing urgent terrain before scanout.
     call Radar_PrepareTail
@@ -369,6 +414,12 @@ Enemy_AfterPrepare:
     ENDIF
     IF INCREMENTAL_STAGE >= 7
     call Life_Frame
+    ENDIF
+    IF COMPLETION_RUNTIME
+    call Round_Frame
+    ENDIF
+    IF SESSION_RUNTIME
+    call Session_Check
     ENDIF
     ld a,2
     ld (marker),a
@@ -553,6 +604,11 @@ vertical:
     in a,($99)
     and $80
     jp z,irq_return
+    IF SESSION_RUNTIME
+    ld a,(Session_State)
+    or a
+    jp nz,Session_VBlank
+    ENDIF
     IF PLAYER_BLITTER || INCREMENTAL_STAGE >= 9 || TILE_MODE
     ; VBlank is also a hard stop if a late split prevented the earlier guard
     ; comparator from firing. Never carry optional cache work into a new frame.
@@ -567,6 +623,9 @@ vertical:
     ld (Radar_Scanned),a
     ENDIF
     IF HUD_ENABLED
+    IF OUTLINE_FLICKER
+    call Outline_Commit
+    ENDIF
     HUD_VBlankSprites
     ENDIF
     ld b,8
@@ -589,7 +648,11 @@ vertical:
     call register
     ld b,19
     IF INCREMENTAL_STAGE >= 9
+    IF SESSION_RUNTIME
+    ld a,1                    ; Reserve enough lead for a busy lucky-bonus DI tail.
+    ELSE
     ld a,3                    ; Reserve split; wait for font end and line nine.
+    ENDIF
     ELSE
     ld a,7                    ; compare while R23=0, after the last header row
     ENDIF
@@ -631,6 +694,10 @@ register:
     INCLUDE "hud-demo.inc"
 show_scene:
     di
+    IF SESSION_RUNTIME
+    xor a
+    ld (Session_PositionIRQ),a
+    ENDIF
     ld b,0
     ld a,6
     call register
@@ -660,9 +727,9 @@ show_scene:
     ENDIF
     IF PLAYER_BLITTER
     call Bitmap_Init
+    ENDIF
     IF RADAR_BLITTER
     call BitmapRadar_Init
-    ENDIF
     ENDIF
     IF ENEMY_RENDER
     ld a,(driving)
@@ -731,15 +798,18 @@ show_scene:
     call Player_Draw
     IF PLAYER_BLITTER
     call Bitmap_Draw
+    ENDIF
     IF RADAR_BLITTER
     call BitmapRadar_Draw
-    ENDIF
     ENDIF
     IF ENEMY_RENDER
     call Enemy_Draw
     ENDIF
     IF SPRITE_FLICKER
     call Flicker_Publish
+    IF OUTLINE_FLICKER
+    call Outline_Commit
+    ENDIF
     ENDIF
     ld b,15
     ld a,1
@@ -809,7 +879,7 @@ upload:
 
     INCLUDE "hud.inc"
     INCLUDE "player.inc"
-    IF PLAYER_BLITTER
+    IF PLAYER_BLITTER || RADAR_BLITTER
     INCLUDE "bitmap-player.inc"
     ENDIF
     IF RADAR_BLITTER
@@ -830,8 +900,17 @@ upload:
     INCLUDE "fuel.inc"
     INCLUDE "lives.inc"
     INCLUDE "enemy.inc"
+    IF SMOKE_RUNTIME
+    INCLUDE "smoke.inc"
+    ENDIF
+    IF COMPLETION_COMPONENT
+    INCLUDE "completion.inc"
+    ENDIF
     IF RADAR_CELLS_ONLY
     INCLUDE "radar-cells.inc"
+    ENDIF
+    IF SESSION_RUNTIME
+    INCLUDE "session-loader.inc"
     ENDIF
 palette:
     INCBIN "palette.bin"
