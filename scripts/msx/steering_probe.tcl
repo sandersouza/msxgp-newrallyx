@@ -40,4 +40,3 @@ debug set_bp @SHOW_SCENE@ {$::phase eq "game"} {puts $::headers "0 $::n reload [
 after time 600 {puts stderr "Wall stress timeout";exit 2}
 after time 0.02 menu
 } p]} {puts stderr $p;exit 2}
-
