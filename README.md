@@ -35,12 +35,14 @@ The eight-pixel header shows an eight-digit high score and score, the selected
 player and a three-digit round. The life digit shows spare cars, capped at nine.
 A 248x201 maze viewport preserves world coordinates. The original logical tick
 is 16.5 ms. Elapsed-time scheduling, terrain ownership and cached enemy work keep
-the measured simulation at **59.89–60.61 ticks/s across six natural rounds**
+the measured simulation at **57.92–60.61 ticks/s across two eight-round routes**
 on the reference Panasonic, including a seven-enemy challenge. The player and
 fuel share the actual raster scroll latch. Vertical motion is spread over
-physical refreshes, with a four-pixel maximum step and **41–44 visible updates/s**
-during measured continuous vertical movement. Complete foreground snapshots
-average 35–47/s; these are separate measurements, not a 60 FPS claim. Real
+60 Hz physical output, with a four-pixel maximum step and **44–54 visible
+updates/s** during measured continuous vertical movement. Active foreground
+loops exceeding 40 ms remain below 2% in every measured round; complete
+snapshots average 37–50/s. These are separate measurements, not a 60 FPS claim.
+Short native-rate dips and occasional stutters remain. Real
 hardware sprite culling remains enabled. See
 [performance evidence and limits](docs/enemy-rendering-performance.md).
 
@@ -67,12 +69,14 @@ contracts and historical limitations are in the [checkpoint guide](docs/checkpoi
 They do not provide complete-game progression. `NATIVE=1` remains a compatibility
 alias for the bounded selected-routine reference.
 
-Validation uses openMSX 21.0, 50 Hz VDP refresh, a 128 KB RAM mapper and 128 KB
+Validation uses openMSX 21.0, 60 Hz full-game VDP output, a 128 KB RAM mapper and 128 KB
 VRAM. The game detects the Panasonic's factory 5.37 MHz mode for pure CPU work;
 VDP access and raster IRQs use 3.58 MHz. Other machines retain their base clock;
 the reported cadence depends on the factory mode. The launcher uses an isolated FS-A1WSX
 configuration and contributor-supplied BIOS under `references/msxbios/`.
 See [setup](docs/setup.md#machine-and-contributor-supplied-bios).
+Bounded stages retain 50 Hz; `make build HZ=50` explicitly selects that refresh
+for a full-game diagnostic.
 Physical hardware and loaded RGB scanout remain unqualified; the overnight
 automated proofs check native state, timing, VRAM and sprite tables.
 

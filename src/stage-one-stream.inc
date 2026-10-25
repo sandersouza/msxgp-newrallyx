@@ -294,17 +294,34 @@ stage_stream:
 ; Persistent, bounded guard jobs. Both axes use exact atlas copies in driving
 ; mode; the VDP handles pixel transfer while the CPU prepares the next tile.
 stage_stream_driving:
+    IF FULL_GAME
+    xor a
+    ld (Full_CellRejectedValid),a
+    ENDIF
     IF INCREMENTAL_STAGE >= 9
     call Stage_QueuePriority
     ENDIF
     IF RASTER_GUARD
     IF FULL_GAME
+    IF VDP_R9 == $80
+    ld b,4
+    ld a,(Full_CameraBlocked)
+    or a
+    jp nz,.effect_budget
+    ld b,2
+    ld a,(Full_LoopTicks)
+    cp 2
+    jp c,.effect_budget
+    ld b,1                   ; Spread optional copies away from two-tick bursts.
+    jp .effect_budget
+    ELSE
     ld b,1                   ; Keep ordinary prefetch within one presentation frame.
     ld a,(Full_CameraBlocked)
     or a
     jp z,.effect_budget
     ld b,8                   ; Finish an urgent edge instead of repeating holds.
     jp .effect_budget
+    ENDIF
     ELSE
     ld b,64                  ; real raster deadline bounds invisible prefetch
     jp .effect_budget

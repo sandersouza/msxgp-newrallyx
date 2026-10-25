@@ -13,10 +13,12 @@ Full_TurboActive EQU $d2fb
 Full_DirX EQU $d2fc
 Full_DirY EQU $d2fd
 Full_QueueDirty EQU $d2fe
-Full_IdleTicks EQU $d2ff
+Full_LoopTicks EQU $d2ff
 Full_ScrollValid EQU $d2cd
-; Spread batched motion across physical refreshes: two pixels normally, four
-; beyond eight pixels of debt. Do not drain a whole snapshot and then freeze.
+Full_CellRejected EQU $d2ce
+Full_CellRejectedValid EQU $d2d0
+; Spread batched motion across physical refreshes without draining the newest
+; snapshot immediately. Scene initialization still publishes its exact latch.
 Full_LatchScrollY:
     push de
     ld a,(Full_ScrollValid)
@@ -28,12 +30,26 @@ Full_LatchScrollY:
     ld b,a
     ld a,c
     sub b
+    IF VDP_R9 == $80
+    bit 7,a
+    jr z,.magnitude
+    neg
+.magnitude:
+    inc a
+    srl a                    ; Half the distance, rounded up, at most four pixels.
+    cp 5
+    jr c,.distance_limit
+    ld a,4
+.distance_limit:
+    ld d,a
+    ELSE
     add a,8
     cp 17
     ld d,2
     jr c,.limit
     inc d
     inc d
+    ENDIF
 .limit:
     ld a,d
     add a,a

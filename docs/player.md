@@ -1,6 +1,10 @@
 # Original player movement on MSX2+
 
-The default ROM starts directly in the driving test, with the car moving upward.
+This page describes the historical movement-only diagnostic. Current full-game
+controls and pacing are documented in [gameplay qualification](full-gameplay-inventory.md)
+and [performance evidence](enemy-rendering-performance.md).
+
+The movement-only ROM starts directly in the driving test, with the car moving upward.
 Arrows request direction changes. Releasing the arrows retains
 movement. The original steering, centering and wall probes determine which
 requests are possible. Space pauses; Home restarts at the original first-stage

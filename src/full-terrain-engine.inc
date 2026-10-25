@@ -279,6 +279,9 @@ Full_SimulationTail:
     ld b,2
 .tick:
     push bc
+    ld a,(Full_LoopTicks)
+    cp 2
+    jr nc,.done              ; Leave further recovery for the next snapshot.
     call Full_ClockFrame
     ld a,(Full_ClockDue)
     or a
@@ -312,8 +315,9 @@ Full_SimulationTail:
     pop bc
     ret
 
-; Spend otherwise idle header synchronization time on at most two due ticks.
-; Keep the prepared scroll/SAT and reserved post-header tick count unchanged.
+; Spend otherwise idle header time on a due tick. The loop counter includes the
+; early tick; a previously reserved post-header tick may still bring it to three.
+; Keep the prepared scroll/SAT and reserved post-header count unchanged.
 Full_SimulationIdleNative:
     ld a,(driving)
     or a
@@ -321,7 +325,7 @@ Full_SimulationIdleNative:
     ld a,(paused)
     or a
     jr nz,.done
-    ld a,(Full_IdleTicks)
+    ld a,(Full_LoopTicks)
     cp 2
     jr nc,.done
     call Full_ClockFrame
@@ -339,8 +343,6 @@ Full_SimulationIdleNative:
     ld a,(Full_ClockDue)
     dec a
     ld (Full_ClockDue),a
-    ld hl,Full_IdleTicks
-    inc (hl)
     call Player_Input
     ld a,PLAYER_BANK
     ld ($7000),a
@@ -403,11 +405,6 @@ Full_CacheRun:
 
 Full_WorldProbe:
     call Full_TurboOn
-    call Full_CacheTileSafe
-    jr c,.safe
-    ld c,0
-    jp Full_CacheExit         ; Discard a stale job that aliases the live view.
-.safe:
     ld a,(tile_x)
     ld e,a
     ld a,(tile_y)
@@ -424,6 +421,13 @@ Full_WorldProbe:
     jr nz,.miss
     jr Full_WorldOwned
 .miss:
+    ; A cache hit performs no copy. Only a replacement needs the planned/live
+    ; alias checks, which otherwise repeat for already-owned queue entries.
+    call Full_CacheTileSafe
+    jr c,.safe
+    ld c,0
+    jp Full_CacheExit         ; Discard a stale job that aliases the live view.
+.safe:
     call Full_CellPrefetch
     ld c,1
     jp nc,Full_CacheExit
@@ -538,28 +542,30 @@ Full_CacheTileSafe:
 Full_CellPrefetch:
     call Full_TurboOn
     ld a,(tile_x)
-    cp STAGE_COLUMNS
-    jp nc,.none
-    ld l,a
-    ld h,$e3
-    ld a,(hl)
-    ld e,a
-    add a,a
-    add a,e
+    call Full_CellStart
     ld (Full_CellLeft),a
+    ld a,(tile_y)
+    call Full_CellStart
+    ld (Full_CellTop),a
+    ; A rejected batch still takes the ordinary exact tile path. Remember only
+    ; failures within this stream call; native smoke/object state cannot change
+    ; between its commands. Never cache acceptance across ownership changes.
+    ld a,(Full_CellRejectedValid)
+    or a
+    jr z,.check
+    ld hl,(Full_CellRejected)
+    ld a,(Full_CellLeft)
+    cp l
+    jr nz,.check
+    ld a,(Full_CellTop)
+    cp h
+    jp z,.failed
+.check:
+    ld a,(Full_CellLeft)
     and 31
     cp 30
     jp nc,.none
-    ld a,(tile_y)
-    cp STAGE_ROWS
-    jp nc,.none
-    ld l,a
-    ld h,$e3
-    ld a,(hl)
-    ld e,a
-    add a,a
-    add a,e
-    ld (Full_CellTop),a
+    ld a,(Full_CellTop)
     and 31
     cp 30
     jp nc,.none
@@ -655,10 +661,14 @@ Full_CellPrefetch:
     ld (Full_QueuedY),a
     ld a,(Full_CellLeft)
     ld (tile_x),a
+    cp STAGE_COLUMNS
+    jr nc,.flower_source
     call Full_Div3
     ld c,a
     ld a,(Full_CellTop)
     ld (tile_y),a
+    cp STAGE_ROWS
+    jr nc,.flower_source
     call Full_Div3
     ld l,a
     ld h,0
@@ -676,6 +686,16 @@ Full_CellPrefetch:
     add hl,de
     ld de,$8000
     add hl,de
+    jr .source_ready
+.flower_source:
+    ; The first complete world cell is the exact repeating 24x24 flower cell.
+    ; Keep destination coordinates global while selecting that source entry.
+    ld a,(Full_CellLeft)
+    ld (tile_x),a
+    ld a,(Full_CellTop)
+    ld (tile_y),a
+    ld hl,$8000
+.source_ready:
     ld a,(Full_WideHBank)
     ld ($7000),a
     call Stage_StripSource
@@ -705,7 +725,22 @@ Full_CellPrefetch:
     scf
     ret
 .none:
+    ld hl,(Full_CellLeft)
+    ld (Full_CellRejected),hl
+    ld a,1
+    ld (Full_CellRejectedValid),a
+.failed:
     jp Full_TurboOff
+
+; The flower phase table also covers negative coordinates encoded as bytes.
+; Align with that phase instead of treating the wrapped coordinate as unsigned.
+Full_CellStart:
+    push af
+    call Stage_StripMod3
+    ld c,a
+    pop af
+    sub c
+    ret
 
 ; Validate the newly exposed edge before applying a camera step. Missing edges
 ; become urgent jobs while native clocks retain the last coherent snapshot.
@@ -886,11 +921,27 @@ Full_CameraValidated:
 
 Full_CheckRow:
     call Full_WorldAddress
+    ; The invalid X sentinel must reject even an otherwise matching Y.
+    ; Check its entire requested range once, rather than on every tile.
+    ld a,e
+    sub 97
+    cp 32
+    jr c,.bad
+    ld a,e
+    and 63
+    cp 33
+    ld c,0
     ld b,32
+    jr c,.tile
+    ; Split a row at the physical 64-column seam. Each part is contiguous.
+    neg
+    add a,64
+    ld b,a
+    neg
+    add a,32
+    ld c,a
 .tile:
     ld a,(hl)
-    cp 128
-    jr z,.bad
     cp e
     jr nz,.bad
     inc l
@@ -899,16 +950,16 @@ Full_CheckRow:
     jr nz,.bad
     inc l
     inc e
-    ld a,l
-    and 127
-    jr nz,.next
+    djnz .tile
+    ld a,c
+    or a
+    ret z
+    ld b,c
+    ld c,0
     ld a,l
     xor 128
     ld l,a
-.next:
-    djnz .tile
-    or a
-    ret
+    jr .tile
 .bad:
     scf
     ret

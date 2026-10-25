@@ -41,6 +41,8 @@ class CadenceTests(unittest.TestCase):
         self.assertEqual(r['discarded_ticks'],2)
         self.assertEqual(r['foreground_loops'],3)
         self.assertEqual(r['enemy_counts'],[7])
+        self.assertEqual(r['loops_over_40_ms'],1)
+        self.assertAlmostEqual(r['percentile_99_loop_ms'],500)
 
     def test_counter_wrap_and_death_time_are_handled_separately(self):
         rows=[[0,2,0,0,65535,65535,3,1,0,0],
@@ -70,6 +72,7 @@ class CadenceTests(unittest.TestCase):
         self.assertAlmostEqual(r['presentation_loop_hz'],37.5)
         self.assertEqual(r['loops_over_30_ms'],1)
         self.assertAlmostEqual(r['percentile_95_loop_ms'],40)
+        self.assertEqual(r['loops_over_40_ms'],0)
 
     def test_invalid_counter_jump_is_not_silently_excluded(self):
         with self.assertRaisesRegex(ValueError,'discontinuity'):

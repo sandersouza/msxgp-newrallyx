@@ -184,7 +184,7 @@ main:
     ld (frame_tick),a
     IF FULL_GAME
     xor a
-    ld (Full_IdleTicks),a
+    ld (Full_LoopTicks),a
     ENDIF
     IF SESSION_RUNTIME
     ld a,(Session_State)

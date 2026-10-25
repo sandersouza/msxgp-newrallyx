@@ -275,6 +275,8 @@ Player_AdvanceEarly:
 
 Player_Tick:
     IF FULL_GAME
+    ld hl,Full_LoopTicks      ; Count all native work in this presentation loop.
+    inc (hl)
     call Full_TurboOn
     call $8f24              ; Original IRQ PRNG advances in active/hold/bonus phases.
     call $83fd              ; Original round phase clock shares the same tick.

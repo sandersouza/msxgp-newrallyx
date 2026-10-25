@@ -37,11 +37,12 @@ def build_renderer(root, output, *, no_hud=False, stage=0, player_blitter=False,
     return build_rom(root, args)
 
 
-def build(root, *, no_hud=False, native=False, stage=12,player_blitter=False,radar_blitter=False,hz=50,sprite_flicker=False,flicker_stress=False,outline_flicker=False,enemies=None,full_game=False):
+def build(root, *, no_hud=False, native=False, stage=12,player_blitter=False,radar_blitter=False,hz=None,sprite_flicker=False,flicker_stress=False,outline_flicker=False,enemies=None,full_game=False):
     """Build a selected-routine cartridge, optionally with complete progression.
 
     The legacy native switch is a compatibility alias for this active baseline.
     """
+    if hz is None:hz=60 if full_game else 50
     output = destination(root, root/'references/build'/f'default-{uuid4().hex}')
     rom = root/ROM
     if rom.is_symlink() or (rom.exists() and not rom.is_file()):
@@ -92,7 +93,7 @@ def main(argv=None):
     parser.add_argument('--sprite-flicker', action='store_true', help='Stage09 two-enemy priority rotation experiment')
     parser.add_argument('--outline-flicker', action='store_true', help='Independent body/outline priority experiment with sprite radar')
     parser.add_argument('--flicker-stress', action='store_true', help='Paused original-graphics stress fixture')
-    parser.add_argument('--hz', type=int, choices=(50,60), default=50, help='VDP refresh; original game tick remains16.5ms')
+    parser.add_argument('--hz', type=int, choices=(50,60), help='VDP refresh; defaults to60 for full gameplay,50 for bounded stages; original tick remains16.5ms')
     parser.add_argument('--native', action='store_true', help='Compatibility alias: selected-player baseline, no full arcade loop')
     parser.add_argument('--full-game',action='store_true',help='Stage12 complete silent gameplay, original round progression and two-player sessions')
     parser.add_argument('--stage', type=int, choices=range(13), default=12, help='Incremental stage 0..12; default: approved single-player session')

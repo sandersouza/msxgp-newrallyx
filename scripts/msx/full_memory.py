@@ -39,6 +39,7 @@ def layout(symbols):
     add('stationary AI input axes','Full_AIBefore',7)
     add('stationary AI tick','Full_AITick',1)
     add('latched vertical scroll and validity',0xd2cc,2)
+    add('stream-local rejected cell',0xd2ce,3)
     add('IM2 trampoline',0xd2d2,3)
     add('smoke display','Smoke_Display',2048)
     add('smoke row counts','Smoke_DisplayRows',32)

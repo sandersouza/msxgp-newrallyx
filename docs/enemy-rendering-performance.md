@@ -1,89 +1,136 @@
 # Loaded-round performance and player pacing
 
-The current cartridge fixes the player's vertical displacement under enemy
-load. Its complete SAT pair is published by the maze IRQ against the actual
-R23 latch, together with fuel and radar. The foreground prepares patterns and
-attributes but no longer uploads a player Y from a newer camera plan.
-
-Two natural six-round routes pass the native-rate, player/fuel/radar coherence
-and physical-camera pacing gates. The primary route sustains **59.89–60.61
-native ticks/s**, including a seven-enemy challenge. The original tick is
-16.5 ms (60.606 ticks/s). Complete cars, scenery pixels/colors, the full HUD
-and real V9958 sprite limits remain enabled.
+The full-game build now uses **60 Hz display output** and smaller native/terrain
+bursts to reduce gameplay stuttering. The original logical tick remains 16.5 ms.
+Two natural eight-round routes pass the native-rate, physical-camera and fixed
+sprite gates, with **under 2% of active foreground loops exceeding 40 ms** in
+every measured round. Original scenery, colors, complete cars, fuel, the full
+HUD and real V9958 sprite limits remain enabled.
 
 Qualified ROM SHA-256:
-`c51e8aef26e0ab445d713bfeea2187452f21479abc2c44fdc2b3ce5b8ca83bb8`.
+`5dcebd21cc0b687e032d9a1357c7049ff45d35811f642811a3c782a26b327071`.
 `make build` publishes this image at `references/build/newrallyx.rom` and
-`latest.rom`; `make run` launches it. The independently rebuilt qualification
-bundle is `references/build/issue12-player-pacing-v106/`.
+`latest.rom`; `make run` launches it. The independent rebuild is
+`references/build/issue12-stutter-qualified-v127/`, byte-identical to the v125
+cartridge used by both natural routes. Bounded stages retain their 50 Hz default;
+`make build HZ=50` explicitly selects a full-game 50 Hz diagnostic.
 
-## What the previous checks missed
+## Changes
 
-The v83 fuel correction left the player on a different publication clock from
-the camera. A new observer reproduces **335 incorrect player SAT pairs in 4,009
-pre-fetch samples** on that ROM. Native logic near 60 ticks/s did not establish
-visible smoothness: actual vertical updates measured only **29.67–31.24/s** in
-its first two rounds, despite the six-pixel scroll-step limit.
+- Count all native ticks in each foreground loop. The post-copy tail stops once
+  two ticks have run. A reserved post-header tick can still bring a header-idle
+  loop to three; the previous maximum was six. Elapsed-time debt remains bounded.
+- At 60 Hz, allow two ordinary terrain commands on a light loop, one after two
+  native ticks, and four for an incomplete exposed edge. Required edges retain
+  priority over optional prefetch. The explicit 50 Hz path keeps its one/eight
+  command budgets.
+- At each actual maze latch, move vertical scroll halfway toward the latest
+  snapshot, rounded up and capped at four pixels. This avoids consuming a whole
+  snapshot and waiting for the next one. Player, fuel, radar and footer still use
+  the same actual R23; scene initialization still snaps immediately.
+- Batch complete 24x24 flower cells outside the world, using the existing signed
+  flower phase table. Preserve exact pixels and fall back at physical seams,
+  objects, smoke or explosions. Remember rejected cells only within one stream
+  call, so adjacent tiles do not repeat an identical batch eligibility scan.
+- Check ownership before replacement safety, since a cache hit copies nothing.
+  Validate each row in contiguous pieces at the torus seam, retaining the invalid
+  X sentinel and every coordinate-pair comparison.
 
-The camera now spends at most two pixels of ordinary vertical debt per physical
-refresh, or four beyond eight pixels of debt. This spreads batched movement over
-refreshes instead of draining a snapshot and then waiting. Scene initialization
-still snaps immediately. The native position and gameplay rules are unchanged;
-the existing sixteen-pixel native/presentation guard bounds catch-up. Both
-planned and displayed terrain ownership remain protected.
+No native enemy AI, movement rules, asset dimensions or sprite drawings changed.
+Factory Panasonic turbo remains limited to pure CPU work; VDP I/O uses 3.58 MHz.
 
-Late foreground loops can use a maze interval which has already opened, and do
-not consume a new VBlank at the later split checkpoint. Ordinary terrain work
-uses one exact command; an incomplete newly exposed border can use up to eight.
-The native tail checks for due work before repeating the terrain edge probe.
-Descriptor selection also uses the reference machine's factory turbo, returning
-to 3.58 MHz before sprite I/O. No scenery or car quality was reduced.
+## Measured pacing
 
-## Current measured cadence
+The same host steering margin five was used for the old v106 baseline and the
+primary current route. Routes adapt to enemy positions and timing, so this is
+not an identical-path benchmark. Active stalls remain in the cadence denominator.
 
-| Displayed round | Enemies | Native ticks/s | Complete foreground snapshots/s | Visible vertical updates/s |
-| --- | --- | --- | --- | --- |
-| 1 | 1 | 60.612 | 47.31 | 43.24 |
-| 2 | 2 | 60.557 | 45.08 | 44.19 |
-| 3, challenge | 7 | 59.891 | 39.20 | 41.79 |
-| 4 | 3 | 60.565 | 41.38 | 43.91 |
-| 5 | 3 | 60.561 | 38.71 | 42.73 |
-| 6 | 4 | 60.134 | 34.63 | 40.90 |
+| Round | Enemies | Previous p95 loop, ms | Current p95 loop, ms | Previous loops over 40 ms | Current loops over 40 ms |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 1 | 37.44 | 31.22 | 2.85% | 0.00% |
+| 2 | 2 | 38.18 | 31.94 | 3.29% | 0.06% |
+| 3, challenge | 7 static | 40.56 | 34.30 | 5.81% | 0.21% |
+| 4 | 3 | 40.02 | 34.84 | 5.06% | 0.68% |
+| 5 | 3 | 42.48 | 33.82 | 7.30% | 0.35% |
+| 6 | 4 | 47.45 | 36.06 | 16.67% | 1.04% |
 
-These are three different measurements, not 60 FPS. Vertical cadence counts
-actual R23 changes in five adjacent active physical frames containing at least
-two monotonic native Y changes. It excludes stops, turns and native stalls;
-the separate native-rate denominator retains active stalls. Physical refresh is
-50 Hz. Moving enemy snapshots and horizontal camera preparation still follow
-the foreground rate. Brief uneven frames remain, including active loops up to
-66.7 ms. Twenty-eight ticks were dropped at the bounded debt limit; the lowest
-complete five-second native window was 58.87 Hz on the primary route.
+Baseline: sealed `issue12-stutter-baseline-v107`, using the accepted v106 ROM.
+The new analyzer computes the over-40-ms counts from its unchanged cadence TSV.
+Current: sealed `issue12-stutter-route-v125`.
 
-The second six-round route uses steering margin seven instead of five and
-measures 59.70–60.57 native ticks/s and 40.27–44.19 vertical updates/s. Routes
-adapt to timing and enemies, so this is not a fixed-path percentage comparison.
-The default-margin attempt lost all lives during round four and is retained as
-partial evidence, not six-round completion.
+| Round | Native ticks/s | Complete foreground snapshots/s | Visible vertical updates/s | p95 loop, ms | Loops over 40 ms |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 60.585 | 49.85 | 53.54 | 31.22 | 0.00% |
+| 2 | 60.507 | 46.11 | 48.44 | 31.94 | 0.06% |
+| 3, challenge | 59.802 | 43.63 | 48.81 | 34.30 | 0.21% |
+| 4 | 60.312 | 41.63 | 45.46 | 34.84 | 0.68% |
+| 5 | 60.003 | 41.70 | 46.53 | 33.82 | 0.35% |
+| 6 | 59.526 | 38.70 | 44.49 | 36.06 | 1.04% |
+| 7, challenge | 60.131 | 41.84 | 50.09 | 33.70 | 0.38% |
+| 8 | 57.938 | 38.24 | 45.08 | 36.75 | 0.91% |
 
-Current qualification, all under ignored `references/build/`:
+The independent margin-seven route, `issue12-stutter-route-m7-v125`, measures
+57.916–60.608 native ticks/s, 45.65–53.22 vertical updates/s, p95 loops at most
+37.63 ms and at most 1.88% over 40 ms. Both routes pass minimum 57 native ticks/s,
+minimum 40 vertical updates/s, maximum four-pixel scroll steps, p95 at most 39 ms
+and at most 3% over 40 ms. These gates apply to sufficiently long active samples.
+
+These are separate clocks, **not a 60 FPS claim**. Physical output is about
+59.92 Hz. Moving enemies and horizontal camera preparation still follow the
+foreground loop, 36.95–49.85 snapshots/s across both routes. Vertical cadence
+counts changes during adjacent monotonic native Y movement and excludes stops,
+turns and native stalls; overall native cadence retains active stalls.
+
+There is a measured speed tradeoff: the primary route drops 192 ticks across
+eight rounds and its lowest complete five-second window is 52.29 ticks/s; the
+secondary drops 239 and reaches 55.03. The old six-round route dropped 28 and
+reached 58.87. Round averages remain within about 4.5% of the original tick rate,
+but the new policy does not establish full-speed execution in every short window.
+Individual active loops still reach 52.53 ms. A 45-Hz vertical-update target is
+also not met in every round. Occasional stutters, later moving populations above
+four cars, complete loaded RGB/culling readability and physical hardware remain
+review limits. Real hardware culling is retained.
+
+Strict scheduling deadlines that reduced native speed to 45–54 Hz were rejected.
+A third catch-up tick under large debt improved some rates but exceeded the
+stutter gate on one route, so it is not part of the qualified cartridge.
+
+## Verification
+
+All bundles below are ignored local evidence. Natural routes contain real
+credit/start, steering and smoke inputs, without guest-state writes.
 
 | Evidence | Result |
 | --- | --- |
-| `issue12-player-pacing-qualified-m5-v106` | Six natural rounds; native minimum 57 Hz and physical vertical-update minimum 40 Hz gates pass |
-| Same route, fixed sprites | Zero errors in 12,316 player, 12,614 fuel, 12,610 footer and 63,092 radar samples |
-| Same route, camera | 10,989 adjacent active physical frames; maximum step four pixels; actual displayed terrain ownership checked |
-| `issue12-player-pacing-qualified-m7-v106` | Independent six-round route passes the same gates |
-| `issue12-player-pacing-latch-v106` | 65,792 adaptive circular-scroll/initial-latch cases; native RAM, VRAM and stack unchanged |
-| `issue12-player-pacing-evidence-v106`, `issue12-player-pacing-cars-v106` | 46 independent natural source-pixel/HUD/car snapshots; 13,496 complete-car cases with IRQs |
-| `issue12-player-pacing-scenes-v106`, `issue12-player-pacing-clock-v106` | 254 seeded map/object/header transitions; 384 elapsed-clock cases |
-| Matching `session`, `state`, `attract` bundles at v106 | Two-player lifecycle, partial-board restoration and attract pass |
-| Authored tests | 368 pass; bounded Issue 11 ROM remains byte-identical |
+| `issue12-stutter-route-v125`, `issue12-stutter-route-m7-v125` | Two naturally completed eight-round routes; all selected cadence, pacing, ownership and fixed-sprite gates pass |
+| Primary fixed-sprite observer | Zero errors in 18,336 player, 18,692 fuel, 18,681 footer and 93,460 radar samples |
+| Secondary fixed-sprite observer | Zero errors in 18,224 player, 18,446 fuel, 18,436 footer and 92,230 radar samples |
+| Both physical camera traces | 32,685 adjacent active refreshes, maximum four-pixel step; displayed tile ownership checked |
+| `issue12-stutter-evidence-v127` | 50 independent natural cache, smoke, complete-car and eight-digit HUD snapshots pass |
+| `issue12-stutter-cars-v127` | 13,496 complete-car facing/clipping cases pass with real IRQs |
+| `issue12-stutter-rows-v127` | 66,560 executed ownership-row cases: all global X values, torus seams, invalid sentinel and every X/Y corruption position |
+| `issue12-stutter-scroll-v127`, `issue12-stutter-clock-v127` | 65,792 circular-scroll/initial-latch cases and 384 elapsed-clock cases pass |
+| Matching `session`, `state`, `attract` bundles at v127 | Two-player lifecycle, partial-board restoration and autonomous attract pass |
+| `issue12-stutter-scenes-v127` | 254 explicitly seeded map/object/header transitions pass; separate from natural completion |
+| Authored checks | 368 tests pass; bounded Issue 11 ROM remains byte-identical |
 
-Header reservation maximum is 7.598 ms. `--record-round 2` records eight seconds
-of actual scanout for direct inspection; it does not change the guest clock or
-write guest state. Full loaded-round RGB/culling readability and physical
-hardware remain review gates. The measurements below describe the historical
-v75 iteration; v83 separately restored fuel but did not qualify player centering.
+The secondary route records eight seconds of actual sixth-round scanout:
+479 frames at 320x240 over 7.994 seconds. Sampled frames retain player centering,
+the full fuel gauge, radar and original pixels; this is separate from complete
+human gameplay acceptance. Header reservation maximum is 4.350 ms. Recordings
+and derived review files remain ignored.
+
+## Previous v106 correction
+
+The preceding cartridge fixed the player's vertical displacement under enemy
+load by publishing its complete SAT pair in the maze IRQ against actual R23,
+together with fuel and radar. It reproduced 335 incorrect player pairs in 4,009
+samples on the older v83 ROM. Its accepted 50 Hz image was
+`c51e8aef26e0ab445d713bfeea2187452f21479abc2c44fdc2b3ce5b8ca83bb8`.
+Two six-round routes qualified native cadence and fixed-sprite coherence, but
+the user still observed too much gameplay stuttering. That feedback motivated
+the current loop-duration and over-40-ms gates.
+
 
 ## Previous v75 cadence and concessions
 
@@ -213,11 +260,12 @@ Use fresh ignored output directories and contributor-supplied ROMs/BIOS.
 ```sh
 make build
 make run
-.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --full-game --output references/build/my-build
+.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --full-game --hz 60 --output references/build/my-build
 ROM=references/build/my-build/raster-scroll.rom
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-route --rounds 6 --avoid-enemies --steering-margin 5 --profile --record-round 2 --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 4 --minimum-native-hz 57 --minimum-vertical-update-hz 40
+.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-route --rounds 8 --avoid-enemies --steering-margin 5 --profile --record-round 6 --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 4 --minimum-native-hz 57 --minimum-vertical-update-hz 40 --maximum-p95-loop-ms 39 --maximum-over40-percent 3
 .venv/bin/python -B scripts/full_game_evidence.py --rom "$ROM" --capture references/build/my-route --output references/build/my-evidence
 .venv/bin/python -B scripts/full_scroll_probe.py --rom "$ROM" --output references/build/my-scroll
+.venv/bin/python -B scripts/full_terrain_probe.py --rom "$ROM" --output references/build/my-rows
 make test
 ```
 

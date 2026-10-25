@@ -189,8 +189,9 @@ display. The full game detects factory Panasonic turbo and uses **5,369,318 Hz
 for pure CPU work, 3,579,545 Hz for VDP access and raster IRQs**. Unsupported
 machines keep their base clock. In openMSX, `z80_freq_locked true` follows
 hardware clock switching; `false` forces the user's frequency override. The
-bounded reference retains its original base-clock behavior. The cartridge sets 50 Hz
-through VDP R9. Its BIOS calls require an MSX2 or later machine; the recorded
+bounded reference retains its original base-clock behavior. The full-game default
+sets 60 Hz through VDP R9; bounded stages retain 50 Hz. `make build HZ=50` selects
+an explicit full-game 50 Hz diagnostic. BIOS calls require an MSX2 or later machine; the recorded
 integration target is MSX2+.
 
 Supply compatible system ROMs under `references/msxbios`. The launcher adds

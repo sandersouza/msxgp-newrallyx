@@ -123,9 +123,14 @@ class ProjectTests(unittest.TestCase):
                 self.assertTrue(renderer.call_args.args[1].flicker_stress)
                 self.assertEqual(resolve_latest(root),rom_flicker)
                 rom_population=project.build(root,stage=9,enemies=3)
+                self.assertEqual(renderer.call_args.args[1].hz,50)
                 self.assertEqual(renderer.call_args.args[1].enemies,3)
                 self.assertFalse(renderer.call_args.args[1].no_hud)
                 self.assertEqual(resolve_latest(root),rom_population)
+                project.build(root,full_game=True)
+                self.assertEqual(renderer.call_args.args[1].hz,60)
+                rom_population=project.build(root,full_game=True,hz=50)
+                self.assertEqual(renderer.call_args.args[1].hz,50)
                 renderer.side_effect = ValueError('Assembly failed')
                 with self.assertRaisesRegex(ValueError, 'Assembly failed'):
                     project.build(root, no_hud=True)
@@ -140,7 +145,7 @@ class ProjectTests(unittest.TestCase):
             (root/'scripts/project.py').write_text(
                 "import json,sys\nfrom pathlib import Path\n"
                 "with Path('calls').open('a') as log: log.write(json.dumps(sys.argv[1:])+'\\n')\n")
-            for args in [('build', 'NO_HUD=1'), ('build', 'NATIVE=1'), ('run', 'LATEST=1'), ('build','STAGE=1'),('build','STAGE=0','PLAYER_BLITTER=1','RADAR_BLITTER=1'),('build','STAGE=9','HZ=60','SPRITE_FLICKER=1','FLICKER_STRESS=1'),('build','STAGE=9','ENEMIES=3'),('build',),('build','FULL_GAME=0')]:
+            for args in [('build', 'NO_HUD=1'), ('build', 'NATIVE=1'), ('run', 'LATEST=1'), ('build','STAGE=1'),('build','STAGE=0','PLAYER_BLITTER=1','RADAR_BLITTER=1'),('build','STAGE=9','HZ=60','SPRITE_FLICKER=1','FLICKER_STRESS=1'),('build','STAGE=9','ENEMIES=3'),('build',),('build','FULL_GAME=0'),('build','HZ=50')]:
                 result = subprocess.run(['make', *args, f'PYTHON={sys.executable}'],
                                         cwd=root, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
@@ -150,7 +155,8 @@ class ProjectTests(unittest.TestCase):
                                     ['build','--stage','1'],['build','--player-blitter','--radar-blitter','--stage','0'],
                                     ['build','--sprite-flicker','--flicker-stress','--hz','60','--stage','9'],
                                     ['build','--stage','9','--enemies','3'],
-                                    ['build','--full-game','--stage','12'],['build','--stage','12']])
+                                    ['build','--full-game','--stage','12'],['build','--stage','12'],
+                                    ['build','--full-game','--hz','50','--stage','12']])
 
 
 if __name__ == '__main__':

@@ -16,7 +16,7 @@ from scripts.msx.stage_one import acquire,cells_from_rom
 from scripts.msx.completion_route_verify import verify_header_reservations
 from scripts.msx.cadence import analyze as analyze_cadence
 from scripts.msx.cadence import analyze_scroll
-from scripts.scenes.bundle import digest,verify_manifest
+from scripts.scenes.bundle import digest,verify_manifest,read_json
 from scripts.scenes.storage import require_ignored,json_write,seal
 
 
@@ -35,6 +35,8 @@ def main(argv=None):
     p.add_argument('--require-stable-player',action='store_true')
     p.add_argument('--minimum-presentation-hz',type=float)
     p.add_argument('--minimum-vertical-update-hz',type=float)
+    p.add_argument('--maximum-p95-loop-ms',type=float)
+    p.add_argument('--maximum-over40-percent',type=float)
     p.add_argument('--maximum-scroll-step',type=int)
     p.add_argument('--fixed-base-clock',action='store_true',help='Diagnostic: force 3.58 MHz instead of machine-controlled factory switching')
     p.add_argument('--minimum-native-hz',type=float,help='Require this active average in every measured round')
@@ -214,7 +216,7 @@ def main(argv=None):
                'HUD_FinishCoordinates','Player_AdvanceEarly','HUD_PrepareFrame','HUD_DrawContent',
                'Player_Advance','Radar_WaitPublish','stage_stream','Enemy_PreMove','Enemy_AfterMove',
                'Full_NativeAI','FullEnemy_PrepareOne','FullEnemy_DrawOne','Smoke_Tick','Fuel_Tick'}
-        names.update({'Player_Tick','Full_SimulationTail'})
+        names.update({'Player_Tick','Full_SimulationTail','stage_wait_command','stage_copy_tile','Full_CellPrefetch','Full_CameraCheck'})
         names.update({'Player_Draw','Player_Patch','Score_ReservedFrame','Flag_Stream','Death_Stream','Smoke_Stream',
                       'Flag_Frame','Death_Frame','Radar_CommitPublished','Life_Frame','Round_Frame','Session_Check','Player_Update'})
         aliases={'$8cd6':'NativeAI','$b600':'GuardedAI','$95bd':'NativeVisibility',
@@ -245,6 +247,15 @@ def main(argv=None):
             condition='$::phase eq "game" && ![debug read memory 0xc5c1] && [debug read memory 0xc7d0]==0'
             if match[3]=='di':condition+=' && ([reg IFF]&1)'
             lines.append(f'debug set_bp {address} {{{condition}}} {{di_{"begin" if match[3]=="di" else "end"}}}')
+        # INCBIN native code has no instruction rows in the assembler listing.
+        # Check the live opcode so other mapped banks cannot create false events.
+        cartridge=args.rom.read_bytes();native_sites=set()
+        for key in ('PLAYER_BANK','SESSION_BANK'):
+            if key not in syms:continue
+            bank=cartridge[syms[key]*16384:][:16384]
+            native_sites.update(0x8000+i for i,v in enumerate(bank) if v in (243,251))
+        for address in sorted(native_sites-seen):
+            lines.append(f'debug set_bp {address} {{$::phase eq "game" && [debug read memory 0xc7d0]==0 && [debug read memory {address}] in {{243 251}}}} {{if {{[debug read memory {address}]==251}} {{di_end}} elseif {{[reg IFF]&1}} {{di_begin}}}}')
     if args.radar_trace:
         script=script.replace('exit 0','set f [open [file join $::out radar-counts.txt] w];puts $f "$::radar_samples $::radar_mismatches $::fuel_samples $::fuel_mismatches $::footer_samples $::footer_mismatches $::player_samples $::player_mismatches";close $f;exit 0')
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n'+script+'\n} p]} {puts stderr $p;exit 2}\n')
@@ -254,7 +265,7 @@ def main(argv=None):
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
     rows=[list(map(int,line.split())) for line in (out/'events.tsv').read_text().splitlines()]
     if not rows or max(r[1] for r in rows)<args.rounds+2:raise ValueError('Natural round completion evidence missing')
-    headers=verify_header_reservations(out/'headers.tsv',313*228/3579545)
+    headers=verify_header_reservations(out/'headers.tsv',read_json(bundle/'build.json')['timing']['frame_seconds'])
     radar=None
     if args.radar_trace:
         samples,mismatches,fuel_samples,fuel_mismatches,footer_samples,footer_mismatches,player_samples,player_mismatches=map(int,(out/'radar-counts.txt').read_text().split())
@@ -273,6 +284,8 @@ def main(argv=None):
     scroll_passed=args.maximum_scroll_step is None or camera_motion['maximum_vertical_step']<=args.maximum_scroll_step
     cadence_passed=args.minimum_native_hz is None or all(r['native_hz']>=args.minimum_native_hz for r in cadence['rounds'] if r['active_seconds']>=5)
     presentation_passed=args.minimum_presentation_hz is None or all(r['presentation_loop_hz']>=args.minimum_presentation_hz for r in cadence['rounds'] if r['active_seconds']>=5)
+    active_rounds=[r for r in cadence['rounds'] if r['active_seconds']>=5]
+    stutter_passed=(args.maximum_p95_loop_ms is None or bool(active_rounds) and all(r['percentile_95_loop_ms']<=args.maximum_p95_loop_ms for r in active_rounds)) and (args.maximum_over40_percent is None or bool(active_rounds) and all(r['loops_over_40_ms']*100/r['foreground_loops']<=args.maximum_over40_percent for r in active_rounds))
     moving_rounds=[r for r in camera_motion['moving_vertical_rounds'] if r['moving_seconds']>=2] if camera_motion else []
     vertical_passed=args.minimum_vertical_update_hz is None or bool(moving_rounds) and all(r['vertical_update_hz']>=args.minimum_vertical_update_hz for r in moving_rounds)
     clock_rows=[line.split() for line in (out/'clocks.tsv').read_text().splitlines()] if (out/'clocks.tsv').is_file() else []
@@ -285,6 +298,7 @@ def main(argv=None):
         scroll_gate=dict(maximum_pixels=args.maximum_scroll_step,passed=scroll_passed),
         cadence_gate=dict(minimum_native_hz=args.minimum_native_hz,passed=cadence_passed),
         presentation_gate=dict(minimum_hz=args.minimum_presentation_hz,passed=presentation_passed),
+        stutter_gate=dict(maximum_p95_loop_ms=args.maximum_p95_loop_ms,maximum_over40_percent=args.maximum_over40_percent,passed=stutter_passed),
         vertical_update_gate=dict(minimum_hz=args.minimum_vertical_update_hz,passed=vertical_passed),
         camera_ownership_checks=int((out/'camera-count.txt').read_text()) if 'Full_CameraValidated' in syms else None,
         header_reservations=headers,radar_coherence=radar,maximum_smoke_placements=max(r[6] for r in rows),
@@ -293,6 +307,7 @@ def main(argv=None):
     if not cadence_passed:raise ValueError(f'Natural route missed its native simulation cadence gate; evidence retained at {out}/report.json')
     if not scroll_passed:raise ValueError(f'Natural route missed its vertical scroll gate; evidence retained at {out}/report.json')
     if not presentation_passed:raise ValueError(f'Natural route missed its presentation gate; evidence retained at {out}/report.json')
+    if not stutter_passed:raise ValueError(f'Natural route missed its stutter gate; evidence retained at {out}/report.json')
     if not vertical_passed:raise ValueError(f'Natural route missed its physical camera cadence gate; evidence retained at {out}/report.json')
     print(f'{args.rounds} naturally completed rounds: {out}/report.json')
 

@@ -26,12 +26,14 @@ a 40-column terrain cache and the complete HUD. Factory Panasonic turbo is
 detected for pure CPU work; VDP access and raster IRQs retain 3,579,545 Hz.
 Other machines retain their base clock. Current performance qualification is
 in [enemy rendering performance](enemy-rendering-performance.md), including
-60.48–60.61 native ticks/s across six naturally completed rounds. Presentation
+57.92–60.61 native ticks/s across two naturally completed eight-round routes,
+with fewer than 2% of active loops exceeding 40 ms in each measured round. Presentation
 loops are measured separately; this is not a 60 FPS claim.
 It requires the existing 128 KB main RAM mapper / 128 KB VRAM baseline.
 The former issue estimate's 64 KB RAM assumption was incorrect; this is not
 a newly introduced requirement. Validation uses openMSX 21.0, a session-local
-FS-A1WSX configuration and real VDP command/sprite limits at 50 Hz.
+FS-A1WSX configuration and real VDP command/sprite limits at 60 Hz. Bounded
+stages retain 50 Hz; short native-rate dips remain documented in the performance evidence.
 
 | Input | Behavior |
 | --- | --- |
@@ -52,7 +54,7 @@ Direct diagnostic builds retain their earlier defaults. To build the complete
 variant explicitly, use:
 
 ```sh
-.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --full-game --output references/build/my-full-game
+.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --full-game --hz 60 --output references/build/my-full-game
 ```
 
 Outputs must be fresh and ignored. Supply original ROMs, graphics, reference

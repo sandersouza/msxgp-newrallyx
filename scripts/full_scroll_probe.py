@@ -9,7 +9,7 @@ if __package__ in (None,''):sys.path.insert(0,str(Path(__file__).resolve().paren
 from scripts.msx.build import destination
 from scripts.msx.emulator import reference_machine,tcl
 from scripts.msx.hud_verify import symbols
-from scripts.scenes.bundle import digest,verify_manifest
+from scripts.scenes.bundle import digest,verify_manifest,read_json
 from scripts.scenes.storage import require_ignored,json_write,seal
 
 
@@ -45,16 +45,18 @@ def main():
         subprocess.run(['openmsx','-script',str(out/'session.tcl')],check=True,timeout=120,
             stdout=log,stderr=subprocess.STDOUT,env=dict(os.environ,
                 OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
+    policy=read_json(bundle/'build.json')['terrain_ownership']['vertical_presentation']
+    ordinary=policy['ordinary_maximum_pixels'];threshold=policy['catch_up_threshold_pixels']
     expected=bytearray()
     for n in range(65792):
         target=n&255;current=(n>>8)&255;delta=(target-current+128)%256-128
-        limit=2 if abs(delta)<=8 else 4
+        limit=min(4,(abs(delta)+1)//2) if policy.get('policy')=='half-distance' else ordinary if abs(delta)<=threshold else 4
         value=(current+max(-limit,min(limit,delta)))%256 if n<65536 else target
         expected.extend((value,value,1))
     if (out/'result.bin').read_bytes()!=expected:raise ValueError('Circular scroll latch differs from bounded-distance oracle')
     verify_manifest(bundle)
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),cases=65792,maximum_pixels=4,
-        ordinary_maximum_pixels=2,catch_up_threshold_pixels=8,
+        ordinary_maximum_pixels=ordinary,catch_up_threshold_pixels=threshold,
         native_ram_unchanged=True,vram_unchanged=True,stack_unchanged=True,
         scope='All 65,536 circular byte transitions plus 256 initial scene latches; real frame timing is verified separately.'))
     require_ignored(root,[f for f in out.rglob('*') if f.is_file()]);seal(out)
