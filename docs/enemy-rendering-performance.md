@@ -1,55 +1,89 @@
-# Loaded-round performance and fixed radar publication
+# Loaded-round performance and player pacing
 
-The current cartridge sustains **60.48–60.61 native ticks/s over six naturally
-completed rounds** on the reference Panasonic, including a seven-enemy challenge.
-The original tick is 16.5 ms (60.606 ticks/s). Complete car
-drawings, scenery pixels/colors, the HUD and real V9958 sprite limits remain
-enabled. Presentation averages **25.74–35.19 foreground loops/s**; these are
-separate measurements and do not establish 60 FPS.
+The current cartridge fixes the player's vertical displacement under enemy
+load. Its complete SAT pair is published by the maze IRQ against the actual
+R23 latch, together with fuel and radar. The foreground prepares patterns and
+attributes but no longer uploads a player Y from a newer camera plan.
+
+Two natural six-round routes pass the native-rate, player/fuel/radar coherence
+and physical-camera pacing gates. The primary route sustains **59.89–60.61
+native ticks/s**, including a seven-enemy challenge. The original tick is
+16.5 ms (60.606 ticks/s). Complete cars, scenery pixels/colors, the full HUD
+and real V9958 sprite limits remain enabled.
 
 Qualified ROM SHA-256:
-`cfe9f0060d2fac4c3b40afe8359e108b556b64bee68eb912964e49c9e26a5f66`.
+`c51e8aef26e0ab445d713bfeea2187452f21479abc2c44fdc2b3ce5b8ca83bb8`.
 `make build` publishes this image at `references/build/newrallyx.rom` and
 `latest.rom`; `make run` launches it. The independently rebuilt qualification
-bundle is `references/build/issue12-fuel-scroll-v83/`.
+bundle is `references/build/issue12-player-pacing-v106/`.
 
-## Fuel restoration and vertical pacing regression
+## What the previous checks missed
 
-The previous v75 qualification missed two presentation regressions. Moving radar
-publication into its IRQ omitted the three fuel SAT entries; the footer reused
-their slots and left the bar absent. The new pre-fetch observer found **7,882
-incorrect fuel samples out of 7,882** on that image. Elapsed-time simulation also
-accumulated presentation debt and produced vertical steps up to **21 pixels**.
-The earlier native-rate and scene-pixel checks did not cover these two properties.
+The v83 fuel correction left the player on a different publication clock from
+the camera. A new observer reproduces **335 incorrect player SAT pairs in 4,009
+pre-fetch samples** on that ROM. Native logic near 60 ticks/s did not establish
+visible smoothness: actual vertical updates measured only **29.67–31.24/s** in
+its first two rounds, despite the six-pixel scroll-step limit.
 
-The maze IRQ now restores all three fuel slots against the actual R23 latch on
-every refresh. Vertical presentation follows the prepared world by at most six
-pixels per physical refresh, with circular wrap and an immediate scene reset.
-The computation runs before the header's narrow register-latching window. Radar,
-fuel, footer coordinates and raster comparators use the same latched scroll.
-Native simulation retains its elapsed-time clock. Terrain safety protects both
-planned and latched views; horizontal turns also prepare the corner columns at
-the older visible Y before publishing the new X.
+The camera now spends at most two pixels of ordinary vertical debt per physical
+refresh, or four beyond eight pixels of debt. This spreads batched movement over
+refreshes instead of draining a snapshot and then waiting. Scene initialization
+still snaps immediately. The native position and gameplay rules are unchanged;
+the existing sixteen-pixel native/presentation guard bounds catch-up. Both
+planned and displayed terrain ownership remain protected.
+
+Late foreground loops can use a maze interval which has already opened, and do
+not consume a new VBlank at the later split checkpoint. Ordinary terrain work
+uses one exact command; an incomplete newly exposed border can use up to eight.
+The native tail checks for due work before repeating the terrain edge probe.
+Descriptor selection also uses the reference machine's factory turbo, returning
+to 3.58 MHz before sprite I/O. No scenery or car quality was reduced.
+
+## Current measured cadence
+
+| Displayed round | Enemies | Native ticks/s | Complete foreground snapshots/s | Visible vertical updates/s |
+| --- | --- | --- | --- | --- |
+| 1 | 1 | 60.612 | 47.31 | 43.24 |
+| 2 | 2 | 60.557 | 45.08 | 44.19 |
+| 3, challenge | 7 | 59.891 | 39.20 | 41.79 |
+| 4 | 3 | 60.565 | 41.38 | 43.91 |
+| 5 | 3 | 60.561 | 38.71 | 42.73 |
+| 6 | 4 | 60.134 | 34.63 | 40.90 |
+
+These are three different measurements, not 60 FPS. Vertical cadence counts
+actual R23 changes in five adjacent active physical frames containing at least
+two monotonic native Y changes. It excludes stops, turns and native stalls;
+the separate native-rate denominator retains active stalls. Physical refresh is
+50 Hz. Moving enemy snapshots and horizontal camera preparation still follow
+the foreground rate. Brief uneven frames remain, including active loops up to
+66.7 ms. Twenty-eight ticks were dropped at the bounded debt limit; the lowest
+complete five-second native window was 58.87 Hz on the primary route.
+
+The second six-round route uses steering margin seven instead of five and
+measures 59.70–60.57 native ticks/s and 40.27–44.19 vertical updates/s. Routes
+adapt to timing and enemies, so this is not a fixed-path percentage comparison.
+The default-margin attempt lost all lives during round four and is retained as
+partial evidence, not six-round completion.
 
 Current qualification, all under ignored `references/build/`:
 
 | Evidence | Result |
 | --- | --- |
-| `issue12-fuel-scroll-qualified-v83` | Six natural rounds at 60.48–60.61 native ticks/s; minimum 57 Hz gate passes |
-| Same route, fixed HUD | Zero errors in 14,218 fuel, 14,211 footer and 71,094 radar body/dot samples |
-| Same route, camera | 12,884 adjacent active physical frames; maximum vertical step 6 pixels, zero larger steps; actual latched viewport ownership checked |
-| `issue12-fuel-scroll-latch-v83` | All 65,536 circular byte transitions and 256 initial latches; native RAM, VRAM and stack unchanged |
-| `issue12-fuel-scroll-evidence-v83` | 39 independent scene/HUD/car snapshots |
-| `issue12-fuel-scroll-cars-v83` | 13,496 complete-car presentation cases with active IRQs |
-| `issue12-fuel-scroll-scenes-v83` | 254 explicitly seeded map/object/header transitions |
-| `issue12-fuel-scroll-session-v83`, `issue12-fuel-scroll-state-v83`, `issue12-fuel-scroll-attract-v83` | Two-player sessions, board restoration and attract pass |
-| Authored tests | 366 pass; the bounded Issue 11 ROM remains byte-identical |
+| `issue12-player-pacing-qualified-m5-v106` | Six natural rounds; native minimum 57 Hz and physical vertical-update minimum 40 Hz gates pass |
+| Same route, fixed sprites | Zero errors in 12,316 player, 12,614 fuel, 12,610 footer and 63,092 radar samples |
+| Same route, camera | 10,989 adjacent active physical frames; maximum step four pixels; actual displayed terrain ownership checked |
+| `issue12-player-pacing-qualified-m7-v106` | Independent six-round route passes the same gates |
+| `issue12-player-pacing-latch-v106` | 65,792 adaptive circular-scroll/initial-latch cases; native RAM, VRAM and stack unchanged |
+| `issue12-player-pacing-evidence-v106`, `issue12-player-pacing-cars-v106` | 46 independent natural source-pixel/HUD/car snapshots; 13,496 complete-car cases with IRQs |
+| `issue12-player-pacing-scenes-v106`, `issue12-player-pacing-clock-v106` | 254 seeded map/object/header transitions; 384 elapsed-clock cases |
+| Matching `session`, `state`, `attract` bundles at v106 | Two-player lifecycle, partial-board restoration and attract pass |
+| Authored tests | 368 pass; bounded Issue 11 ROM remains byte-identical |
 
-Header reservation maximum is 7.459 ms. Longer input-driver attempts reached the
-second challenge but lost all lives; they are not counted as eight completed
-rounds. Timed HUD callbacks exclude scene reloads, including callbacks scheduled
-just before loading began. Rendered RGB and physical hardware remain separate
-review gates. The measurements below describe the preceding v75 iteration.
+Header reservation maximum is 7.598 ms. `--record-round 2` records eight seconds
+of actual scanout for direct inspection; it does not change the guest clock or
+write guest state. Full loaded-round RGB/culling readability and physical
+hardware remain review gates. The measurements below describe the historical
+v75 iteration; v83 separately restored fuel but did not qualify player centering.
 
 ## Previous v75 cadence and concessions
 
@@ -179,8 +213,9 @@ Use fresh ignored output directories and contributor-supplied ROMs/BIOS.
 ```sh
 make build
 make run
-ROM=references/build/issue12-fuel-scroll-v83/raster-scroll.rom
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-route --rounds 6 --avoid-enemies --steering-margin 5 --profile --radar-trace --require-stable-radar --require-stable-fuel --maximum-scroll-step 6 --minimum-native-hz 57
+.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --full-game --output references/build/my-build
+ROM=references/build/my-build/raster-scroll.rom
+.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-route --rounds 6 --avoid-enemies --steering-margin 5 --profile --record-round 2 --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 4 --minimum-native-hz 57 --minimum-vertical-update-hz 40
 .venv/bin/python -B scripts/full_game_evidence.py --rom "$ROM" --capture references/build/my-route --output references/build/my-evidence
 .venv/bin/python -B scripts/full_scroll_probe.py --rom "$ROM" --output references/build/my-scroll
 make test

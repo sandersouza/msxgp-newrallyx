@@ -73,13 +73,33 @@ Full_ObjectAtTile:
     pop iy
     ret
 
-; The radar IRQ leaves its SAT pointer at fuel slot13. Restore all three
-; shared slots after the current R23 latch, every physical refresh.
+; The radar IRQ leaves its SAT pointer at fuel slot13. Restore fuel and the
+; complete player pair against the same R23, every physical refresh. Foreground
+; pattern preparation must not publish a player Y from a newer camera plan.
 Full_FuelIRQ:
     ld a,(irq_scroll_y)
     call update_fuel_sat_value
     ld hl,fuel_sat
     ld bc,$0c98
+    otir
+    ld a,(Death_DisplayState)
+    or a
+    jr nz,.hidden
+    ld a,(irq_scroll_y)
+    call Player_Draw.sat_value
+    jr .player
+.hidden:
+    ld a,(irq_scroll_y)
+    add a,211
+    cp 216
+    jr nz,.hidden_y
+    inc a
+.hidden_y:
+    ld (player_sat),a
+    ld (player_sat+4),a
+.player:
+    ld hl,player_sat
+    ld bc,$0898
     otir
     ret
 

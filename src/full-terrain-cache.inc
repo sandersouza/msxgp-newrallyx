@@ -15,9 +15,10 @@ Full_DirY EQU $d2fd
 Full_QueueDirty EQU $d2fe
 Full_IdleTicks EQU $d2ff
 Full_ScrollValid EQU $d2cd
-; A whole foreground snapshot can be late. Follow it by at most six vertical
-; pixels per physical refresh; absolute sprite Y remains in world coordinates.
+; Spread batched motion across physical refreshes: two pixels normally, four
+; beyond eight pixels of debt. Do not drain a whole snapshot and then freeze.
 Full_LatchScrollY:
+    push de
     ld a,(Full_ScrollValid)
     or a
     jr z,.snap
@@ -27,18 +28,31 @@ Full_LatchScrollY:
     ld b,a
     ld a,c
     sub b
-    add a,6
-    cp 13
+    add a,8
+    cp 17
+    ld d,2
+    jr c,.limit
+    inc d
+    inc d
+.limit:
+    ld a,d
+    add a,a
+    inc a
+    ld e,a
+    ld a,c
+    sub b
+    add a,d
+    cp e
     jr c,.snap
     ld a,c
     sub b
     bit 7,a
     ld a,b
     jr nz,.up
-    add a,6
+    add a,d
     jr .publish
 .up:
-    sub 6
+    sub d
     jr .publish
 .snap:
     ld a,1
@@ -46,6 +60,7 @@ Full_LatchScrollY:
     ld a,(scroll_y)
 .publish:
     ld (irq_scroll_y),a
+    pop de
     ret
 Full_TurboOn:
     ld a,(Full_TurboEnabled)

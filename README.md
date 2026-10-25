@@ -35,11 +35,14 @@ The eight-pixel header shows an eight-digit high score and score, the selected
 player and a three-digit round. The life digit shows spare cars, capped at nine.
 A 248x201 maze viewport preserves world coordinates. The original logical tick
 is 16.5 ms. Elapsed-time scheduling, terrain ownership and cached enemy work keep
-the measured simulation at **60.48–60.61 ticks/s across six natural rounds**
-on the reference Panasonic, including a seven-enemy challenge. Vertical scroll
-advances at most six pixels per physical refresh; the fuel bar is restored on
-every refresh. Presentation averages 26–35 loops/s, with real hardware sprite
-culling. See [performance evidence and limits](docs/enemy-rendering-performance.md).
+the measured simulation at **59.89–60.61 ticks/s across six natural rounds**
+on the reference Panasonic, including a seven-enemy challenge. The player and
+fuel share the actual raster scroll latch. Vertical motion is spread over
+physical refreshes, with a four-pixel maximum step and **41–44 visible updates/s**
+during measured continuous vertical movement. Complete foreground snapshots
+average 35–47/s; these are separate measurements, not a 60 FPS claim. Real
+hardware sprite culling remains enabled. See
+[performance evidence and limits](docs/enemy-rendering-performance.md).
 
 ```sh
 make build

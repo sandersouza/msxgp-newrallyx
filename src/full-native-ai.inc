@@ -177,6 +177,7 @@ Full_AIKeyAddresses:
     ASSERT $ <= $b770
     defs $b770-$,$ff
 Full_EnemyTerminator:
+    call Full_TurboOff
     di
     vdp_write 14,7
     ld a,(Full_EnemySATCursor)
@@ -224,6 +225,7 @@ Full_BuildRegistrationNative:
 Full_RegistrationTable:
     INCBIN "full-registration.bin"
 Full_EnemyDrawNative:
+    call Full_TurboOff        ; Drawing may write VRAM directly or via Sprite_Upload.
     ld a,(driving)
     or a
     jr z,.hidden
@@ -251,6 +253,42 @@ Full_EnemyDrawNative:
     ld (ix+30),255
     ret
 
+Full_EnemyRegisteredNative:
+    ld a,($e24e)
+    cp 4
+    jr nc,.mask
+    ld hl,(Full_EnemySource)
+    ld de,11
+    add hl,de
+    ex de,hl
+    ld hl,$e004
+    ld b,5
+.slot:
+    ld a,(hl)
+    inc hl
+    cp e
+    jr nz,.other
+    ld a,(hl)
+    cp d
+    jr z,.found
+.other:
+    inc hl
+    djnz .slot
+    xor a
+    ret
+.found:
+    ld a,1
+    or a
+    ret
+.mask:
+    ld a,(Full_EnemyIndex)
+    ld e,a
+    ld d,0
+    ld hl,Full_EnemyBits
+    add hl,de
+    ld a,(Full_RegisteredMask)
+    and (hl)
+    ret
     INCLUDE "full-enemy-prepare.inc"
 
 ; World/radar coordinates depend only on these four native bytes. Camera scroll,

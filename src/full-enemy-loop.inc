@@ -17,41 +17,9 @@ Full_EnemyBuildRegistration:
     ld ($7000),a
     jp Full_BuildRegistrationNative
 Full_EnemyRegistered:
-    ld a,($e24e)
-    cp 4
-    jr nc,.mask
-    ld hl,(Full_EnemySource)
-    ld de,11
-    add hl,de
-    ex de,hl
-    ld hl,$e004
-    ld b,5
-.slot:
-    ld a,(hl)
-    inc hl
-    cp e
-    jr nz,.other
-    ld a,(hl)
-    cp d
-    jr z,.found
-.other:
-    inc hl
-    djnz .slot
-    xor a
-    ret
-.found:
-    ld a,1
-    or a
-    ret
-.mask:
-    ld a,(Full_EnemyIndex)
-    ld e,a
-    ld d,0
-    ld hl,Full_EnemyBits
-    add hl,de
-    ld a,(Full_RegisteredMask)
-    and (hl)
-    ret
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp Full_EnemyRegisteredNative
 Full_EnemyBits:
     db 1,2,4,8,16,32,64
 

@@ -642,6 +642,7 @@ Player_Draw:
     nop
     ENDIF
     ld a,(scroll_y)
+.sat_value:
     add a,107                ; Logical centre=(132,116); fixed R18 centres at128.
     ld b,180
     cp 216
@@ -668,6 +669,9 @@ Player_Draw:
     inc hl
     ld (hl),0
 .publish:
+    IF FULL_GAME
+    ret                      ; Maze IRQ owns the complete player SAT pair.
+    ELSE
     IF SPRITE_FLICKER
     ret
     ENDIF
@@ -693,6 +697,7 @@ Player_Draw:
     ld a,216                 ; Slot 19 terminates the thirteen free SAT slots.
     out ($98),a
     ret
+    ENDIF
 
     ENDIF
 ; Restore the previous one-row patch, then complete the shifted full-height car.

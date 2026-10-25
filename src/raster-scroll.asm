@@ -397,6 +397,15 @@ Enemy_AfterPrepare:
     ; The numeric HUD lives on a hidden page during the maze. Patch it after
     ; the split, keeping the larger sprite population out of the raster deadline.
 .split_wait:
+    IF FULL_GAME
+    ; A loop which starts after the maze latch can use the current safe body
+    ; interval. Waiting for another latch would add a whole refresh of latency.
+    ei
+    nop
+    ld a,(raster_phase)
+    or a
+    jr nz,.split_done
+    ENDIF
     IF INCREMENTAL_STAGE >= 9
     di                      ; A split arriving before HALT must not be slept past.
     ENDIF
@@ -408,7 +417,7 @@ Enemy_AfterPrepare:
     IF FULL_GAME
     call Full_SimulationIdle
     jr c,.split_wait
-    di                       ; The helper may have serviced the awaited header.
+    di
     ld a,(line_before)
     ld b,a
     ld a,(line_count)
@@ -420,8 +429,10 @@ Enemy_AfterPrepare:
     jr .split_wait
 .split_done:
     di
+    IF !FULL_GAME
     ld a,(ticks)
     ld (frame_tick),a         ; A scene reload may have crossed a VBlank/header.
+    ENDIF
     IF SPRITE_FLICKER
     call Player_AdvanceEarly
     ENDIF

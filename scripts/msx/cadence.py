@@ -14,8 +14,25 @@ def analyze_scroll(path):
         if new[0]<=old[0]:raise ValueError('Camera time did not advance')
         steps.append(abs((int(new[4]-old[4])+128)%256-128))
     if not steps:raise ValueError('Missing adjacent active camera frames')
+    motion=defaultdict(lambda:[0.,0,0])
+    for i in range(2,len(rows)-2):
+        window=rows[i-2:i+3]
+        if any(r[1]!=window[0][1] or r[2:4]!=[0,0] for r in window):continue
+        if any(b[0]-a[0]>.03 for a,b in zip(window,window[1:])):continue
+        changes=[(int(b[8]-a[8])+32768)%65536-32768 for a,b in zip(window,window[1:])]
+        moving=[v for v in changes if v]
+        if len(moving)<2 or not (all(v>0 for v in moving) or all(v<0 for v in moving)):continue
+        old,new=rows[i-1:i+1]
+        counters=motion[int(new[1])]
+        counters[0]+=new[0]-old[0];counters[1]+=1
+        counters[2]+=int(new[4]!=old[4])
+    moving_rounds=[dict(displayed_round=r-1,moving_seconds=seconds,physical_refreshes=frames,
+        updated_refreshes=updates,vertical_update_hz=updates/seconds)
+        for r,(seconds,frames,updates) in sorted(motion.items())]
     return dict(adjacent_active_frames=len(steps),excluded_state_or_capture_gaps=excluded,
         maximum_vertical_step=max(steps),steps_over_six_pixels=sum(v>6 for v in steps),
+        moving_vertical_rounds=moving_rounds,
+        moving_vertical_scope='Five adjacent active physical frames with at least two monotonic native Y changes; excludes stops, turns and native stalls. Overall native cadence retains active stalls.',
         scope='R23 at the actual maze latch, adjacent active physical frames; cadence retains active elapsed stalls separately.')
 
 
@@ -61,10 +78,13 @@ def analyze(path):
                 windows[n][0]+=overlap
                 windows[n][1]+=s['ticks']*overlap/duration
         rates=[t/d for d,t in windows.values() if d>=4.99]
+        durations=sorted((s['end']-s['start'])*1000 for s in samples)
         result.append(dict(displayed_round=internal-1,internal_round=internal,
             active_seconds=seconds,native_ticks=ticks,native_hz=ticks/seconds,
             foreground_loops=len(samples),presentation_loop_hz=len(samples)/seconds,
             maximum_loop_ms=max(s['end']-s['start'] for s in samples)*1000,
+            percentile_95_loop_ms=durations[math.ceil(len(durations)*.95)-1],
+            loops_over_30_ms=sum(v>30 for v in durations),
             held_loops=sum(s['held'] for s in samples),longest_hold_ms=longest*1000,
             minimum_five_second_native_hz=min(rates) if rates else None,
             enemy_counts=sorted({s['enemies'] for s in samples}),

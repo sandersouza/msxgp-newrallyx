@@ -48,11 +48,13 @@ def main():
     expected=bytearray()
     for n in range(65792):
         target=n&255;current=(n>>8)&255;delta=(target-current+128)%256-128
-        value=(current+max(-6,min(6,delta)))%256 if n<65536 else target
+        limit=2 if abs(delta)<=8 else 4
+        value=(current+max(-limit,min(limit,delta)))%256 if n<65536 else target
         expected.extend((value,value,1))
     if (out/'result.bin').read_bytes()!=expected:raise ValueError('Circular scroll latch differs from bounded-distance oracle')
     verify_manifest(bundle)
-    json_write(out/'report.json',dict(rom_sha256=digest(args.rom),cases=65792,maximum_pixels=6,
+    json_write(out/'report.json',dict(rom_sha256=digest(args.rom),cases=65792,maximum_pixels=4,
+        ordinary_maximum_pixels=2,catch_up_threshold_pixels=8,
         native_ram_unchanged=True,vram_unchanged=True,stack_unchanged=True,
         scope='All 65,536 circular byte transitions plus 256 initial scene latches; real frame timing is verified separately.'))
     require_ignored(root,[f for f in out.rglob('*') if f.is_file()]);seal(out)

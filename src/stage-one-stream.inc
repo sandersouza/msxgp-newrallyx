@@ -299,11 +299,11 @@ stage_stream_driving:
     ENDIF
     IF RASTER_GUARD
     IF FULL_GAME
-    ld b,4                   ; Bounded exact cell copies may finish across VBlank.
+    ld b,1                   ; Keep ordinary prefetch within one presentation frame.
     ld a,(Full_CameraBlocked)
     or a
     jp z,.effect_budget
-    ld b,8                   ; Urgent edges must not drain unrelated guard debt.
+    ld b,8                   ; Finish an urgent edge instead of repeating holds.
     jp .effect_budget
     ELSE
     ld b,64                  ; real raster deadline bounds invisible prefetch

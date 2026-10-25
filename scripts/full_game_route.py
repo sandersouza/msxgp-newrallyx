@@ -27,25 +27,32 @@ def main(argv=None):
     p.add_argument('--steering-margin',type=int,choices=range(3,10),default=6,help='Host driver turn-planning margin in pixels')
     p.add_argument('--avoid-enemies',action='store_true',help='Route around current enemy cells using host-side BFS')
     p.add_argument('--profile',action='store_true',help='Observe main-loop call durations without guest writes')
+    p.add_argument('--record-round',type=int,help='Record eight seconds of actual scanout from this displayed round')
     p.add_argument('--trace-di',action='store_true',help='Observe interrupt-masked intervals without guest writes')
     p.add_argument('--radar-trace',action='store_true',help='Compare live radar SAT against latched R23 before each visible band')
     p.add_argument('--require-stable-radar',action='store_true')
     p.add_argument('--require-stable-fuel',action='store_true')
+    p.add_argument('--require-stable-player',action='store_true')
+    p.add_argument('--minimum-presentation-hz',type=float)
+    p.add_argument('--minimum-vertical-update-hz',type=float)
     p.add_argument('--maximum-scroll-step',type=int)
     p.add_argument('--fixed-base-clock',action='store_true',help='Diagnostic: force 3.58 MHz instead of machine-controlled factory switching')
     p.add_argument('--minimum-native-hz',type=float,help='Require this active average in every measured round')
     p.add_argument('--bios',type=Path,default=Path('references/msxbios'))
     p.add_argument('--machine',default='Panasonic_FS-A1WSX');p.add_argument('--openmsx',default='openmsx')
     args=p.parse_args(argv);root=Path(__file__).resolve().parents[1]
+    if args.record_round is not None and not 1<=args.record_round<=args.rounds:raise ValueError('Recorded round must be within the natural route')
     if args.require_stable_radar and not args.radar_trace:raise ValueError('Stable radar gate requires --radar-trace')
     if args.require_stable_fuel and not args.radar_trace:raise ValueError('Stable fuel gate requires --radar-trace')
+    if args.require_stable_player and not args.radar_trace:raise ValueError('Stable player gate requires --radar-trace')
     if args.maximum_scroll_step is not None and not args.radar_trace:raise ValueError('Scroll gate requires --radar-trace')
+    if args.minimum_vertical_update_hz is not None and not args.radar_trace:raise ValueError('Vertical cadence gate requires --radar-trace')
     bundle=args.rom.resolve().parent;verify_manifest(bundle)
     out=destination(root,args.output);require_ignored(root,[out/'board-0.bin']);out.mkdir(parents=True)
     program,_=acquire(root)
     for i in range(4):(out/f'board-{i}.bin').write_bytes(cells_from_rom(program,0x30+i))
     syms=symbols(bundle/'raster-scroll.sym')
-    lines=['set save_settings_on_exit false','set renderer none','set sound_driver null',
+    lines=['set save_settings_on_exit false',f'set renderer {"SDLGL-PP" if args.record_round else "none"}','set sound_driver null','set vsync off',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
         reference_machine(root,args.machine),'set firmwareswitch off','set throttle off','set pause_on_lost_focus false',
         'set z80_freq 3579545',f'set z80_freq_locked {str(not args.fixed_base_clock).lower()}','set cmdtiming real','set limitsprites true',
@@ -54,6 +61,13 @@ def main(argv=None):
         'for {set i 0} {$i<4} {incr i} {set f [open [file join $out "board-$i.bin"] rb];set boards($i) [read $f];close $f}',
         'set VDP.too_fast_vram_access_callback {puts stderr "Full route VRAM timing violation";exit 2}',
         'after time 900 {puts stderr "Full route emulated timeout: PC=[reg PC] SP=[reg SP] IFF=[reg IFF]";foreach {name data} [list timeout.state [debug read_block memory 0xc000 12288] timeout.page0 [debug read_block memory 0 16384] timeout.vram [debug read_block VRAM 0 131072]] {set f [open [file join $::out $name] wb];puts -nonewline $f $data;close $f};exit 2}']
+    if args.record_round:
+        lines.extend(['set recording_started 0',
+            f'debug set_bp {syms["main"]} {{[info exists ::phase] && $::phase eq "game" && [debug read memory 0xe1b0]=={args.record_round+1} && !$::recording_started}} {{',
+            ' set ::recording_started 1',
+            f' record start -videoonly {tcl(out/"scanout.avi")}',
+            f' after time 8 {{record stop;screenshot -raw {tcl(out/"scanout-last.png")};set renderer none}}',
+            '}'])
     script=(root/'scripts/msx/full-route-probe.tcl').read_text().replace('@SHOW_SCENE@',str(syms['show_scene']))
     for token,name,read in [('CLOCK_DUE','Full_ClockDue','debug read memory'),('CAMERA_BLOCKED','Full_CameraBlocked','debug read memory'),('CLOCK_DROPPED','Full_ClockDropped','u16')]:
         script=script.replace('@'+token+'@',f'[{read} {syms[name]}]' if name in syms else '0')
@@ -111,6 +125,7 @@ def main(argv=None):
             'set radar_samples 0;set radar_mismatches 0;set radar_out [open [file join $out radar.tsv] w]',
             'set fuel_samples 0;set fuel_mismatches 0;set fuel_out [open [file join $out fuel.tsv] w]',
             'set footer_samples 0;set footer_mismatches 0',
+            'set player_samples 0;set player_mismatches 0;set player_out [open [file join $out player.tsv] w]',
             'set camera_out [open [file join $out camera.tsv] w]',
             f'set camera_has_tags {int("Full_CacheSegment" in syms)}',
             'set camera_ram "";foreach device [debug list] {if {[debug desc $device] eq "memory mapper" && [debug size $device]>=131072} {set camera_ram $device;break}}',
@@ -149,6 +164,13 @@ def main(argv=None):
             f' set actual [debug read_block VRAM {0x1c000+(syms["FUEL_ATTRIBUTES"]&0x3fff)} 12]',
             ' if {$actual ne $expected} {incr ::footer_mismatches;puts $::fuel_out "footer $::frames [binary encode hex $actual] [binary encode hex $expected]"}',
             '}',
+            'proc player_sample {} {',
+            ' if {$::phase ne "game" || $::skip_headers || [debug read memory 0xc7d0]!=0 || [debug read memory 0xc49a]} {return}',
+            ' incr ::player_samples;set sy [expr {([debug read {VDP regs} 23]+107)&255}];if {$sy==216} {incr sy -1}',
+            f' set expected [binary format c* [list $sy {syms["PLAYER_X"]} 180 0 $sy {syms["PLAYER_X"]} 184 0]]',
+            f' set actual [debug read_block VRAM {0x1f600+syms["PLAYER_SLOT"]*4} 8]',
+            ' if {$actual ne $expected} {incr ::player_mismatches;puts $::player_out "$::frames [debug read {VDP regs} 23] [binary encode hex $actual] [binary encode hex $expected]"}',
+            '}',
             'proc radar_sample {band} {',
             ' if {$::phase ne "game" || [debug read memory 0xc7d0]!=0 || [debug read memory 0xc5c1]} {return}',
             ' incr ::radar_samples;set scroll [debug read {VDP regs} 23]',
@@ -174,6 +196,7 @@ def main(argv=None):
             'if {[catch {camera_sample} problem]} {puts stderr $problem;exit 2}',
             f'after time {(syms["FUEL_Y"]-3-9)*228/3579545:.10f} fuel_sample',
             f'after time {(syms["LIFE_Y"]-3-9)*228/3579545:.10f} footer_sample',
+            f'after time {(107-3-9)*228/3579545:.10f} player_sample',
             *([f'set ::radar_point [debug read_block memory {syms["Radar_PlayerPoint"]} 2]',
                 f'after time {(syms["RADAR_Y"]+2-3-9)*228/3579545:.10f} radar_dot_sample'] if 'Full_RadarIRQ.point' in syms else []),
             *[f' after time {(syms["RADAR_Y"]+band*15-3-9)*228/3579545:.10f} {{radar_sample {band}}}' for band in range(4)],
@@ -223,7 +246,7 @@ def main(argv=None):
             if match[3]=='di':condition+=' && ([reg IFF]&1)'
             lines.append(f'debug set_bp {address} {{{condition}}} {{di_{"begin" if match[3]=="di" else "end"}}}')
     if args.radar_trace:
-        script=script.replace('exit 0','set f [open [file join $::out radar-counts.txt] w];puts $f "$::radar_samples $::radar_mismatches $::fuel_samples $::fuel_mismatches $::footer_samples $::footer_mismatches";close $f;exit 0')
+        script=script.replace('exit 0','set f [open [file join $::out radar-counts.txt] w];puts $f "$::radar_samples $::radar_mismatches $::fuel_samples $::fuel_mismatches $::footer_samples $::footer_mismatches $::player_samples $::player_mismatches";close $f;exit 0')
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n'+script+'\n} p]} {puts stderr $p;exit 2}\n')
     with (out/'emulator.log').open('w') as log:
         subprocess.run([args.openmsx,'-script',str(out/'session.tcl')],check=True,timeout=240,
@@ -234,32 +257,43 @@ def main(argv=None):
     headers=verify_header_reservations(out/'headers.tsv',313*228/3579545)
     radar=None
     if args.radar_trace:
-        samples,mismatches,fuel_samples,fuel_mismatches,footer_samples,footer_mismatches=map(int,(out/'radar-counts.txt').read_text().split())
+        samples,mismatches,fuel_samples,fuel_mismatches,footer_samples,footer_mismatches,player_samples,player_mismatches=map(int,(out/'radar-counts.txt').read_text().split())
         radar=dict(samples=samples,mismatches=mismatches,player_dot='Full_RadarIRQ.point' in syms,
             fuel_samples=fuel_samples,fuel_mismatches=fuel_mismatches,
             footer_samples=footer_samples,footer_mismatches=footer_mismatches,
+            player_samples=player_samples,player_mismatches=player_mismatches,
             scope='Live SAT before each band fetch against actual latched R23; dot uses its IRQ point snapshot')
         if args.require_stable_radar and (mismatches or not samples):raise ValueError('Fixed radar missed its scanline-coherence gate')
         if args.require_stable_fuel and (fuel_mismatches or not fuel_samples or footer_mismatches or not footer_samples):raise ValueError('Fuel/footer sprites missed their scanline-coherence gate')
+        if args.require_stable_player and (player_mismatches or not player_samples):raise ValueError('Player sprites missed their fixed-centre scanline gate')
     verify_manifest(bundle)
     cadence=analyze_cadence(out/'cadence.tsv')
+    if args.record_round and not (out/'scanout.avi').is_file():raise ValueError('Requested scanout recording is missing')
     camera_motion=analyze_scroll(out/'camera.tsv') if args.radar_trace else None
     scroll_passed=args.maximum_scroll_step is None or camera_motion['maximum_vertical_step']<=args.maximum_scroll_step
     cadence_passed=args.minimum_native_hz is None or all(r['native_hz']>=args.minimum_native_hz for r in cadence['rounds'] if r['active_seconds']>=5)
+    presentation_passed=args.minimum_presentation_hz is None or all(r['presentation_loop_hz']>=args.minimum_presentation_hz for r in cadence['rounds'] if r['active_seconds']>=5)
+    moving_rounds=[r for r in camera_motion['moving_vertical_rounds'] if r['moving_seconds']>=2] if camera_motion else []
+    vertical_passed=args.minimum_vertical_update_hz is None or bool(moving_rounds) and all(r['vertical_update_hz']>=args.minimum_vertical_update_hz for r in moving_rounds)
     clock_rows=[line.split() for line in (out/'clocks.tsv').read_text().splitlines()] if (out/'clocks.tsv').is_file() else []
     clock_evidence=dict(mode='fixed base diagnostic' if args.fixed_base_clock else 'machine controlled',
         native_instruction_samples=len(clock_rows),native_instruction_cpu_hz=sorted({int(row[2]) for row in clock_rows}),
         vdp_frequency_gate='3.58 MHz at every observed sprite upload, command wait and radar IRQ')
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),natural_completed_rounds=args.rounds,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
         foreground_loops=len(rows),cadence=cadence,camera_motion=camera_motion,
+        recorded_displayed_round=args.record_round,
         scroll_gate=dict(maximum_pixels=args.maximum_scroll_step,passed=scroll_passed),
         cadence_gate=dict(minimum_native_hz=args.minimum_native_hz,passed=cadence_passed),
+        presentation_gate=dict(minimum_hz=args.minimum_presentation_hz,passed=presentation_passed),
+        vertical_update_gate=dict(minimum_hz=args.minimum_vertical_update_hz,passed=vertical_passed),
         camera_ownership_checks=int((out/'camera-count.txt').read_text()) if 'Full_CameraValidated' in syms else None,
         header_reservations=headers,radar_coherence=radar,maximum_smoke_placements=max(r[6] for r in rows),
         scope='Real keyboard credit/start, steering and smoke; no guest-state writes. Dynamic sprite/cache images require separate scene checks.'))
     require_ignored(root,[x for x in out.rglob('*') if x.is_file()]);seal(out)
     if not cadence_passed:raise ValueError(f'Natural route missed its native simulation cadence gate; evidence retained at {out}/report.json')
     if not scroll_passed:raise ValueError(f'Natural route missed its vertical scroll gate; evidence retained at {out}/report.json')
+    if not presentation_passed:raise ValueError(f'Natural route missed its presentation gate; evidence retained at {out}/report.json')
+    if not vertical_passed:raise ValueError(f'Natural route missed its physical camera cadence gate; evidence retained at {out}/report.json')
     print(f'{args.rounds} naturally completed rounds: {out}/report.json')
 
 

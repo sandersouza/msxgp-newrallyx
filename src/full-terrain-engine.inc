@@ -279,6 +279,10 @@ Full_SimulationTail:
     ld b,2
 .tick:
     push bc
+    call Full_ClockFrame
+    ld a,(Full_ClockDue)
+    or a
+    jr z,.done               ; No tick is due: avoid another complete edge probe.
     ld hl,(player_pending_x)
     ld de,(player_x)
     call Full_NativePressure.distance
@@ -289,10 +293,7 @@ Full_SimulationTail:
     jr nc,.done
     call Full_CameraCheck
     jr c,.done
-    call Full_ClockFrame
     ld a,(Full_ClockDue)
-    or a
-    jr z,.done
     dec a
     ld (Full_ClockDue),a
     ld a,1

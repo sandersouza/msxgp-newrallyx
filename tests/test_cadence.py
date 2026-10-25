@@ -21,6 +21,15 @@ class CadenceTests(unittest.TestCase):
             path.write_text('\n'.join(' '.join(map(str,r)) for r in rows))
             return analyze(path)['rounds'][0]
 
+    def test_physical_camera_updates_are_distinct_from_native_batching(self):
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/'camera.tsv'
+            def run(smooth):
+                path.write_text('\n'.join(f'{n*.02} 2 0 0 {(n*3 if smooth else n//2*6)%256} 0 0 0 {n//2*6}' for n in range(100)))
+                return analyze_scroll(path)['moving_vertical_rounds'][0]['vertical_update_hz']
+            self.assertAlmostEqual(run(True),50)
+            self.assertAlmostEqual(run(False),25)
+
     def test_wall_time_stalls_are_included_even_when_longer_than_a_refresh(self):
         rows=[[0,2,0,0,0,0,7,0,0,0,0,0],
               [.02,2,0,0,1,0,7,1,0,0,0,1],
@@ -49,6 +58,18 @@ class CadenceTests(unittest.TestCase):
         r=self.report(rows)
         self.assertAlmostEqual(r['native_hz'],30)
         self.assertAlmostEqual(r['minimum_five_second_native_hz'],30)
+
+    def test_presentation_pauses_remain_visible_with_caught_up_native_ticks(self):
+        # Two due native ticks can hide a missed display refresh in the average.
+        rows=[[0,2,0,0,0,0,2,0,0,0],
+              [.02,2,0,0,1,0,2,1,0,0],
+              [.06,2,0,0,4,0,2,3,0,0],
+              [.08,2,0,0,5,0,2,1,0,0]]
+        r=self.report(rows)
+        self.assertAlmostEqual(r['native_hz'],62.5)
+        self.assertAlmostEqual(r['presentation_loop_hz'],37.5)
+        self.assertEqual(r['loops_over_30_ms'],1)
+        self.assertAlmostEqual(r['percentile_95_loop_ms'],40)
 
     def test_invalid_counter_jump_is_not_silently_excluded(self):
         with self.assertRaisesRegex(ValueError,'discontinuity'):

@@ -8,7 +8,6 @@ Full_EnemyLoop:
     call Full_EnemyInactive
     jr c,.next
     call .dispatch
-    ei
 .next:
     ei
     ld hl,Full_EnemyIndex
@@ -22,15 +21,16 @@ Full_EnemyLoop:
     ld hl,(Full_EnemyAction)
     jp (hl)
 Full_EnemySelect:
+    call Full_TurboOn         ; Pure descriptor selection, before sprite I/O.
     ld a,(Full_EnemyIndex)
+    ld c,a
     ld l,a
     ld h,0
     ld de,Full_EnemyPatterns
     add hl,de
     ld a,(hl)
     ld (Full_EnemyPattern),a
-    ld a,(Full_EnemyIndex)
-    ld l,a
+    ld l,c
     ld h,0
     add hl,hl
     add hl,hl
