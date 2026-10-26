@@ -104,8 +104,11 @@ remain effective. Original phase, fuel and startup/spin clocks continue near
 The executed MSX contracts replace original-AI equivalence as the relevant
 enemy proof; historical original-AI comparisons apply only to older cartridges.
 
-The eight-digit score/high-score header uses original 8x8 glyphs and includes
-the selected player and three round digits. Spare-car presentation caps at nine
+The score/high-score header displays the lowest seven native digits using original
+8x8 glyphs, aligned to the maze viewport. It includes the selected player and two
+round digits, replaced by an authored 16x8 infinity sign above 99. The title also
+shows seven high-score digits. Credits display one digit, capped at nine; the
+native counter still supports 255. Spare-car presentation caps at nine
 without changing native lives. Fuel retains original units and publication in
 the maze IRQ against the actual scroll latch.
 The scenery palette reuses a spare third black entry for the later orange;

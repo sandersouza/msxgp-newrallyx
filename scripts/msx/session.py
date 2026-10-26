@@ -22,7 +22,8 @@ def resources(assets,black,white,*,full_game=False,root=None,palette=None):
         image,background=cast(root,palette)
         text(image,'HIGH SCORE',16,0)
         text(image,'5 COIN  1 START  2 TWO PLAYERS',8,184)
-        text(image,'CREDIT',72,192)
+        from .full_hud import CREDIT_LABEL_X
+        text(image,'CREDIT',CREDIT_LABEL_X,192)
     else:
         image=bytearray([black])*(256*212)
     for value,y in (() if full_game else (('NEW RALLY-X',32),('5: CREDIT   1: START',128))):
@@ -45,6 +46,11 @@ def resources(assets,black,white,*,full_game=False,root=None,palette=None):
         for digit in range(10):
             line=bytearray([black])*(256*8);text(line,str(digit),0,0)
             black_font.extend(packed(bytes(line[y*256+x] for y in range(8) for x in range(8))))
+        from .full_hud import infinity_pixels
+        mask=infinity_pixels()
+        for half in (0,8):
+            black_font.extend(packed(bytes(white if mask[y*16+half+x] else black
+                for y in range(8) for x in range(8))))
         second=bytearray(second)
         second[0x3200:0x3200+len(black_font)]=black_font
     if len(second)>CODE_OFFSET:raise ValueError('Session image resources overlap code')

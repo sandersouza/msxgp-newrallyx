@@ -87,17 +87,13 @@ Full_DemoFrame:
 Full_DrawRound:
     ld a,($e1b0)
     dec a
-    ld b,0
-.hundreds:
     cp 100
     jr c,.tens_begin
-    sub 100
-    inc b
-    jr .hundreds
+    ld hl,$0b0a              ; Two authored glyph halves form the infinity sign.
+    ld ($d148),hl
+    jr .draw
 .tens_begin:
     ld hl,$d148
-    ld (hl),b
-    inc hl
     ld b,0
 .tens:
     cp 10
@@ -109,9 +105,10 @@ Full_DrawRound:
     ld (hl),b
     inc hl
     ld (hl),a
+.draw:
     ld hl,$d148
-    ld de,216/2
-    ld b,3
+    ld de,ROUND_X/2
+    ld b,2
     ld a,1
     ld (Full_NumberBlack),a
     call Session_Number

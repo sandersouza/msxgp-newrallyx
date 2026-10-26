@@ -46,7 +46,7 @@ def check_header(state,vram,assets,palette):
     actual=vram[0x10000:0x10400]
     if actual!=expected:
         at=next(i for i,(a,b) in enumerate(zip(actual,expected)) if a!=b)
-        raise ValueError(f'Complete eight-digit/round header mismatch at byte {at}')
+        raise ValueError(f'Complete compact score/round header mismatch at byte {at}')
 
 
 def main(argv=None):

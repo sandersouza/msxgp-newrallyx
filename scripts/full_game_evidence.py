@@ -98,7 +98,7 @@ def main():
         v,c=actors(state,vram,pixels,state[scroll_address],'Full_EnemySATCursor' in syms,'Full_PoolKeys' in syms);visible+=v;maximum=max(maximum,c)
         expected=packed(header(assets,palette,number(state[0x1120:0x1128]),number(state[0x1128:0x1130]),
             player=state[0x7ec]+1,full_game=True,round_=(state[0x21b0]-1)&255))
-        if vram[0x10000:0x10400]!=expected:raise ValueError(f'Natural eight-digit header differs from published values: {path.stem}')
+        if vram[0x10000:0x10400]!=expected:raise ValueError(f'Natural compact header differs from published values: {path.stem}')
     rows=[list(map(int,line.split())) for line in (args.capture/'events.tsv').read_text().splitlines()]
     held=run=longest=0
     for old,new in zip(rows,rows[1:]):
@@ -110,7 +110,7 @@ def main():
         complete_enemy_images_checked=visible,maximum_enemy_planes_per_scanline=maximum,
         cache_held_loops=held,observed_foreground_loops=len(rows),hold_percentage=100*held/len(rows),
         longest_consecutive_hold=longest,
-        scope='Independent visible cache, published smoke and row counters, death/player patch, complete enemy masks/OR colors and eight-digit HUD VRAM. SAT/VRAM proof; rendered scanout and physical hardware are separate.'))
+        scope='Independent visible cache, published smoke and row counters, death/player patch, complete enemy masks/OR colors and compact HUD VRAM. SAT/VRAM proof; rendered scanout and physical hardware are separate.'))
     require_ignored(root,[f for f in out.rglob('*') if f.is_file()]);seal(out)
     print(f'{len(frames)} natural cache/HUD/car snapshots pass: {out}/report.json')
 

@@ -31,8 +31,10 @@ death/restart, alternating two-player sessions, game over and an autonomous
 attract demonstration. It retains original-size graphics, the complete car
 drawings, the full HUD and the real V9958 sprite limit.
 
-The eight-pixel header shows an eight-digit high score and score, the selected
-player and a three-digit round. The life digit shows spare cars, capped at nine.
+The eight-pixel header aligns with the maze viewport and shows seven score/high-score
+digits, the selected player and two round digits (infinity above 99). Credits use
+one digit, capped visually at nine. Native score/round/credit counters retain
+their full range. The life digit shows spare cars, capped at nine.
 A 248x201 maze viewport preserves world coordinates. The full game targets
 **30 FPS presentation** on approximately 60 Hz NTSC output, as approved by the
 user. Complete car masks, attributes and both camera axes publish together.

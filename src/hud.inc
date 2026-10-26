@@ -844,6 +844,9 @@ hud_number_due:
 .yes:
     or a
     ret
+    IF FULL_GAME
+hud_write_pair EQU Full_HUDWritePair
+    ELSE
 hud_write_pair:
     IF INCREMENTAL_STAGE < 9
     vdp_write 14,4
@@ -874,6 +877,7 @@ hud_write_pair:
     dec a
     jr nz,.row
     ret
+    ENDIF
 
     INCLUDE "hud-api.inc"
     INCLUDE "hud-native.inc"

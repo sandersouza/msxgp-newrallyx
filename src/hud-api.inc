@@ -2,7 +2,8 @@
 ; They preserve BC/DE/HL/IX/IY and alternate registers. AF is scratch.
 ; Stable state is separate from game RAM and the keyboard producer.
 
-; HL -> six numeric digits, most significant first. C=1 on invalid digits.
+; HL -> HUD_DIGITS numeric digits, most significant first. Full-game storage
+; retains eight digits while the renderer displays seven. C=1 on invalid input.
 HUD_SetScore:
     push de
     ld de,hud_score_pending

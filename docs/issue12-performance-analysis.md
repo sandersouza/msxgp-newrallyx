@@ -1,5 +1,16 @@
 # Issue #12: bounded 30 Hz presentation
 
+The compact-HUD follow-up uses ROM
+`8f002e0c29a8645faadeaac3dce6ffbb8ead0c50902620b78f334ede2b103fcb`:
+seven visible score/record digits, one credit digit capped at nine, two round
+digits/infinity above 99, and a header spanning the maze viewport from X=8.
+Native counters retain their full range. Fourteen HUD boundary cases, seven
+credit limits, two natural rounds, source-pixel checks and 384 tests cover this
+follow-up (`issue12-compact-hud-*-v212`). Its two-round packet rates are
+29.91..29.96 FPS, with no fixed-sprite mismatches. The larger performance matrix
+below remains explicitly scoped to the preceding v210 ROM, not a new eight-round
+qualification of the HUD-only follow-up.
+
 The slowdown grows with enemy count across ordinary rounds. The challenge
 round is a useful stationary-car workload, not the scope of the problem.
 The user approved stable 30 FPS with occasional stutters, approximately 60 Hz

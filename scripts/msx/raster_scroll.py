@@ -10,6 +10,7 @@ from .inputs import sources, video_timing
 from . import sprite_radar as radar
 from . import sprite_fuel as fuel
 from . import sprite_lives as life_counter
+from . import full_hud
 from scripts.scenes.bundle import digest, load_assets
 from scripts.scenes.storage import json_write, require_ignored, seal
 from .display import (LEFT_MASK, VIEWPORT_WIDTH, VIEWPORT_HALF, HORIZONTAL_ADJUST,
@@ -58,14 +59,24 @@ def header(assets, encoded, score=0, high=20000, player=1, *, background=None, f
     parts = [(' ', black), ('HISCORE:', white), (f'{high:06d}', red), (' '*7, black),
              (f'{player}UP:', white), (f'{score:06d}', cyan)]
     if full_game:
-        parts=[('HI:',white),(f'{high:08d}',red),(' ',black),(f'{player}UP:',white),
-               (f'{score:08d}',cyan),(' R:',white),(f'{round_:03d}',white),('  ',black)]
+        from .full_hud import score_text,round_text
+        parts=[(' ',black),('HI: ',white),(score_text(high),red),(' ',black),
+               (f'{player}UP: ',white),(score_text(score),cyan),('   R:',white),
+               (round_text(round_),white)]
     if sum(len(text) for text, _ in parts) != 32:
         raise ValueError('Scoreboard values must fit one 32-cell line')
     result = bytearray([black if background is None else background]) * (256*8)
     column = 0
     for text, color in parts:
         for char in text:
+            if char == '\u221e':
+                from .full_hud import infinity_pixels
+                mask=infinity_pixels()
+                for y in range(8):
+                    for x in range(16):
+                        if mask[y*16+x]:result[y*256+column*8+x]=color
+                column+=1  # The following reserved blank owns the other half.
+                continue
             if char != ' ':
                 code = int(char) if char.isdigit() else ord(char)
                 glyph = assets.pixels['tiles'][code*64:(code+1)*64]
@@ -91,7 +102,8 @@ def outlined_life(mask):
 
 def player_label_patterns(assets, palette, *, background=None,full_game=False):
     """Extract the original 1/2 glyph at the current label position."""
-    return b''.join(packed(bytes(line[y*256+(96 if full_game else PLAYER_LABEL_X)+x]
+    from .full_hud import PLAYER_LABEL_X as FULL_PLAYER_LABEL_X
+    return b''.join(packed(bytes(line[y*256+(FULL_PLAYER_LABEL_X if full_game else PLAYER_LABEL_X)+x]
                                   for y in range(8) for x in range(8)))
                     for player in (1, 2) for line in [header(assets, palette, player=player,background=background,full_game=full_game)])
 
@@ -690,6 +702,8 @@ def build(root, args):
     if full_game:
         from .full_enemy import validate_extension_space
         validate_extension_space(banks[player_bank-1])
+        if any(banks[hud_bank-1][0x3600:0x3f00]):
+            raise ValueError('Compact HUD writer overlaps font-bank resources')
     terrain_bank=0
     if full_game:
         terrain_bank=len(banks)+1
@@ -745,8 +759,9 @@ def build(root, args):
         f'LIFE_X0 EQU {LIFE_X[0]}\nLIFE_X1 EQU {LIFE_X[1]}\nMASK_SPRITES EQU {len(MASK_ROWS)}\n'
         f'VIEWPORT_WIDTH EQU {VIEWPORT_WIDTH}\nVIEWPORT_HALF EQU {VIEWPORT_HALF}\n'
         f'HORIZONTAL_ADJUST EQU {HORIZONTAL_ADJUST}\nPLAYER_X EQU {PLAYER_X}\n'
-        f'PLAYER_LABEL_X EQU {96 if full_game else PLAYER_LABEL_X}\nSCORE_X EQU {128 if full_game else SCORE_X}\n'
-        f'HIGH_X EQU {24 if full_game else 72}\nHUD_DIGITS EQU {8 if full_game else 6}\n'
+        f'PLAYER_LABEL_X EQU {full_hud.PLAYER_LABEL_X if full_game else PLAYER_LABEL_X}\nSCORE_X EQU {full_hud.SCORE_FIELD_X if full_game else SCORE_X}\n'
+        f'HIGH_X EQU {full_hud.HIGH_FIELD_X if full_game else 72}\nHUD_DIGITS EQU {8 if full_game else 6}\n'
+        f'ROUND_X EQU {full_hud.ROUND_X}\nCREDIT_X EQU {full_hud.CREDIT_X}\n'
         f'FUEL_SLOT EQU {fuel_slot}\nPLAYER_SLOT EQU {player_slot}\n'
         f'HUD_STATIC_LIFE EQU {int(static_life)}\n'
         f'FUEL_COLORS EQU $f400+{fuel_slot}*16\nFUEL_ATTRIBUTES EQU $f600+{fuel_slot}*4\n'
@@ -759,7 +774,8 @@ def build(root, args):
         from .enemy_navigation import original_maps
         (output/'full-navigation.bin').write_bytes(original_maps(program))
     (output/'payload.inc').write_text(''.join(
-        (f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n' if n==session_bank else
+        (f'    INCBIN "bank-{n}.bin",0,$3600\n    DISP $b600\n    INCLUDE "full-hud-number.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==hud_bank else
+         f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n' if n==session_bank else
          '    DISP $1000\nFull_CacheEngineStart:\n    INCLUDE "full-terrain-engine.inc"\nFull_CacheEngineEnd:\n    ENT\n    defs $1000-(Full_CacheEngineEnd-Full_CacheEngineStart),$ff\n    DISP $ea00\nFull_PresentStart:\n    INCLUDE "full-presentation.inc"\nFull_PresentEnd:\n    ASSERT $ <= $ec00\n    ENT\n    defs $1000-(Full_PresentEnd-Full_PresentStart),$ff\n    INCBIN "full-navigation.bin"\n' if full_game and n==terrain_bank else
          f'    INCBIN "bank-{n}.bin",0,$2800\n    INCLUDE "full-load.inc"\n    defs $400-(Full_LoadEnd-Full_LoadStart)-(Full_EnemyHotEnd-Full_EnemyHotStart)-(Full_RadarIRQEnd-Full_RadarIRQStart),$ff\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    DISP $ae00\n    INCLUDE "full-round-native.inc"\n    ASSERT $ <= $b000\n    defs $b000-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3000,$500\n    DISP $b500\n    INCLUDE "full-native-motion.inc"\n    ASSERT $ <= $b600\n    defs $b600-$,$ff\n    ENT\n    DISP $b600\n    INCLUDE "full-native-ai.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==player_bank else
          f'    INCBIN "bank-{n}.bin",0,$2c00\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2e00,$1200\n' if round_preparation and n==player_bank else
@@ -773,7 +789,7 @@ def build(root, args):
     if round_preparation:
         shutil.copyfile(root/'src/round-objects.inc', output/'round-objects.inc')
     if full_game:
-        for name in ('full-round-native.inc','full-msx-enemies.inc','full-presentation.inc','full-sprite-cache.inc','full-main.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
+        for name in ('full-hud-number.inc','full-round-native.inc','full-msx-enemies.inc','full-presentation.inc','full-sprite-cache.inc','full-main.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
             shutil.copyfile(root/'src'/name,output/name)
     shutil.copyfile(root/'src/player.inc',output/'player.inc')
     if smoke_runtime:shutil.copyfile(root/'src/smoke.inc',output/'smoke.inc')
@@ -847,6 +863,13 @@ def build(root, args):
                 player_sat='Complete pair published by the maze IRQ against its actual R23',
                 initialized=0xd2cd,ownership='Both planned and latched views, including mixed corner columns')) if full_game else None),
         full_game=full_game,full_memory=memory_layout,
+        full_hud_layout=(dict(header_left=full_hud.HEADER_LEFT,visible_score_digits=7,native_score_digits=8,
+            source_sha256={p:digest(root/p) for p in ('scripts/msx/full_hud.py','src/full-hud-number.inc')},
+            score_policy='Lowest seven native digits; scoring and record state unchanged',
+            high_digits_x=full_hud.HIGH_FIELD_X+8,score_digits_x=full_hud.SCORE_FIELD_X+8,
+            player_label_x=full_hud.PLAYER_LABEL_X,round_x=full_hud.ROUND_X,
+            round_digits=2,round_overflow='16x8 infinity symbol above 99',
+            credit_x=full_hud.CREDIT_X,credit_digits=1,credit_display_maximum=9) if full_game else None),
         session=(dict(state_address=0xc7d0,credits_address=0xc7d2,ready_address=0xc7dd,image_bank=session_image_bank,code_bank=session_bank,keys='5 credit, 1 one-player start'+(', 2 two-player start' if full_game else '')+'; arrows/joystick1 steering, Space/Ctrl/triggerA smoke, P pause, Home reset',
             direction_gate='Four-way, newest direction edge wins; simultaneous edges choose one direction',
             direction_state_addresses=[0xc7de,0xc7df],

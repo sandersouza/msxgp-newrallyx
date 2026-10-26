@@ -252,11 +252,13 @@ Session_Draw:
     call Score_ReadDigits
     ld hl,Session_Digits
     IF FULL_GAME
+    inc hl                   ; Seven visible digits; the native record stays eight.
     ld de,120/2
+    ld b,7
     ELSE
     ld de,56*128+160/2
-    ENDIF
     ld b,HUD_DIGITS
+    ENDIF
     call Session_Number
     IF !FULL_GAME
     ld hl,$e0a0
@@ -289,6 +291,17 @@ Session_Registers:
 
 Session_DrawCredits:
     ld a,(Session_Credits)
+    IF FULL_GAME
+    cp 10
+    jr c,.credit_ready
+    ld a,9
+.credit_ready:
+    ld (Session_Digits),a
+    ld hl,Session_Digits
+    ld de,192*128+CREDIT_X/2
+    ld b,1
+    jr Session_Number
+    ELSE
     ld b,0
 .hundreds:
     cp 100
@@ -318,6 +331,7 @@ Session_DrawCredits:
     ld de,152*128+160/2
     ENDIF
     ld b,3
+    ENDIF
 Session_Number:
     push bc
     push hl

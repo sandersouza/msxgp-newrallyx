@@ -57,6 +57,7 @@ def main():
         for player in (0,1):hud_cases.append((value,99999999,round_,lives,player))
     (out/'hud.bin').write_bytes(b''.join(packet(score)+packet(high)+bytes((round_,lives,player))
                                         for score,high,round_,lives,player in hud_cases))
+    credit_cases=(0,1,8,9,10,99,255)
     lines=['set save_settings_on_exit false','set renderer none','set sound_driver null',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),'set firmwareswitch off','set throttle off',
@@ -113,8 +114,14 @@ proc step {} {
                 puts -nonewline $f [debug read_block $device $start $size];close $f
             }
             incr ::hudindex
-            if {$::hudindex==[string length $::huddata]/19} {exit 0}
-            set ::phase hud_seed
+            if {$::hudindex==[string length $::huddata]/19} {
+                debug write memory 0xc7d0 1;debug write memory 0xc7d1 0
+                debug write memory 0xc7ee 0;debug write memory 0xc7d2 0
+                set ::phase credit_screen;set ::age 0
+            } else {set ::phase hud_seed}
+        }}
+        credit_screen {if {$::age>30 && [debug read memory 0xc7dd]} {
+            set ::creditindex 0;set ::phase credit_seed
         }}
     }
     after time 0.02 poll
@@ -141,12 +148,32 @@ debug set_bp 0xd170 {$::phase eq "hud_call"} {
     if {[reg SP]!=$::savedsp} {error "HUD fixture changed stack"}
     reg PC @MAIN@;set ::phase hud_wait;set ::age 0
 }
+set credit_cases {@CREDITS@}
+debug set_bp @MAIN@ {$::phase eq "credit_seed"} {
+    set ::creditvalue [lindex $::credit_cases $::creditindex]
+    debug write memory 0xc7d2 $::creditvalue
+    debug write memory 0x7000 @BANK@
+    set ::savedsp [reg SP]
+    set at 0xd150;foreach byte {251 205 @CREDITLO@ @CREDITHI@ 195 112 209} {debug write memory $at $byte;incr at}
+    reg PC 0xd150;set ::phase credit_call
+}
+debug set_bp 0xd170 {$::phase eq "credit_call"} {
+    if {[reg SP]!=$::savedsp || [debug read memory 0xc7d2]!=$::creditvalue} {error "Credit display changed stack or native counter"}
+    foreach device {memory VRAM} suffix {state vram} start {49152 0} size {12288 131072} {
+        set f [open [file join $::out "credit-$::creditvalue.$suffix"] wb]
+        puts -nonewline $f [debug read_block $device $start $size];close $f
+    }
+    incr ::creditindex
+    if {$::creditindex==[llength $::credit_cases]} {exit 0}
+    reg PC @MAIN@;set ::phase credit_seed
+}
 '''
     for key,name in [('PLAYERS','Full_Players'),('PLAYER','Full_Player'),('DEATH','Death_State'),('JOBS','Death_Jobs'),('LIFE','Life_State')]:
         script=script.replace('@'+key+'@',str(syms[name]))
-    for key,name in [('SCORE','Score_Publish'),('LIFE','Life_Publish'),('LABEL','HUD_SetPlayerNumber')]:
+    for key,name in [('SCORE','Score_Publish'),('LIFE','Life_Publish'),('LABEL','HUD_SetPlayerNumber'),('CREDIT','Session_DrawCredits')]:
         script=script.replace('@'+key+'LO@',str(syms[name]&255)).replace('@'+key+'HI@',str(syms[name]>>8))
     script=script.replace('@MAIN@',str(syms['main'])).replace('@BANK@',str(syms['SESSION_BANK']))
+    script=script.replace('@CREDITS@',' '.join(map(str,credit_cases)))
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n'+script+'\n} p]} {puts stderr $p;exit 2}\n')
     with (out/'emulator.log').open('w') as log:
         subprocess.run(['openmsx','-script',str(out/'session.tcl')],check=True,timeout=180,
@@ -185,10 +212,35 @@ debug set_bp 0xd170 {$::phase eq "hud_call"} {
         # Dynamic digit occupies COUNT_PATTERN (172) and its shifted alternative.
         if vram[0x1f800+172*8:0x1f800+172*8+32]!=mask:
             raise ValueError(f'Original life glyph differs for native count {lives}')
+    from scripts.msx.full_hud import CREDIT_X,credit_digit
+    from scripts.msx.attract import cast
+    from scripts.msx.raster_scroll import index_for
+    white=index_for(palette,(222,222,222));background=cast(root,palette)[1]
+    static=(bundle/f'bank-{syms["SESSION_IMAGE_BANK"]}.bin').read_bytes()
+    static+=(bundle/f'bank-{syms["SESSION_BANK"]}.bin').read_bytes()[:0x2a00]
+    for value in credit_cases:
+        state=(out/f'credit-{value}.state').read_bytes();vram=(out/f'credit-{value}.vram').read_bytes()
+        if state[syms['Session_Credits']-0xc000]!=value:raise ValueError('Credit display modified native credit count')
+        glyph=assets.pixels['tiles'][credit_digit(value)*64:][:64]
+        expected=packed(bytes(white if assets.palette['lookup'][38*4+pixel] else background for pixel in glyph))
+        for y in range(8):
+            at=(192+y)*128+CREDIT_X//2
+            if vram[0x10000+at:0x10000+at+4]!=expected[y*4:y*4+4]:raise ValueError(f'Credit {value} did not display one capped digit')
+            if vram[0x10000+at+4:0x10000+at+12]!=static[at+4:at+12]:raise ValueError('Stale credit tens/hundreds remain visible')
+        high=state[0x2060:0x2068]
+        for i,digit in enumerate((high[4:]+high[:4])[1:]):
+            glyph=assets.pixels['tiles'][digit*64:][:64]
+            expected=packed(bytes(white if assets.palette['lookup'][38*4+p] else background for p in glyph))
+            for y in range(8):
+                at=y*128+120//2+i*4
+                if vram[0x10000+at:0x10000+at+4]!=expected[y*4:y*4+4]:raise ValueError('Title high score differs from seven original glyphs')
+        for y in range(8):
+            at=y*128+176//2
+            if vram[0x10000+at:0x10000+at+4]!=static[at:at+4]:raise ValueError('Title still displays an eighth high-score digit')
     verify_manifest(bundle);verify_manifest(args.reference)
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),checks=checks,hud_boundary_cases=len(hud_cases),
-        challenge_failure=True,
-        scope='Explicit partial-board/challenge/HUD fixtures; real death dispatch, two restores, exact selected native fields, map banks, cache, full header and original life digits. Round 255 is presentation-only.'))
+        challenge_failure=True,credit_boundary_cases=list(credit_cases),credit_counter_unchanged=True,
+        scope='Explicit partial-board/challenge/HUD fixtures; real death dispatch, two restores, exact selected native fields, map banks/cache, seven visible score digits, two round digits/infinity, capped one-digit credits, seven-digit title record and original life digits. Round 255 is presentation-only.'))
     require_ignored(root,[x for x in out.rglob('*') if x.is_file()]);seal(out)
     print(f'Per-player partial-board restoration passes: {out}/report.json')
 
