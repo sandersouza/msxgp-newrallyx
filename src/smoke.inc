@@ -941,6 +941,10 @@ Smoke_Stream:
     ld (tile_y),a
     ld a,1
     ld (Smoke_StreamCost),a
+    IF FULL_GAME
+    call Full_TrySmokeCell
+    jr c,.grouped
+    ENDIF
     call Smoke_TryStreamRow
     jr c,.grouped
     call stage_tile

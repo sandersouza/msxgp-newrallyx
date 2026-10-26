@@ -35,16 +35,43 @@ def main():
     (out/'irq-code.bin').write_bytes(irq)
     entry=syms['Full_EnemyFrame']
     code=bytes((243,205,entry&255,entry>>8,0,0,0,195,96,209))
+    packet='Full_PresentCommit' in syms
+    front_after=even_after=None
+    if packet:
+        code=bytearray((243,62,1,50,syms['Full_PresentEnabled']&255,syms['Full_PresentEnabled']>>8))
+        def call(address):code.extend((205,address&255,address>>8))
+        call(entry);code.append(243);front_after=0xd150+len(code);code.append(0)
+        call(syms['Full_PresentSeal'])
+        code.extend((175,50,syms['ticks']&255,syms['ticks']>>8))
+        call(syms['Full_PresentCommit']);even_after=0xd150+len(code);code.append(0)
+        code.extend((62,1,50,syms['ticks']&255,syms['ticks']>>8))
+        odd_call=0xd150+len(code)
+        call(syms['Full_PresentCommit']);code.extend((195,127,209))
+        if len(code)>47:raise ValueError('Presentation fixture code exceeds isolated scratch')
+        code=bytes(code)
     (out/'code.bin').write_bytes(code)
+    wait=(bytes.fromhex('3e00d3993e8fd399db99db99e68028fa')+bytes((195,odd_call&255,odd_call>>8))) if packet else b''
+    (out/'wait.bin').write_bytes(wait)
     lines=['set save_settings_on_exit false','set renderer none','set sound_driver null',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),'set firmwareswitch off','set throttle off',
         'set z80_freq 3579545','set z80_freq_locked true','set cmdtiming real','set limitsprites true',
         f'cart {tcl(args.rom.resolve())} -romtype ASCII16','reset',f'set out {tcl(out)}',
         f'set compact {int("Full_EnemySATCursor" in syms)}',
-        'foreach n {cases code irq-code} {set f [open [file join $out "$n.bin"] rb];set data($n) [read $f];close $f}',
+        'foreach n {cases code irq-code wait} {set f [open [file join $out "$n.bin"] rb];set data($n) [read $f];close $f}',
         f'set irq_start {syms.get("Full_RadarIRQStart",0)}',
         'set index 0;set started 0;set sentinel 0;set result [open [file join $out result.bin] wb]']
+    if packet:
+        lines.extend([
+            'set commit_max_ms 0;set commit_peak {};set seven_waited 0;set seven_ms 0',
+            f'debug set_bp {odd_call} {{$::started && $::sentinel>=5 && !$::seven_waited}} {{set ::seven_waited 1;reg PC 0xd100}}',
+            f'debug set_bp {syms["Full_PresentCommit.clock_ready"]} {{$::started}} {{set ::commit_begin [machine_info time];set ::commit_clock [machine_info z80_freq];set ::commit_enable [debug read memory {syms["Full_TurboEnabled"]}];set ::commit_size [debug read memory {syms["Full_PresentLength"]}]}}',
+            f'debug set_bp {syms["Full_PresentCommit.restore"]} {{$::started && [info exists ::commit_begin]}} {{set ms [expr {{([machine_info time]-$::commit_begin)*1000}}];if {{$::sentinel>=5}} {{set ::seven_ms [expr {{max($::seven_ms,$ms)}}]}};if {{$ms>$::commit_max_ms}} {{set ::commit_max_ms $ms;set ::commit_peak [list $ms $::commit_clock $::commit_enable $::commit_size [reg IFF]]}};unset ::commit_begin}}',
+            'proc actor_front {} {set front "[debug read_block VRAM 0x1f520 224][debug read_block VRAM 0x1f648 56]";for {set s 18} {$s<32} {incr s} {set at [expr {0x1f600+$s*4}];if {[debug read VRAM $at]==216} {break};set p [debug read VRAM [expr {$at+2}]];append front [debug read_block VRAM [expr {0x1f800+($p&252)*8}] 32]};return $front}',
+            f'debug set_bp {entry} {{$::started}} {{set ::actor_front [actor_front]}}',
+            f'debug set_bp {front_after} {{$::started}} {{if {{[actor_front] ne $::actor_front}} {{set now [actor_front];for {{set i 0}} {{$i<[string length $now]}} {{incr i}} {{if {{[string index $now $i] ne [string index $::actor_front $i]}} {{break}}}};puts stderr "Packet preparation changed the visible actors: case=$::index sentinel=$::sentinel byte=$i enabled=[debug read memory {syms["Full_PresentEnabled"]}]";exit 2}}}}',
+            f'debug set_bp {even_after} {{$::started}} {{if {{[actor_front] ne $::actor_front}} {{set now [actor_front];for {{set i 0}} {{$i<[string length $now]}} {{incr i}} {{if {{[string index $now $i] ne [string index $::actor_front $i]}} {{break}}}};puts stderr "Packet changed the front before publication: case=$::index sentinel=$::sentinel byte=$i";exit 2}}}}',
+        ])
     script=r'''
 proc issue {} {
     if {$::index==[string length $::data(cases)]/10} {
@@ -52,6 +79,7 @@ proc issue {} {
         if {[debug read_block VRAM 0 65536] ne $::scene} {error "Enemy presentation changed terrain"}
         set f [open [file join $::out radar-mask.bin] wb]
         puts -nonewline $f [debug read_block VRAM @RADARMASK@ 64];close $f
+        if {[info exists ::commit_max_ms]} {set f [open [file join $::out commit-ms.txt] w];puts $f $::commit_max_ms;close $f;set f [open [file join $::out commit-peak.txt] w];puts $f $::commit_peak;close $f;set f [open [file join $::out seven-ms.txt] w];puts $f $::seven_ms;close $f}
         close $::result;exit 0;return
     }
     binary scan [string range $::data(cases) [expr {$::index*10}] [expr {$::index*10+9}]] cu* c
@@ -109,6 +137,35 @@ debug set_bp 0xd160 {$::started} {
     } elseif {$::sentinel==4} {
         set slot [expr {$::compact?18:22}]
         if {[debug read VRAM [expr {0x1f600+$slot*4}]]==216 || ![debug read memory 0xce60]} {error "Reappearing identical pose retained a stale SAT terminator"}
+        if {@PACKET@} {
+            set flags {@SEVENFLAGS@}
+            for {set i 0} {$i<7} {incr i} {
+                set p [expr {0xe088+$i*32}];set x [expr {28+28*$i}];set y [expr {20+24*$i}]
+                set wx [expr {384+$x-124}];set wy [expr {1236+$y-108}]
+                set cx [expr {($wx-36+12)/24}];set cy [expr {($wy-36+12)/24}]
+                foreach {offset value} [list 8 $cx 10 $cy 5 [expr {($wx-36-24*$cx)&255}] 7 [expr {(-($wy-36-24*$cy))&255}] 15 [lindex $flags $i]] {debug write memory [expr {$p+$offset}] $value}
+                debug write memory [expr {0xce20+$i*32+14}] 255
+            }
+            debug write_block memory 0xd100 $::data(wait)
+            set ::sentinel 5;reg PC 0xd150
+        } else {set ::sentinel 0;issue}
+    } elseif {$::sentinel==5} {
+        foreach {name payload} [list all-seven.state [debug read_block memory 0xc000 12288] all-seven.vram [debug read_block VRAM 0 131072]] {
+            set f [open [file join $::out $name] wb];puts -nonewline $f $payload;close $f
+        }
+        if {@SHARED@} {
+            for {set i 0} {$i<7} {incr i} {
+                set p [expr {0xe088+$i*32}];set wx [expr {384-1-124}]
+                set cx [expr {($wx-36+12)/24}]
+                debug write memory [expr {$p+8}] $cx
+                debug write memory [expr {$p+5}] [expr {($wx-36-24*$cx)&255}]
+            }
+            set ::seven_waited 0;set ::sentinel 6;reg PC 0xd150
+        } else {set ::sentinel 0;issue}
+    } elseif {$::sentinel==6} {
+        foreach {name payload} [list all-seven-new.state [debug read_block memory 0xc000 12288] all-seven-new.vram [debug read_block VRAM 0 131072]] {
+            set f [open [file join $::out $name] wb];puts -nonewline $f $payload;close $f
+        }
         set ::sentinel 0;issue
     } else {
     if {[reg SP]!=0xf380} {error "Enemy presentation damaged stack"}
@@ -129,7 +186,12 @@ debug set_bp 0xd160 {$::started} {
 }
 set VDP.too_fast_vram_access_callback {puts stderr "Full enemy VRAM timing violation";exit 2}
 after time 600 {puts stderr "Full enemy presentation timeout";exit 2}
-'''.replace('@MAIN@',str(syms['main'])).replace('@SCROLL@',str(syms['scroll_y'])).replace('@FLAG@',str(flags[0])).replace('@RADARMASK@',str(0x1f800+syms['RADAR_PLAYER_PATTERN']*8))
+'''.replace('@MAIN@',str(syms['main'])).replace('@SCROLL@',str(syms['scroll_y'])).replace('@FLAG@',str(flags[0])).replace('@RADARMASK@',str(0x1f800+syms['RADAR_PLAYER_PATTERN']*8)).replace('@PACKET@',str(int(packet))).replace('@SEVENFLAGS@',' '.join(map(str,flags[3:10])))
+    script=script.replace('@SHARED@',str(int('Full_PoolKeys' in syms)))
+    if packet:
+        script=script.replace('debug set_bp 0xd160','debug set_bp 0xd17f')
+        script=script.replace('set ::started 1;set ::scene',
+            'set ::started 1;debug write {VDP regs} 0 [expr {[debug read {VDP regs} 0]&239}];debug write {VDP regs} 1 [expr {[debug read {VDP regs} 1]&223}];set ::scene')
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n'+script+'\n} p]} {puts stderr $p;exit 2}\n')
     with (out/'emulator.log').open('w') as log:
         subprocess.run(['openmsx','-script',str(out/'session.tcl')],check=True,timeout=180,
@@ -143,7 +205,7 @@ after time 600 {puts stderr "Full enemy presentation timeout";exit 2}
     pixels=(bundle/'player-pixels.bin').read_bytes();visible=0
     for n,(actor,flag,x,y,scroll,registered,dead,contact) in enumerate(cases):
         data=raw[n*size:(n+1)*size];record,sat,colors,masks=data[:32],data[32:40],data[40:72],data[72:136]
-        expected=bool(registered and not(dead and contact) and -7<=x<=255 and -4<=y<=211)
+        expected=bool((registered or 'Full_MSXAI' in syms) and not(dead and contact) and -7<=x<=255 and -4<=y<=211)
         if bool(record[0])!=expected:raise ValueError(f'Actor {actor} visibility mismatch in case {n}')
         if not expected and 'Full_EnemySATCursor' in syms:
             if sat[0]!=216:raise ValueError(f'Empty actor list lacks its terminator: {n}')
@@ -156,16 +218,29 @@ after time 600 {puts stderr "Full enemy presentation timeout";exit 2}
         active_end=20 if 'Full_EnemySATCursor' in syms else 18+actor*2+2
         if 216 in data[136:136+active_end]:
             raise ValueError(f'Early SAT terminator hides actor {actor}: {n}')
-        ec=128 if x<0 else 0;ay=(scroll+y-1-bias)&255;ax=x+(32 if ec else 0)
+        projected='Full_PoolKeys' in syms
+        ec=128 if x<0 and not projected else 0;ay=(scroll+y-1-bias)&255
+        ax=max(0,x) if projected else x+(32 if ec else 0)
         if sat[:2]!=bytes((ay,ax)) or sat[4:6]!=bytes((ay,ax)):raise ValueError(f'Actor SAT mismatch: {n}')
         if colors!=bytes([6|32|ec])*16+bytes([10|96|ec])*16:raise ValueError(f'Actor OR colors mismatch: {n}')
         car=pixels[flags.index(flag)*256:][:256]
-        expected_masks=bytes(sum(int(car[py*16+px+bit] in plane and x+px+bit>=8 and py+y-bias!=11)<<(7-bit)
+        shift=max(0,-x) if projected else 0
+        expected_masks=bytes(sum(int(px+bit+shift<16 and car[py*16+px+bit+shift] in plane and x+px+bit+shift>=8 and py+y-bias!=11)<<(7-bit)
             for bit in range(8)) for plane in ((3,11),(9,11)) for px in (0,8) for py in range(16))
         if masks!=expected_masks:raise ValueError(f'Actor {actor} complete source masks differ: {n}')
     verify_manifest(bundle)
+    simultaneous=None
+    if packet:
+        from scripts.full_game_evidence import actors
+        for name in ('all-seven','all-seven-new') if 'Full_PoolKeys' in syms else ('all-seven',):
+            simultaneous=actors((out/f'{name}.state').read_bytes(),(out/f'{name}.vram').read_bytes(),pixels,0,compact=True,projected='Full_PoolKeys' in syms)[0]
+            if simultaneous!=7:raise ValueError('Simultaneous seven-car packet was incomplete')
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),cases=len(cases),visible=visible,actors=7,
-        scope='Explicit presentation fixtures: all original facings, source-pointer pages, cache eviction, clipping, OR colors, SAT positions/traversal and independent radar masks. Hardware culling remains enabled; scanout requires separate checks.'))
+        deferred_packet_checks=packet,
+        simultaneous_complete_cars=simultaneous,
+        maximum_packet_commit_ms=float((out/'commit-ms.txt').read_text()) if packet else None,
+        seven_car_vblank_commit_ms=float((out/'seven-ms.txt').read_text()) if packet else None,
+        scope='Explicit presentation fixtures: all original facings, source-pointer pages, cache eviction, clipping, OR colors, SAT positions/traversal and independent radar masks. Deferred packets must leave front attributes/masks/colors unchanged until the permitted commit. Hardware culling remains enabled; scanout requires separate checks.'))
     require_ignored(root,[p for p in out.rglob('*') if p.is_file()]);seal(out)
     print(f'{len(cases)} seven-car presentation cases pass: {out}/report.json')
 

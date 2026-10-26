@@ -58,6 +58,9 @@ Player_Init:
     ld de,$e000
     ld bc,4096
     ldir
+    IF FULL_GAME
+    call Full_CopyPresentation
+    ENDIF
     ld a,PLAYER_BANK
     ld ($7000),a
     IF FULL_GAME
@@ -238,11 +241,7 @@ Player_AdvanceEarly:
     nop
     call Player_Tick
     IF FULL_GAME
-    ld a,(Full_ClockDue)
-    cp 1
-    jr c,.claim
-    ld a,1
-.claim:
+    xor a                    ; The other physical tick runs after sealing.
     ld b,a
     ld a,(Full_ClockDue)
     sub b
@@ -317,6 +316,9 @@ Player_AfterEnemyCleanup:
     call $b80c
     ld a,PLAYER_BANK
     ld ($7000),a
+    ENDIF
+    IF FULL_GAME
+    call Full_MSXPlayerSpeed
     ENDIF
     call $8069               ; Original fractional movement, then steering/wall probes.
     IF SMOKE_RUNTIME
@@ -458,9 +460,13 @@ Player_Position:
     ret
 Player_Apply:
     IF FULL_GAME
-    call Full_CameraCheck
-    ret c
-    ENDIF
+    ld a,(Full_CacheReady)
+    or a
+    jp nz,Full_PlayerApply
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp $b60c
+    ELSE
     ld hl,(player_pending_x)
     ld (player_x),hl
     ld de,-VIEWPORT_HALF
@@ -472,6 +478,7 @@ Player_Apply:
     add hl,de
     ld (world_y),hl
     ret
+    ENDIF
 Player_AxisY:
     ld c,(hl)
     ld h,0
@@ -533,6 +540,9 @@ Player_Radar:
     ENDIF
 
 Player_Draw:
+    IF FULL_GAME
+    call Full_TurboOff      ; Death redraw can follow pure terrain/actor work.
+    ENDIF
     IF PLAYER_BLITTER
     IF INCREMENTAL_STAGE >= 9
     ld a,($e077)

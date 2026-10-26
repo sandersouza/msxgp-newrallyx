@@ -40,3 +40,12 @@ class FullMemoryTests(unittest.TestCase):
         self.assertEqual(layout(symbols)['terrain_mapper']['tile_owners'],[0x2000,0x3000])
         symbols['Full_CacheEngineEnd']=0x2001
         with self.assertRaisesRegex(ValueError,'overlay'):layout(symbols)
+
+    def test_presentation_code_preserves_native_pointer_tables_and_smoke(self):
+        symbols=self.symbols()
+        symbols.update(Full_PresentStart=0xea00,Full_PresentEnd=0xebf0)
+        layout(symbols)
+        symbols['Full_PresentStart']=0xe800
+        with self.assertRaisesRegex(ValueError,'native E988'):layout(symbols)
+        symbols.update(Full_PresentStart=0xea00,Full_PresentEnd=0xec01)
+        with self.assertRaisesRegex(ValueError,'smoke attributes'):layout(symbols)

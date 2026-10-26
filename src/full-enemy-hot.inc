@@ -1,5 +1,4 @@
 Full_EnemyLoop:
-    ei
     ld (Full_EnemyAction),hl
     xor a
     ld (Full_EnemyIndex),a
@@ -16,21 +15,14 @@ Full_EnemyLoop:
     ld hl,$e24e
     cp (hl)
     jr c,.actor
-    ret
+    jp Full_TurboOff        ; A culled final descriptor can skip its draw exit.
 .dispatch:
     ld hl,(Full_EnemyAction)
     jp (hl)
 Full_EnemySelect:
     call Full_TurboOn         ; Pure descriptor selection, before sprite I/O.
     ld a,(Full_EnemyIndex)
-    ld c,a
     ld l,a
-    ld h,0
-    ld de,Full_EnemyPatterns
-    add hl,de
-    ld a,(hl)
-    ld (Full_EnemyPattern),a
-    ld l,c
     ld h,0
     add hl,hl
     add hl,hl
@@ -40,7 +32,9 @@ Full_EnemySelect:
     ld de,$e088
     add hl,de
     ld (Full_EnemySource),hl
-    call Full_EnemyRegistered
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    ld a,1
     ld (Full_RegisteredCurrent),a
     call Full_EnemyRecordAddress
     push hl
@@ -57,16 +51,9 @@ Full_EnemySetPoint:
     ld (hl),c
     ret
 Enemy_Prepare:
-    ld a,(player_steps)
-    or a
-    ret z
-    call Full_EnemyBuildRegistration
     ld hl,Full_EnemyPrepareRadar
     jp Full_EnemyLoop
 Enemy_Draw:
-    ld a,(player_steps)
-    or a
-    ret z
     ld a,PLAYER_SLOT*4+8
     ld (Full_EnemySATCursor),a
     ld hl,FullEnemy_DrawOne

@@ -2,7 +2,7 @@
 ![](docs/image03.png)
 
 A work-in-progress port of the New Rally-X arcade game to MSX2+, focused on
-preserving the original graphics, game rules and gameplay speed.
+preserving the original graphics and core game rules within a measured MSX timing budget.
 
 The repository provides environment setup, original-graphics tools and a
 SCREEN 5 renderer integrating the original Z80 gameplay routines with dynamic
@@ -26,25 +26,22 @@ launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
 ## Current status
 
 The default `make build` cartridge provides silent normal/challenge rounds,
-original flag/rock placement on four maps, native enemies and smoke, fuel bonuses,
+original flag/rock placement on four maps, MSX-adapted enemies and native smoke, fuel bonuses,
 death/restart, alternating two-player sessions, game over and an autonomous
 attract demonstration. It retains original-size graphics, the complete car
 drawings, the full HUD and the real V9958 sprite limit.
 
 The eight-pixel header shows an eight-digit high score and score, the selected
 player and a three-digit round. The life digit shows spare cars, capped at nine.
-A 248x201 maze viewport preserves world coordinates. The original logical tick
-is 16.5 ms. Elapsed-time scheduling, terrain ownership and cached enemy work keep
-the measured simulation at **57.92–60.61 ticks/s across two eight-round routes**
-on the reference Panasonic, including a seven-enemy challenge. The player and
-fuel share the actual raster scroll latch. Vertical motion is spread over
-60 Hz physical output, with a four-pixel maximum step and **44–54 visible
-updates/s** during measured continuous vertical movement. Active foreground
-loops exceeding 40 ms remain below 2% in every measured round; complete
-snapshots average 37–50/s. These are separate measurements, not a 60 FPS claim.
-Short native-rate dips and occasional stutters remain. Real
-hardware sprite culling remains enabled. See
-[performance evidence and limits](docs/enemy-rendering-performance.md).
+A 248x201 maze viewport preserves world coordinates. The full game targets
+**30 FPS presentation** on approximately 60 Hz NTSC output, as approved by the
+user. Complete car masks, attributes and both camera axes publish together.
+The player, input, fuel and phase clocks target approximately 59.92 Hz; enemy
+motion/decisions use doubled fractional steps every other tick. Pursuit is
+adapted for the MSX, with decisions at intersections and bounded speeds.
+Original art, colors, complete cars and the HUD remain intact. Occasional
+missed publication slots and camera waits remain measured separately from
+average FPS. See [current measurements and limits](docs/issue12-performance-analysis.md).
 
 ```sh
 make build
@@ -77,8 +74,9 @@ configuration and contributor-supplied BIOS under `references/msxbios/`.
 See [setup](docs/setup.md#machine-and-contributor-supplied-bios).
 Bounded stages retain 50 Hz; `make build HZ=50` explicitly selects that refresh
 for a full-game diagnostic.
-Physical hardware and loaded RGB scanout remain unqualified; the overnight
-automated proofs check native state, timing, VRAM and sprite tables.
+Validation distinguishes real scanout recordings, source-pixel/VRAM proofs,
+natural routes and controlled population fixtures. Physical hardware and full
+human gameplay/culling acceptance remain review items.
 
 Use `python3 -B scripts/clean.py --dry-run` to inspect generated build contents.
 `make clean` removes local ROMs, checkpoints, reports and emulator sessions under

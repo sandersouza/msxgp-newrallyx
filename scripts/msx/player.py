@@ -25,6 +25,18 @@ def clipped_masks(masks,clip):
     return bytes(value&(right if (i//16)&1 else left) for i,value in enumerate(masks))
 
 
+def projected_masks(masks,clip):
+    """Keep identical visible pixels at X>=8 while negative anchors use X=0."""
+    result=bytearray(clipped_masks(masks,clip))
+    shift=max(0,clip-8)
+    if shift:
+        for plane in (0,32):
+            for y in range(16):
+                row=((result[plane+y]<<8)|result[plane+16+y])<<shift
+                result[plane+y]=(row>>8)&255;result[plane+16+y]=row&255
+    return bytes(result)
+
+
 def palette(encoded, buffers, *, enemy=False):
     """Assign blue=3, pale yellow=9, black=11=3|9 for two mode-2 planes."""
     colors=[expand((encoded[i]>>4,encoded[i+1],encoded[i]&7)) for i in range(0,32,2)]
@@ -284,7 +296,15 @@ def build(output, program, native, assets, *, rock_collision=False, scoring=Fals
         code=bytearray(code)
         code[0x00f3:0x00f6]=bytes((0xc3,0,0xb5))
         code=bytes(code)
-        patches.append(dict(address=0x00f3,kind='guarded-zero-velocity-movement',target=0xb500))
+        patches.append(dict(address=0x00f3,kind='msx-enemy-half-rate-fractional-motion',target=0xb500))
+        code=bytearray(code)
+        for address,expected,target,kind in (
+                (0x0f3e,bytes.fromhex('571e09'),0xb606,'msx-player-only-camera-pan'),
+                (0x1ddf,bytes.fromhex('dd216880'),0xb609,'msx-active-actor-animation')):
+            if program[address:address+len(expected)]!=expected:raise ValueError('Native MSX adapter boundary changed')
+            code[address:address+len(expected)]=bytes((0xc3,target&255,target>>8))+bytes(len(expected)-3)
+            patches.append(dict(address=address,kind=kind,target=target))
+        code=bytes(code)
     flags=list(dict.fromkeys(program[0x253a:0x2552]))
     if len(flags)!=12:raise ValueError('Unexpected native car animation cycle')
     lookup=bytes(flags.index(i) if i in flags else 255 for i in range(256))

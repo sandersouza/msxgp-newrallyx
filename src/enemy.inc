@@ -13,6 +13,11 @@ Enemy_Init:
     IF FULL_GAME
     ld ($e3f1),a
     ld ($e3f8),a
+    ld hl,Full_MSXDecision
+    ld de,Full_MSXDecision+1
+    ld bc,13
+    ld (hl),255
+    ldir
     ENDIF
     dec a
     ld (Enemy_Drawn),a
@@ -25,26 +30,36 @@ Enemy_Init:
     ld hl,0
     ld ($e054),hl
     call $8ab5              ; original eight descriptors and six virtual slots
+    IF !FULL_GAME
     call $95bd              ; original initial visible-slot registration
+    ENDIF
 Enemy_InitDone:
     ret
 Enemy_PreMove:
+    IF FULL_GAME
+    ret                     ; MSX presentation/contact do not consume arcade OAM.
+    ELSE
     ld ix,$e814
     ld hl,$e015
     ld iy,$e002
     ld b,6
     jp $822b                ; original RAM-only OAM cleanup, return before IRQ
+    ENDIF
 Enemy_AfterMove:
     xor a
     ld (Enemy_Contact),a
+    IF FULL_GAME
+    call $b603              ; World-space contact, including all active enemies.
+    ELSE
     ld ix,$e068
     ld iy,$e004
     ld b,5
     call $838a              ; original strict +/-10 pixel contact on both axes
+    ENDIF
     ld a,(Enemy_Contact)
     or a
     IF FULL_GAME
-    call z,$b600            ; guarded transform reuse; original code owns both outputs
+    call z,$b600            ; MSX decisions at cell centres; continuous native motion.
     ELSE
     call z,$8cd6            ; source AI does not run after a collision transfer
     ENDIF
@@ -56,7 +71,9 @@ Enemy_AfterMove:
     add a,7
     cp 15
     call nc,$9207
+    IF !FULL_GAME
     call $95bd              ; six original virtual sprite entries, not MSX SAT
+    ENDIF
 Enemy_AfterMoveDone:
     ret
 

@@ -172,9 +172,29 @@ main:
     ENDIF
     ld a,(ticks)
     ld b,a
+    IF FULL_GAME
+    ld a,(Session_State)
+    or a
+    jr nz,.frame_check       ; A UI transition cannot wait for a gameplay packet.
+    ld a,(Full_PresentReady)
+    or a
+    jr z,.packet_available
+    call Full_PresentIdle
+    jr c,.wait               ; Drain safe body time instead of sleeping after one copy.
+    di
+    ld a,(Full_PresentReady)
+    or a
+    jr z,.wait               ; Do not sleep past a commit serviced during prefetch.
+    jr .sleep
+.packet_available:
+    bit 0,b
+    jr nz,.sleep
+    ENDIF
+.frame_check:
     ld a,(frame_tick)
     cp b
     jr nz,.ready
+.sleep:
     ei
     halt
     jr .wait
@@ -199,6 +219,9 @@ main:
     ld (Radar_TailWork),a
     ENDIF
     ENDIF
+    IF FULL_GAME
+    jp Full_MainFrame
+    ELSE
     ld a,1
     ld (marker),a
     ld a,(line_count)
@@ -414,16 +437,6 @@ Enemy_AfterPrepare:
     ld a,(line_count)
     cp b
     jr nz,.split_done
-    IF FULL_GAME
-    call Full_SimulationIdle
-    jr c,.split_wait
-    di
-    ld a,(line_before)
-    ld b,a
-    ld a,(line_count)
-    cp b
-    jr nz,.split_done
-    ENDIF
     ei
     halt
     jr .split_wait
@@ -461,7 +474,6 @@ Enemy_AfterPrepare:
     ENDIF
     call stage_stream
     IF FULL_GAME
-    call Full_SimulationTail
     xor a
     ld (Full_CacheHeld),a
     call Full_CacheLeave
@@ -492,9 +504,17 @@ Enemy_AfterPrepare:
     IF SESSION_RUNTIME
     call Session_Check
     ENDIF
+    IF FULL_GAME
+    call Full_PresentSeal
+    ENDIF
     ld a,2
     ld (marker),a
     jp main
+
+    ENDIF
+    IF FULL_GAME
+    INCLUDE "full-main.inc"
+    ENDIF
 
 ; AF/BC are always preserved; color/footer uploads save HL locally.
 ; All control-port pairs are atomic.
@@ -529,6 +549,10 @@ interrupt:
     jp z,prefetch_guard_interrupt
     ENDIF
     ENDIF
+    IF FULL_GAME
+    cp 6
+    jp z,full_prefetch_close_interrupt
+    ENDIF
     cp 2
     jp z,guard_interrupt
     jp life_interrupt
@@ -557,8 +581,13 @@ maze_interrupt:
     vdp_write 8,$28            ; arm maze sprites; the first row has a VRAM mask
     vdp_write 0,MAZE_R0              ; suppress stale line matching while R23 changes
     vdp_write 25,3             ; two-page torus and the 8-pixel left mask
+    IF FULL_GAME
+    vdp_write 26,(Full_PresentActiveX)
+    vdp_write 27,(Full_PresentActiveX+1)
+    ELSE
     vdp_write 26,(scroll_high)
     vdp_write 27,(scroll_low)
+    ENDIF
     IF FULL_GAME
     ld a,(irq_scroll_y)
     out ($99),a
@@ -636,6 +665,23 @@ prefetch_guard_interrupt:
 radar_close_interrupt:
     ld a,2
     ld (Radar_Scanned),a
+    IF FULL_GAME
+    ld a,6
+    ELSE
+    ld a,1
+    ENDIF
+    ld (raster_phase),a
+    ld a,(irq_scroll_y)
+    IF FULL_GAME
+    add a,152               ; Stop foreground copies before the footer deadline.
+    ELSE
+    add a,LIFE_SPLIT
+    ENDIF
+    ld b,19
+    call register
+    jp irq_return
+    IF FULL_GAME
+full_prefetch_close_interrupt:
     ld a,1
     ld (raster_phase),a
     ld a,(irq_scroll_y)
@@ -643,6 +689,7 @@ radar_close_interrupt:
     ld b,19
     call register
     jp irq_return
+    ENDIF
     ENDIF
 life_interrupt:
     ld a,5
@@ -718,7 +765,9 @@ vertical:
     IF OUTLINE_FLICKER
     call Outline_Commit
     ENDIF
+    IF !FULL_GAME
     HUD_VBlankSprites
+    ENDIF
     ENDIF
     ld b,8
     ld a,$2a
@@ -759,6 +808,9 @@ vertical:
     ld b,1
     ld a,$62
     call register
+    IF FULL_GAME
+    call Full_PresentCommit
+    ENDIF
     ld a,(ticks)
     inc a
     ld (ticks),a
@@ -800,6 +852,9 @@ register:
 show_scene:
     IF FULL_GAME
     call Full_TurboOff
+    xor a
+    ld (Full_PresentEnabled),a
+    ld (Full_PresentReady),a
     ENDIF
     di
     IF FULL_GAME

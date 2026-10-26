@@ -1,14 +1,20 @@
-; Preserve the original movement path unless an enemy has zero velocity and
-; already-normalized fine coordinates. Its position/fraction is then unchanged;
-; the original cell-pointer writer still runs. Player centering is never skipped.
+; Player motion retains every native tick. Enemies use the same fractional
+; integrator every other tick with twice the bounded delta. A normalized parked
+; enemy only refreshes its cell pointer. Native startup/spin paths remain 60 Hz.
 Full_NativeMotion:
     ld h,(ix+2)
     ld l,(ix+1)
-    ld a,h
-    or l
-    jr nz,.original
     ld a,iyl
     or a
+    jr nz,.original          ; Player motion/centering retains its 60 Hz steps.
+    ld a,(player_native_ticks)
+    and 1
+    ret nz                   ; Complete enemy positions are presented at 30 Hz.
+    ld de,Full_MSXEnemyMaxSpeed
+    call Full_MSXBoundVelocity
+    add hl,hl                ; Same fractional distance over two native ticks.
+    ld a,h
+    or l
     jr nz,.original
     ld a,(ix+3)
     or a

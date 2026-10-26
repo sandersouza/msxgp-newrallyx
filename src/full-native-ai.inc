@@ -1,6 +1,4 @@
-; Bank-local memoization of the original zero-speed challenge AI transform.
-; Cache only results produced by actual original calls. Reuse is
-; restricted to unchanged inputs, no smoke, and seven entirely stationary cars.
+; Full-game enemy ABI, followed by MSX-native decisions and shared presentation.
 Full_AIValid EQU $e3f1
 Full_AIValid1 EQU $e3f8
 Full_AIKeys EQU $e3f2
@@ -9,174 +7,17 @@ Full_AITable1 EQU $d2b6
 Full_AIBefore EQU $d2c4
 Full_AITick EQU $d2cb
 Full_NativeAI:
-    ld hl,($e025)
-    ld a,h
-    or l
-    jp nz,.original
-    ld hl,($e029)
-    ld a,h
-    or l
-    jp nz,.original
-    ld a,($e24e)
-    cp 7
-    jp nz,.original
-    ld a,(Smoke_Valid)
-    or a
-    jr z,.no_smoke
-    ld hl,Smoke_LogicalRows
-    ld b,32
-.smoke_row:
-    ld a,(hl)
-    or a
-    jp nz,.original
-    inc l
-    djnz .smoke_row
-.no_smoke:
-    ld ix,$e088
-    ld iy,Full_AIBefore
-    ld b,7
-.guard:
-    ld a,(ix+0)
-    or (ix+1)
-    or (ix+2)
-    or (ix+19)
-    or (ix+21)
-    jp nz,.original
-    ld a,($e070)
-    cp (ix+8)
-    jr nz,.not_same_cell
-    ld a,($e072)
-    cp (ix+10)
-    jp z,.original          ; Original same-cell path also reads fine screen positions.
-.not_same_cell:
-    ld a,(ix+3)
-    or a
-    jr z,.axis
-    inc a
-    jp nz,.original
-    dec a
-.axis:
-    ld (iy+0),a
-    inc iy
-    ld de,32
-    add ix,de
-    djnz .guard
-.keys:
-    ld ix,Full_AIKeyAddresses
-    ld de,Full_AIKeys
-    ld b,6
-.key:
-    ld l,(ix+0)
-    ld h,(ix+1)
-    ld c,(hl)
-    ld a,(de)
-    cp c
-    jr z,.same
-    xor a
-    ld (Full_AIValid),a
-    ld (Full_AIValid1),a
-.same:
-    ld a,c
-    ld (de),a
-    inc de
-    inc ix
-    inc ix
-    djnz .key
-    ld iy,Full_AIBefore
-    ld b,7
-    ld d,1
-.available:
-    ld a,(iy+0)
-    or a
-    ld a,(Full_AIValid)
-    jr z,.valid_mask
-    ld a,(Full_AIValid1)
-.valid_mask:
-    and d
-    jr z,.miss
-    rlc d
-    inc iy
-    djnz .available
-.apply:
-    ld ix,$e088
-    ld iy,Full_AIBefore
-    ld b,7
-.actor:
-    ld hl,Full_AITable0
-    ld a,(iy+0)
-    or a
-    jr z,.table
-    ld hl,Full_AITable1
-.table:
-    ld a,7
-    sub b
-    add a,a
-    ld e,a
-    ld d,0
-    add hl,de
-    ld a,(hl)
-    ld (ix+3),a
-    inc hl
-    ld a,(hl)
-    ld (ix+20),a
-    inc iy
-    ld de,32
-    add ix,de
-    djnz .actor
-    ld iy,$e068
-    ld hl,$e022
-    inc (hl)
-    ret
-.original:
-    xor a
-    ld (Full_AIValid),a
-    ld (Full_AIValid1),a
-    jp $8cd6
-.miss:
-    call $8cd6              ; One real call on a miss; its state is already final.
-    ld ix,$e088
-    ld iy,Full_AIBefore
-    ld hl,Full_AITable0
-    ld b,7
-    ld c,1
-.remember:
-    push hl
-    ld a,(iy+0)
-    or a
-    jr z,.remember0
-    ld de,14
-    add hl,de
-    ld a,(Full_AIValid1)
-    or c
-    ld (Full_AIValid1),a
-    jr .result
-.remember0:
-    ld a,(Full_AIValid)
-    or c
-    ld (Full_AIValid),a
-.result:
-    ld a,(ix+3)
-    ld (hl),a
-    inc hl
-    ld a,(ix+20)
-    ld (hl),a
-    pop hl
-    inc hl
-    inc hl
-    inc iy
-    rlc c
-    ld de,32
-    add ix,de
-    djnz .remember
-    ld iy,$e068
-    ret
-Full_AIKeyAddresses:
-    dw $e070,$e072,$e06b,$e06a,$e05b,$e28f
-    ASSERT Full_AITick+1 <= $d2d2
-
-    ASSERT $ <= $b770
-    defs $b770-$,$ff
+    jp Full_MSXAI
+    jp Full_MSXContact       ; B603
+    jp Full_MSXPan           ; B606
+    jp Full_MSXAnimation     ; B609
+    jp Full_PlayerInitialApply ; B60C, before the mapper overlay is installed.
+    INCLUDE "full-msx-enemies.inc"
 Full_EnemyTerminator:
+    call Full_PresentTerminator
+    ld a,(Full_PresentEnabled)
+    or a
+    ret nz
     call Full_TurboOff
     di
     vdp_write 14,7
@@ -190,40 +31,34 @@ Full_EnemyTerminator:
     nop
     ret
 
-; Decode the source's five virtual OAM pointers once per presentation snapshot.
-; The seven radar anchors remain independent of native OAM visibility.
-Full_BuildRegistrationNative:
-    ld a,($e24e)
-    cp 4
-    ret c
-    xor a
-    ld (Full_RegisteredMask),a
-    ld hl,$e004
-    ld b,5
-    ld c,0
-.slot:
-    ld e,(hl)
-    inc hl
-    ld a,(hl)
-    inc hl
-    sub $e0
-    cp 2
-    jr nc,.next
-    add a,Full_RegistrationTable/256
-    ld d,a
-    ld a,(de)
-    or c
-    ld c,a
-.next:
-    djnz .slot
-    ld a,c
-    ld (Full_RegisteredMask),a
+Full_PresentTerminator:
+    call Full_CacheEnter
+    ld a,(Full_EnemySATCursor)
+    sub 72
+    ld e,a
+    inc a
+    ld (Full_PresentLength),a
+    ld d,0
+    ld hl,Full_PresentSAT
+    add hl,de
+    ld (hl),216
+    jp Full_CacheLeave
+
+Full_PresentSealNative:
+    ld a,(Session_State)
+    or a
+    ret nz
+    call Full_PoolPreloadNative
+    ld hl,(scroll_high)
+    ld (Full_PresentNextX),hl
+    ld a,(scroll_y)
+    ld (Full_PresentNextY),a
+Full_PresentSealed:
+    ld a,1
+    ld (Full_PresentEnabled),a
+    ld (Full_PresentReady),a
     ret
 
-    ASSERT $ <= $b800
-    defs $b800-$,$ff
-Full_RegistrationTable:
-    INCBIN "full-registration.bin"
 Full_EnemyDrawNative:
     call Full_TurboOff        ; Drawing may write VRAM directly or via Sprite_Upload.
     ld a,(driving)
@@ -232,6 +67,10 @@ Full_EnemyDrawNative:
     ld a,(ix+0)
     or a
     jr z,.hidden
+    call Full_PoolAssignNative
+    ld a,(Full_PresentEnabled)
+    or a
+    call z,Full_TurboOff      ; Scene setup still uploads directly.
     ld a,(Full_EnemySATCursor)
     ld (Full_EnemySATByte),a
     cp (ix+30)
@@ -253,42 +92,40 @@ Full_EnemyDrawNative:
     ld (ix+30),255
     ret
 
-Full_EnemyRegisteredNative:
-    ld a,($e24e)
-    cp 4
-    jr nc,.mask
-    ld hl,(Full_EnemySource)
-    ld de,11
-    add hl,de
-    ex de,hl
-    ld hl,$e004
-    ld b,5
-.slot:
-    ld a,(hl)
-    inc hl
-    cp e
-    jr nz,.other
-    ld a,(hl)
-    cp d
-    jr z,.found
-.other:
-    inc hl
-    djnz .slot
-    xor a
+Full_PoolReserveNative:
+    push iy
+    call Full_TurboOn
+    call Full_CacheEnter
+    call Full_PoolReserve
+    call Full_CacheLeave
+    call Full_TurboOff
+    pop iy
     ret
-.found:
+Full_PoolAssignNative:
+    push iy
+    call Full_TurboOn
+    call Full_CacheEnter
+    call Full_PoolAssign
+    call Full_CacheLeave
+    pop iy
+    ret
+Full_PoolPreloadNative:
+    push ix
+    push iy
+    call Full_TurboOff
+    call Full_CacheEnter
     ld a,1
-    or a
+    ld (Full_CacheHeld),a
+    call Full_PoolPreload
+    ei                       ; Upload loops leave no foreground control pair open.
+    nop
+    xor a
+    ld (Full_CacheHeld),a
+    call Full_CacheLeave
+    pop iy
+    pop ix
     ret
-.mask:
-    ld a,(Full_EnemyIndex)
-    ld e,a
-    ld d,0
-    ld hl,Full_EnemyBits
-    add hl,de
-    ld a,(Full_RegisteredMask)
-    and (hl)
-    ret
+
     INCLUDE "full-enemy-prepare.inc"
 
 ; World/radar coordinates depend only on these four native bytes. Camera scroll,
@@ -439,3 +276,48 @@ FullEnemyFastPose:
     or a
     ret
     INCLUDE "full-enemy-far-native.inc"
+
+Full_PlayerInitialApply:
+    ld hl,(player_pending_x)
+    ld (player_x),hl
+    ld de,-VIEWPORT_HALF
+    add hl,de
+    ld (world_x),hl
+    ld hl,(player_pending_y)
+    ld (player_y),hl
+    ld de,-105
+    add hl,de
+    ld (world_y),hl
+    ret
+
+Full_EnemyRecordAddress:
+    ld a,(Full_EnemyIndex)
+    inc a
+    rlca
+    rlca
+    rlca
+    rlca
+    rlca
+    ld l,a
+    ld h,Full_EnemyRecords/256
+    ret
+
+Full_CopyColdNative:
+    ld hl,$a800
+    ld de,$f000
+    ld bc,Full_LoadEnd-Full_LoadStart
+    ldir
+    ld de,$c680
+    ld bc,Full_EnemyHotEnd-Full_EnemyHotStart
+    ldir
+    ld de,Full_RadarIRQStart
+    ld bc,Full_RadarIRQEnd-Full_RadarIRQStart
+    ldir
+    xor a
+    ld (Full_Loading),a
+    ld (Full_Transitions),a
+    ld (Full_AttractClock),a
+    ld (Full_AttractClock+1),a
+    ld (Full_PresentEnabled),a
+    ld (Full_PresentReady),a
+    jp Full_CacheInitNative

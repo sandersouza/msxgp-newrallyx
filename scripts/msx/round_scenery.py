@@ -49,10 +49,12 @@ def profile(program, page, assets, palette, death_tiles, smoke_tiles):
             atlas.extend(tiles[start:start+3])
         sources[name]=bytes(v for n in ids for v in ((n%32)*8,16+n//32*8))
 
+    object_cells=[]
     for kind in range(1,5):
         cell=bytearray(1792);cell[0]=kind
-        group(f'object{kind}',[image(stage_one.tile(program,cell,x,y,wall,flower))
-                                 for y in range(3) for x in range(3)])
+        tiles=[image(stage_one.tile(program,cell,x,y,wall,flower)) for y in range(3) for x in range(3)]
+        group(f'object{kind}',tiles)
+        object_cells.append(b''.join(tiles[y//8*3+x][y%8*8:y%8*8+8] for y in range(24) for x in range(3)))
     group('death',death_tiles);group('smoke',smoke_tiles)
     road=image(stage_one.tile(program,bytes(1792),0,0,wall,flower))
     group('empty',[road]*3)
@@ -82,6 +84,7 @@ def profile(program, page, assets, palette, death_tiles, smoke_tiles):
         for y in range(8):
             at=(n//32*8+y)*256+n%32*8;image[at:at+8]=tile[y*8:y*8+8]
     world=stage_one.bitmap(pairs,assets,palette)
+    smoke_cell=b''.join(smoke_tiles[y//8*3+x][y%8*8:y%8*8+8] for y in range(24) for x in range(3))
     return dict(page=page,wall=wall,flower=flower,geometry=geometry,world=world,
                 atlas=packed(image),ids=[bytes(ids[i:i+16384]) for i in range(0,65536,16384)],
-                sources=sources,tiles=len(atlas))
+                sources=sources,tiles=len(atlas),object_cells=object_cells,smoke_cell=smoke_cell)

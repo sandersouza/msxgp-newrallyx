@@ -21,22 +21,14 @@ Full_WideVBytes EQU $d2de
 Full_CopyCold:
     ld a,PLAYER_BANK
     ld ($7000),a
-    ld hl,$a800
-    ld de,$f000
-    ld bc,Full_LoadEnd-Full_LoadStart
+    call Full_CopyColdNative
+Full_CopyPresentation:
+    ld a,FULL_TERRAIN_BANK
+    ld ($7000),a
+    ld hl,$9000
+    ld de,Full_PresentStart
+    ld bc,Full_PresentEnd-Full_PresentStart
     ldir
-    ld de,$c680
-    ld bc,Full_EnemyHotEnd-Full_EnemyHotStart
-    ldir
-    ld de,Full_RadarIRQStart
-    ld bc,Full_RadarIRQEnd-Full_RadarIRQStart
-    ldir
-    xor a
-    ld (Full_Loading),a
-    ld (Full_Transitions),a
-    ld (Full_AttractClock),a
-    ld (Full_AttractClock+1),a
-    call Full_CacheInitNative
     ret
 
 Full_NextRound:
@@ -101,6 +93,9 @@ Full_FuelIRQ:
     ld hl,player_sat
     ld bc,$0898
     otir
+    ; Fuel is fetched at line82. Restore its colors/gauge after the radar
+    ; attributes, leaving the VBlank transaction room for complete car masks.
+    HUD_VBlankSprites
     ret
 
 Full_TileSource:

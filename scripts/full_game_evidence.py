@@ -23,7 +23,7 @@ def number(data):
     return int(''.join(map(str,data)))
 
 
-def actors(state,vram,pixels,scroll,compact=False):
+def actors(state,vram,pixels,scroll,compact=False,projected=False):
     visible=0;candidates=[0]*212
     count=state[0x224e]
     for i in range(count):
@@ -40,12 +40,14 @@ def actors(state,vram,pixels,scroll,compact=False):
         expected_y=(scroll+y-1)&255
         if sat[0]!=expected_y or sat[4]!=expected_y:
             raise ValueError('Natural enemy SAT Y differs from prepared pose')
-        ec=128 if x<0 else 0
-        if sat[1]!=((x+(32 if ec else 0))&255) or sat[5]!=sat[1]:raise ValueError('Natural enemy SAT X differs from prepared pose')
+        ec=128 if x<0 and not projected else 0
+        anchor=max(0,x) if projected else x+(32 if ec else 0)
+        if sat[1]!=(anchor&255) or sat[5]!=sat[1]:raise ValueError('Natural enemy SAT X differs from prepared pose')
         colors=vram[0x1f400+slot*16:0x1f400+slot*16+32]
         if colors!=bytes([0x26|ec])*16+bytes([0x6a|ec])*16:raise ValueError('Natural enemy OR colors differ')
         car=pixels[record[19]*256:][:256]
-        expected=bytes(sum(int(car[py*16+px+bit] in plane and x+px+bit>=8 and py+y!=11)<<(7-bit)
+        shift=max(0,-x) if projected else 0
+        expected=bytes(sum(int(px+bit+shift<16 and car[py*16+px+bit+shift] in plane and x+px+bit+shift>=8 and py+y!=11)<<(7-bit)
             for bit in range(8)) for plane in ((3,11),(9,11)) for px in (0,8) for py in range(16))
         actual=b''.join(vram[0x1f800+(p&252)*8:0x1f800+(p&252)*8+32] for p in (sat[2],sat[6]))
         if actual!=expected:raise ValueError(f'Natural enemy {i} masks differ from complete source drawing')
@@ -93,7 +95,7 @@ def main():
                 bitmap[at]=bitmap[at]&15|color<<4 if (px-8+x)%2==0 else bitmap[at]&240|color
         wx=int.from_bytes(state[0xb0:0xb2],'little',signed=True);wy=int.from_bytes(state[0xb2:0xb4],'little',signed=True)
         check_cache(vram,bitmap,width,wx,wy,path.stem)
-        v,c=actors(state,vram,pixels,state[scroll_address],'Full_EnemySATCursor' in syms);visible+=v;maximum=max(maximum,c)
+        v,c=actors(state,vram,pixels,state[scroll_address],'Full_EnemySATCursor' in syms,'Full_PoolKeys' in syms);visible+=v;maximum=max(maximum,c)
         expected=packed(header(assets,palette,number(state[0x1120:0x1128]),number(state[0x1128:0x1130]),
             player=state[0x7ec]+1,full_game=True,round_=(state[0x21b0]-1)&255))
         if vram[0x10000:0x10400]!=expected:raise ValueError(f'Natural eight-digit header differs from published values: {path.stem}')

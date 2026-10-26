@@ -1,6 +1,16 @@
 # Loaded-round performance and player pacing
 
-The full-game build now uses **60 Hz display output** and smaller native/terrain
+The current implementation uses the user-approved 30 FPS packet architecture,
+MSX enemy pursuit and half-rate enemy movement described in
+[Issue #12 performance analysis](issue12-performance-analysis.md).
+That document contains current qualification, intentional rule/timing changes
+and reproduction. The v127/v106/v75 results below are historical measurements
+of their own cartridges; their 40 Hz vertical-update gates and original-AI
+claims do not apply to the current implementation.
+
+## Historical v127 baseline
+
+The v127 full-game build used **60 Hz display output** and smaller native/terrain
 bursts to reduce gameplay stuttering. The original logical tick remains 16.5 ms.
 Two natural eight-round routes pass the native-rate, physical-camera and fixed
 sprite gates, with **under 2% of active foreground loops exceeding 40 ms** in
@@ -9,8 +19,7 @@ HUD and real V9958 sprite limits remain enabled.
 
 Qualified ROM SHA-256:
 `5dcebd21cc0b687e032d9a1357c7049ff45d35811f642811a3c782a26b327071`.
-`make build` publishes this image at `references/build/newrallyx.rom` and
-`latest.rom`; `make run` launches it. The independent rebuild is
+This was the previous default image. The independent rebuild is
 `references/build/issue12-stutter-qualified-v127/`, byte-identical to the v125
 cartridge used by both natural routes. Bounded stages retain their 50 Hz default;
 `make build HZ=50` explicitly selects a full-game 50 Hz diagnostic.

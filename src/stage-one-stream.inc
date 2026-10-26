@@ -236,6 +236,20 @@ stage_div8:
     rr l
     ret
 
+    IF FULL_GAME
+Stage_PrefetchOne:
+    ld a,1
+    ld (Full_IdlePrefetch),a
+    ld b,1
+    call stage_stream_driving.next
+    xor a
+    ld (Full_IdlePrefetch),a
+    ld a,(Full_CacheWorked)
+    or a
+    ret z
+    scf
+    ret
+    ENDIF
 stage_stream:
     ld a,(driving)
     or a
@@ -304,15 +318,12 @@ stage_stream_driving:
     IF RASTER_GUARD
     IF FULL_GAME
     IF VDP_R9 == $80
-    ld b,4
+    ld b,1
     ld a,(Full_CameraBlocked)
     or a
-    jp nz,.effect_budget
-    ld b,2
-    ld a,(Full_LoopTicks)
-    cp 2
-    jp c,.effect_budget
-    ld b,1                   ; Spread optional copies away from two-tick bursts.
+    jr z,.prefetch_budgeted
+    inc b
+.prefetch_budgeted:
     jp .effect_budget
     ELSE
     ld b,1                   ; Keep ordinary prefetch within one presentation frame.
@@ -515,6 +526,11 @@ stage_stream_driving:
     ld a,(row_left)
     or a
     jr nz,.row
+    IF FULL_GAME
+    ld a,(Full_IdlePrefetch)
+    or a
+    ret nz                   ; A sealed-packet idle slot drains existing jobs only.
+    ENDIF
     push bc
     call stage_position
     pop bc
@@ -610,7 +626,11 @@ Stage_QueuePriority:
     ld (Stage_PreferRows),a
     ret
 .ordinary:
-    ENDIF
+    ld a,($e06b)
+    inc a                    ; Native vertical axis=0, horizontal axis=255.
+    ld (Stage_PreferRows),a
+    ret
+    ELSE
     ld hl,(world_y)
     call stage_div8
     ld a,(previous_y)
@@ -644,6 +664,7 @@ Stage_QueuePriority:
     di
     ENDIF
     ret
+    ENDIF
     ENDIF
 
     IF !FULL_GAME

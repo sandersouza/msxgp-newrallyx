@@ -22,13 +22,12 @@ make build FULL_GAME=0
 ```
 
 The full variant uses stage12, a 2 MiB ASCII16 cartridge, 117 populated banks,
-a 40-column terrain cache and the complete HUD. Factory Panasonic turbo is
+a 48-column terrain cache and the complete HUD. Factory Panasonic turbo is
 detected for pure CPU work; VDP access and raster IRQs retain 3,579,545 Hz.
 Other machines retain their base clock. Current performance qualification is
-in [enemy rendering performance](enemy-rendering-performance.md), including
-57.92–60.61 native ticks/s across two naturally completed eight-round routes,
-with fewer than 2% of active loops exceeding 40 ms in each measured round. Presentation
-loops are measured separately; this is not a 60 FPS claim.
+in [Issue #12 performance analysis](issue12-performance-analysis.md). The user
+approved 30 FPS presentation, near-60 Hz game clocks and MSX-specific enemy
+behavior. Complete packets and actual camera cadence are measured separately.
 It requires the existing 128 KB main RAM mapper / 128 KB VRAM baseline.
 The former issue estimate's 64 KB RAM assumption was incorrect; this is not
 a newly introduced requirement. Validation uses openMSX 21.0, a session-local
@@ -87,24 +86,28 @@ point ordinal reset; score, collected flags and round survive. A first turn
 prepares a fresh board. Shared game over waits until neither player has cars.
 
 Seven original enemy descriptors remain active according to native population.
-Their full two-plane masks, original colors, facings, clipping, source OAM
-registration, colliding-car identity and radar coordinates are retained.
+Their full two-plane masks, original colors, facings, clipping, colliding-car
+identity and radar coordinates remain represented. MSX viewport/world contact
+replace arcade OAM registration and the former five-pointer contact list.
 One shared renderer accesses seven prepared/SAT/cache records directly through
 IX. Visible complete sprite pairs retain original actor order, followed by one
 end marker; hiding an earlier actor cannot terminate
 the sprite table before a later visible actor. Conservative offscreen rejection
 skips presentation work while preserving exact world/radar positions.
 
-A guarded stationary-challenge optimization evaluates the original AI transform
-for both input axes and reuses those results only with seven zero-speed cars,
-no smoke/stun/startup, valid axes, no shared player cell and six unchanged keys.
-Every other state executes the original transform. The differential proof
-compares three consecutive calls and excludes exactly the seven declared host
-cache bytes; it does not mask arbitrary gameplay state.
+MSX pursuit decides once at a new cell centre using reciprocal exits. Enemies
+coast between centres and use the original fractional integrator every other
+native tick with doubled distance. Player speed is capped at two pixels per
+native tick, enemies at 1.875; lower source speeds and challenge activation
+remain effective. Original phase, fuel and startup/spin clocks continue near
+60 Hz. Twelve shared complete-mask slots bound VBlank replacements to two.
+The executed MSX contracts replace original-AI equivalence as the relevant
+enemy proof; historical original-AI comparisons apply only to older cartridges.
 
 The eight-digit score/high-score header uses original 8x8 glyphs and includes
 the selected player and three round digits. Spare-car presentation caps at nine
-without changing native lives. Fuel retains original units and VBlank publication.
+without changing native lives. Fuel retains original units and publication in
+the maze IRQ against the actual scroll latch.
 The scenery palette reuses a spare third black entry for the later orange;
 both dependent car-plane blacks and every other existing entry remain intact.
 Every required source tile/cast color must map through the established RGB333
@@ -112,9 +115,10 @@ conversion or the build fails. No new color merge or graphic reduction is used.
 
 The original complete cast appears at 1:1 in a 224x212 region centered in the
 256x212 display; its drawings and NAMCO line remain intact. Custom compact
-credit/instruction fields occupy free rows. After 900 no-credit refreshes, the
-adapter runs original guide steering in attract mode; completion, death, timeout
-or credit returns to the title. Human start always initializes a fresh game.
+credit/instruction fields occupy free rows. After 900 no-credit UI refreshes, the
+adapter runs original guide steering in attract mode; completion, death, 900
+presentation iterations or credit returns to the title. Human start always
+initializes a fresh game.
 The acquired original full-game mode is 2; the selected human adapter uses 1,
 while attract uses 0. These are explicit different state owners.
 
@@ -125,6 +129,9 @@ the long source attract scheduler are replaced by the MSX scene/session adapter.
 Audio remains silent; this does not establish original elapsed wall-clock timing.
 
 ## Original delivery evidence and practical limits
+
+This section preserves historical original-delivery evidence. Current packet,
+enemy, scanout and cadence qualification is in the performance analysis above.
 
 All generated evidence below is local and ignored under `references/build/`.
 The original delivery candidate, retained as the performance baseline, has SHA-256:
@@ -199,7 +206,7 @@ Use fresh ignored outputs. Replace `$ROM` with the complete sealed cartridge pat
 .venv/bin/python -B scripts/gameplay_inventory.py --last-round 254 --output references/build/my-inventory
 .venv/bin/python -B scripts/round_preparation.py --last-round 254 --rom "$ROM" --reference references/build/my-inventory --output references/build/my-preparation-proof
 .venv/bin/python -B scripts/full_rules_probe.py --rom "$ROM" --reference references/build/my-inventory --output references/build/my-phase-proof
-.venv/bin/python -B scripts/full_ai_probe.py --rom "$ROM" --reference references/build/my-inventory --output references/build/my-ai-proof
+.venv/bin/python -B scripts/full_msx_enemy_probe.py --rom "$ROM" --output references/build/my-msx-enemy-proof
 .venv/bin/python -B scripts/full_enemy_probe.py --rom "$ROM" --output references/build/my-car-proof
 .venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --rounds 8 --avoid-enemies --output references/build/my-route
 .venv/bin/python -B scripts/full_game_evidence.py --rom "$ROM" --capture references/build/my-route --output references/build/my-route-pixels
@@ -212,7 +219,7 @@ make test
 git diff --check
 ```
 
-The phase/AI/state probes default to the pinned original inventory
+The phase/state probes default to the pinned original inventory
 `references/build/issue12-round-inventory-v13`; pass `--reference` to use
 another matching inventory. The session probe defaults to
 `references/build/issue12-original-session-v3`; its `--reference` selects an

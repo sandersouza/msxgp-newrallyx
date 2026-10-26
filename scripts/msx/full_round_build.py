@@ -32,7 +32,11 @@ def package(root, output, banks, program, assets, palette, death_tiles, smoke_ti
         banks.extend((bytes(htable[:16384]),bytes(htable[16384:])))
         vbank=len(banks)+1;banks.append(strips['vertical']['table'])
         wide=encode(p['world'],origins=(584,792),cells=2)
-        wide['horizontal']=encode_cells(p['world'])
+        wide['horizontal']=encode_cells(p['world'],extra_cells=(*p['object_cells'],p['smoke_cell']))
+        cell_table=bytearray(wide['horizontal']['table'])
+        if any(cell_table[0x1f00:0x1f0a]):raise ValueError('Object cell source table overlaps terrain')
+        cell_table[0x1f00:0x1f0a]=wide['horizontal']['extra_sources']
+        wide['horizontal']['table']=bytes(cell_table)
         if strips['horizontal']['height']>24 or strips['vertical']['height']>24:
             raise ValueError('Three-cell strip atlas overlaps wide strip VRAM')
         wide_hbank=len(banks)+1

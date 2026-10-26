@@ -1,6 +1,6 @@
 Full_EnemyFarNative:
     ld hl,(Full_EnemyAction)
-    ld de,Full_EnemyFrameOne
+    ld de,Full_EnemyPrepareRadar
     or a
     sbc hl,de
     jr z,.frame

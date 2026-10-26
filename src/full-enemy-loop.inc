@@ -4,6 +4,7 @@ Full_EnemySource EQU $c670
 Full_EnemyPattern EQU $c672
 Full_EnemySATByte EQU $c673
 Full_EnemyIndex EQU $c674
+Full_EnemyWindowPattern EQU $c675
 Full_EnemyAction EQU $c676
 Full_RegisteredMask EQU $c678
 Full_EnemySATCursor EQU $c67a
@@ -11,17 +12,6 @@ Full_EnemySATDirty EQU $c67b
 Full_RegisteredCurrent EQU $c67d
 Full_EnemyWorldChanged EQU $c67e
 Full_EnemyWorldKeys EQU $db20 ; Four native coordinate bytes per actor; DB3C..3F spare.
-
-Full_EnemyBuildRegistration:
-    ld a,PLAYER_BANK
-    ld ($7000),a
-    jp Full_BuildRegistrationNative
-Full_EnemyRegistered:
-    ld a,PLAYER_BANK
-    ld ($7000),a
-    jp Full_EnemyRegisteredNative
-Full_EnemyBits:
-    db 1,2,4,8,16,32,64
 
 Enemy_InitPatterns:
     call FullEnemy_InitShared
@@ -64,18 +54,14 @@ Enemy_Radar:
     ld c,a
     jp HUD_SetEnemy
 Full_EnemyFrame:
-    ld a,(player_steps)
-    or a
-    ret z
-    ld a,PLAYER_SLOT*4+8
-    ld (Full_EnemySATCursor),a
-    call Full_EnemyBuildRegistration
-    ld hl,Full_EnemyFrameOne
-    call Full_EnemyLoop
-    jp Full_EnemyTerminatorResident
-Full_EnemyFrameOne:
-    call Full_EnemyPrepareRadar
-    jp FullEnemy_DrawOne
+    call Full_PresentBegin
+    call Enemy_Prepare
+    call Full_PoolReserveNative
+    jp Enemy_Draw
+Full_EnemyFrameRestart:
+    ld a,1
+    ld (Full_RenderRestart),a
+    jp Full_EnemyFrame
 FullEnemy_DrawOne:
     ld a,PLAYER_BANK
     ld ($7000),a
@@ -122,7 +108,7 @@ Full_EnemyInactive:
     sbc hl,de
     jr z,.hide_only
     ld hl,(Full_EnemyAction)
-    ld de,Full_EnemyFrameOne
+    ld de,Full_EnemyPrepareRadar
     or a
     sbc hl,de
     jr nz,.skip

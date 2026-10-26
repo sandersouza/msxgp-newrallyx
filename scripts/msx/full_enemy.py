@@ -6,13 +6,16 @@ import re
 def pattern_plan(*,radar_pattern=240):
     common=((0,4),(8,12),(16,188))
     victims=(192,200,208,216,224,232,248)
-    used=set(range(20,188))|set(range(radar_pattern,radar_pattern+8))
+    used=set(range(20,116))|set(range(132,188))|set(range(radar_pattern,radar_pattern+8))
     for body,window in common:
         for base in (body,window):
             if used.intersection(range(base,base+4)):raise ValueError('Common enemy mask overlaps HUD')
             used.update(range(base,base+4))
     for base in victims:
         if used.intersection(range(base,base+8)):raise ValueError('Enemy cache overlaps another mask')
+        used.update(range(base,base+8))
+    for base in (116,124):
+        if used.intersection(range(base,base+8)):raise ValueError('Compact radar spare cache overlaps HUD')
         used.update(range(base,base+8))
     if used!=set(range(256)):raise ValueError('Full enemy pattern allocation is incomplete')
     return common,victims
@@ -182,6 +185,14 @@ def assembly(source):
     native=indexed_records(body[first:last]).replace('FullEnemy_PrepareOne:','FullEnemyPrepareNative:').replace('FullEnemy_RadarOne:','FullEnemyRadarNative:')
     native=native.replace('FullEnemyPrepareNative:\n','FullEnemyPrepareNative:\n    call FullEnemyWorldNative\n    call FullEnemyFastPose\n    ret c\n',1)
     native=native.replace('FullEnemyRadarNative:\n','FullEnemyRadarNative:\n    ld a,(Full_EnemyWorldChanged)\n    or a\n    ret z\n',1)
+    native=replace_once(native,'''    bit 7,h
+    jr z,.phase
+    ld a,$80
+    ld (ix+11),a
+.phase:''','''.phase:''')
+    pose_start=native.index('    ld b,a\n    ld a,(ix+20)')
+    pose_end=native.index('FullEnemyRadarNative:',pose_start)
+    native=native[:pose_start]+'    ld a,1\n    ld (ix+0),a\n    ret\n\n'+native[pose_end:]
     if '($7000)' in native:raise ValueError('Bank-local actor preparation changes its own mapper')
     wrappers='''FullEnemy_PrepareOne:
     ld a,PLAYER_BANK
@@ -197,5 +208,44 @@ FullEnemy_WorldOne:
     jp FullEnemyWorldNative
 '''
     body=body[:first]+wrappers+indexed_records(body[last:])
+    body=replace_once(body,'''    ld a,(ix+6)
+    ld b,a
+    ld a,(ix+11)
+    or a
+    ld a,b
+    jr z,.x
+    add a,32
+.x:''','''    ld a,(ix+7)
+    bit 7,a
+    ld a,(ix+6)
+    jr z,.x
+    xor a
+.x:''')
+    body=replace_once(body,'''    ld a,(Full_EnemyPattern)
+    ld b,64
+    call Enemy_Upload''','''    ld a,(Full_EnemyPattern)
+    cp 16
+    jr nz,.contiguous
+    ld b,32
+    call Enemy_Upload
+    ld a,(Full_EnemyWindowPattern)
+    ld b,32
+    call Enemy_Upload
+    jr .mask_complete
+.contiguous:
+    ld b,64
+    call Enemy_Upload
+.mask_complete:''')
+    body=body.replace('call Sprite_Upload','call Full_QueueSprite')
+    start=body.index('    ld c,a\n    vdp_write 14,7')
+    top_end=body.index('.colors:',start)
+    body=body[:start]+'    call Full_QueueTopMask\n'+body[top_end:]
+    # Gameplay drawing now prepares RAM packets only. The upload abstraction
+    # owns every actual VDP transaction, including initial direct uploads.
+    start=body.index('FullEnemy_DrawPrepared:')
+    drawing=body[start:]
+    drawing=drawing.replace('    vdp_write 14,7\n','')
+    drawing=drawing.replace('    out ($99),a\n','')
+    body=body[:start]+drawing
     resident=core+'    IF ENEMY_RENDER\nEnemy_HitAddress EQU $c63c\n'+body+'\n    INCLUDE "full-enemy-loop.inc"\n'+end
     return resident,native

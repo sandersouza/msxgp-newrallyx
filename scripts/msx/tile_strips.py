@@ -60,7 +60,7 @@ def candidates(banks, *, columns=102, rows=174):
     return [bytes(data[i:i+16384]) for i in range(0,65536,16384)]
 
 
-def encode_cells(world,*,width=816,height=1392,origin=584):
+def encode_cells(world,*,width=816,height=1392,origin=584,extra_cells=()):
     """Exact complete original cells, indexed on a 128-byte row stride."""
     if len(world)!=width*height or width%24 or height%24:
         raise ValueError('Complete-cell atlas requires complete 24-pixel cells')
@@ -70,6 +70,11 @@ def encode_cells(world,*,width=816,height=1392,origin=584):
             image=b''.join(world[(y+r)*width+x:(y+r)*width+x+24] for r in range(24))
             if image not in indices:indices[image]=len(unique);unique.append(image)
             ids.append(indices[image])
+    extra_ids=[]
+    for image in extra_cells:
+        if len(image)!=24*24:raise ValueError('Extra cell must retain its 24x24 pixels')
+        if image not in indices:indices[image]=len(unique);unique.append(image)
+        extra_ids.append(indices[image])
     rows=(len(unique)+9)//10*24
     if origin+rows>768:raise ValueError('Complete-cell atlas exceeds reserved VRAM')
     atlas=bytearray(256*rows);table=bytearray(32768)
@@ -82,4 +87,5 @@ def encode_cells(world,*,width=816,height=1392,origin=584):
             image=unique[n]
             table[at:at+2]=(bytes((1,image[0]*17)) if image.count(image[:1])==len(image) else
                 bytes((n%10*24,(origin+n//10*24)&255)))
-    return dict(table=bytes(table),pixels=packed(atlas),height=rows,unique=len(unique),vram=origin*128)
+    extra_sources=bytes(v for n in extra_ids for v in (n%10*24,(origin+n//10*24)&255))
+    return dict(table=bytes(table),pixels=packed(atlas),height=rows,unique=len(unique),vram=origin*128,extra_sources=extra_sources)

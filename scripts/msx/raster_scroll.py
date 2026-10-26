@@ -224,6 +224,10 @@ def build(root, args):
     if logic_hz is not None and not smoke_runtime:
         raise ValueError('Slower logic diagnostics require stage10/11')
     clock=native_clock(args.hz,logic_hz)
+    if full_game and args.hz==60:
+        frame=video_timing(args.hz)['frame_seconds']
+        clock=dict(clock,tick_seconds=frame,rate=0,speed_ratio=.0165/frame,
+            adapted=True,mode='One logical tick per physical NTSC refresh')
     smoke_component=bool(getattr(args,'smoke_component',False) or smoke_runtime)
     completion_component=bool(getattr(args,'completion_component',False) or stage>=11)
     round_preparation=bool(getattr(args,'round_component',False) or full_game)
@@ -262,8 +266,8 @@ def build(root, args):
     simple_maze=bool(getattr(args,'simple_maze',False))
     if simple_maze and not (stage==9 and enemy_count>=2 or smoke_runtime):
         raise ValueError('Simple maze requires stage09 population or stage10/11 smoke')
-    cache_columns=40 if full_game else 48 if stage>=10 else 40 if stage>=9 else 48 if stage>=4 else 64
-    cache_guard=4 if full_game else 8 if stage>=10 else 4 if stage>=9 else 8 if stage>=4 else 16
+    cache_columns=48 if full_game else 48 if stage>=10 else 40 if stage>=9 else 48 if stage>=4 else 64
+    cache_guard=8 if full_game else 8 if stage>=10 else 4 if stage>=9 else 8 if stage>=4 else 16
     if getattr(args,'cache_columns',None):
         cache_columns=args.cache_columns
         if cache_columns in (36,40) and stage<9:raise ValueError('The 40-column cache is a stage09 experiment')
@@ -533,7 +537,8 @@ def build(root, args):
         def enemy_masks(index):
             result=masks[index*128:index*128+64]
             return bytes(a|b for a,b in zip(result[:32],result[32:]))+bytes(32) if enemy_planes==1 else result
-        clipped=b''.join(driver.clipped_masks(enemy_masks(index),clip)
+        clipper=driver.projected_masks if full_game else driver.clipped_masks
+        clipped=b''.join(clipper(enemy_masks(index),clip)
                          for index in range(12) for clip in range(16))
         dot_patterns=b''.join(sprite_pattern(bytes(int(x<=px<x+2 and y<=py<y+2)
                             for py in range(16) for px in range(16)),shift)
@@ -750,9 +755,12 @@ def build(root, args):
         f'SPRITE_COLOR_BYTES EQU {len(sprite_colors)}\nWHITE EQU {white}\nRED EQU {red}\n'
         f'RADAR_X EQU {radar.X}\nRADAR_Y EQU {radar.Y}\n'
         f'YELLOW EQU {yellow}\nFUEL_Y EQU {fuel_y}\nLIFE_SPLIT EQU {LIFE_SPLIT}\n')
+    if full_game:
+        from .enemy_navigation import original_maps
+        (output/'full-navigation.bin').write_bytes(original_maps(program))
     (output/'payload.inc').write_text(''.join(
         (f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n' if n==session_bank else
-         '    DISP $1000\nFull_CacheEngineStart:\n    INCLUDE "full-terrain-engine.inc"\nFull_CacheEngineEnd:\n    ENT\n    defs $4000-(Full_CacheEngineEnd-Full_CacheEngineStart),$ff\n' if full_game and n==terrain_bank else
+         '    DISP $1000\nFull_CacheEngineStart:\n    INCLUDE "full-terrain-engine.inc"\nFull_CacheEngineEnd:\n    ENT\n    defs $1000-(Full_CacheEngineEnd-Full_CacheEngineStart),$ff\n    DISP $ea00\nFull_PresentStart:\n    INCLUDE "full-presentation.inc"\nFull_PresentEnd:\n    ASSERT $ <= $ec00\n    ENT\n    defs $1000-(Full_PresentEnd-Full_PresentStart),$ff\n    INCBIN "full-navigation.bin"\n' if full_game and n==terrain_bank else
          f'    INCBIN "bank-{n}.bin",0,$2800\n    INCLUDE "full-load.inc"\n    defs $400-(Full_LoadEnd-Full_LoadStart)-(Full_EnemyHotEnd-Full_EnemyHotStart)-(Full_RadarIRQEnd-Full_RadarIRQStart),$ff\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    DISP $ae00\n    INCLUDE "full-round-native.inc"\n    ASSERT $ <= $b000\n    defs $b000-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3000,$500\n    DISP $b500\n    INCLUDE "full-native-motion.inc"\n    ASSERT $ <= $b600\n    defs $b600-$,$ff\n    ENT\n    DISP $b600\n    INCLUDE "full-native-ai.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==player_bank else
          f'    INCBIN "bank-{n}.bin",0,$2c00\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2e00,$1200\n' if round_preparation and n==player_bank else
          f'    INCBIN "bank-{n}.bin"\n') for n in range(1, len(banks)+1))
@@ -765,7 +773,7 @@ def build(root, args):
     if round_preparation:
         shutil.copyfile(root/'src/round-objects.inc', output/'round-objects.inc')
     if full_game:
-        for name in ('full-round-native.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
+        for name in ('full-round-native.inc','full-msx-enemies.inc','full-presentation.inc','full-sprite-cache.inc','full-main.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
             shutil.copyfile(root/'src'/name,output/name)
     shutil.copyfile(root/'src/player.inc',output/'player.inc')
     if smoke_runtime:shutil.copyfile(root/'src/smoke.inc',output/'smoke.inc')
@@ -833,9 +841,9 @@ def build(root, args):
             cell_prefetch_pixels=[24,24],source_pixels_unchanged=True,
             viewport_gate='Every newly exposed row/column must own its exact world coordinates',
             native_smoke_rows=[0xd160,0xd180],
-            vertical_presentation=dict(maximum_pixels_per_refresh=4,latched_scroll=0xd2cc,
-                ordinary_maximum_pixels=4 if args.hz==60 else 2,catch_up_threshold_pixels=8,
-                policy='half-distance' if args.hz==60 else 'fixed-step',
+            vertical_presentation=dict(maximum_pixels_per_packet=8,latched_scroll=0xd2cc,
+                frame_origin_addresses=[0xe3f2,0xe3f4],
+                policy='Independent ownership-checked axes, at most eight pixels from this packet origin',
                 player_sat='Complete pair published by the maze IRQ against its actual R23',
                 initialized=0xd2cd,ownership='Both planned and latched views, including mixed corner columns')) if full_game else None),
         full_game=full_game,full_memory=memory_layout,
@@ -923,12 +931,15 @@ def build(root, args):
                         sprite_slots_added=0,dimensions_unchanged=True) if tile_mode else None),
         enemy_count=enemy_count,enemy_rendered=enemy_render,enemy_contact_applies_death=enemy_contact,atlas_banked=stage>=8,
         full_enemy_presentation=(dict(records=0xce20,record_bytes=32,capacity=7,
+            edge_projection='zero-EC shifted exact negative-X masks',
+            shared_mask_cache=dict(slots=12,maximum_front_replacements=2,unused_slot_preload=True),
             access='Direct IX-indexed records; no shared actor scratch copies',
             sat='Visible complete pairs in original actor order, one trailing terminator',
             unchanged_attributes='Skip only identical attributes at the same destination',
-            source_registration='Five original virtual OAM pointers; seven independent radar anchors',
+            source_registration='World viewport for all seven descriptors; seven independent radar anchors',
+            publication='Complete deferred mask/color/SAT packet on every second VBlank; fixed scroll snapshot',
             radar_coordinates='Maze IRQ after R23 latch; player dot, twelve body sprites, three shared fuel slots and the complete player pair',
-            actor_cpu_clock='Factory turbo for descriptor selection/preparation; base clock before sprite drawing and termination',
+            actor_cpu_clock='Factory turbo for pure descriptor/cache/RAM work; base clock for ordinary VDP transfers',
             hardware_sprite_limit_enabled=True) if full_game else None),
         rock_collision=stage>=2, rock_sprite_slots=0,
         cache_columns=cache_columns,cache_horizontal_guard_tiles=cache_guard,
@@ -943,16 +954,26 @@ def build(root, args):
                          (['original flag points, digit carry and high score'] if stage>=5 else [])+
                          (['original decimal fuel consumption, empty deceleration and bounded lucky conversion'] if stage>=6 else [])+
                          (['original single-player life loss, same-round restart and stopped zero-life run'] if stage>=7 else [])+
-                         (['selected original enemy initialization, motion, facing, AI and virtual visibility'] if enemy_count else [])+
+                         (['original enemy initialization/fractional kinematics/facing; MSX 30 Hz pursuit/motion and 60 Hz world contact'] if full_game else ['selected original enemy initialization, motion, facing, AI and virtual visibility'] if enemy_count else [])+
                          (['original enemy silhouettes and live radar' if enemy_planes==1 else 'exact enemy sprite masks and live radar'] if enemy_render else [])+
                          (['original enemy contact through explosion/lives'] if enemy_contact else [])+
                          (['original keyboard smoke, fuel charge, bitmap clouds and enemy stun/recovery'] if smoke_runtime else [])+
                          (['original post-flag difficulty and remaining-fuel completion bonus'] if stage>=11 else [])+
                          (['four original dynamic maps and original flag/rock placements','normal/challenge progression','alternating two-player boards','original cast and autonomous attract demonstration'] if full_game else []),
-        stationary_ai_reuse=(dict(entry=0xb600,source_entry=0x0cd6,
-            source_sha256=digest(root/'src/full-native-ai.inc'),
-            guards='Seven stationary cars, zero speeds, empty conservative native smoke rows, no stun/startup, legal axes, distinct player cell; six unchanged input keys',
-            fallback='Original transform for every other state',comparison_cases=7680) if full_game else None),
+        msx_enemy_navigation=(dict(entry=0xb600,source_sha256=digest(root/'src/full-msx-enemies.inc'),
+            decisions='New cell centres only; reciprocal wall exits, actor-dependent axis priority, no reverse outside dead ends',
+            motion_hz=1/(2*video_timing(args.hz)['frame_seconds']) if args.hz==60 else None,
+            motion_divisor=2,player_speed_cap_pixels=2,enemy_speed_cap_pixels=1.875,
+            continuous='Fractional movement with doubled enemy delta every other native tick; original lower near/far speeds; smoke immunity in native tick units; 60 Hz contact and startup/spin recovery',
+            navigation_mapper=[0x3000,0x3700],decision_cells=[0xd2a8,0xd2b6],
+            contact='Inclusive ten-pixel world rectangle across all seven actors; no virtual OAM dependency') if full_game else None),
+        full_presentation_timing=(dict(target_hz=1/(2*video_timing(args.hz)['frame_seconds']),
+            logic_hz=1/video_timing(args.hz)['frame_seconds'] if args.hz==60 else 1/.0165,
+            scope='User-approved stable half-refresh presentation; original art/HUD and real sprite limits retained',
+            packet_mapper=[0,0x384],code=[0xea00,0xec00],
+            readiness='After visible repairs and complete car preparation; score and bitmap HUD maintenance follow',
+            interrupt_mapping='VBlank preserves actual interrupted Page0 primary/secondary slot and mapper segment',
+            prefetch='Bounded foreground work plus hidden copies during idle body intervals; exact contiguous cell fragments at physical seams') if full_game else None),
         death=(dict(hold_ticks=death_ticks,anchor_bias=[-9,-8],width=24,height=24,
                     display_state_address=0xc49a if stage>=9 else 0xc490,
                     presentation_latency_refreshes=1 if stage>=9 else 0,
@@ -1007,20 +1028,20 @@ def build(root, args):
                          nonfinal_ticks=120,final_ticks=96,hud='Remaining count minus current car, presentation cap nine',
                          persistence='Score, high score, award bits and collected flags retained; current-life flag ordinal resets',
                          restart='Bounded scene reload, fresh active fuel clock; explicit game-over session screen' if stage>=12 else 'Bounded scene reload, fresh active fuel clock; game-over presentation pending') if stage>=7 else None),
-        enemy_logic=(dict(source_sha256=digest(root/'src/enemy.inc'),count=enemy_count,ai=0x0cd6,
-                         initializer=0x0ab5,virtual_slots=6,registration=0x15bd,contact=0x038a,
+        enemy_logic=(dict(source_sha256=digest(root/'src/enemy.inc'),count=enemy_count,ai=0xb600 if full_game else 0x0cd6,
+                         initializer=0x0ab5,virtual_slots=6,registration=None if full_game else 0x15bd,contact=0xb603 if full_game else 0x038a,
                          rendered=enemy_render,contact_applied=enemy_contact,
                          sprite_planes=enemy_planes,
                          paired_radar=enemy_count>1 and enemy_render and not cells_only,
-                         generator_sha256=digest(root/'scripts/msx/enemy_population.py') if enemy_count>1 else None,
+                         generator_sha256=digest(root/('scripts/msx/full_enemy.py' if full_game else 'scripts/msx/enemy_population.py')) if enemy_count>1 else None,
                          radar_pair_source_sha256=digest(root/'src/enemy-radar-pair.inc') if enemy_count>1 and enemy_render and not cells_only else None,
                          color_adaptation='One red silhouette retaining every opaque source pixel' if enemy_planes==1 else None,
                          palette=dict(body=6,window=10,black=14) if enemy_render else None,
                          sentinel_bias='One presentation pixel upward only at forbidden SAT Y=216' if enemy_render else None,
-                         guard_deadline_scanline=(204 if stage>=9 else 196) if enemy_render else None,
+                         guard_deadline_scanline=(202 if full_game else 204 if stage>=9 else 196) if enemy_render else None,
                          sprite_body_top=12 if enemy_render else None,
-                         score_publication='Pending flag score retained across a two-tick driving refresh or after footer; paused/dead states can drain' if enemy_render else None,
-                         scope='Selected original routines; exact masks/visibility with declared MSX presentation adapter' if enemy_render else
+                         score_publication=('After actor/camera packet readiness' if full_game else 'Pending flag score retained across a two-tick driving refresh or after footer; paused/dead states can drain') if enemy_render else None,
+                         scope='Original initialization and fractional integrator; authored MSX pursuit/contact, half-rate enemy movement and complete exact masks' if full_game else 'Selected original routines; exact masks/visibility with declared MSX presentation adapter' if enemy_render else
                          'Logic-only diagnostic; car rendering and applying contact to death not enabled') if enemy_count else None),
         fuel=dict(rectangle=[fuel.X, fuel_y, fuel.X+fuel.WIDTH, fuel_y+fuel.HEIGHT],
                   slots=[] if bare_sat else list(range(fuel_slot,fuel_slot+3)), levels=list(fuel.LEVELS)),

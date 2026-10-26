@@ -16,6 +16,8 @@ from scripts.msx.stage_one import acquire,cells_from_rom
 from scripts.msx.completion_route_verify import verify_header_reservations
 from scripts.msx.cadence import analyze as analyze_cadence
 from scripts.msx.cadence import analyze_scroll
+from scripts.msx.motion_cadence import analyze as analyze_motion
+from scripts.msx.presentation_cadence import analyze as analyze_presentation
 from scripts.scenes.bundle import digest,verify_manifest,read_json
 from scripts.scenes.storage import require_ignored,json_write,seal
 
@@ -26,6 +28,9 @@ def main(argv=None):
     p.add_argument('--rounds',type=int,choices=range(1,255),default=2)
     p.add_argument('--steering-margin',type=int,choices=range(3,10),default=6,help='Host driver turn-planning margin in pixels')
     p.add_argument('--avoid-enemies',action='store_true',help='Route around current enemy cells using host-side BFS')
+    p.add_argument('--fixture-enemies',type=int,choices=range(1,8),help='Explicit controlled population using the original spawn initializer; changes guest setup')
+    p.add_argument('--fixture-first-round',type=int,choices=range(1,255),help='Explicit initial displayed round using the original round preparer; changes guest setup')
+    p.add_argument('--allow-game-over',action='store_true',help='Keep measured evidence when a legitimate game over ends the keyboard route early')
     p.add_argument('--profile',action='store_true',help='Observe main-loop call durations without guest writes')
     p.add_argument('--record-round',type=int,help='Record eight seconds of actual scanout from this displayed round')
     p.add_argument('--trace-di',action='store_true',help='Observe interrupt-masked intervals without guest writes')
@@ -40,10 +45,17 @@ def main(argv=None):
     p.add_argument('--maximum-scroll-step',type=int)
     p.add_argument('--fixed-base-clock',action='store_true',help='Diagnostic: force 3.58 MHz instead of machine-controlled factory switching')
     p.add_argument('--minimum-native-hz',type=float,help='Require this active average in every measured round')
+    p.add_argument('--require-retained-native-ticks',action='store_true',help='Reject discarded active native clock debt')
+    p.add_argument('--maximum-packet-miss-percent',type=float,help='Maximum missed 30 Hz publication slots in every active round')
+    p.add_argument('--maximum-packet-gap-ms',type=float,help='Maximum active complete-packet interval')
+    p.add_argument('--maximum-owed-repeat-ms',type=float,help='Maximum physical camera freeze while native movement remains ahead')
     p.add_argument('--bios',type=Path,default=Path('references/msxbios'))
     p.add_argument('--machine',default='Panasonic_FS-A1WSX');p.add_argument('--openmsx',default='openmsx')
     args=p.parse_args(argv);root=Path(__file__).resolve().parents[1]
-    if args.record_round is not None and not 1<=args.record_round<=args.rounds:raise ValueError('Recorded round must be within the natural route')
+    first_round=args.fixture_first_round or 1
+    last_round=first_round+args.rounds-1
+    if last_round>254:raise ValueError('Controlled route exceeds the acquired round range')
+    if args.record_round is not None and not first_round<=args.record_round<=last_round:raise ValueError('Recorded round must be within the requested route')
     if args.require_stable_radar and not args.radar_trace:raise ValueError('Stable radar gate requires --radar-trace')
     if args.require_stable_fuel and not args.radar_trace:raise ValueError('Stable fuel gate requires --radar-trace')
     if args.require_stable_player and not args.radar_trace:raise ValueError('Stable player gate requires --radar-trace')
@@ -59,7 +71,7 @@ def main(argv=None):
         reference_machine(root,args.machine),'set firmwareswitch off','set throttle off','set pause_on_lost_focus false',
         'set z80_freq 3579545',f'set z80_freq_locked {str(not args.fixed_base_clock).lower()}','set cmdtiming real','set limitsprites true',
         'activate_input_layer -blocking full_route',f'cart {tcl(args.rom.resolve())} -romtype ASCII16','reset',
-        f'set out {tcl(out)};set rounds {args.rounds};set avoid_enemies {int(args.avoid_enemies)};set steering_margin {args.steering_margin}',
+        f'set out {tcl(out)};set rounds {last_round};set avoid_enemies {int(args.avoid_enemies)};set steering_margin {args.steering_margin}',
         'for {set i 0} {$i<4} {incr i} {set f [open [file join $out "board-$i.bin"] rb];set boards($i) [read $f];close $f}',
         'set VDP.too_fast_vram_access_callback {puts stderr "Full route VRAM timing violation";exit 2}',
         'after time 900 {puts stderr "Full route emulated timeout: PC=[reg PC] SP=[reg SP] IFF=[reg IFF]";foreach {name data} [list timeout.state [debug read_block memory 0xc000 12288] timeout.page0 [debug read_block memory 0 16384] timeout.vram [debug read_block VRAM 0 131072]] {set f [open [file join $::out $name] wb];puts -nonewline $f $data;close $f};exit 2}']
@@ -71,6 +83,51 @@ def main(argv=None):
             f' after time 8 {{record stop;screenshot -raw {tcl(out/"scanout-last.png")};set renderer none}}',
             '}'])
     script=(root/'scripts/msx/full-route-probe.tcl').read_text().replace('@SHOW_SCENE@',str(syms['show_scene']))
+    if args.allow_game_over:
+        script=script.replace('    if {$::frames>40000 || $state==2} {',
+            '    if {$state==2} {snapshot;close $::events;close $::headers;exit 0;return}\n    if {$::frames>40000 || $state==2} {')
+    if args.fixture_enemies is not None:
+        if 'Full_MSXAI' not in syms:raise ValueError('Population fixture requires the full MSX enemy adapter')
+        lines.append(f'debug set_bp {syms["Enemy_Init"]} {{1}} {{debug write memory 0xe24e {args.fixture_enemies}}}')
+    if args.fixture_first_round is not None:
+        lines.extend(['set first_round_seeded 0',
+            f'debug set_bp {syms["Full_NextBody"]} {{!$::first_round_seeded && [info exists ::phase] && $::phase eq "start" && [debug read memory 0xc7ee]==0}} {{set ::first_round_seeded 1;debug write memory 0xe1b0 {first_round}}}'])
+    if 'Full_PresentCommit' in syms:
+        from scripts.msx.full_memory import presentation_image
+        (out/'presentation-code.bin').write_bytes(presentation_image(bundle,syms))
+        lines.extend([
+            'set f [open [file join $out presentation-code.bin] rb];set presentation_code [read $f];close $f',
+            f'debug set_bp {syms["main"]} {{[info exists ::phase] && $::phase eq "game" && [debug read memory 0xc7d0]==0 && [debug read memory {syms["Full_Loading"]}]==0}} {{if {{[debug read_block memory {syms["Full_PresentStart"]} [string length $::presentation_code]] ne $::presentation_code}} {{puts stderr "Presentation code overwritten";exit 2}}}}',
+            'set presentation_out [open [file join $out presentation.tsv] w]',
+            f'debug set_bp {syms["main.ready"]} {{[info exists ::phase] && $::phase eq "game"}} {{puts $::presentation_out "[machine_info time] [debug read memory 0xe1b0] start [debug read memory {syms["ticks"]}] [debug read memory 0xc490] [debug read memory 0xc724] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0]"}}',
+            f'debug set_bp {syms.get("Full_PresentSealed",syms["Full_PresentSeal"])} {{[info exists ::phase] && $::phase eq "game"}} {{puts $::presentation_out "[machine_info time] [debug read memory 0xe1b0] ready [debug read memory {syms["ticks"]}] [debug read memory 0xc490] [debug read memory 0xc724] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0]"}}',
+            f'debug set_bp {syms["Full_PresentCommit.clock_ready"]} {{[info exists ::phase] && $::phase eq "game"}} {{puts $::presentation_out "[machine_info time] [debug read memory 0xe1b0] commit [debug read memory {syms["ticks"]}] [debug read memory 0xc490] [debug read memory 0xc724] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0]"}}',
+        ])
+        if 'Full_PoolKeys' in syms:
+            lines.extend([
+                'set commits_out [open [file join $out commits.tsv] w]',
+                f'debug set_bp {syms["Full_PresentCommit.clock_ready"]} {{[info exists ::phase] && $::phase eq "game"}} {{set ::commit_start [machine_info time];set ::commit_masks 0;for {{set i 0}} {{$i<7}} {{incr i}} {{if {{[debug read memory [expr {{{syms["Full_PresentDirty"]}+$i}}]]}} {{incr ::commit_masks}}}};if {{$::commit_masks>2}} {{puts stderr "Shared cache exceeded its VBlank mask budget";exit 2}}}}',
+                f'debug set_bp {syms["Full_PresentCommit.restore"]} {{[info exists ::commit_start]}} {{puts $::commits_out "$::commit_start [debug read memory 0xe1b0] $::commit_masks [expr {{([machine_info time]-$::commit_start)*1000}}]";unset ::commit_start}}',
+            ])
+        script+='\nrename snapshot capture_snapshot\nset snapshot_pending 0\nproc snapshot {} {set ::snapshot_pending 1}\n'
+        script+=f'debug set_bp {syms["Full_PresentCommit.restore"]} {{[info exists ::phase] && $::phase eq "game" && $::snapshot_pending}} {{capture_snapshot;set ::snapshot_pending 0}}\n'
+    if 'Full_MSXAI' in syms:
+        if 'Full_PoolFault' in syms:
+            lines.append(f'debug set_watchpoint write_mem {syms["Full_PoolFault"]} {{$::wp_last_value!=0 && [info exists ::phase] && $::phase eq "game"}} {{puts stderr "Complete-mask cache exhausted";exit 2}}')
+        lines.extend([
+            'set enemy_motion_out [open [file join $out enemy-motion.tsv] w]',
+            f'debug set_bp {syms["Player_CountTick"]} {{[info exists ::phase] && $::phase eq "game" && [debug read memory 0xc7d0]==0 && [debug read memory 0xc490]==0 && [debug read memory 0xc724]==0}} {{',
+            'for {set i 0} {$i<[debug read memory 0xe24e]} {incr i} {',
+            ' binary scan [debug read_block memory [expr {0xe088+$i*32}] 32] cu* actor',
+            ' set state [lindex $actor 0];set x [lindex $actor 8];set y [lindex $actor 10]',
+            ' if {$x>=32 || $y>=56 || $state!=0} {continue}',
+            ' set layout [expr {[debug read memory 0xe28f]&3}]',
+            ' binary scan [string index $::boards($layout) [expr {$y*32+$x}]] cu cell',
+            ' if {$cell&248} {puts stderr "MSX enemy entered a wall: actor=$i cell=$x,$y";exit 2}',
+            ' puts $::enemy_motion_out "[machine_info time] [debug read memory 0xe1b0] $i $state $x $y [lindex $actor 5] [lindex $actor 7]"',
+            '}',
+            '}',
+        ])
     for token,name,read in [('CLOCK_DUE','Full_ClockDue','debug read memory'),('CAMERA_BLOCKED','Full_CameraBlocked','debug read memory'),('CLOCK_DROPPED','Full_ClockDropped','u16')]:
         script=script.replace('@'+token+'@',f'[{read} {syms[name]}]' if name in syms else '0')
     if 'Full_CameraValidated' in syms:
@@ -86,7 +143,7 @@ def main(argv=None):
         (out/'terrain-code.bin').write_bytes(engine)
         lines.extend([
             'set f [open [file join $out terrain-code.bin] rb];set terrain_code [read $f];close $f',
-            f'debug set_watchpoint write_mem {{{syms["Full_LoadStart"]} {syms["Full_LoadEnd"]-1}}} {{$::phase eq "game" && [debug read memory 0xc7d0]==0}} {{puts stderr "Cold RAM code overwritten: $::wp_last_address";exit 2}}',
+        f'debug set_watchpoint write_mem {{{syms["Full_LoadStart"]} {syms["Full_LoadEnd"]-1}}} {{$::phase eq "game" && [debug read memory 0xc7d0]==0}} {{puts stderr "Cold RAM code overwritten: $::wp_last_address PC=[reg PC] SP=[reg SP] IFF=[reg IFF] stack=[binary encode hex [debug read_block memory [reg SP] 32]]";exit 2}}',
             f'debug set_bp {syms["main"]} {{$::phase eq "game" && [debug read memory 0xc7d0]==0}} {{',
             f'if {{[debug read ioports 168]!=[debug read memory {syms["Full_CachePrimary"]}] || [debug read ioports 252]!=[debug read memory {syms["Full_CacheMapper"]}] || [debug read memory {syms["Full_CacheHeld"]}]}} {{puts stderr "Terrain mapper was not restored";exit 2}}',
             '}',
@@ -115,7 +172,7 @@ def main(argv=None):
         if not args.fixed_base_clock:
             lines.append(f'debug set_bp {syms["Full_NativeMotion"]} {{$::phase eq "game" && [debug read memory {syms["Full_TurboEnabled"]}]}} {{if {{[machine_info z80_freq]!=5369318}} {{puts stderr "Native motion did not receive factory CPU frequency";exit 2}}}}')
         for name in ('Sprite_Upload','stage_wait_command','Full_RadarIRQ'):
-            lines.append(f'debug set_bp {syms[name]} {{$::phase eq "game" && [debug read memory {syms["Full_TurboEnabled"]}]}} {{if {{!([debug read ioports 65]&1) || [machine_info z80_freq]!=3579545}} {{puts stderr "VDP work entered at turbo clock: {name}";exit 2}}}}')
+            lines.append(f'debug set_bp {syms[name]} {{$::phase eq "game" && [debug read memory {syms["Full_TurboEnabled"]}]}} {{if {{!([debug read ioports 65]&1) || [machine_info z80_freq]!=3579545}} {{puts stderr "VDP work entered at turbo clock: {name} active=[debug read memory {syms["Full_TurboActive"]}] return=[u16 [reg SP]] clock=[machine_info z80_freq]";exit 2}}}}')
         if args.profile:
             lines.extend(['set clock_out [open [file join $out clocks.tsv] w];set clock_samples 0',
                 f'debug set_bp {syms["Full_NativeMotion"]} {{$::phase eq "game" && $::clock_samples<256}} {{set ::clock_begin [machine_info time];set ::clock_active [debug read memory {syms["Full_TurboActive"]}];set ::clock_port [debug read ioports 65]}}',
@@ -129,6 +186,8 @@ def main(argv=None):
             'set footer_samples 0;set footer_mismatches 0',
             'set player_samples 0;set player_mismatches 0;set player_out [open [file join $out player.tsv] w]',
             'set camera_out [open [file join $out camera.tsv] w]',
+            'set motion_out [open [file join $out motion.tsv] w]',
+            'set terrain_out [open [file join $out terrain.tsv] w]',
             f'set camera_has_tags {int("Full_CacheSegment" in syms)}',
             'set camera_ram "";foreach device [debug list] {if {[debug desc $device] eq "memory mapper" && [debug size $device]>=131072} {set camera_ram $device;break}}',
             'if {$camera_ram eq ""} {error "Missing physical camera mapper"}',
@@ -139,6 +198,10 @@ def main(argv=None):
             ' set wx [expr {$wx+(($hardware_x-$wx+256)&511)-256}]',
             f' set wy [expr {{$wy+(($sy+{syms["BODY_TOP"]}-$wy+128)&255)-128}}]',
             f' puts $::camera_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $sy [debug read memory {syms["scroll_y"]}] $wy [u16 0xc407] [u16 0xc452]"',
+            f' puts $::motion_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $wx $wy [u16 0xc450] [u16 0xc452] [debug read memory 0xe06b] [debug read memory 0xe048] [u16 0xe069] [debug read memory 0xe068] [u16 {syms["player_native_ticks"]}] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0] [debug read memory 0xc009] [debug read memory 0xc49a] [debug read memory 0xc5b0]"',
+            ' set queue [list [machine_info time]]',
+            ' foreach a {'+' '.join(str(syms[n]) for n in ('Full_CameraBlocked','row_left','row_x','row_y','Stage_RowLeft','Stage_RowEnd','column_left','column_x','column_y','Stage_ColumnTop','Stage_ColumnEnd','Full_DirX','Full_DirY','Full_QueueDirty','cache_left','cache_top','Full_ClockDue','Full_LoopTicks','raster_phase'))+'} {lappend queue [debug read memory $a]}',
+            ' puts $::terrain_out $queue',
             ' if {!$::camera_has_tags || [debug read memory 0xc490] || [debug read memory 0xc724]} {return}',
             f' set segment [debug read memory {syms.get("Full_CacheSegment",0)}]',
             ' set base [expr {($segment&([debug size $::camera_ram]/16384-1))*16384+8192}]',
@@ -205,7 +268,20 @@ def main(argv=None):
             '}',
         ])
     if args.profile:
+        lines.append('set raster_out [open [file join $out raster.tsv] w]')
+        for name in ('interrupt','maze_interrupt','vertical'):
+            lines.append(f'debug set_bp {syms[name]} {{[info exists ::phase] && $::phase eq "game"}} {{puts $::raster_out "[machine_info time] $::frames {name} [machine_info VDP_msx_y_pos] [machine_info VDP_line_in_frame] [debug read memory {syms["raster_phase"]}] [debug read {{VDP status regs}} 0] [debug read {{VDP status regs}} 1]"}}')
+        idle='Full_PresentIdleEngine' if 'Full_PresentIdleEngine.terrain' in syms else 'Full_PresentIdle'
+        if idle+'.terrain' in syms:
+            lines.append('set idle_out [open [file join $out idle.tsv] w]')
+            for name in (idle+'.work',idle+'.terrain','Stage_PrefetchOne'):
+                lines.append(f'debug set_bp {syms[name]} {{[info exists ::phase] && $::phase eq "game"}} {{puts $::idle_out "[machine_info time] $::frames {name} [debug read memory {syms["ticks"]}] [debug read memory {syms["raster_phase"]}] [debug read memory {syms["row_left"]}] [debug read memory {syms["column_left"]}] [debug read memory {syms["Full_ClockDue"]}] [debug read memory {syms["Full_LoopTicks"]}]"}}')
+        rom_data=args.rom.read_bytes()
+        irq_reti=syms['irq_return']+rom_data[syms['irq_return']-0x4000:syms['register']-0x4000].index(bytes.fromhex('ed4d'))
         lines.extend(['set profile_out [open [file join $out profile.tsv] w]',
+            'set profile_cpu_out [open [file join $out profile-cpu.tsv] w];set profile_irq_total 0',
+            f'debug set_bp {syms["interrupt"]} {{$::phase eq "game"}} {{set ::profile_irq_start [machine_info time]}}',
+            f'debug set_bp {irq_reti} {{$::phase eq "game" && [info exists ::profile_irq_start]}} {{set ::profile_irq_total [expr {{$::profile_irq_total+[machine_info time]-$::profile_irq_start}}];unset ::profile_irq_start}}',
             'set wait_out [open [file join $out waits.tsv] w]',
             f'debug set_bp {syms["main.wait"]} {{$::phase eq "game"}} {{if {{![info exists ::frame_wait_start]}} {{set ::frame_wait_start [machine_info time];set ::frame_wait_round [debug read memory 0xe1b0]}}}}',
             f'debug set_bp {syms["main.ready"]} {{$::phase eq "game" && [info exists ::frame_wait_start]}} {{puts $::wait_out "$::frames $::frame_wait_round [debug read memory 0xe1b0] [expr {{[machine_info time]-$::frame_wait_start}}] [machine_info time] [debug read memory 0xc7d0] [debug read memory 0xc724] [debug read memory 0xc490]";unset ::frame_wait_start}}',
@@ -216,23 +292,25 @@ def main(argv=None):
                'HUD_FinishCoordinates','Player_AdvanceEarly','HUD_PrepareFrame','HUD_DrawContent',
                'Player_Advance','Radar_WaitPublish','stage_stream','Enemy_PreMove','Enemy_AfterMove',
                'Full_NativeAI','FullEnemy_PrepareOne','FullEnemy_DrawOne','Smoke_Tick','Fuel_Tick'}
-        names.update({'Player_Tick','Full_SimulationTail','stage_wait_command','stage_copy_tile','Full_CellPrefetch','Full_CameraCheck'})
+        names.update({'Player_Tick','Full_WarmCamera','stage_wait_command','stage_copy_tile','Full_CellPrefetch','Full_CameraCheck'})
+        names.update({'Full_PoolPreloadNative','Full_PresentBegin','Full_PoolBegin','Full_PoolReserveNative','Full_PoolAssignNative'})
         names.update({'Player_Draw','Player_Patch','Score_ReservedFrame','Flag_Stream','Death_Stream','Smoke_Stream',
                       'Flag_Frame','Death_Frame','Radar_CommitPublished','Life_Frame','Round_Frame','Session_Check','Player_Update'})
-        aliases={'$8cd6':'NativeAI','$b600':'GuardedAI','$95bd':'NativeVisibility',
+        aliases={'$8cd6':'NativeAI','$b600':'MSXAI' if 'Full_MSXAI' in syms else 'GuardedAI','$95bd':'NativeVisibility',
                  '$91bf':'NativeCameraX','$9207':'NativeCameraY','$838a':'NativeContact',
                  '$8069':'NativeMotion','$9052':'NativeSteering'}
         for row in (bundle/'raster-scroll.lst').read_text().splitlines():
             match=re.search(r'[+\s]([0-9A-F]{4}) (?:CD|C4|CC|D4|DC|E4|EC|F4|FC) [0-9A-F]{2} [0-9A-F]{2}\s+call (?:[a-z]+,)?([\w$]+)',row)
             if not match or match[2] not in names|aliases.keys():continue
             address=int(match[1],16);name=aliases.get(match[2],match[2])
-            lines.extend([f'debug set_bp {address} {{$::phase eq "game"}} {{set ::profile_{name} [machine_info time]}}',
-                f'debug set_bp {address+3} {{$::phase eq "game" && [info exists ::profile_{name}]}} {{puts $::profile_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [debug read memory 0xe1b0]"}}'])
+            lines.extend([f'debug set_bp {address} {{$::phase eq "game"}} {{set ::profile_{name} [machine_info time];set ::profile_irq_{name} $::profile_irq_total}}',
+                f'debug set_bp {address+3} {{$::phase eq "game" && [info exists ::profile_{name}]}} {{puts $::profile_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [debug read memory 0xe1b0]";puts $::profile_cpu_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}] [debug read memory 0xe1b0]"}}'])
             if name=='stage_stream':
                 lines.extend([
                     f'debug set_bp {address} {{$::phase eq "game"}} {{set ::stream_before [list [machine_info time] [debug read memory 0xc0b6] [debug read memory 0xc0b7] [debug read memory {syms["Stage_GuardClosed"]}] [debug read memory {syms["raster_phase"]}]]}}',
                     f'debug set_bp {address+3} {{$::phase eq "game" && [debug read memory 0xc7d0]==0 && [debug read memory 0xc490]==0 && [debug read memory 0xc724]==0 && [info exists ::stream_before]}} {{puts $::stream_out "$::frames [debug read memory 0xe1b0] [debug read memory 0xc472] $::stream_before [machine_info time] [debug read memory 0xc0b6] [debug read memory 0xc0b7] [debug read memory {syms["Stage_GuardClosed"]}] [debug read memory {syms["raster_phase"]}]"}}',
                 ])
+    lines.append('debug set_bp 56 {[info exists ::phase] && $::phase eq "game" && [debug read memory 0xc7d0]==0} {puts stderr "Unexpected restart vector: SP=[reg SP] IFF=[reg IFF] IM=[reg IM] I=[reg I] stack=[binary encode hex [debug read_block memory [reg SP] 48]]";exit 2}')
     if args.trace_di:
         lines.extend(['set di_out [open [file join $out di.tsv] w]',
             'proc di_begin {} {set ::di_begin [machine_info time];set ::di_pc [reg PC]}',
@@ -264,7 +342,11 @@ def main(argv=None):
             stdout=log,stderr=subprocess.STDOUT,
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
     rows=[list(map(int,line.split())) for line in (out/'events.tsv').read_text().splitlines()]
-    if not rows or max(r[1] for r in rows)<args.rounds+2:raise ValueError('Natural round completion evidence missing')
+    if args.fixture_first_round is not None and (not rows or rows[0][1]!=first_round+1):
+        raise ValueError('Original preparer did not apply the declared initial-round fixture')
+    completed=max((r[1] for r in rows),default=first_round+1)-first_round-1
+    reached=completed>=args.rounds
+    if not rows or not reached and not args.allow_game_over:raise ValueError('Natural round completion evidence missing')
     headers=verify_header_reservations(out/'headers.tsv',read_json(bundle/'build.json')['timing']['frame_seconds'])
     radar=None
     if args.radar_trace:
@@ -279,20 +361,36 @@ def main(argv=None):
         if args.require_stable_player and (player_mismatches or not player_samples):raise ValueError('Player sprites missed their fixed-centre scanline gate')
     verify_manifest(bundle)
     cadence=analyze_cadence(out/'cadence.tsv')
+    packet_cadence=analyze_presentation(out/'presentation.tsv',read_json(bundle/'build.json')['timing']['frame_seconds']) if (out/'presentation.tsv').exists() else None
+    physical_motion=analyze_motion(out/'motion.tsv',read_json(bundle/'build.json')['timing']['frame_seconds']) if args.radar_trace else None
+    if (args.maximum_packet_miss_percent is not None or args.maximum_packet_gap_ms is not None) and packet_cadence is None:
+        raise ValueError('Packet gate requires a deferred presentation build')
+    if args.maximum_owed_repeat_ms is not None and physical_motion is None:raise ValueError('Owed motion gate requires --radar-trace')
     if args.record_round and not (out/'scanout.avi').is_file():raise ValueError('Requested scanout recording is missing')
     camera_motion=analyze_scroll(out/'camera.tsv') if args.radar_trace else None
     scroll_passed=args.maximum_scroll_step is None or camera_motion['maximum_vertical_step']<=args.maximum_scroll_step
     cadence_passed=args.minimum_native_hz is None or all(r['native_hz']>=args.minimum_native_hz for r in cadence['rounds'] if r['active_seconds']>=5)
     presentation_passed=args.minimum_presentation_hz is None or all(r['presentation_loop_hz']>=args.minimum_presentation_hz for r in cadence['rounds'] if r['active_seconds']>=5)
     active_rounds=[r for r in cadence['rounds'] if r['active_seconds']>=5]
+    retained_passed=not args.require_retained_native_ticks or bool(active_rounds) and all(r['discarded_ticks']==0 for r in active_rounds)
+    packet_passed=(args.maximum_packet_miss_percent is None or all(r['missed_slots_percent']<=args.maximum_packet_miss_percent for r in packet_cadence['rounds'])) and (args.maximum_packet_gap_ms is None or all(r['maximum_gap_ms']<=args.maximum_packet_gap_ms for r in packet_cadence['rounds']))
+    owed_passed=args.maximum_owed_repeat_ms is None or all(r['maximum_owed_repeat_ms']<=args.maximum_owed_repeat_ms for r in physical_motion['rounds'] if r['seconds']>=2)
     stutter_passed=(args.maximum_p95_loop_ms is None or bool(active_rounds) and all(r['percentile_95_loop_ms']<=args.maximum_p95_loop_ms for r in active_rounds)) and (args.maximum_over40_percent is None or bool(active_rounds) and all(r['loops_over_40_ms']*100/r['foreground_loops']<=args.maximum_over40_percent for r in active_rounds))
     moving_rounds=[r for r in camera_motion['moving_vertical_rounds'] if r['moving_seconds']>=2] if camera_motion else []
     vertical_passed=args.minimum_vertical_update_hz is None or bool(moving_rounds) and all(r['vertical_update_hz']>=args.minimum_vertical_update_hz for r in moving_rounds)
     clock_rows=[line.split() for line in (out/'clocks.tsv').read_text().splitlines()] if (out/'clocks.tsv').is_file() else []
     clock_evidence=dict(mode='fixed base diagnostic' if args.fixed_base_clock else 'machine controlled',
         native_instruction_samples=len(clock_rows),native_instruction_cpu_hz=sorted({int(row[2]) for row in clock_rows}),
-        vdp_frequency_gate='3.58 MHz at every observed sprite upload, command wait and radar IRQ')
-    json_write(out/'report.json',dict(rom_sha256=digest(args.rom),natural_completed_rounds=args.rounds,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
+        vdp_frequency_gate='3.58 MHz at ordinary sprite uploads, command waits and radar IRQs; bounded VBlank packets use factory turbo with real VDP access checks')
+    controlled=args.fixture_enemies is not None or args.fixture_first_round is not None
+    json_write(out/'report.json',dict(rom_sha256=digest(args.rom),natural_completed_rounds=completed if not controlled else 0,
+        controlled_completed_rounds=completed if controlled else 0,fixture_first_round=args.fixture_first_round,
+        requested_rounds=args.rounds,target_rounds_reached=reached,stopped_on_game_over=not reached,
+        fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
+        physical_motion=physical_motion,packet_cadence=packet_cadence,
+        retained_tick_gate=dict(required=args.require_retained_native_ticks,passed=retained_passed),
+        packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,passed=packet_passed),
+        owed_motion_gate=dict(maximum_ms=args.maximum_owed_repeat_ms,passed=owed_passed),
         foreground_loops=len(rows),cadence=cadence,camera_motion=camera_motion,
         recorded_displayed_round=args.record_round,
         scroll_gate=dict(maximum_pixels=args.maximum_scroll_step,passed=scroll_passed),
@@ -302,14 +400,15 @@ def main(argv=None):
         vertical_update_gate=dict(minimum_hz=args.minimum_vertical_update_hz,passed=vertical_passed),
         camera_ownership_checks=int((out/'camera-count.txt').read_text()) if 'Full_CameraValidated' in syms else None,
         header_reservations=headers,radar_coherence=radar,maximum_smoke_placements=max(r[6] for r in rows),
-        scope='Real keyboard credit/start, steering and smoke; no guest-state writes. Dynamic sprite/cache images require separate scene checks.'))
+        scope=('Explicit initial round/population fixture before original preparation; real keyboard credit/start, steering and smoke. Not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
     require_ignored(root,[x for x in out.rglob('*') if x.is_file()]);seal(out)
     if not cadence_passed:raise ValueError(f'Natural route missed its native simulation cadence gate; evidence retained at {out}/report.json')
+    if not retained_passed or not packet_passed or not owed_passed:raise ValueError(f'Loaded presentation/tick gate failed; evidence retained at {out}/report.json')
     if not scroll_passed:raise ValueError(f'Natural route missed its vertical scroll gate; evidence retained at {out}/report.json')
     if not presentation_passed:raise ValueError(f'Natural route missed its presentation gate; evidence retained at {out}/report.json')
     if not stutter_passed:raise ValueError(f'Natural route missed its stutter gate; evidence retained at {out}/report.json')
     if not vertical_passed:raise ValueError(f'Natural route missed its physical camera cadence gate; evidence retained at {out}/report.json')
-    print(f'{args.rounds} naturally completed rounds: {out}/report.json')
+    print(f'{completed} completed rounds; {"target reached" if reached else "game over"}: {out}/report.json')
 
 
 if __name__=='__main__':main()

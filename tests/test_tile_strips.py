@@ -4,6 +4,16 @@ from scripts.msx.tile_strips import encode,candidates,encode_cells
 
 
 class TileStripTests(unittest.TestCase):
+    def test_extra_object_cells_retain_exact_pixels_and_deduplicate(self):
+        image=bytes((x*y+x//3+y//5)%16 for y in range(24) for x in range(24))
+        data=encode_cells(bytes(24*24),width=24,height=24,extra_cells=(image,image))
+        self.assertEqual(data['unique'],2)
+        self.assertEqual(data['extra_sources'][:2],data['extra_sources'][2:])
+        sx,sy=data['extra_sources'][:2];sy=(sy-data['vram']//128)%256
+        actual=bytes((data['pixels'][(sy+y)*128+(sx+x)//2]>>(0 if (sx+x)&1 else 4))&15
+            for y in range(24) for x in range(24))
+        self.assertEqual(actual,image)
+
     def test_complete_cells_reconstruct_every_synthetic_source_pixel(self):
         width,height=96,72
         world=bytes((x//5+y//7+x*y)%16 for y in range(height) for x in range(width))

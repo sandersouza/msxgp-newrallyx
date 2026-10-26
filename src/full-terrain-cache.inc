@@ -17,67 +17,78 @@ Full_LoopTicks EQU $d2ff
 Full_ScrollValid EQU $d2cd
 Full_CellRejected EQU $d2ce
 Full_CellRejectedValid EQU $d2d0
-; Spread batched motion across physical refreshes without draining the newest
-; snapshot immediately. Scene initialization still publishes its exact latch.
+Full_CellObject EQU $d2d1    ; low bits: source kind; bit4/5: single-column/row copy
+Full_CameraPlanX EQU $d2b6
+Full_CameraPlanY EQU $d2b8
+Full_CameraAppliedTick EQU $d2ba
+Full_CameraAppliedValid EQU $d2bb
+Full_PresentEnabled EQU $d2bc
+Full_PresentReady EQU $d2bd
+Full_PresentNextX EQU $d2be
+Full_PresentNextY EQU $d2c0
+Full_PresentLength EQU $d2c1
+Full_PresentActiveX EQU $d2c2
+Full_IdlePrefetch EQU $c67f
+Full_RenderRestart EQU $e3f1
+Full_PoolFault EQU $e3f8
+Full_FrameOriginX EQU $e3f2
+Full_FrameOriginY EQU $e3f4
+Full_SealedFrame EQU $c678
+; Initialization publishes immediately. Gameplay scroll changes only with the
+; complete deferred packet, so both axes share the same physical frame.
 Full_LatchScrollY:
-    push de
-    ld a,(Full_ScrollValid)
+    ld a,(Full_PresentEnabled)
     or a
-    jr z,.snap
+    ret nz
+    ld bc,(scroll_high)
+    ld (Full_PresentActiveX),bc
     ld a,(scroll_y)
-    ld c,a
-    ld a,(irq_scroll_y)
-    ld b,a
-    ld a,c
-    sub b
-    IF VDP_R9 == $80
-    bit 7,a
-    jr z,.magnitude
-    neg
-.magnitude:
-    inc a
-    srl a                    ; Half the distance, rounded up, at most four pixels.
-    cp 5
-    jr c,.distance_limit
-    ld a,4
-.distance_limit:
-    ld d,a
-    ELSE
-    add a,8
-    cp 17
-    ld d,2
-    jr c,.limit
-    inc d
-    inc d
-    ENDIF
-.limit:
-    ld a,d
-    add a,a
-    inc a
-    ld e,a
-    ld a,c
-    sub b
-    add a,d
-    cp e
-    jr c,.snap
-    ld a,c
-    sub b
-    bit 7,a
-    ld a,b
-    jr nz,.up
-    add a,d
-    jr .publish
-.up:
-    sub d
-    jr .publish
-.snap:
-    ld a,1
-    ld (Full_ScrollValid),a
-    ld a,(scroll_y)
-.publish:
     ld (irq_scroll_y),a
-    pop de
     ret
+
+; Spend otherwise idle body intervals on one hidden terrain command.
+Full_PresentIdle:
+    push iy
+    call Full_CacheEnter
+    ld a,1
+    ld (Full_CacheHeld),a
+    ei                       ; Input/clock preparation can span the footer IRQ.
+    nop
+    jp Full_PresentIdleEngine
+Full_WarmCamera:
+    push iy
+    call Full_CacheEnter
+    ld a,1
+    ld (Full_CacheHeld),a
+    ei
+    nop
+    jp Full_WarmCameraEngine
+Full_PresentBegin:
+    ld a,(Full_PresentEnabled)
+    or a
+    jr z,.initial
+    call Full_TurboOn        ; Cache metadata owns no VDP latch.
+.initial:
+    call Full_CacheEnter
+    push ix
+    push iy
+    ld a,(Full_CacheReady)
+    or a
+    call nz,Full_PoolBegin
+    pop iy
+    pop ix
+    ld hl,Full_PresentDirty
+    ld b,7
+    xor a
+.clear:
+    ld (hl),a
+    inc hl
+    djnz .clear
+    jp Full_CacheLeave
+Full_PresentSeal:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp Full_PresentSealNative
 Full_TurboOn:
     ld a,(Full_TurboEnabled)
     or a
@@ -153,6 +164,18 @@ Full_CacheClear:
     ld de,Full_CacheEngineStart
     ld bc,Full_CacheEngineEnd-Full_CacheEngineStart
     ldir
+    ld a,(Full_Layout)
+    and 3
+    add a,a
+    add a,a
+    add a,a
+    add a,$a0
+    ld h,a
+    ld l,0
+    ld de,Full_MSXNavigation
+    ld bc,1792
+    ldir
+    call Full_InitializeColorDestinations
     ld hl,$2000
     ld de,$2001
     ld bc,4095
@@ -169,6 +192,7 @@ Full_CacheClear:
     ld (Full_ClockDropped+1),a
     ld (Full_DirX),a
     ld (Full_DirY),a
+    ld (Full_CameraAppliedValid),a
     inc a
     ld (Full_QueueDirty),a
     jp Full_CacheLeave
@@ -176,14 +200,6 @@ Full_ClockFrame:
     push iy
     call Full_CacheEnter
     jp Full_ClockAdvance
-Full_SimulationIdle:
-    push iy
-    call Full_CacheEnter
-    ld a,1
-    ld (Full_CacheHeld),a
-    ei                       ; Clock/input work owns no VDP latch or IRQ RAM.
-    nop
-    jp Full_SimulationIdleNative
 Full_IdleExit:
     xor a
     ld (Full_CacheHeld),a
@@ -220,12 +236,34 @@ Full_CacheProbe:
     call Full_CacheEnter
     jp Full_WorldProbe
 Full_CameraCheck:
+    ld hl,(player_pending_x)
+    ld (Full_CameraPlanX),hl
+    ld hl,(player_pending_y)
+    ld (Full_CameraPlanY),hl
     ld a,(Full_CacheReady)
     or a
     ret z
     push iy
     call Full_CacheEnter
     jp Full_CameraValidate
+Full_PlayerApply:
+    push iy
+    call Full_CacheEnter
+    jp Full_PlayerApplyNative
+Full_TrySmokeCell:
+    push iy
+    push bc
+    call Full_CacheEnter
+    ld a,1
+    ld (Full_CacheHeld),a
+    jp Full_SmokeCellNative
+Full_SmokeCellExit:
+    ld a,c
+    pop bc
+    ld c,a
+    xor a
+    ld (Full_CacheHeld),a
+    jp Full_CacheExit
 Full_CameraExit:
     call Full_TurboOff
     call Full_CacheLeave
