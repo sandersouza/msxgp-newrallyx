@@ -23,6 +23,7 @@ Full_MainFrame:
     call z,Player_Update
     call Death_Frame
     call Flag_Frame
+    call Flag_PublishHUD
     call Radar_CommitPublished
     ; Only a committed packet may change the scroll used by raster IRQs.
     ; Scene initialization uses zero; active preparation must leave it latched.
@@ -50,6 +51,8 @@ Full_MainFrame:
     call Full_TurboOn
     call HUD_FinishCoordinates
     call Full_TurboOff
+    ld b,3                   ; Live effects precede the variable enemy workload.
+    call Smoke_Stream
     call Full_EnemyFrame
     call Enemy_Radar
     ld a,(paused)
@@ -58,8 +61,6 @@ Full_MainFrame:
     call Player_Patch
     ld b,64
     call Death_Stream
-    ld b,3
-    call Smoke_Stream
     ld b,64
     call Flag_Stream
     ; The actor/camera snapshot is complete. Publish its readiness before
@@ -85,12 +86,13 @@ Full_MainFrame:
     call Score_Frame         ; Owns EI; this loop reserves one early native tick.
     call Full_TurboOn
     call HUD_PrepareFrame
+    call HUD_FlushFlags       ; Bounded RAM work precedes optional numeric VRAM writes.
     call Full_TurboOff
+    call Radar_WaitPublish
     ld a,(paused)
     or a
     call z,hud_demo_numbers
     call HUD_DrawContent
-    call Radar_WaitPublish
 .prefetch:
     ld a,(Full_SealedFrame)
     or a

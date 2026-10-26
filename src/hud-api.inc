@@ -365,6 +365,7 @@ HUD_FlushFlags:
     ret
     ENDIF
     IF RADAR_CELLS_ONLY
+    IF !FULL_GAME
     ld a,(Radar_Initializing)
     or a
     jr nz,.cell_budget
@@ -375,6 +376,7 @@ HUD_FlushFlags:
     cp 2
     ret z
 .cell_budget:
+    ENDIF
     ld b,1                  ; Bound flag-base composition as well as marker work.
     ELSE
     ld b,2
@@ -540,6 +542,19 @@ hud_render_cell:
     djnz .flag
     IF RADAR_CELLS_ONLY
     call Radar_CacheCell
+    IF FULL_GAME
+    ld a,(hud_cell)
+    ld (Radar_PublishCursor),a ; Collection/blink changes precede ordinary markers.
+    call Radar_CellBit
+    ld hl,(Radar_Urgent)
+    ld a,e
+    or l
+    ld l,a
+    ld a,d
+    or h
+    ld h,a
+    ld (Radar_Urgent),hl
+    ENDIF
     jp Radar_RenderCell
     ELSE
     ; Shift both 16-row halves by one row for sentinel avoidance.
@@ -738,7 +753,11 @@ HUD_DrawContent:
     call HUD_ContentWindow
     ret c
     ENDIF
+    IF FULL_GAME
+    ret
+    ELSE
     jp HUD_FlushFlags
+    ENDIF
 
     IF RADAR_CELLS_ONLY
 HUD_ContentWindow:
@@ -830,6 +849,9 @@ HUD_Prime:
     ENDIF
     call HUD_PrepareFrame
 .drain:
+    IF FULL_GAME
+    call HUD_FlushFlags
+    ENDIF
     call HUD_DrawContent
     ld hl,(hud_flags_dirty)
     ld a,h

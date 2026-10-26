@@ -111,6 +111,10 @@ shows seven high-score digits. Credits display one digit, capped at nine; the
 native counter still supports 255. Spare-car presentation caps at nine
 without changing native lives. Fuel retains original units and publication in
 the maze IRQ against the actual scroll latch.
+Collected flags now prioritize their radar-cell publication in safe video
+intervals. Fresh smoke jobs precede retired-row repairs without increasing the
+stream budget. See [effect publication evidence](issue12-effects-publication.md)
+for native-to-display lag checks and the loaded-scene timing comparison.
 The scenery palette reuses a spare third black entry for the later orange;
 both dependent car-plane blacks and every other existing entry remain intact.
 Every required source tile/cast color must map through the established RGB333

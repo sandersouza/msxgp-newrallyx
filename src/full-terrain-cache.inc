@@ -46,8 +46,24 @@ Full_LatchScrollY:
     ld (irq_scroll_y),a
     ret
 
-; Spend otherwise idle body intervals on one hidden terrain command.
+; Spend safe idle intervals on urgent radar content or one hidden terrain command.
 Full_PresentIdle:
+    ld a,(Radar_Scanned)
+    dec a
+    cp 3                     ; Scanned phases 1..3, with no publication bit set.
+    jr nc,.terrain
+    ld a,(raster_phase)
+    cp 3                     ; Safe body phases, including the second physical refresh.
+    jr c,.terrain
+    ld hl,(Radar_Urgent)
+    ld a,h
+    or l
+    jr z,.terrain
+    call Radar_CommitPublished ; Idle slots can publish across two physical refreshes.
+    call Radar_PublishReady   ; Nonblocking: this refresh has already fetched the map.
+    scf
+    ret
+.terrain:
     push iy
     call Full_CacheEnter
     ld a,1
@@ -257,6 +273,10 @@ Full_TrySmokeCell:
     ld a,1
     ld (Full_CacheHeld),a
     jp Full_SmokeCellNative
+Full_EnqueueSmoke:
+    push iy
+    call Full_CacheEnter
+    jp Full_EnqueueSmokeNative
 Full_SmokeCellExit:
     ld a,c
     pop bc

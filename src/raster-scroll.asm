@@ -663,7 +663,12 @@ prefetch_guard_interrupt:
     call register
     jp irq_return
 radar_close_interrupt:
+    IF FULL_GAME
+    ld a,(Radar_Scanned)
+    or 2
+    ELSE
     ld a,2
+    ENDIF
     ld (Radar_Scanned),a
     IF FULL_GAME
     ld a,6

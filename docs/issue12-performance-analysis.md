@@ -1,6 +1,11 @@
 # Issue #12: bounded 30 Hz presentation
 
-The compact-HUD follow-up uses ROM
+The current flag-radar/smoke correction uses ROM
+`2e8a91d43232b76d6d890dce4438cba4b5ad62b4e22ef988ddd924b4e8e299ab`.
+[Effect publication evidence](issue12-effects-publication.md) records the
+native-to-VRAM checks and the 29.44..29.96 FPS follow-up workloads.
+
+The preceding compact-HUD follow-up uses ROM
 `8f002e0c29a8645faadeaac3dce6ffbb8ead0c50902620b78f334ede2b103fcb`:
 seven visible score/record digits, one credit digit capped at nine, two round
 digits/infinity above 99, and a header spanning the maze viewport from X=8.

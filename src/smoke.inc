@@ -354,7 +354,11 @@ Smoke_AfterNative:
     ld b,a
     ld a,(Smoke_Y)
     ld c,a
+    IF FULL_GAME
+    jp Full_EnqueueSmoke      ; New visible ink must precede old cleanup jobs.
+    ELSE
     jp Smoke_Enqueue
+    ENDIF
 Smoke_PreparePlacement:
     ld a,($e077)
     ld b,8

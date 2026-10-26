@@ -35,6 +35,7 @@ def main(argv=None):
     p.add_argument('--record-round',type=int,help='Record eight seconds of actual scanout from this displayed round')
     p.add_argument('--trace-di',action='store_true',help='Observe interrupt-masked intervals without guest writes')
     p.add_argument('--radar-trace',action='store_true',help='Compare live radar SAT against latched R23 before each visible band')
+    p.add_argument('--effects-trace',action='store_true',help='Require bounded flag removal and visible smoke publication')
     p.add_argument('--require-stable-radar',action='store_true')
     p.add_argument('--require-stable-fuel',action='store_true')
     p.add_argument('--require-stable-player',action='store_true')
@@ -75,6 +76,9 @@ def main(argv=None):
         'for {set i 0} {$i<4} {incr i} {set f [open [file join $out "board-$i.bin"] rb];set boards($i) [read $f];close $f}',
         'set VDP.too_fast_vram_access_callback {puts stderr "Full route VRAM timing violation";exit 2}',
         'after time 900 {puts stderr "Full route emulated timeout: PC=[reg PC] SP=[reg SP] IFF=[reg IFF]";foreach {name data} [list timeout.state [debug read_block memory 0xc000 12288] timeout.page0 [debug read_block memory 0 16384] timeout.vram [debug read_block VRAM 0 131072]] {set f [open [file join $::out $name] wb];puts -nonewline $f $data;close $f};exit 2}']
+    if args.effects_trace:
+        from scripts.msx.full_effects import trace
+        lines.extend(trace(syms))
     if args.record_round:
         lines.extend(['set recording_started 0',
             f'debug set_bp {syms["main"]} {{[info exists ::phase] && $::phase eq "game" && [debug read memory 0xe1b0]=={args.record_round+1} && !$::recording_started}} {{',
@@ -383,11 +387,15 @@ def main(argv=None):
         native_instruction_samples=len(clock_rows),native_instruction_cpu_hz=sorted({int(row[2]) for row in clock_rows}),
         vdp_frequency_gate='3.58 MHz at ordinary sprite uploads, command waits and radar IRQs; bounded VBlank packets use factory turbo with real VDP access checks')
     controlled=args.fixture_enemies is not None or args.fixture_first_round is not None
+    effects=None
+    if args.effects_trace:
+        from scripts.msx.full_effects import analyze
+        effects=analyze(out,syms)
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),natural_completed_rounds=completed if not controlled else 0,
         controlled_completed_rounds=completed if controlled else 0,fixture_first_round=args.fixture_first_round,
         requested_rounds=args.rounds,target_rounds_reached=reached,stopped_on_game_over=not reached,
         fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
-        physical_motion=physical_motion,packet_cadence=packet_cadence,
+        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,
         retained_tick_gate=dict(required=args.require_retained_native_ticks,passed=retained_passed),
         packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,passed=packet_passed),
         owed_motion_gate=dict(maximum_ms=args.maximum_owed_repeat_ms,passed=owed_passed),
@@ -402,6 +410,7 @@ def main(argv=None):
         header_reservations=headers,radar_coherence=radar,maximum_smoke_placements=max(r[6] for r in rows),
         scope=('Explicit initial round/population fixture before original preparation; real keyboard credit/start, steering and smoke. Not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
     require_ignored(root,[x for x in out.rglob('*') if x.is_file()]);seal(out)
+    if effects is not None and not effects['passed']:raise ValueError(f'Effects publication gate failed; evidence retained at {out}/report.json')
     if not cadence_passed:raise ValueError(f'Natural route missed its native simulation cadence gate; evidence retained at {out}/report.json')
     if not retained_passed or not packet_passed or not owed_passed:raise ValueError(f'Loaded presentation/tick gate failed; evidence retained at {out}/report.json')
     if not scroll_passed:raise ValueError(f'Natural route missed its vertical scroll gate; evidence retained at {out}/report.json')

@@ -49,3 +49,9 @@ class FullMemoryTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'native E988'):layout(symbols)
         symbols.update(Full_PresentStart=0xea00,Full_PresentEnd=0xec01)
         with self.assertRaisesRegex(ValueError,'smoke attributes'):layout(symbols)
+
+    def test_radar_priority_cannot_overwrite_visibility_snapshots(self):
+        symbols=self.symbols();symbols['Radar_Urgent']=0xce18
+        layout(symbols)
+        symbols['Radar_Urgent']=0xce17
+        with self.assertRaisesRegex(ValueError,'overlap'):layout(symbols)

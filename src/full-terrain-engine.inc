@@ -1372,6 +1372,73 @@ Full_VisibleCentre:
     pop hl
     ret
 
+; A successful native placement keeps the same bounded/deduplicated queue, but
+; swaps its job to the head. Retired rows cannot delay new visible clouds.
+; The displaced cleanup retains its coordinates and partial progress.
+Full_EnqueueSmokeNative:
+    push bc
+    call Smoke_Enqueue
+    pop bc
+    ld a,(Smoke_Count)
+    or a
+    jr z,.done
+    ld d,a
+    ld a,(Smoke_Head)
+    ld e,a
+    ld l,a
+    ld h,0
+    add hl,hl
+    ld a,l
+    add a,e
+    ld l,a
+    ld a,h
+    adc a,0
+    ld h,a
+    push de
+    ld de,Smoke_Queue
+    add hl,de
+    pop de
+    push hl
+.find:
+    ld a,(hl)
+    cp b
+    jr nz,.next
+    inc hl
+    ld a,(hl)
+    dec hl
+    cp c
+    jr z,.found
+.next:
+    inc hl
+    inc hl
+    inc hl
+    inc e
+    ld a,e
+    and 31
+    ld e,a
+    jr nz,.linear
+    ld hl,Smoke_Queue
+.linear:
+    dec d
+    jr nz,.find
+    pop hl                   ; Overflow is still reported by Smoke_Enqueue.
+    jr .done
+.found:
+    pop de
+    ld b,3
+.swap:
+    ld a,(de)
+    ld c,(hl)
+    ld (hl),a
+    ld a,c
+    ld (de),a
+    inc hl
+    inc de
+    djnz .swap
+.done:
+    ld c,1
+    jp Full_CacheExit
+
 ; One exact live cloud replaces nine tile transactions. Overlap, expiry,
 ; explosions, partial queues and physical seams retain the ordinary row path.
 Full_SmokeCellNative:

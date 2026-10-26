@@ -48,6 +48,9 @@ Radar_PlayerColorDrawn EQU $cf3f
 Radar_BaseVisibility EQU $cfa8
 Radar_Payloads EQU $c980          ; twelve80-byte normal/shift/color payloads
 Radar_StagedPoints EQU $cd40
+    IF FULL_GAME
+Radar_Urgent EQU $ce18            ; two bytes after the flag-visibility work arrays
+    ENDIF
 
 Radar_Init:
     ld a,1
@@ -88,6 +91,10 @@ Radar_Init:
     ld (Radar_PublishAge),a
     ENDIF
     ld (Radar_Scanned),a
+    IF FULL_GAME
+    ld (Radar_Urgent),a
+    ld (Radar_Urgent+1),a
+    ENDIF
     ld (Radar_Dirty),a
     ld (Radar_Dirty+1),a
     ld (Radar_ScanCell),a
@@ -213,6 +220,12 @@ Radar_PrepareQueued:
     ld a,(paused)
     or a
     jr nz,.budget_ready
+    IF FULL_GAME
+    ld a,(player_steps)
+    cp 2
+    jr z,.defer
+    jr .budget_ready         ; Complete queued payloads provide backpressure below.
+    ELSE
     IF (ENEMY_COUNT >= 2 && !STAGE_TILE_STRIPS) || SMOKE_RUNTIME
     ; Let terrain catch up before optional marker composition. Dirty markers
     ; remain queued and retain the existing sixteen-refresh acceptance limit.
@@ -245,6 +258,7 @@ Radar_PrepareQueued:
     ld (Radar_DeferAge),a
     cp 2
     jr nc,.budget_ready      ; Terrain pressure cannot permanently starve markers.
+    ENDIF
     ENDIF
 .defer:
     xor a
@@ -343,6 +357,19 @@ Radar_DirtyMask:
     and h
     and 15
     ld h,a
+    IF FULL_GAME
+    ; A queued cell already has a complete payload. Retain later point dirt
+    ; until that payload is published instead of composing it repeatedly.
+    ld de,(Radar_Ready)
+    ld a,e
+    cpl
+    and l
+    ld l,a
+    ld a,d
+    cpl
+    and h
+    ld h,a
+    ENDIF
     ld a,h
     or l
     ret
@@ -836,6 +863,31 @@ Radar_Commit:
 ; A cell is uploaded only after its last raster line. The CPU state that
 ; describes the visible points advances at the next frame boundary.
 Radar_WaitPublish:
+    IF FULL_GAME
+    ; A presentation loop spans two physical refreshes. The terrain guard may
+    ; still describe the first one; use the current raster phase instead.
+    di
+    ld a,(raster_phase)
+    cp 3
+    ret c
+    ld a,(Stage_GuardClosed)
+    or a
+    jr z,.phase
+    ld hl,(Radar_Urgent)
+    ld a,h
+    or l
+    ret z                    ; Only content changes borrow the second-refresh slot.
+.phase:
+    ld a,(Radar_Scanned)
+    dec a
+    cp 3
+    ret nc
+    ld hl,(Radar_Ready)
+    ld a,h
+    or l
+    ret z
+    jp Radar_PublishReady
+    ELSE
     IF PLAYER_FAST_BLITTER
     ; Retain terrain priority in this unaccepted integration experiment.
     ld a,(row_left)
@@ -889,6 +941,7 @@ Radar_WaitPublish:
 .ready:
     di
     jp Radar_PublishReady
+    ENDIF
 
 Radar_PublishReady:
     call Radar_AllowIRQ
@@ -910,7 +963,16 @@ Radar_PublishReady:
     ld a,12
     ld (Radar_PublishBudget),a
 .budget_ready:
+    IF FULL_GAME
+    ld hl,(Radar_Urgent)
+    ld a,h
+    or l
+    jr nz,.selected
+    ENDIF
     ld hl,(Radar_Ready)
+    IF FULL_GAME
+.selected:
+    ENDIF
     ld a,h
     or l
     jr z,.done
@@ -962,6 +1024,10 @@ Radar_PublishReady:
     ld (Radar_PublishChecked),a
     jr nz,.cell
 .done:
+    IF FULL_GAME
+    ld hl,Radar_Scanned
+    set 7,(hl)               ; Retain the publication bit through the close IRQ.
+    ENDIF
     di
     ret
 
@@ -1020,6 +1086,19 @@ Radar_UploadCell:
     and h
     ld h,a
     ld (Radar_Ready),hl
+    IF FULL_GAME
+    call Radar_CellBit
+    ld hl,(Radar_Urgent)
+    ld a,e
+    cpl
+    and l
+    ld l,a
+    ld a,d
+    cpl
+    and h
+    ld h,a
+    ld (Radar_Urgent),hl
+    ENDIF
     ret
 
 Radar_CommitPublished:
