@@ -5,9 +5,9 @@ Date: 2026-10-27. Implementation and channel policy:
 
 ## Delivered cartridge
 
-The current qualified build is `references/build/issue13-timing-v33/`:
+The current tested build is `references/build/issue13-music-v34/`:
 
-`382f45a4a47d86c54c9d8bf4eaecbbbea10ac42e0766f424c596ef1e8e38d0e8`.
+`d224b9b54af4e4b051ca1d0f793a8308899d3d50a9ac9752f0c8aca40ecda63b`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
@@ -18,7 +18,39 @@ The reconstructed silent full game is byte-identical to the accepted baseline:
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
 
-## Listening-review corrections and current evidence
+## Shared music-group ending correction (v34)
+
+The user heard two successive two-voice tunes after Start. The original code
+at 28C1..2906 starts melody IDs 18/19/20 together and stops the group when any
+part ends. Their tables share tails: the parsed parts last 720/480/240 native
+ticks. Dropping voice 20 from output must still retain its 240-tick stop.
+The previous compiler used only the selected voices and therefore played 480
+ticks, including an unintended extra phrase. The original unmodified sound-call
+capture independently clears the Start request on call 241, after 240 musical
+ticks. `audio_score_probe.py` rejects v33 and accepts v34 against that capture.
+
+The corrected two-voice introduction lasts 120 score frames / 4.004 seconds in
+the actual keyboard session. The analogous three-part completion group now
+ends at 106 native ticks, rather than 114. No extra PSG channel, runtime work,
+native velocity or graphics change is introduced.
+
+Current checks: 414 tests (`issue13-music-tests-v34.log`), 27,000 production
+cases (`issue13-music-runtime-v34`), original-duration proof
+(`issue13-music-duration-v34`), quiet-UI/Start/F5 keyboard ordering
+(`issue13-music-session-v34`) and 600 live mute-replay ticks
+(`issue13-music-live-mute-v34`) pass. Eight natural rounds retain
+29.943..29.961 packet FPS, at most 0.115% late slots and zero discarded ticks
+(`issue13-music-eight-v34`). The retained-six route passes at 29.370 FPS and
+3.861% late slots (`issue13-music-six-v34`).
+
+The current retained-seven route completes but fails the existing 4% late-slot
+gate at **4.263%**, 29.323 packet FPS, 67.865 ms maximum gap and 59.897 native
+Hz, with zero discarded ticks (`issue13-music-seven-v34`). This timing gate
+remains open; it is not a passing qualification. The unchanged runtime and
+adaptive route differences do not establish a causal music CPU regression.
+The earlier passing v33 seven-car result below is historical evidence.
+
+## Earlier screen/clock corrections and evidence (v33)
 
 The user reported music on insert-coin/player-select screens, the start cue
 overlapping gameplay, and slower music/gameplay during vertical scrolling.
@@ -153,9 +185,10 @@ ignored. Only authored tooling, synthetic tests, assembly and docs are published
 
 ## Remaining review
 
-`issue13-seven-v33/audio.wav` is an actual approximately 20-second PSG recording
+`issue13-music-seven-v34/audio.wav` is an actual approximately 20-second PSG recording
 with nonzero PCM. It is available locally for listening. Register/PCM checks do
-not establish pleasant timbre; human listening remains the final review item.
+not establish pleasant timbre. Human listening and the current retained-seven
+late-slot gate remain open review items.
 SCC is evaluated/deferred with PSG always available; no expansion support is
 claimed. Physical hardware, other machines/clocks/PAL and play beyond the
 previously qualified round range remain outside these measurements.

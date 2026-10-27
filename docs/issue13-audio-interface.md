@@ -32,7 +32,9 @@ full-game build. Bounded stages remain silent. The lower-level builder requires
 `scripts/msx/audio_score.py` reads validated original melody pointers, note/octave
 values and durations. It pairs the background playlist, challenge accompaniment
 choices, start, completion and game-over songs. Compilation samples boundaries every
-two reference ticks; a pair finishes when either selected part ends. These are
+two reference ticks; playback finishes when any original part ends, including
+a third voice omitted from PSG output. Start uses the original 18/19/20 group,
+and completion uses 8/9/10. Shared table tails must not extend either cue. These are
 deliberate two-voice transcriptions, rather than exact three-voice priority mixing.
 Background/challenge scores loop; one-shot songs clear their request.
 Insert-coin and player-select screens have no music. Accepting Start plays the
@@ -41,7 +43,7 @@ Normal scene loads request background music only; phase changes do not replay
 the start cue. UI/attract changes override stale native music requests, and a
 silent scene explicitly replaces the previous PSG output.
 
-The score uses 3,911 private ROM bytes. Each packet stores a duration, two tone
+The score uses 3,755 private ROM bytes. Each packet stores a duration, two tone
 periods and packed volume nibbles. Original song data is never checked in.
 
 | Noise ID | Event | Source |

@@ -122,6 +122,7 @@ def main():
     raw=(out/'result.bin').read_bytes()
     if len(raw)!=len(SCENARIOS)*2*STEPS*STRIDE:raise ValueError('Incomplete production audio cases')
     scores={name:(rom.parent/f'audio-{name}-frames.bin').read_bytes() for name in ('normal','challenge','intro','complete','gameover')}
+    intro_end=24+len(scores['intro'])//6
     coverage=set();active_pairs={}
     for kind,name in enumerate(SCENARIOS):
         active=[0,0]
@@ -138,10 +139,10 @@ def main():
                 terminal=name if name in ('complete','gameover') else 'gameover' if name=='gameover_adapter' and step>=12 else None
                 terminal_step=step-12 if name=='gameover_adapter' else step
                 if name=='ui_transition':
-                    if 12<=step<24 or 264<=step<270:frame=bytes(6)
+                    if 12<=step<24 or intro_end<=step<270:frame=bytes(6)
                     else:
-                        score=scores['intro'] if 24<=step<264 else scores['normal']
-                        tick=step-24 if 24<=step<264 else step-270 if step>=270 else step
+                        score=scores['intro'] if 24<=step<intro_end else scores['normal']
+                        tick=step-24 if 24<=step<intro_end else step-270 if step>=270 else step
                         at=(tick%(len(score)//6))*6;frame=score[at:at+6]
                 elif name in ('title','player_select') or name=='intro' and step>=len(scores['intro'])//6 or terminal and terminal_step>=len(scores[terminal])//6:
                     frame=bytes(6)

@@ -20,6 +20,16 @@ class AudioScoreTests(unittest.TestCase):
         self.assertEqual(result,bytes((255,))+packed_first+bytes((1,))+packed_first+bytes((2,))+packed_second+b'\0')
         with self.assertRaises(ValueError): encode([])
 
+    def test_omitted_voice_still_ends_the_original_music_group(self):
+        first=[(1024,4),(2048,8)]
+        second=[(4096,4),(8192,4)]
+        omitted=[(16384,4)]
+        frames=pair_frames(first,second,omitted)
+        self.assertEqual(len(frames),2)
+        self.assertEqual({int.from_bytes(row[:2],'little') for row in frames},{period(1024)})
+        self.assertEqual({int.from_bytes(row[2:4],'little') for row in frames},{period(4096)})
+        self.assertEqual(len(pair_frames(first,second,[(0,20)])),4)
+
     def test_synthetic_melody_uses_note_octave_and_duration_with_bounds(self):
         p=bytearray(16384)
         p[0x2b58:0x2b5a]=(0x2d00).to_bytes(2,'little')

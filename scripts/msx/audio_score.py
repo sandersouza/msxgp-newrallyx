@@ -20,13 +20,14 @@ def melody(program, identifier):
     raise ValueError('Unterminated melody')
 
 
-def pair_frames(first, second):
+def pair_frames(first, second, *omitted):
     """Sample note boundaries at 30 Hz, retaining original durations in ticks.
 
-    Finish a part when either original melody ends. The third music part is
-    intentionally omitted, and oscillator timbre becomes the PSG square wave.
+    Every original part retains its shared stop authority, including a third
+    voice omitted from PSG output. Otherwise shared table tails can be played
+    as extra phrases after the original group would already have stopped.
     """
-    stop = min(sum(n for _,n in first), sum(n for _,n in second))
+    stop = min(sum(n for _,n in part) for part in (first,second,*omitted))
     def voice_at(notes, tick):
         for word,duration in notes:
             if tick < duration:
@@ -65,11 +66,11 @@ def build(program, out):
         raise ValueError('Original background playlist changed')
     pairs = dict(normal=tuple((value,value+1) for value in playlist[:-1]),
                  challenge=((14,13),(14,13),(23,13),(23,13)),
-                 intro=((18,19),), complete=((8,9),),gameover=((21,22),))
+                 intro=((18,19,20),), complete=((8,9,10),),gameover=((21,22),))
     image=bytearray(); declarations=[]; metadata={}
     for name,parts in pairs.items():
         frames=[]
-        for a,b in parts: frames.extend(pair_frames(melody(program,a),melody(program,b)))
+        for part in parts: frames.extend(pair_frames(*(melody(program,identifier) for identifier in part)))
         code=encode(frames)
         declarations.append(f'Audio_{name.title()}Score EQU ${len(image):04x}')
         metadata[name]=dict(address=len(image),bytes=len(code),frames=len(frames),parts=parts)
