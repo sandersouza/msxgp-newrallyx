@@ -34,7 +34,9 @@ def main():
                 spans.append(i-start+1); start = None
         else:
             start = None
-    frames = (rom.parent/'audio-intro-frames.bin').stat().st_size//6
+    frames=read_json(rom.parent/'audio-relocation.json')['compiled_scores']['intro']['frames']
+    if (rom.parent/'audio-intro-frames.bin').stat().st_size not in (frames*6,frames*9):
+        raise ValueError('Incomplete compiled intro frames')
     # The original observes the terminator on the call after the final note.
     # This oracle uses captured code execution, independently of our parser.
     passed = bool(spans) and all(frames*2 == calls-1 for calls in spans)
@@ -43,7 +45,7 @@ def main():
         original_start_calls=spans, compiled_start_score_frames=frames,
         compiled_start_reference_ticks=frames*2,
         scope='Captured unmodified original Start-request entry/exit snapshots; '
-              'group termination includes the omitted third voice. '
+              'group termination includes all three original parts. '
               'Duration oracle only, not waveform/timbre or additional channel fidelity.'))
     if not passed: raise ValueError('Compiled Start duration outlives the original music group')
     seal(out)

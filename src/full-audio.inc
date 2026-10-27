@@ -1,4 +1,4 @@
-; ROM entry runs at $9000; copied code runs at $1000 in the audio mapper.
+; ROM entry runs at $9800; copied code runs at $1800 in the audio mapper.
 Audio_InitOverlay:
     call Full_CacheEnter
     in a,($ff)

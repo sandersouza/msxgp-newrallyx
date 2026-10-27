@@ -22,6 +22,7 @@ def main():
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--frames', type=int, default=7200)
     p.add_argument('--sequencer', action='store_true', help='Capture every sound-call entry/exit for differential execution')
+    p.add_argument('--record',action='store_true',help='Also record the original emulator PCM to reference.wav')
     args = p.parse_args()
     if not 2000 <= args.frames <= 36000:
         raise ValueError('Capture must contain 2000..36000 original refreshes')
@@ -44,6 +45,7 @@ def main():
                '-autoboot_script', str(script), '-cfg_directory', str(out/'cfg'),
                '-nvram_directory', str(out/'nvram'), '-seconds_to_run',
                str(int(args.frames * .0165) + 10)]
+    if args.record:command.extend(['-wavwrite',str(out/'reference.wav')])
     with (out/'mame.log').open('w') as log:
         subprocess.run(command, check=True, timeout=240, stdout=log, stderr=subprocess.STDOUT,
                        env=dict(os.environ, AUDIO_INVENTORY_OUTPUT=str(out),
@@ -69,7 +71,7 @@ def main():
         raise ValueError('Contributor ROMs changed during sound capture')
     report.update(roms=source, emulator=version, script_sha256=digest(script),
                   source_commit=metadata['source']['commit'], guest_state_writes=False,
-                  audio_output='Disabled for register acquisition; no listening or timbre qualification',
+                  audio_output='Original emulator PCM in reference.wav; no subjective verdict' if args.record else 'Disabled for register acquisition; no listening or timbre qualification',
                   sampling='Consecutive original frame-end states plus every ordered request/WSG/latch write; '
                            'real coin/start/periodic smoke inputs. No seeded challenge or low-fuel coverage claimed.')
     json_write(out/'report.json', report)

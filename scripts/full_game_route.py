@@ -329,6 +329,12 @@ def main(argv=None):
         names.update({'Full_PoolPreloadNative','Full_PresentBegin','Full_PoolBegin','Full_PoolReserveNative','Full_PoolAssignNative'})
         names.update({'Player_Draw','Player_Patch','Score_ReservedFrame','Flag_Stream','Death_Stream','Smoke_Stream',
                       'Flag_Frame','Death_Frame','Radar_CommitPublished','Life_Frame','Round_Frame','Session_Check','Player_Update'})
+        audio_names={'Audio_Work','Audio_RuntimeStep','Audio_RuntimeControl','Audio_Observe','Audio_Enqueue',
+                     'Audio_MusicTick','Audio_SelectMusic','Audio_ScoreStart','Audio_ReadTone','Audio_NoiseTick',
+                     'Audio_ApplyC','Audio_RenderMusic','Audio_WritePSG'}
+        names.update(audio_names)
+        if syms.get('AUDIO_ENABLED'):
+            lines.append('set audio_cycles_out [open [file join $out audio-cycles.tsv] w]')
         aliases={'$8cd6':'NativeAI','$b600':'MSXAI' if 'Full_MSXAI' in syms else 'GuardedAI','$95bd':'NativeVisibility',
                  '$91bf':'NativeCameraX','$9207':'NativeCameraY','$838a':'NativeContact',
                  '$8069':'NativeMotion','$9052':'NativeSteering'}
@@ -339,8 +345,13 @@ def main(argv=None):
             condition='$::phase eq "game"'
             if 0x8000<=address<0xc000:
                 condition+=f' && [debug read_block memory {address} 3] eq [binary format H* {match[2].replace(" ","")}]'
+            caller=max(((syms[n],n) for n in audio_names if n in syms and syms[n]<=address),default=(0,'renderer'))[1]
+            if not (syms.get('Audio_RuntimeStep',65536)<=address<syms.get('Audio_RuntimeEnd',0) or
+                    syms.get('Audio_Work',65536)<=address<syms.get('Audio_WorkReturn',0)):
+                caller='renderer'
+            ledger=(f'puts $::audio_cycles_out "{name} {caller} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}]";' if name in audio_names else '')
             lines.extend([f'debug set_bp {address} {{{condition}}} {{set ::profile_{name} [machine_info time];set ::profile_irq_{name} $::profile_irq_total;set ::profile_site_{name} {address}}}',
-                f'debug set_bp {address+3} {{{condition} && [info exists ::profile_{name}] && $::profile_site_{name}=={address}}} {{puts $::profile_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [debug read memory 0xe1b0]";puts $::profile_cpu_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}] [debug read memory 0xe1b0]";unset ::profile_{name} ::profile_irq_{name} ::profile_site_{name}}}'])
+                f'debug set_bp {address+3} {{{condition} && [info exists ::profile_{name}] && $::profile_site_{name}=={address}}} {{puts $::profile_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [debug read memory 0xe1b0]";puts $::profile_cpu_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}] [debug read memory 0xe1b0]";{ledger}unset ::profile_{name} ::profile_irq_{name} ::profile_site_{name}}}'])
             if name=='stage_stream':
                 lines.extend([
                     f'debug set_bp {address} {{$::phase eq "game"}} {{set ::stream_before [list [machine_info time] [debug read memory 0xc0b6] [debug read memory 0xc0b7] [debug read memory {syms["Stage_GuardClosed"]}] [debug read memory {syms["raster_phase"]}]]}}',
@@ -444,6 +455,10 @@ def main(argv=None):
         if args.radar_trace:
             from scripts.msx.axis_timing import analyze as analyze_axes
             audio['axis_timing']=analyze_axes(out/'motion.tsv',out/'audio.tsv',out/'presentation.tsv')
+        if args.profile:
+            from scripts.msx.audio_cycles import summarize as audio_cycles
+            audio['cycle_ledger']=audio_cycles(out/'audio-cycles.tsv',out/'presentation.tsv',
+                                               read_json(bundle/'build.json')['timing']['frame_seconds'])
         if args.audio_record:
             import array
             import wave

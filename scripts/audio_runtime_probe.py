@@ -12,6 +12,7 @@ if __package__ in (None, ''):
 from scripts.msx.build import destination
 from scripts.msx.emulator import reference_machine, tcl
 from scripts.msx.hud_verify import symbols
+from scripts.msx.audio_score import FRAME_BYTES as FRAME
 from scripts.scenes.bundle import digest, verify_manifest
 from scripts.scenes.storage import json_write, require_ignored, seal
 
@@ -19,7 +20,7 @@ from scripts.scenes.storage import json_write, require_ignored, seal
 SCENARIOS = ('background', 'intro', 'complete', 'challenge', 'effects', 'overflow', 'flag_adapter', 'smoke_adapter', 'gameover', 'gameover_adapter', 'late_clock', 'odd_clock', 'title', 'player_select', 'ui_transition')
 STEPS = 900
 STATE = 2560+768+64
-STRIDE = STATE+11+2
+STRIDE = STATE+14+2
 
 
 def main():
@@ -30,6 +31,7 @@ def main():
     rom = args.rom.resolve(); verify_manifest(rom.parent)
     s = symbols(rom.parent/'raster-scroll.sym')
     if not s.get('AUDIO_ENABLED'): raise ValueError('Production probe requires audio')
+    if 'Audio_ReadTone' not in s:raise ValueError('This probe requires the three-voice dictionary build')
     out = destination(root, args.output); require_ignored(root, [out/'result.bin']); out.mkdir(parents=True)
     lines = ['set save_settings_on_exit false', 'set renderer none', 'set sound_driver null',
         'set throttle off', 'set z80_freq 3579545', 'set z80_freq_locked false',
@@ -71,10 +73,12 @@ def main():
         'proc issue {} {',
         f' if {{$::step=={STEPS}}} {{incr ::index;begin_case;return}}',
         ' set kind [expr {$::index/2}];set event 0;set credit 0',
-        ' if {$kind==4 && $::step>=12 && $::step<=96 && $::step%12==0} {',
-        '  set id [expr {$::step/12}];set event [lindex {0 2 16 32 1 0 4 8 128} $id];if {$id==5} {set credit 128}',
+        ' if {$kind==4 && $::step>=12 && $::step<=108 && $::step%12==0} {',
+        '  set id [expr {$::step/12}];set event [lindex {0 2 16 32 1 0 4 8 128 0} $id];if {$id==5} {set credit 128};if {$id==9} {set credit 64}',
         ' }',
-        ' if {$kind==5} {if {$::step==0} {set event 4};if {$::step==2} {set event 128}}',
+        ' if {$kind==5} {if {$::step==0} {set credit 64};if {$::step==2} {set event 128}}',
+        ' if {$kind==5 && $::step==3} {set credit 64}',
+        ' if {$kind==10} {set heading [expr {$::step/120%4}];debug write memory 0xe048 0;debug write memory 0xe06b [expr {$heading&1?0:255}];debug write memory 0xe06a [expr {$heading<2?2:254}]}',
         ' if {$kind==6 && $::step in {12 24 36}} {debug write memory 0xc50b [expr {$::step/12}];debug write memory 0xc50d [lindex {0 1 2 4} [expr {$::step/12}]]}',
         ' if {$kind==6 && $::step==100} {debug write memory 0xc50b 0}',
         ' if {$kind==7 && $::step in {12 24 36}} {debug write memory 0xc711 [expr {$::step/12}]}',
@@ -109,7 +113,7 @@ def main():
         ' puts -nonewline $::result [debug read_block memory 0xe000 2560]',
         ' puts -nonewline $::result [debug read_block $::mapper [expr {$::base+0x3800}] 768]',
         ' puts -nonewline $::result [debug read_block memory 0xe9c0 64]',
-        ' puts -nonewline $::result [debug read_block {PSG regs} 0 11]',
+        ' puts -nonewline $::result [debug read_block {PSG regs} 0 14]',
         f' puts -nonewline $::result [binary format cc [debug read memory {s["Audio_Mute"]}] [debug read memory {s["Audio_MusicMode"]}]]',
         ' incr ::step;if {[catch issue problem]} {puts stderr $problem;exit 2}',
         '}',
@@ -122,10 +126,11 @@ def main():
     raw=(out/'result.bin').read_bytes()
     if len(raw)!=len(SCENARIOS)*2*STEPS*STRIDE:raise ValueError('Incomplete production audio cases')
     scores={name:(rom.parent/f'audio-{name}-frames.bin').read_bytes() for name in ('normal','challenge','intro','complete','gameover')}
-    intro_end=24+len(scores['intro'])//6
+    intro_end=24+len(scores['intro'])//FRAME
+    effects={i:(rom.parent/f'audio-fx-{i}-frames.bin').read_bytes() for i in range(1,10)}
     coverage=set();active_pairs={}
     for kind,name in enumerate(SCENARIOS):
-        active=[0,0]
+        active=[0,0,0]
         for step in range(STEPS):
             rows=[raw[((kind*2+mute)*STEPS+step)*STRIDE:((kind*2+mute)*STEPS+step+1)*STRIDE] for mute in range(2)]
             states=[bytearray(row[:STATE]) for row in rows]
@@ -135,53 +140,70 @@ def main():
             for initial,row in enumerate(rows):
                 muted=initial ^ int(40<=step<80)
                 if row[-2]!=muted:raise ValueError(f'F4 edge/hold/release failed: {name}, packet {step}')
-                psg=row[STATE:STATE+11]
+                psg=row[STATE:STATE+14]
                 terminal=name if name in ('complete','gameover') else 'gameover' if name=='gameover_adapter' and step>=12 else None
                 terminal_step=step-12 if name=='gameover_adapter' else step
                 if name=='ui_transition':
-                    if 12<=step<24 or intro_end<=step<270:frame=bytes(6)
+                    if 12<=step<24 or intro_end<=step<270:frame=bytes(FRAME)
                     else:
                         score=scores['intro'] if 24<=step<intro_end else scores['normal']
                         tick=step-24 if 24<=step<intro_end else step-270 if step>=270 else step
-                        at=(tick%(len(score)//6))*6;frame=score[at:at+6]
-                elif name in ('title','player_select') or name=='intro' and step>=len(scores['intro'])//6 or terminal and terminal_step>=len(scores[terminal])//6:
-                    frame=bytes(6)
+                        at=(tick%(len(score)//FRAME))*FRAME;frame=score[at:at+FRAME]
+                elif name in ('title','player_select') or name=='intro' and step>=len(scores['intro'])//FRAME or terminal and terminal_step>=len(scores[terminal])//FRAME:
+                    frame=bytes(FRAME)
                 else:
                     score=scores['challenge'] if name=='challenge' else scores['normal']
                     tick=step*2 if name=='late_clock' else ((step+1)*3//2-1 if name=='odd_clock' else step)
                     if name=='intro':
-                        if step<len(scores['intro'])//6:score=scores['intro']
-                        else:tick-=len(scores['intro'])//6
+                        if step<len(scores['intro'])//FRAME:score=scores['intro']
+                        else:tick-=len(scores['intro'])//FRAME
                     if name=='complete':score=scores['complete']
                     if name=='gameover':score=scores['gameover']
                     if name=='gameover_adapter' and step>=12:score=scores['gameover'];tick=step-12
-                    at=(tick%(len(score)//6))*6;frame=score[at:at+6]
-                for ch in range(2):
+                    at=(tick%(len(score)//FRAME))*FRAME;frame=score[at:at+FRAME]
+                for ch in range(3):
                     value=int.from_bytes(frame[ch*2:ch*2+2],'little')
-                    volume=0 if muted else frame[4+ch]
-                    if int.from_bytes(psg[ch*2:ch*2+2],'little')!=value or psg[8+ch]!=volume:
+                    volume=0 if muted else frame[6+ch]
+                    actual_pitch=int.from_bytes(psg[ch*2:ch*2+2],'little') if ch<2 else int.from_bytes(row[0x9d4:0x9d6],'little')
+                    actual_volume=psg[8+ch] if ch<2 else (0 if muted else row[0x9d6])
+                    if actual_pitch!=value or actual_volume!=volume:
                         raise ValueError(f'Wrong production music voice/frequency: {name}, packet {step}, voice {ch}')
                     active[ch]+=int(initial==0 and volume>0)
-                if psg[7]!=0x9c or muted and any(psg[8:11]):
-                    raise ValueError('PSG mix violated two-tone/noise isolation or mute')
-                if name in ('title','player_select') or name=='ui_transition' and 12<=step<270:
+                if psg[7]&0xdb!=0x98 or muted and any(psg[8:11]):
+                    raise ValueError('PSG mix violated tone/FX isolation, I/O directions or mute')
+                if name in ('intro','complete') and frame[8] and not muted:
+                    if psg[4:6]!=frame[4:6] or psg[10]!=frame[8]:raise ValueError('Third music voice did not reach the PSG')
+                if name=='late_clock':
+                    heading=step//120%4;expected=s[f'Audio_Engine{heading}DriveEnvelope']
+                    if int.from_bytes(psg[11:13],'little')!=expected or psg[13]!=8 or psg[10]!=(0 if muted else 16):
+                        raise ValueError('Engine envelope did not follow native heading/velocity')
+                if name=='effects' and step>=12:
+                    effect=min(9,step//12);age=step-effect*12;source=effects[effect]
+                    if age<len(source)//5:
+                        f=source[age*5:age*5+5]
+                        if psg[4:6]!=f[:2] or psg[10]!=(0 if muted else f[2]) or psg[6]!=f[3] or psg[7]&0x24!=f[4]:
+                            raise ValueError(f'Pitched/noise effect contour changed: {effect}, frame {age}')
+                if name in ('title','player_select') or name=='ui_transition' and (12<=step<24 or intro_end<=step<270):
                     if psg[10]:raise ValueError('Engine noise leaked into a non-gameplay screen')
             queue=rows[0][2560+768:STATE]
             noise=queue[3];drops=queue[5]
-            if name=='effects' and step>=12 and step<=96 and step%12==0:
+            if name=='effects' and step>=12 and step<=108 and step%12==0:
                 effect=step//12
                 if noise!=effect:raise ValueError(f'Transient effect mailbox lost/reordered ID {effect}')
                 coverage.add(effect)
-            if name=='overflow' and step in (0,1,2) and noise!=(1,2,8)[step]:
+            if name=='overflow' and step in (0,1,2) and noise!=(1,1,8)[step]:
                 raise ValueError('FIFO order/overflow/crash preemption failed')
+            if name=='overflow' and step in (3,10) and noise!={3:8,10:9}[step]:
+                raise ValueError('Fuel refill interrupted a crash or disappeared from the queue')
             if name=='flag_adapter' and step in (12,24,36,100) and noise!={12:6,24:7,36:7,100:0}[step]:
                 raise ValueError('Persistent collected-flag adapter lost or invented an effect')
             if name=='smoke_adapter' and step in (12,24,36) and noise!=2:
                 raise ValueError('Persistent smoke-placement adapter lost an effect')
             if drops != int(name=='overflow'):
                 raise ValueError('Unexpected queue overflow/drop accounting')
-        if name in ('background','intro','complete','challenge','gameover') and not all(active):
-            raise ValueError(f'Missing one of the two music voices: {name}')
+        required=3 if name in ('intro','complete') else 2
+        if name in ('background','intro','complete','challenge','gameover') and not all(active[:required]):
+            raise ValueError(f'Missing one of the original music voices: {name}')
         active_pairs[name]=active
     costs=[float(v) for v in (out/'costs.tsv').read_text().splitlines()]
     verify_manifest(rom.parent)
@@ -189,8 +211,9 @@ def main():
         effect_ids=sorted(coverage),active_music_packets=active_pairs,
         maximum_packet_ms=max(costs),mean_packet_ms=sum(costs)/len(costs),
         scope='Production Audio_Work execution: fifteen seeded scenarios, output on/muted, both BIOS and held-cache Page0 mappings; '
-              'exact game/music/queue invariance and playback of build-time two-voice golden packets, actual F4 edges/holds, '
-              'physical counter wrap, complete music loops, persistent flag/smoke event retention, all eight noise effects, FIFO saturation/order and crash preemption. '
+              'exact game/music/queue invariance and three-voice golden packets, actual F4 edges/holds, '
+              'physical counter wrap, complete music loops, persistent flag/smoke retention, nine pitched/noise effects, '
+              'coalescing, FIFO saturation/order, crash/refill priority and four engine-envelope directions. '
               'Code, stack/indices, VRAM, mapping and PSG I/O preserved. Display/IRQs off at forced 3.58 MHz; '
               'not natural gameplay, real IRQ or perceptual timbre qualification.'))
     require_ignored(root,[f for f in out.rglob('*') if f.is_file()]);seal(out)

@@ -1,10 +1,35 @@
 import unittest
 
-from scripts.msx.audio_score import encode, melody, pair_frames
+from scripts.msx.audio_score import encode, melody, pair_frames, voice_frames, dictionary_encode, effect_frames
 from scripts.msx.audio_psg import period
 
 
 class AudioScoreTests(unittest.TestCase):
+    def test_three_parts_play_together_and_share_the_earliest_ending(self):
+        frames=voice_frames(([(1024,8)],[(2048,6)],[(4096,4)]),volumes=(12,10,11))
+        self.assertEqual(len(frames),2)
+        self.assertEqual(len(frames[0]),9)
+        self.assertEqual([int.from_bytes(frames[0][i:i+2],'little') for i in (0,2,4)],
+                         [period(1024),period(2048),period(4096)])
+        self.assertEqual(frames[0][6:],bytes((12,10,11)))
+
+    def test_dictionary_packets_preserve_all_three_tones_and_volumes(self):
+        frame=bytes((1,0,2,0,3,0,12,10,11))
+        tones={(0,0):0}
+        self.assertEqual(dictionary_encode([frame]*2,tones),bytes((2,1,2,3,0)))
+        self.assertEqual(list(tones),[(0,0),(1,12),(2,10),(3,11)])
+
+    def test_credit_is_a_melodic_contour_while_smoke_uses_noise(self):
+        p=bytearray(16384)
+        p[0x2b58:0x2b5a]=(0x2d00).to_bytes(2,'little')
+        p[0x2afd+2:0x2aff+2]=(1024).to_bytes(2,'little')
+        p[0x2afd+4:0x2aff+4]=(2048).to_bytes(2,'little')
+        p[0x2d00:0x2d05]=bytes((1,4,2,4,255))
+        frames=effect_frames(p,5)
+        self.assertEqual([int.from_bytes(f[:2],'little') for f in frames],[period(1024)]*2+[period(2048)]*2)
+        self.assertTrue(all(f[3:]==bytes((0,32)) for f in frames))
+        self.assertTrue(all(f[3]>0 and f[4]==4 for f in effect_frames(p,2)))
+
     def test_pair_keeps_absolute_note_boundaries_and_stops_at_first_end(self):
         frames=pair_frames([(1024,3),(2048,5)],[(4096,8),(8192,20)])
         self.assertEqual(len(frames),4)

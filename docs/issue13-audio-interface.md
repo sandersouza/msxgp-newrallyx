@@ -1,4 +1,4 @@
-# Issue #13: buffered PSG music and noise effects
+# Issue #13: buffered PSG music, tonal effects and engine
 
 Tracking: [#13](https://github.com/sandersouza/msxgp-newrallyx/issues/13),
 [PR #31](https://github.com/sandersouza/msxgp-newrallyx/pull/31).
@@ -6,13 +6,17 @@ The gameplay baseline is merged PR #30, commit `6b40449`.
 
 ## Agreed adaptation
 
-The user selected fluid audio over arcade-exact synchronization: two basic music
-voices, noise for other sounds, and short deferred effect publication.
+The user selected fluid audio over arcade-exact synchronization. Subsequent
+listening rejected the initial two-voice/noise-only approximation. The current
+arrangement restores the third original part where present and gives melodic
+effects their original note contours; the earlier channel policy is superseded.
 
-- PSG tones A/B play two original melody parts. Third parts are omitted;
-  Namco wavetable timbres become PSG square waves.
-- Noise C plays effects independently. A quiet engine texture fills idle effect
-  intervals; discrete effects preempt it.
+- Start/completion use all three original parts, with balanced gains and short
+  note articulation. Normal/challenge music has two parts; C is then available
+  for the engine or effects. Namco wavetable instruments are adapted to PSG.
+- C plays pitched effects, smoke noise or a combined tone/noise crash. Effects
+  temporarily replace C's music/engine; A/B continue. An autonomous repeating
+  hardware envelope produces the engine buzz between effect intervals.
 - The build compiles contributor-supplied note tables into duration/period/volume
   packets. The MSX reads a new packet only at a note boundary.
 - A physical-refresh clock services audio at approximately 30 Hz, after the
@@ -30,12 +34,12 @@ full-game build. Bounded stages remain silent. The lower-level builder requires
 ## Music and event contract
 
 `scripts/msx/audio_score.py` reads validated original melody pointers, note/octave
-values and durations. It pairs the background playlist, challenge accompaniment
+values and durations. It arranges the background playlist, challenge accompaniment
 choices, start, completion and game-over songs. Compilation samples boundaries every
 two reference ticks; playback finishes when any original part ends, including
-a third voice omitted from PSG output. Start uses the original 18/19/20 group,
-and completion uses 8/9/10. Shared table tails must not extend either cue. These are
-deliberate two-voice transcriptions, rather than exact three-voice priority mixing.
+the third voice. Start uses all of the original 18/19/20 group, and completion
+uses 8/9/10. Shared table tails must not extend either cue. All three parts
+start together, rather than being serialized or alternated.
 Background/challenge scores loop; one-shot songs clear their request.
 Insert-coin and player-select screens have no music. Accepting Start plays the
 one-shot introduction while the session waits, before loading/releasing gameplay.
@@ -43,26 +47,40 @@ Normal scene loads request background music only; phase changes do not replay
 the start cue. UI/attract changes override stale native music requests, and a
 silent scene explicitly replaces the previous PSG output.
 
-The score uses 3,755 private ROM bytes. Each packet stores a duration, two tone
-periods and packed volume nibbles. Original song data is never checked in.
+Music and effects use 5,974 bytes of a private 6 KB ROM prefix. A 768-byte
+dictionary stores period-low, period-high and volume planes. Each music packet
+holds duration and three one-byte tone indices; effect packets hold duration,
+tone index, noise period and C mixer bits. Expanded music goldens have nine
+bytes per frame. Original song data is never checked in.
 
-| Noise ID | Event | Source |
+| Effect ID | Event | Source / arrangement |
 | --- | --- | --- |
-| 1 | Fuel award/conversion | Native request bit 1 |
-| 2 | Smoke placement | Persistent placement counter / request bit 4 |
-| 3 | Low-fuel warning | Native request bit 5 |
-| 4 | Extra life | Native request bit 0 |
-| 5 | Credit | Credit adapter / third request bit 7 |
-| 6 | Ordinary flag | Persistent collected count and flag kind |
-| 7 | Special/lucky/bonus flag | Flag kind / native request |
-| 8 | Crash | Actual death transition / request bit 7 |
+| 1 | Fuel award/conversion | Request bit 1 / original melody 11 |
+| 2 | Smoke placement | Persistent placement counter / bit 4 / authored noise |
+| 3 | Low-fuel warning | Request bit 5 / original melody 6 |
+| 4 | Extra life | Request bit 0 / original melody 7 |
+| 5 | Credit | Credit adapter / third request bit 7 / original melody 0 |
+| 6 | Ordinary flag | Persistent count/kind / original melody 3 |
+| 7 | Special/lucky/bonus flag | Flag kind / original melody 4 |
+| 8 | Crash | Actual death / bit 7 / descending tone and noise |
+| 9 | Fuel recovery | Third request bit 6 / original melody 1 |
 
 Persistent flag/smoke counters retain events when transient request bits disappear
 before service. Simultaneous requests coalesce by priority, with crash/capture
 ahead of smoke/fuel. The eight-entry FIFO never blocks gameplay: saturation
-increments its drop counter; a crash preempts stale effects. One effect starts
-per output packet without waiting for the preceding envelope to finish. These
-are authored noise envelopes, rather than copies of wavetable/discrete effects.
+increments its drop counter. Repeated active or already queued IDs coalesce;
+higher-priority effects preempt lower ones. Crash always wins, including over
+fuel recovery ID 9. Other pending effects wait for the active contour to finish.
+Effect durations advance from elapsed physical-clock packets. The bounded fuel
+adapter explicitly requests recovery after restoring the Lucky fuel gauge.
+
+The engine derives idle/cruise/drive pitch from the original engine note table,
+with four heading-dependent dominant-harmonic approximations. PSG shape 8
+repeats a decaying envelope; period changes follow coarse native velocity and
+wall state. An ultrasonic tone gate halves its audible gain. The measured
+up-heading fundamentals are approximately 50, 57 and 66 Hz. A cached engine key
+avoids steady-state recomputation. This approximates the original harmonic
+character without per-sample CPU synthesis; it does not reproduce the PROM.
 
 ## Hardware and memory
 
@@ -74,12 +92,15 @@ terrain-cache ownership untouched and returns the player ROM bank.
 
 Raster IRQs remain enabled. Factory Panasonic turbo is used for CPU work; VDP
 work retains its established clock policy. PSG register 7 preserves I/O direction
-bits. Audio never writes joystick registers 14/15.
+bits. The writer tracks registers 0..13 (including the envelope), and never
+writes joystick registers 14/15.
 
 An independent reference kernel uses another mapper segment, separate from the
 terrain cache. Its original `$8a00..$8bff` sound workspace maps to
 `$3800..$39ff`, avoiding presentation code at `$ea00..$ebfe`. This diagnostic
-kernel is not the production scheduling path.
+kernel is not the production scheduling path. Its shim now starts at RAM
+`$1800` / ROM `$9800`, after the expanded score prefix; production starts at
+ROM `$9b00`. Original reference sound tables at `$2580` remain intact.
 
 The pinned MAME [Rally-X driver](https://github.com/mamedev/mame/blob/f34f02505e32c1993c6a782b6814232cbfc74e36/src/mame/namco/rallyx.cpp)
 connects three Namco voices and discrete BANG. Its
@@ -105,7 +126,7 @@ Two fresh 7,200-frame acquisitions have identical frame/write/input files:
 166,502 raw writes each, three simultaneous active voices, reset complete at
 frame 757. BANG has 256 rising electrical edges across two write frames; this
 does not mean 256 gameplay explosions. The original route is not a complete
-arcade sound inventory. The production inventory above is the agreed adaptation.
+arcade sound inventory. The production inventory above is the current adaptation.
 Reference-kernel equality must not be described as exact production audio equality.
 
 All traces, PROMs, disassembly, generated scores, cartridges and PCM remain under
@@ -132,7 +153,7 @@ make build AUDIO=0
 SCC is evaluated and deferred. Its
 [32-byte waveform channels](https://github.com/mamedev/mame/blob/f34f02505e32c1993c6a782b6814232cbfc74e36/src/devices/sound/k051649.cpp)
 could represent converted Namco wave shapes more closely. That improves timbre;
-the accepted two-voice PSG transcription addresses the base hardware target.
+the current three-voice/shared-C PSG arrangement addresses the base hardware target.
 SCC would require explicit expansion-slot selection, safe Page2 switching while
 executing elsewhere, restoration across raster IRQs, and testing with ASCII16
 and the RAM mapper. No SCC detection, waveform writes or hardware support is

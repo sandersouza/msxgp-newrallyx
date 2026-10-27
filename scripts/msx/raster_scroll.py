@@ -797,7 +797,7 @@ def build(root, args):
         from .enemy_navigation import original_maps
         (output/'full-navigation.bin').write_bytes(original_maps(program))
     (output/'payload.inc').write_text(''.join(
-        (f'    INCBIN "audio-score.bin"\n    DISP $1000\n    INCLUDE "full-audio.inc"\n    ASSERT $ <= $1800\n    defs $1b00-$,$ff\n    ENT\n    DISP $9b00\n    INCLUDE "full-audio-runtime.inc"\n    ASSERT $ <= $a580\n    defs $a580-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2580,$1580\n    defs 32,0\n    defs 11,$ff\n    defs $4d5,0\n' if audio and n==audio_bank else
+        (f'    INCBIN "audio-score.bin"\n    DISP $1800\n    INCLUDE "full-audio.inc"\n    ASSERT $ <= $1b00\n    defs $1b00-$,$ff\n    ENT\n    DISP $9b00\n    INCLUDE "full-audio-runtime.inc"\n    ASSERT $ <= $a580\n    defs $a580-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2580,$1580\n    defs 32,0\n    defs 11,$ff\n    defs $4d5,0\n' if audio and n==audio_bank else
          f'    INCBIN "bank-{n}.bin",0,$3600\n    DISP $b600\n    INCLUDE "full-hud-number.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==hud_bank else
          f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n' if n==session_bank else
          '    DISP $1000\nFull_CacheEngineStart:\n    INCLUDE "full-terrain-engine.inc"\nFull_CacheEngineEnd:\n    ENT\n    defs $1000-(Full_CacheEngineEnd-Full_CacheEngineStart),$ff\n    DISP $ea00\nFull_PresentStart:\n    INCLUDE "full-presentation.inc"\nFull_PresentEnd:\n    ASSERT $ <= $ec00\n    ENT\n    defs $1000-(Full_PresentEnd-Full_PresentStart),$ff\n    INCBIN "full-navigation.bin"\n' if full_game and n==terrain_bank else
@@ -889,9 +889,9 @@ def build(root, args):
         full_game=full_game,full_memory=memory_layout,
         audio=(dict(backend='AY PSG',overlay_bank=audio_bank,period_bank=audio_period_bank,
             mapper='Production ROM bank with Page3 state; isolated Page3-XOR-2 RAM segment for reference-kernel probes only',mute_key='F4',
-            sequencer='Build-time compilation of original melody tables into two-voice PSG packets; original core retained for reference-kernel proofs',
-            timing='Independent physical-refresh clock; optional audio worker after packet readiness, 30 Hz score/noise scheduling; persistent flag/smoke counters bridge event latency',
-            approximation='Two original melody parts, square waves and nominal linear-volume conversion; eight-entry effect FIFO and channel C noise',
+            sequencer='Three-voice dictionary scores and tonal effects compiled offline; original core retained for reference-kernel proofs',
+            timing='Physical-refresh clock, 30 Hz parameter packets, chip-driven engine envelope; flag/smoke counters bridge event latency',
+            approximation='Articulated PSG arrangement, original three-part cues and pitched effects; shared channel C with a hardware-envelope engine; eight-entry priority FIFO',
             scope='Buffered PSG base; use the qualification report for measured workloads and listening status') if audio else None),
         full_hud_layout=(dict(header_left=full_hud.HEADER_LEFT,visible_score_digits=7,native_score_digits=8,
             source_sha256={p:digest(root/p) for p in ('scripts/msx/full_hud.py','src/full-hud-number.inc')},

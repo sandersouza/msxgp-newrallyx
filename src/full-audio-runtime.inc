@@ -1,5 +1,5 @@
-; Two music voices and one independent noise voice. Events never wait for a
-; playing effect to finish: one queued event starts per 30 Hz output packet.
+; Three music voices; channel C is shared with pitched effects and the engine.
+; All note/envelope work is compiled offline. Runtime advances bounded packets.
 Audio_PlayDesired EQU $e9a0
 Audio_PlayLastPSG EQU $e9b0
 Audio_QueueCount EQU $e9c0
@@ -18,6 +18,12 @@ Audio_FlagSeen EQU $e9cf
 Audio_MusicPointer EQU $e9d0
 Audio_MusicLeft EQU $e9d2
 Audio_MusicMode EQU $e9d3
+Audio_MusicC EQU $e9d4
+Audio_MusicCVolume EQU $e9d6
+Audio_CMix EQU $e9d7
+Audio_FXPointer EQU $e9d8
+Audio_FXLeft EQU $e9da
+Audio_EngineKey EQU $e9db
 Audio_Queue EQU $e9e0
 
 Audio_RuntimeStep:
@@ -74,7 +80,7 @@ Audio_Observe:
     ld (hl),0
     ldir
     ld hl,Audio_PlayLastPSG
-    ld b,11
+    ld b,14
 .invalidate:
     ld (hl),255
     inc hl
@@ -156,10 +162,11 @@ Audio_Observe:
     ld a,8
     bit 7,b
     jr nz,.enqueue
-    dec a
-    bit 3,b
-    jr nz,.enqueue
+    ld a,9
     bit 6,c
+    jr nz,.enqueue
+    ld a,7
+    bit 3,b
     jr nz,.enqueue
     dec a
     bit 2,b
@@ -180,16 +187,47 @@ Audio_Observe:
 .enqueue:
     jp Audio_Enqueue
 
-; A=authored effect ID 1..8. Never block gameplay on a saturated queue.
+; A=effect ID 1..9. Never block gameplay on a saturated queue.
 Audio_Enqueue:
     ld c,a
+    ld hl,Audio_NoiseID
+    cp (hl)
+    ret z                    ; Coalesce repeated fuel/warning requests, keeping their melody.
     cp 8
-    jr nz,.capacity
+    jr z,.preempt
+    ld a,(hl)
+    cp 8                     ; Refill ID 9 never interrupts a crash.
+    jr z,.capacity
+    or a
+    jr z,.capacity
+    cp c
+    jr nc,.capacity
+.preempt:
     xor a                    ; A crash preempts stale lower-priority effects.
+    ld (Audio_NoiseID),a
     ld (Audio_QueueCount),a
     ld (Audio_QueueHead),a
     ld (Audio_QueueTail),a
 .capacity:
+    ld a,(Audio_QueueCount)
+    or a
+    jr z,.checked
+    ld b,a
+    ld a,(Audio_QueueHead)
+    ld e,a
+    ld d,0
+.duplicate:
+    ld hl,Audio_Queue
+    add hl,de
+    ld a,c
+    cp (hl)
+    ret z                    ; Do not accumulate stale repeats behind a long cue.
+    inc e
+    ld a,e
+    and 7
+    ld e,a
+    djnz .duplicate
+.checked:
     ld hl,Audio_QueueCount
     ld a,(hl)
     cp 8
@@ -254,28 +292,15 @@ Audio_MusicTick:
     jr z,.skip
     ld (Audio_MusicLeft),a
     inc hl
-    ld e,(hl)
-    inc hl
-    ld d,(hl)
-    inc hl
+    call Audio_ReadTone
     ld (Audio_PlayDesired),de
-    ld e,(hl)
-    inc hl
-    ld d,(hl)
-    inc hl
-    ld (Audio_PlayDesired+2),de
-    ld a,(hl)
-    ld c,a
-    and 15
     ld (Audio_PlayDesired+8),a
-    ld a,c
-    rrca
-    rrca
-    rrca
-    rrca
-    and 15
+    call Audio_ReadTone
+    ld (Audio_PlayDesired+2),de
     ld (Audio_PlayDesired+9),a
-    inc hl
+    call Audio_ReadTone
+    ld (Audio_MusicC),de
+    ld (Audio_MusicCVolume),a
     ld (Audio_MusicPointer),hl
     ld a,1
     ld (Audio_MusicDirty),a
@@ -283,7 +308,7 @@ Audio_MusicTick:
 .skip:
     neg
     ld b,a
-    ld de,6
+    ld de,4
     add hl,de
     ld (Audio_MusicPointer),hl
     jr .load
@@ -319,9 +344,11 @@ Audio_MusicTick:
     xor a
     ld (Audio_PlayDesired+8),a
     ld (Audio_PlayDesired+9),a
+    ld (Audio_MusicCVolume),a
     ld hl,0
     ld (Audio_PlayDesired),hl
     ld (Audio_PlayDesired+2),hl
+    ld (Audio_MusicC),hl
     ld a,1
     ld (Audio_MusicDirty),a
     ret
@@ -386,35 +413,32 @@ Audio_ScoreStart:
 Audio_Scores:
     dw 0,Audio_NormalScore+$8000,Audio_ChallengeScore+$8000,Audio_IntroScore+$8000,Audio_CompleteScore+$8000,Audio_GameoverScore+$8000
 
+; Three aligned dictionary planes avoid frequency arithmetic in gameplay.
+; HL advances by one index; BC (elapsed carry) is preserved.
+Audio_ReadTone:
+    ld a,(hl)
+    inc hl
+    push hl
+    ld l,a
+    ld h,Audio_ToneLow/256
+    ld e,(hl)
+    inc h
+    ld d,(hl)
+    inc h
+    ld a,(hl)
+    pop hl
+    ret
+
 Audio_NoiseTick:
-    ld a,(Audio_QueueCount)
-    or a
-    jr nz,.active
-    ld a,(Audio_NoiseID)
-    or a
-    jr nz,.active
     xor a
     ld (Audio_NoiseDirty),a
-    ld a,(Session_State)
-    or a
-    jr nz,.silent
-    ld a,(Death_State)
-    or a
-    jr nz,.silent
-    ld a,(Audio_PlayDesired+10)
-    cp 2
-    ret z                    ; Sustained engine requires no synthesis or PSG writes.
-    jr .silent
-.active:
     ld a,(Audio_NoiseID)
-    ld b,a
-    ld a,(Audio_QueueCount)
-    or b
-    ld (Audio_NoiseDirty),a
-    ld hl,Audio_QueueCount
-    ld a,(hl)
     or a
-    jr z,.profile
+    jr nz,.active
+    ld a,(Audio_QueueCount)
+    or a
+    jp z,.source
+    ld hl,Audio_QueueCount
     dec (hl)
     ld a,(Audio_QueueHead)
     ld e,a
@@ -426,61 +450,190 @@ Audio_NoiseTick:
     add hl,de
     ld a,(hl)
     ld (Audio_NoiseID),a
+    dec a
+    add a,a
+    ld e,a
+    ld d,0
+    ld hl,Audio_FXTable
+    add hl,de
+    ld e,(hl)
+    inc hl
+    ld d,(hl)
+    ld (Audio_FXPointer),de
     xor a
     ld (Audio_NoisePhase),a
-.profile:
-    ld a,(Audio_NoiseID)
+    ld (Audio_EngineKey),a
+    ld b,a
+    jr .load
+.active:
+    ld a,(Audio_Elapsed)
+    ld b,a
+    ld a,(Audio_FXLeft)
+    sub b
+    jr c,.due
+    jr z,.due
+    ld (Audio_FXLeft),a
+    ret
+.due:
+    neg
+    ld b,a
+.load:
+    ld hl,(Audio_FXPointer)
+    ld a,(hl)
     or a
-    jr z,.silent
-    dec a
-    rlca
-    rlca
-    rlca
-    rlca
-    ld e,a
-    ld a,(Audio_NoisePhase)
-    add a,a
-    add a,e
-    ld l,a
-    ld h,Audio_NoiseProfiles/256
+    jr z,.finished
+    sub b
+    jr c,.skip
+    jr z,.skip
+    ld (Audio_FXLeft),a
+    inc hl
+    call Audio_ReadTone
+    ld (Audio_PlayDesired+4),de
+    ld (Audio_PlayDesired+10),a
     ld a,(hl)
     ld (Audio_PlayDesired+6),a
     inc hl
     ld a,(hl)
-    ld (Audio_PlayDesired+10),a
-    or a
-    jr z,.finished
+    ld (Audio_CMix),a
+    inc hl
+    ld (Audio_FXPointer),hl
     ld hl,Audio_NoisePhase
     inc (hl)
-    ret
-.silent:
-    ld c,0
-    ld a,(Session_State)
-    or a
-    jr nz,.engine_volume
-    ld a,(Death_State)
-    or a
-    jr nz,.engine_volume
-    ld a,9
-    ld hl,Audio_PlayDesired+6
-    cp (hl)
-    jr z,.engine_same
-    ld (hl),a
     ld a,1
     ld (Audio_NoiseDirty),a
-.engine_same:
-    ld c,2                  ; Quiet engine texture; discrete effects preempt it.
-.engine_volume:
-    ld hl,Audio_PlayDesired+10
+    ret
+.skip:
+    neg
+    ld b,a
+    ld de,4
+    add hl,de
+    ld (Audio_FXPointer),hl
+    jr .load
+.finished:
+    xor a
+    ld (Audio_NoiseID),a
+    ld (Audio_EngineKey),a
+.source:
+    ld a,(Audio_MusicCVolume)
+    or a
+    jr z,.engine
+    ld a,(Audio_MusicDirty)
+    ld b,a
+    ld a,(Audio_EngineKey)
+    cp 255
+    jr nz,.music
+    ld a,b
+    or a
+    ret z
+.music:
+    ld a,255
+    ld (Audio_EngineKey),a
+    ld de,(Audio_MusicC)
+    ld a,(Audio_MusicCVolume)
+    ld bc,$0020
+    jp Audio_ApplyC
+.engine:
+    ld a,(Session_State)
+    or a
+    jr nz,.quiet
+    ld a,(Death_State)
+    or a
+    jr nz,.quiet
+    ld a,(Round_State)
+    or a
+    jr nz,.quiet
+    ld a,($e06a)             ; Coarse signed native velocity; no division in gameplay.
+    bit 7,a
+    jr z,.magnitude
+    neg
+.magnitude:
+    cp 3
+    jr c,.bounded
+    ld a,2
+.bounded:
+    ld b,a
+    ld a,($e048)
+    and 3
+    jr z,.heading
+    ld b,0
+.heading:
+    ld a,($e06b)
+    or a
+    ld c,0
+    jr nz,.axis
+    inc c
+.axis:
+    ld a,($e06a)
+    bit 7,a
+    jr z,.direction
+    inc c
+    inc c
+.direction:
     ld a,c
+    add a,a
+    add a,c
+    add a,b                  ; Four original engine timbres, three velocity ranges.
+.key:
+    inc a
+    ld hl,Audio_EngineKey
     cp (hl)
     ret z
     ld (hl),a
+    dec a
+    add a,a
+    ld e,a
+    ld d,0
+    ld hl,Audio_EnginePeriods
+    add hl,de
+    ld e,(hl)
+    inc hl
+    ld d,(hl)
+    ld a,e
+    ld (Audio_PlayDesired+11),a
+    ld a,d
+    ld (Audio_PlayDesired+12),a
+    ld a,8                   ; Repeating exponential decay makes a mechanical buzz.
+    ld (Audio_PlayDesired+13),a
     ld a,1
     ld (Audio_NoiseDirty),a
+    ld de,4                  ; Ultrasonic 50% carrier halves the audible envelope.
+    ld a,16                  ; Hardware envelope runs without per-sample CPU work.
+    ld bc,$0020
+    jp Audio_ApplyC
+.quiet:
+    xor a
+    ld (Audio_EngineKey),a
+    ld de,0
+    ld bc,$0020
+    jp Audio_ApplyC
+
+Audio_ApplyC:
+    push af
+    ld hl,(Audio_PlayDesired+4)
+    or a
+    sbc hl,de
+    jr nz,.changed
+    ld hl,Audio_PlayDesired+10
+    cp (hl)
+    jr nz,.changed
+    ld a,(Audio_CMix)
+    cp c
+    jr nz,.changed
+    ld a,(Audio_PlayDesired+6)
+    cp b
+    jr nz,.changed
+    pop af
     ret
-.finished:
-    ld (Audio_NoiseID),a
+.changed:
+    pop af
+    ld (Audio_PlayDesired+10),a
+    ld (Audio_PlayDesired+4),de
+    ld a,b
+    ld (Audio_PlayDesired+6),a
+    ld a,c
+    ld (Audio_CMix),a
+    ld a,1
+    ld (Audio_NoiseDirty),a
     ret
 
 Audio_RenderMusic:
@@ -488,7 +641,10 @@ Audio_RenderMusic:
     out ($a0),a
     in a,($a2)
     and $c0
-    or $1c                   ; Tones A/B; independent noise C, no tone C.
+    ld b,a
+    ld a,(Audio_CMix)
+    or $18                   ; A/B tones, C owner chooses tone/noise/both.
+    or b
     ld (Audio_PlayDesired+7),a
     ; Preserve the desired packet while muting only physical amplitudes.
     ld a,(Audio_Mute)
@@ -513,7 +669,7 @@ Audio_RenderMusic:
 Audio_WritePSG:
     ld hl,Audio_PlayDesired
     ld de,Audio_PlayLastPSG
-    ld b,11
+    ld b,14
     ld c,0
 .register:
     ld a,(de)
@@ -530,15 +686,13 @@ Audio_WritePSG:
     inc c
     djnz .register
     ret
-    ALIGN 256
-Audio_NoiseProfiles:
-    ; Eight (period,volume) pairs; zero volume always terminates a profile.
-    db 3,6, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0  ; fuel award
-    db 4,9, 8,8, 12,6, 16,3, 0,0, 0,0, 0,0, 0,0 ; smoke
-    db 2,10, 5,7, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 ; warning
-    db 1,12, 3,10, 5,8, 0,0, 0,0, 0,0, 0,0, 0,0 ; extra life
-    db 2,11, 4,8, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 ; credit
-    db 1,12, 3,8, 0,0, 0,0, 0,0, 0,0, 0,0, 0,0 ; flag
-    db 1,14, 2,12, 4,10, 7,6, 0,0, 0,0, 0,0, 0,0 ; special flag
-    db 12,15, 16,14, 20,12, 24,10, 28,7, 31,4, 0,0, 0,0 ; crash
+Audio_FXTable:
+    dw Audio_FX1Score+$8000,Audio_FX2Score+$8000,Audio_FX3Score+$8000,Audio_FX4Score+$8000
+    dw Audio_FX5Score+$8000,Audio_FX6Score+$8000,Audio_FX7Score+$8000,Audio_FX8Score+$8000
+    dw Audio_FX9Score+$8000
+Audio_EnginePeriods:
+    dw Audio_Engine0IdleEnvelope,Audio_Engine0CruiseEnvelope,Audio_Engine0DriveEnvelope
+    dw Audio_Engine1IdleEnvelope,Audio_Engine1CruiseEnvelope,Audio_Engine1DriveEnvelope
+    dw Audio_Engine2IdleEnvelope,Audio_Engine2CruiseEnvelope,Audio_Engine2DriveEnvelope
+    dw Audio_Engine3IdleEnvelope,Audio_Engine3CruiseEnvelope,Audio_Engine3DriveEnvelope
 Audio_RuntimeEnd:

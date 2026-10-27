@@ -5,9 +5,9 @@ Date: 2026-10-27. Implementation and channel policy:
 
 ## Delivered cartridge
 
-The current tested build is `references/build/issue13-music-v34/`:
+The current tested build is `references/build/issue13-sound-v41/`:
 
-`d224b9b54af4e4b051ca1d0f793a8308899d3d50a9ac9752f0c8aca40ecda63b`.
+`230469ce4befe540785315759deeceaeafaebbbbfc7032a5f5d6163f492bd61c`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
@@ -18,7 +18,109 @@ The reconstructed silent full game is byte-identical to the accepted baseline:
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
 
-## Shared music-group ending correction (v34)
+## Listening-feedback adaptation (v41)
+
+The two-voice/noise-only policy was rejected in listening review and is
+superseded. Start and completion now play all three original parts together,
+with gain balancing and note articulation. Credit, flags, extra life, low fuel,
+fuel conversion and recovery use their original melodic contours on C. Only
+smoke and the adapted crash require noise. C returns to music or engine after
+an effect; A/B continue throughout. A repeating PSG envelope supplies a pitched
+engine with coarse native speed and four heading-dependent harmonic choices.
+The engine is hardware-driven between packets, without CPU sample synthesis.
+
+Repeated active and waiting effects coalesce. This removed observed queue
+overflows from the preceding candidate: natural eight rounds and both retained
+populations now record zero drops. Crash cannot be interrupted by recovery.
+The bounded Lucky-fuel adapter now emits the recovery request after restoring
+the gauge; effect 9 is observed in natural gameplay, not only seeded fixtures.
+No graphics, HUD or native velocity reduction accompanies this change.
+
+| Current check | Result and artifact under `references/build/` |
+| --- | --- |
+| Unit/integration suite | 418 pass; `issue13-sound-tests-v41.log` |
+| Production player | 27,000 executions, fifteen seeded scenarios, output on/muted, nine exact effect contours, concurrent third music voice, engine headings, FIFO/coalescing/priority; `issue13-sound-runtime-v41` |
+| Reference kernel after shim relocation | 12,874 PSG/mute cases; `issue13-sound-reference-final` |
+| Original Start ending | Original captured call 241 vs compiled 240 ticks / 120 frames; `issue13-sound-duration-final` |
+| Actual keyboard session | 121 quiet UI packets, 4.004 s Start before gameplay, F5 without replay; `issue13-sound-session-v41` |
+| Live mute replay | 600 identical native ticks and smoke counts; `issue13-sound-live-mute-v41` |
+| Natural eight rounds | 29.942..29.961 packet FPS, 0..0.1241% late slots, 59.901..59.927 native Hz, zero discarded ticks; `issue13-sound-eight-v41` |
+| Retained six / round 6 | 29.440 FPS, 3.3778% late slots, 67.893 ms maximum gap, zero discarded ticks; `issue13-sound-six-v41` |
+| Retained seven / round 1 | Completes at 29.311 FPS, **fails** unchanged 4% late-slot gate at **4.3515%**; 67.867 ms maximum gap, 59.899 native Hz, zero discarded ticks; `issue13-sound-seven-v41` |
+
+The seven-car timing qualification remains open. It was also open on v34;
+these adaptive routes do not isolate a causal percentage cost for the new
+arrangement. Do not replace its failure with earlier passing candidates.
+Natural and six-car routes pass their existing 2.5% / 4% budgets. All runs use
+openMSX 21, FS-A1WSX_NR128, NTSC, 128 KB mapper/VRAM, factory CPU switching
+(5.37 MHz native instruction samples), full HUD and real sprite/command limits.
+
+Natural-route checks retain all 80 flag removals and 270 visible smoke tiles:
+maximum sampled flag lag 120.499 ms, smoke 114.668 ms, no unsafe/repeated radar
+publication, persistent enemy ghosts or unknown ink. Axis samples measure
+score progression at 29.958 Hz vertically / 29.970 horizontally and packet
+rates 29.959 / 29.961. These bounded samples do not reproduce the reported
+sustained vertical music slowdown; endpoint and route differences still apply.
+
+### Recorded sound comparison
+
+`audio_inventory.py --record` now captures actual MAME PCM while observing
+real coin/start/smoke inputs. The private `issue13-sound-original-v35` capture
+lasts 46.180 s. PROM spectral analysis identifies the original engine's
+dominant heading harmonics as 3/1/3/5; the PSG approximation follows those
+targets without embedding the waveform in production.
+
+`audio_audition_probe.py` records actual PSG output for the same timed,
+explicitly seeded events on both old and new ROMs. It is a controlled audition,
+not natural gameplay. The 21.026 s before/after WAVs are in
+`issue13-sound-audition-before-final` (delivered v34) and
+`issue13-sound-audition-v41` (current). Current peak is 14,218 / 32,767, RMS
+2,672; no clipping is observed. The isolated up-heading engine segments measure
+49.904 / 57.359 / 65.917 Hz against original targets 49.804 / 57.130 / 65.917 Hz;
+second-harmonic/fundamental amplitude ratios are approximately 0.62. This checks
+pitched output rather than relying solely on register periods.
+
+Original and PSG waveform shapes remain different. Pitch, three active voices,
+event identity and absence of digital clipping do **not** establish enjoyable
+or sufficiently arcade-like sound. User listening acceptance remains open.
+No physical-hardware, PAL or WebMSX gameplay qualification is claimed.
+
+### Audio cycle ledger
+
+`full_game_route.py --profile` writes nested audio call costs to
+`audio-cycles.tsv` and summarizes them in `report.json`. Values below are
+3.58 MHz-equivalent elapsed cycles under factory clock switching, **not** raw
+5.37 MHz instruction counts. CPU time excludes observed raster IRQs; inclusive
+time retains them. Self costs subtract instrumented direct audio children;
+platform helpers and tail jumps remain in their caller. Repeated calls are
+aggregated per foreground loop. Never sum inclusive parent and child rows.
+
+Current six-car means (same v41 ROM/workload above):
+
+| Routine | Calls/presented packet | Inclusive mean | CPU mean | Self mean | Inclusive p95 / max |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `Audio_Work` | 1.001 | 2592 | 2098 | 163 | 5287 / 9536 |
+| `Audio_RuntimeStep` | 0.972 | 2459 | 1993 | 240 | 5061 / 8630 |
+| `Audio_MusicTick` | 0.972 | 603 | 518 | 247 | 739 / 6326 |
+| `Audio_NoiseTick` | 0.972 | 404 | 310 | 297 | 633 / 6206 |
+| `Audio_RenderMusic` | 0.972 | 712 | 576 | 576 | 1085 / 6541 |
+| `Audio_ReadTone` | 2.047 | 275 | 228 | 228 | 304 / 5898 |
+
+Worker mean CPU cost is approximately 0.586 ms; measured worker wall time
+averages 0.725 ms, p95 1.449 ms, maximum 2.650 ms. Seven-car mean CPU cost is
+2004 equivalent cycles; wall mean 0.710 ms / maximum 2.756 ms. Older v34's
+fresh six-car baseline averages 1538 CPU-equivalent cycles
+(`issue13-sound-baseline-six-profile`); route differences prevent treating this
+as a fixed per-gameplay-frame causal delta.
+
+One physical refresh is 16.688 ms / 59,736 equivalent cycles; a nominal
+two-refresh packet is 33.376 ms / 119,472 cycles. Subtracting mean audio CPU
+work alone leaves 117,373 cycles in the six-car ledger. This is **not free CPU
+budget**: rendering, game logic, IRQs and waits still consume it. These results
+do not establish a usable VBlank reserve; that field remains unknown rather
+than assuming 5,000 cycles. Full routine means/tails/self costs remain in reports.
+
+## Historical shared music-group ending correction (v34)
 
 The user heard two successive two-voice tunes after Start. The original code
 at 28C1..2906 starts melody IDs 18/19/20 together and stops the group when any
@@ -34,7 +136,7 @@ the actual keyboard session. The analogous three-part completion group now
 ends at 106 native ticks, rather than 114. No extra PSG channel, runtime work,
 native velocity or graphics change is introduced.
 
-Current checks: 414 tests (`issue13-music-tests-v34.log`), 27,000 production
+Historical checks: 414 tests (`issue13-music-tests-v34.log`), 27,000 production
 cases (`issue13-music-runtime-v34`), original-duration proof
 (`issue13-music-duration-v34`), quiet-UI/Start/F5 keyboard ordering
 (`issue13-music-session-v34`) and 600 live mute-replay ticks

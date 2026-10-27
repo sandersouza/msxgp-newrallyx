@@ -59,11 +59,12 @@ without awarding the completion bonus. It also resumes a paused game.
 **F4** toggles audio without stopping the music clock or changing gameplay.
 With no credits, the original cast screen periodically enters an automatic demo.
 
-Music uses two PSG tone voices; effects use the independent noise voice, with
-short deferred publication so audio does not block the car/camera snapshot.
-The original melody tables are compiled locally into note packets. Waveforms,
-third musical parts and discrete effects are adapted to the PSG; arcade-exact
-audio timing is not the target. See the [audio contract and validation](docs/issue13-audio-interface.md).
+Start/completion music plays all three original parts together. During driving,
+two music parts leave channel C for a hardware-envelope engine and pitched
+effects; smoke/crash also use noise. Credit, flags and fuel retain their original
+note contours. Scores are compiled locally, and short deferred publication keeps
+audio off the car/camera snapshot path. PSG timbres remain an adaptation of the
+arcade sound. See the [audio contract and validation](docs/issue13-audio-interface.md).
 `make build AUDIO=0` reconstructs the accepted silent full-game baseline.
 
 Builds use fresh sealed directories under `references/build/default-*/` and

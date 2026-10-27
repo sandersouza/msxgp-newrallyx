@@ -96,7 +96,7 @@ def main(argv=None):
     parser.add_argument('--hz', type=int, choices=(50,60), help='VDP refresh; defaults to60 for full gameplay,50 for bounded stages; original tick remains16.5ms')
     parser.add_argument('--native', action='store_true', help='Compatibility alias: selected-player baseline, no full arcade loop')
     parser.add_argument('--full-game',action='store_true',help='Stage12 full gameplay, original round progression and two-player sessions')
-    parser.add_argument('--audio',action='store_true',help='Buffered two-voice PSG music and noise effects; requires --full-game')
+    parser.add_argument('--audio',action='store_true',help='Buffered three-voice PSG music, tonal effects and hardware-envelope engine; requires --full-game')
     parser.add_argument('--stage', type=int, choices=range(13), default=12, help='Incremental stage 0..12; default: approved single-player session')
     parser.add_argument('--enemies', type=int, choices=range(4), help='Explicit enemy population: stage08 supports one; stage09 supports up to three')
     args = parser.parse_args(argv)

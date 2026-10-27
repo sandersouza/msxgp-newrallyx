@@ -12,7 +12,7 @@ if __package__ in (None, ''):
 from scripts.msx.build import destination
 from scripts.msx.emulator import reference_machine, tcl
 from scripts.msx.hud_verify import symbols
-from scripts.scenes.bundle import digest, verify_manifest
+from scripts.scenes.bundle import digest, read_json, verify_manifest
 from scripts.scenes.storage import json_write, require_ignored, seal
 
 
@@ -64,7 +64,7 @@ def main():
     if not intro or not game or any(int(r[3]) == 3 for r in game):
         raise ValueError('Start cue did not stay before gameplay')
     duration = float(intro[-1][0])-float(intro[0][0])+2/59.9227434
-    expected = (rom.parent/'audio-intro-frames.bin').stat().st_size/6*2/59.9227434
+    expected = read_json(rom.parent/'audio-relocation.json')['compiled_scores']['intro']['frames']*2/59.9227434
     if abs(duration-expected) > .1 or not any(int(r[4]) and int(r[5]) for r in intro):
         raise ValueError('Start cue was missing, silent or played at the wrong tempo')
     if max(int(r[6]) for r in game) < 3 or not any(int(r[3]) == 1 for r in game):
