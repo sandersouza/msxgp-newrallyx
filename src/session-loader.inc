@@ -1,5 +1,5 @@
 ; Cold session hooks fit in the resident bank. UI code executes at B800.
-Session_State EQU $c7d0       ; 0 gameplay, 1 title, 2 game over, 3 round clear
+Session_State EQU $c7d0       ; 0 gameplay, 1 title, 2 game over, 3 round clear, 5 start music
 Session_Drawn EQU $c7d1
 Session_Credits EQU $c7d2
 Session_Keys EQU $c7d3
@@ -204,7 +204,8 @@ Audio_Work:
     ret c
     srl a
     ld (Audio_Elapsed),a
-    ld a,(ticks)
+    add a,a                 ; Retain an odd refresh instead of losing half a beat.
+    add a,(hl)
     ld (hl),a
     ld a,AUDIO_BANK
     ld ($7000),a

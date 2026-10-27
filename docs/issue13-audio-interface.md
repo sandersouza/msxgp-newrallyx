@@ -17,7 +17,9 @@ voices, noise for other sounds, and short deferred effect publication.
   packets. The MSX reads a new packet only at a note boundary.
 - A physical-refresh clock services audio at approximately 30 Hz, after the
   car/camera packet is ready. The PSG continues oscillating between writes.
-  Its register latches sustain playback; the effect FIFO is software.
+  Odd refresh remainders survive service, so three-refresh rendering intervals
+  cannot slow the score. Its register latches sustain playback; the effect FIFO
+  is software.
 - **F4** changes output amplitudes only. Music, queue and gameplay continue.
   Music continues during pause. Attract gameplay is muted.
 
@@ -33,6 +35,11 @@ choices, start, completion and game-over songs. Compilation samples boundaries e
 two reference ticks; a pair finishes when either selected part ends. These are
 deliberate two-voice transcriptions, rather than exact three-voice priority mixing.
 Background/challenge scores loop; one-shot songs clear their request.
+Insert-coin and player-select screens have no music. Accepting Start plays the
+one-shot introduction while the session waits, before loading/releasing gameplay.
+Normal scene loads request background music only; phase changes do not replay
+the start cue. UI/attract changes override stale native music requests, and a
+silent scene explicitly replaces the previous PSG output.
 
 The score uses 3,911 private ROM bytes. Each packet stores a duration, two tone
 periods and packed volume nibbles. Original song data is never checked in.

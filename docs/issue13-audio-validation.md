@@ -5,10 +5,9 @@ Date: 2026-10-27. Implementation and channel policy:
 
 ## Delivered cartridge
 
-The independent build in `references/build/issue13-psg-v27/` and the fresh
-default build `default-293518f3afef49ff831380598dc50a39/` have identical ROM bytes:
+The current qualified build is `references/build/issue13-timing-v33/`:
 
-`89a82c5c9b10c5bbbb97915eb269744f3181e530212f9ea3068a68bea7c2a518`.
+`382f45a4a47d86c54c9d8bf4eaecbbbea10ac42e0766f424c596ef1e8e38d0e8`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
@@ -19,7 +18,60 @@ The reconstructed silent full game is byte-identical to the accepted baseline:
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
 
-## Execution proofs
+## Listening-review corrections and current evidence
+
+The user reported music on insert-coin/player-select screens, the start cue
+overlapping gameplay, and slower music/gameplay during vertical scrolling.
+Two independent regressions were reproduced on v27: `audio_session_probe.py`
+rejects music on the waiting screens, and `audio_runtime_probe.py` rejects an
+odd-refresh score mismatch. Their failed evidence remains in
+`issue13-session-audio-before` and `issue13-odd-clock-before`.
+
+The worker previously divided elapsed refreshes by two and saved the current
+refresh, discarding each odd remainder. It now advances the saved timestamp by
+exactly the consumed even refreshes. Screen state gates melody selection even
+when native request bits have not changed. The start cue plays once before
+gameplay, not on scene reload. Silent scenes explicitly flush preceding output;
+the sustained-noise fast path checks session/death state before returning.
+The UI start cue also ignores a stale collision left by attract gameplay;
+`issue13-stale-death-before` reproduces that override on the earlier candidate.
+The session check runs only on a new death event, keeping it off the common
+live-gameplay path.
+
+| Current check | Result |
+| --- | --- |
+| Unit/integration suite | 413 pass, `issue13-timing-tests-v33.log` |
+| Production scheduling | 27,000 cases, 15 scenarios including odd refreshes, quiet UI, stale death and live music/UI/start transitions; output on/muted and all previous isolation/queue gates. `issue13-runtime-v33` |
+| Actual keyboard session | 121 quiet UI packets, 8.010 s start cue entirely before gameplay, background music after loading and F5 phase change. `issue13-session-audio-v33` |
+| Live mute replay | 600 identical native ticks/smoke counts with output on/muted. `issue13-live-mute-v33` |
+| Natural eight rounds | 29.943..29.961 packet FPS, 0..0.115% late slots, 59.900..59.927 native Hz, zero discarded ticks. `issue13-eight-v33` |
+| Retained six, round 6 | 29.370 packet FPS, 3.861% late slots, 59.932 native Hz, zero discarded ticks. `issue13-six-v33` |
+| Retained seven, round 1 | 29.560 packet FPS, 2.707% late slots, 59.825 native Hz, zero discarded ticks. `issue13-seven-v33` |
+
+These use the same machine, graphics and unchanged 2.5% natural / 4% controlled
+late-slot budgets described below. The largest packet gap is 67.894 ms in the
+six-car workload, below the existing 68 ms limit. Preceding v30/v32 seven-car
+candidates failed at 4.348%/4.263% late slots; their reports remain at
+`issue13-seven-v30` and `issue13-seven-v32`. The final sustained-engine and
+event-only session checks avoid unnecessary work. Adaptive routes differ, so these are workload gates,
+not isolated causal CPU-percentage comparisons.
+
+Axis-specific physical samples retain stopped frames within stable-direction
+runs of at least 0.5 s. The earlier eight-round trace advanced the score at
+26.494 frames/s vertically versus 29.350 horizontally. Current eight-round
+samples measure **29.982 vertically / 29.975 horizontally**, with physical
+packet rates **29.954 / 29.959** and native rates **59.664 / 59.795**. These
+samples do not reproduce a sustained 5% vertical simulation slowdown. Short
+window endpoint/batching error remains, especially in controlled loads; the
+comparison does not assert equal travel distance through different maze paths.
+No native velocity or graphical quality was changed to compensate for audio.
+
+The final eight-round effects check observes 80 flag captures and 270 visible
+smoke tiles: maximum sampled flag lag 120.824 ms, smoke lag 114.749 ms, no unsafe
+or repeated radar publications, persistent enemy ghosts or unknown ink.
+Current HUD/player/fuel latch checks pass with real sprite limits.
+
+## Earlier execution proofs (v27)
 
 | Check | Evidence and scope |
 | --- | --- |
@@ -42,7 +94,7 @@ raster interrupts and factory clock switching. Production playback is the
 agreed two-voice/noise transcription; exact original-kernel equality is not an
 exact-production-audio claim.
 
-## Loaded gameplay
+## Earlier loaded gameplay (v27)
 
 Machine: openMSX 21.0, FS-A1WSX reference with 128 KB mapper RAM/128 KB VRAM,
 NTSC VDP, factory 5.37 MHz CPU switching, established VDP timing, real command
@@ -89,9 +141,10 @@ the nominal-boundary rejection at 200.165 ms against the old 200.000 ms check.
 ```sh
 gnumake test
 gnumake build
-.venv/bin/python -B scripts/audio_runtime_probe.py --rom references/build/issue13-psg-v27/raster-scroll.rom --output references/build/my-runtime-proof
-.venv/bin/python -B scripts/audio_gameplay_probe.py --rom references/build/issue13-psg-v27/raster-scroll.rom --output references/build/my-live-mute
-.venv/bin/python -B scripts/full_game_route.py --rom references/build/issue13-psg-v27/raster-scroll.rom --rounds 1 --steering-margin 8 --fixture-enemies 6 --fixture-first-round 6 --avoid-enemies --allow-game-over --minimum-native-hz 59 --require-retained-native-ticks --maximum-packet-miss-percent 4 --maximum-packet-gap-ms 68 --radar-trace --require-stable-fuel --require-stable-player --output references/build/my-six-car-route
+.venv/bin/python -B scripts/audio_runtime_probe.py --rom references/build/issue13-timing-v33/raster-scroll.rom --output references/build/my-runtime-proof
+.venv/bin/python -B scripts/audio_session_probe.py --rom references/build/issue13-timing-v33/raster-scroll.rom --output references/build/my-session-proof
+.venv/bin/python -B scripts/audio_gameplay_probe.py --rom references/build/issue13-timing-v33/raster-scroll.rom --output references/build/my-live-mute
+.venv/bin/python -B scripts/full_game_route.py --rom references/build/issue13-timing-v33/raster-scroll.rom --rounds 1 --steering-margin 8 --fixture-enemies 6 --fixture-first-round 6 --avoid-enemies --allow-game-over --minimum-native-hz 59 --require-retained-native-ticks --maximum-packet-miss-percent 4 --maximum-packet-gap-ms 68 --radar-trace --require-stable-fuel --require-stable-player --output references/build/my-six-car-route
 ```
 
 Use a fresh ignored output directory. Each successful acquisition/probe seals
@@ -100,7 +153,7 @@ ignored. Only authored tooling, synthetic tests, assembly and docs are published
 
 ## Remaining review
 
-`issue13-loaded7-v27/audio.wav` is an actual approximately 20-second PSG recording
+`issue13-seven-v33/audio.wav` is an actual approximately 20-second PSG recording
 with nonzero PCM. It is available locally for listening. Register/PCM checks do
 not establish pleasant timbre; human listening remains the final review item.
 SCC is evaluated/deferred with PSG always available; no expansion support is

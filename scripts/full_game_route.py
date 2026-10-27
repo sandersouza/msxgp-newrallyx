@@ -441,6 +441,9 @@ def main(argv=None):
             observed_noise_ids=sorted({int(row[6]) for row in rows}),
             active_music_frames=[sum(row[8+ch]>0 for row in rows) for ch in range(2)],
             scope='Observed production worker wall time includes actual raster interrupts; no guest state changes.')
+        if args.radar_trace:
+            from scripts.msx.axis_timing import analyze as analyze_axes
+            audio['axis_timing']=analyze_axes(out/'motion.tsv',out/'audio.tsv',out/'presentation.tsv')
         if args.audio_record:
             import array
             import wave

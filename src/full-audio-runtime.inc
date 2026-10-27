@@ -79,10 +79,12 @@ Audio_Observe:
     ld (hl),255
     inc hl
     djnz .invalidate
+    ld a,1
+    ld (Audio_OutputDirty),a ; A silent scene must also replace the preceding PSG output.
     ld a,(Session_State)
     or a
     jr nz,.scene_ready
-    ld a,$90
+    ld a,$10                ; Scene loads begin background music, never the start cue.
     ld ($e9f5),a
 .scene_ready:
     ld a,(Flag_Count)
@@ -101,10 +103,14 @@ Audio_Observe:
     ld a,b
     jr nz,.death_latch
     push af
+    ld a,(Session_State)
+    or a
+    jr nz,.death_ignored    ; Ignore stale UI death state without taxing the live path.
     ld a,$80
     ld ($e9f4),a
     ld a,8
     ld ($e9f5),a
+.death_ignored:
     pop af
 .death_latch:
     ld (Audio_DeathSeen),a
@@ -209,13 +215,8 @@ Audio_MusicTick:
     ld (Audio_MusicDirty),a
     ld a,($e9f5)
     and $b4
-    ld c,a
-    ld a,(Audio_MusicRequest)
-    cp c
-    jr z,.same_request
-    ld a,c
     ld (Audio_MusicRequest),a
-    call Audio_SelectMusic
+    call Audio_SelectMusic   ; UI/attract transitions can leave native request bits unchanged.
     ld c,a
     ld a,(Audio_MusicMode)
     cp c
@@ -326,9 +327,27 @@ Audio_MusicTick:
     ret
 
 Audio_SelectMusic:
+    ld a,(Full_Attract)
+    or a
+    jr nz,.silent
+    ld a,(Session_State)
+    or a
+    jr z,.gameplay
+    cp 5
+    jr z,.start
+    cp 2
+    jr nz,.silent           ; Insert-coin/player-select screens have no melody.
+    ld a,($e9f5)
+    bit 2,a
+    jr nz,.gameover
+    jr .silent
+.start:
     ld a,($e9f5)
     bit 7,a
     jr nz,.intro
+    jr .silent
+.gameplay:
+    ld a,($e9f5)
     bit 5,a
     jr nz,.complete
     bit 2,a
@@ -374,12 +393,18 @@ Audio_NoiseTick:
     ld a,(Audio_NoiseID)
     or a
     jr nz,.active
-    ld a,(Audio_PlayDesired+10)
-    cp 2
-    jr nz,.active
     xor a
     ld (Audio_NoiseDirty),a
-    ret
+    ld a,(Session_State)
+    or a
+    jr nz,.silent
+    ld a,(Death_State)
+    or a
+    jr nz,.silent
+    ld a,(Audio_PlayDesired+10)
+    cp 2
+    ret z                    ; Sustained engine requires no synthesis or PSG writes.
+    jr .silent
 .active:
     ld a,(Audio_NoiseID)
     ld b,a
@@ -429,9 +454,6 @@ Audio_NoiseTick:
     inc (hl)
     ret
 .silent:
-    ld a,(Audio_PlayDesired+10)
-    cp 2
-    ret z                    ; Sustained engine needs no per-packet synthesis.
     ld c,0
     ld a,(Session_State)
     or a

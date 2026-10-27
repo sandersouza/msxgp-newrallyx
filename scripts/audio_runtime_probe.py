@@ -16,7 +16,7 @@ from scripts.scenes.bundle import digest, verify_manifest
 from scripts.scenes.storage import json_write, require_ignored, seal
 
 
-SCENARIOS = ('background', 'intro', 'complete', 'challenge', 'effects', 'overflow', 'flag_adapter', 'smoke_adapter', 'gameover', 'gameover_adapter', 'late_clock')
+SCENARIOS = ('background', 'intro', 'complete', 'challenge', 'effects', 'overflow', 'flag_adapter', 'smoke_adapter', 'gameover', 'gameover_adapter', 'late_clock', 'odd_clock', 'title', 'player_select', 'ui_transition')
 STEPS = 900
 STATE = 2560+768+64
 STRIDE = STATE+11+2
@@ -43,13 +43,15 @@ def main():
         ' set ::step 0;set kind [expr {$::index/2}]',
         ' keymatrixup 7 1',
         ' debug write memory 0xc7d0 0;debug write memory 0xc7ee 0;debug write memory 0xc490 0;debug write memory 0xc5c0 0',
+        ' if {$kind==1} {debug write memory 0xc7d0 5};if {$kind in {12 13}} {debug write memory 0xc7d0 1;debug write memory 0xc7d2 [expr {$kind==13?2:0}]}',
         ' debug write memory 0xc50b 0;debug write memory 0xc711 0;debug write memory 0xc00a 0',
         ' debug write_block memory 0xe000 $::native',
         ' debug write memory 0xe1b0 [expr {$kind==3?4:2}]',
-        ' debug write memory 0xe9f4 64;debug write memory 0xe9f5 [expr {$kind==2?40:($kind==8?4:16)}];debug write memory 0xe9f6 0',
+        ' debug write memory 0xe9f4 64;debug write memory 0xe9f5 [expr {$kind==1?128:($kind==2?40:($kind==8?4:16))}];debug write memory 0xe9f6 0',
         ' debug write_block memory 0xd150 [string repeat [binary format c 0] 12]',
         ' debug write_block memory 0xe9a0 [string repeat [binary format c 0] 80]',
         ' debug write_block memory 0xe9b0 [string repeat [binary format c 255] 11]',
+        ' debug write memory 0xe9cd 1',
         f' debug write memory {s["Audio_Mute"]} [expr {{$::index&1}}];debug write memory {s["Audio_NewScene"]} [expr {{$kind==1}}]',
         ' debug write_block $::mapper [expr {$::base+0x3800}] [string repeat [binary format c 0] 896]',
         ' debug write_block $::mapper [expr {$::base+0x3b20}] [string repeat [binary format c 255] 11]',
@@ -77,10 +79,15 @@ def main():
         ' if {$kind==6 && $::step==100} {debug write memory 0xc50b 0}',
         ' if {$kind==7 && $::step in {12 24 36}} {debug write memory 0xc711 [expr {$::step/12}]}',
         ' if {$kind==9 && $::step==12} {debug write memory 0xc5c0 2}',
+        ' if {$kind==14} {',
+        '  if {$::step==12} {debug write memory 0xc7d0 1}',
+        '  if {$::step==24} {debug write memory 0xc7d0 5;debug write memory 0xc490 1;debug write memory 0xe9f5 128}',
+        f'  if {{$::step==270}} {{debug write memory 0xc7d0 0;debug write memory 0xc490 0;debug write memory 0xe9f5 144;debug write memory {s["Audio_NewScene"]} 1}}',
+        ' }',
         ' debug write memory 0xe9f4 [expr {64|$event}];debug write memory 0xe9f6 $credit',
         ' if {$::step in {40 80}} {keymatrixdown 7 1};if {$::step in {45 85}} {keymatrixup 7 1}',
         f' debug write memory 0x7000 {s["PLAYER_BANK"]}',
-        ' debug write memory 0xc00a [expr {([debug read memory 0xc00a]+($kind==10?4:2))&255}]',
+        ' debug write memory 0xc00a [expr {([debug read memory 0xc00a]+($kind==10?4:($kind==11?3:2)))&255}]',
         f' set at 0xd140;foreach value {{243 205 {s["Audio_Work"]&255} {s["Audio_Work"]>>8} 243 195 95 209}} {{debug write memory $at $value;incr at}}',
         f' if {{$kind==9 && $::step==12}} {{set at 0xd140;foreach value {{243 205 {s["Session_Check"]&255} {s["Session_Check"]>>8} 205 {s["Audio_Work"]&255} {s["Audio_Work"]>>8} 243 195 95 209}} {{debug write memory $at $value;incr at}}}}',
         ' reg SP 0xf380;reg IX 0x4567;reg IY 0x6789;reg PC 0xd140;set ::active 1;set ::begin [machine_info time]',
@@ -130,11 +137,17 @@ def main():
                 psg=row[STATE:STATE+11]
                 terminal=name if name in ('complete','gameover') else 'gameover' if name=='gameover_adapter' and step>=12 else None
                 terminal_step=step-12 if name=='gameover_adapter' else step
-                if terminal and terminal_step>=len(scores[terminal])//6:
+                if name=='ui_transition':
+                    if 12<=step<24 or 264<=step<270:frame=bytes(6)
+                    else:
+                        score=scores['intro'] if 24<=step<264 else scores['normal']
+                        tick=step-24 if 24<=step<264 else step-270 if step>=270 else step
+                        at=(tick%(len(score)//6))*6;frame=score[at:at+6]
+                elif name in ('title','player_select') or name=='intro' and step>=len(scores['intro'])//6 or terminal and terminal_step>=len(scores[terminal])//6:
                     frame=bytes(6)
                 else:
                     score=scores['challenge'] if name=='challenge' else scores['normal']
-                    tick=step*2 if name=='late_clock' else step
+                    tick=step*2 if name=='late_clock' else ((step+1)*3//2-1 if name=='odd_clock' else step)
                     if name=='intro':
                         if step<len(scores['intro'])//6:score=scores['intro']
                         else:tick-=len(scores['intro'])//6
@@ -150,6 +163,8 @@ def main():
                     active[ch]+=int(initial==0 and volume>0)
                 if psg[7]!=0x9c or muted and any(psg[8:11]):
                     raise ValueError('PSG mix violated two-tone/noise isolation or mute')
+                if name in ('title','player_select') or name=='ui_transition' and 12<=step<270:
+                    if psg[10]:raise ValueError('Engine noise leaked into a non-gameplay screen')
             queue=rows[0][2560+768:STATE]
             noise=queue[3];drops=queue[5]
             if name=='effects' and step>=12 and step<=96 and step%12==0:
@@ -172,7 +187,7 @@ def main():
     json_write(out/'report.json',dict(rom_sha256=digest(rom),cases=len(SCENARIOS)*2*STEPS,passed=True,
         effect_ids=sorted(coverage),active_music_packets=active_pairs,
         maximum_packet_ms=max(costs),mean_packet_ms=sum(costs)/len(costs),
-        scope='Production Audio_Work execution: eleven seeded scenarios, output on/muted, both BIOS and held-cache Page0 mappings; '
+        scope='Production Audio_Work execution: fifteen seeded scenarios, output on/muted, both BIOS and held-cache Page0 mappings; '
               'exact game/music/queue invariance and playback of build-time two-voice golden packets, actual F4 edges/holds, '
               'physical counter wrap, complete music loops, persistent flag/smoke event retention, all eight noise effects, FIFO saturation/order and crash preemption. '
               'Code, stack/indices, VRAM, mapping and PSG I/O preserved. Display/IRQs off at forced 3.58 MHz; '
