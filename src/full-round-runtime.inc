@@ -9,6 +9,7 @@ Full_Div3Address EQU $dfc6
 Full_Loading EQU $dfc8
 Full_Layout EQU $dfc9
 Full_Transitions EQU $dfca
+Full_DebugHeld EQU $dfcb      ; F5 edge survives scene reloads while the key is held.
 Full_RadarFlags EQU $dfd0
 Full_WideHBank EQU $d2d8
 Full_WideVBank EQU $d2d9

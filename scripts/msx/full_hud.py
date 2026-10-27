@@ -2,8 +2,8 @@
 from .display import LEFT_MASK
 
 VISIBLE_SCORE_DIGITS = 7
-HIGH_FIELD_X = 32       # Hidden source digit; first visible digit is at X=40.
-SCORE_FIELD_X = 136     # First visible digit is at X=144.
+HIGH_FIELD_X = 24       # Hidden source digit; first visible digit follows HI: at X=32.
+SCORE_FIELD_X = 128     # First visible digit follows 1UP: at X=136.
 PLAYER_LABEL_X = 104
 ROUND_X = 240
 CREDIT_LABEL_X = 96

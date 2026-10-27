@@ -9,6 +9,7 @@
     jp Full_SessionDeath
     jp Full_DrawRound
     jp Full_DemoFrame
+    jp Full_DebugAdvance
     ENDIF
 
 ; Keep only movement/camera state. Fuel, score, enemy state and clocks still tick.
@@ -105,6 +106,9 @@ Session_Reset:
     ld (Session_State),a
     ret
 Session_Frame:
+    IF FULL_GAME
+    call Full_DebugRead       ; Latch held F5 on UI screens without advancing.
+    ENDIF
     ld a,(Session_State)
     ld hl,Session_Drawn
     cp (hl)

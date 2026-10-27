@@ -53,6 +53,8 @@ make run
 Press **5** for a credit, **1** for one player or **2** for two players (two
 credits). Both players use arrows or joystick1 on alternating turns. **Space**,
 Ctrl or triggerA releases smoke; **P** pauses; Home resets the development run.
+**F5** advances one round per press for debugging, preserving score and lives
+without awarding the completion bonus. It also resumes a paused game.
 With no credits, the original cast screen periodically enters an automatic demo.
 
 Builds use fresh sealed directories under `references/build/default-*/` and

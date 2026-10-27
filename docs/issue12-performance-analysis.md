@@ -1,6 +1,13 @@
 # Issue #12: bounded 30 Hz presentation
 
-The current enemy-radar cleanup uses ROM
+The current parked-contact/HUD/F5 follow-up uses ROM
+`e03679715eeeafd4c76c53f7541413ca6acc8116cc1f4d08c3ef937e4ea31448`.
+[Current follow-up evidence](issue12-parked-controls.md) covers normal startup
+contact, unchanged challenge bounds, score spacing, real debug key inputs and
+the scoped cadence regression checks. The six-enemy setup retains the existing
+3.5% missed-slot allowance; ordinary rounds retain 2.5%.
+
+The preceding enemy-radar cleanup uses ROM
 `06fb29529e3bb17a3d18ec0f62db43edaf7008cafe32441ad43ad7e8d29514e3`.
 [Radar motion evidence](issue12-radar-motion.md) records zero accumulated enemy
 markers and the explicit loaded-workload timing concession.
@@ -66,8 +73,9 @@ also comes from the original population/phase parameters and pursuit policy.
 Enemy decisions use reciprocal maze exits, alternating pursuit-axis priority,
 and reversal only at a dead end. Each actor decides once at a new cell centre
 and coasts between centres. The centre tolerance covers the doubled movement
-step. World-space contact checks all seven actors with the documented inclusive
-ten-pixel rectangle. Arcade virtual OAM and five-pointer visibility/contact
+step. World-space contact checks all seven actors with an inclusive ten-pixel
+rectangle; normal startup states use fourteen pixels to cover visible overlap.
+The challenge keeps ten pixels. Arcade virtual OAM and five-pointer visibility/contact
 maintenance are excluded from this full-game path. The bounded build retains
 the previous original adapter.
 

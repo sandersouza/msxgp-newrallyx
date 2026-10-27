@@ -36,6 +36,25 @@ Session_Main:
     jp main
 Session_Check:
     IF FULL_GAME
+    ld a,7
+    call read_keys
+    and 2
+    ld b,a
+    ld a,(Full_DebugHeld)
+    xor b
+    and b
+    ld c,a
+    ld a,b
+    ld (Full_DebugHeld),a
+    ld a,c
+    or a
+    jr z,.debug_done
+    ld a,SESSION_BANK
+    ld ($7000),a
+    call $b81b
+    or a
+    jp nz,Full_NextRound
+.debug_done:
     ld a,(Full_Attract)
     or a
     jr z,.active

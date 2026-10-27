@@ -316,6 +316,7 @@ Full_CopyColdNative:
     xor a
     ld (Full_Loading),a
     ld (Full_Transitions),a
+    ld (Full_DebugHeld),a
     ld (Full_AttractClock),a
     ld (Full_AttractClock+1),a
     ld (Full_PresentEnabled),a

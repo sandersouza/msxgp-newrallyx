@@ -84,6 +84,42 @@ Full_DemoFrame:
     ld (Session_State),a
     ret
 
+; Development control: one phase per F5 edge, without score/fuel conversion.
+Full_DebugRead:
+    ld a,7
+    call read_keys
+    and 2                    ; MSX matrix row7 bit1 is F5.
+    ld b,a
+    ld a,(Full_DebugHeld)
+    xor b
+    and b
+    ld c,a
+    ld a,b
+    ld (Full_DebugHeld),a
+    ld a,c
+    or a
+    ret z
+Full_DebugAdvance:
+    ld a,(Session_State)
+    or a
+    jr nz,.ignore
+    ld a,(Full_Attract)
+    or a
+    jr nz,.ignore
+    ld a,(Death_State)
+    or a
+    jr nz,.ignore
+    ld a,(Life_State)
+    or a
+    jr nz,.ignore
+    xor a
+    ld (paused),a
+    inc a
+    ret
+.ignore:
+    xor a
+    ret
+
 Full_DrawRound:
     ld a,($e1b0)
     dec a

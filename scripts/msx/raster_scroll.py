@@ -60,8 +60,8 @@ def header(assets, encoded, score=0, high=20000, player=1, *, background=None, f
              (f'{player}UP:', white), (f'{score:06d}', cyan)]
     if full_game:
         from .full_hud import score_text,round_text
-        parts=[(' ',black),('HI: ',white),(score_text(high),red),(' ',black),
-               (f'{player}UP: ',white),(score_text(score),cyan),('   R:',white),
+        parts=[(' ',black),('HI:',white),(score_text(high),red),('  ',black),
+               (f'{player}UP:',white),(score_text(score),cyan),('    R:',white),
                (round_text(round_),white)]
     if sum(len(text) for text, _ in parts) != 32:
         raise ValueError('Scoreboard values must fit one 32-cell line')
@@ -870,7 +870,9 @@ def build(root, args):
             player_label_x=full_hud.PLAYER_LABEL_X,round_x=full_hud.ROUND_X,
             round_digits=2,round_overflow='16x8 infinity symbol above 99',
             credit_x=full_hud.CREDIT_X,credit_digits=1,credit_display_maximum=9) if full_game else None),
-        session=(dict(state_address=0xc7d0,credits_address=0xc7d2,ready_address=0xc7dd,image_bank=session_image_bank,code_bank=session_bank,keys='5 credit, 1 one-player start'+(', 2 two-player start' if full_game else '')+'; arrows/joystick1 steering, Space/Ctrl/triggerA smoke, P pause, Home reset',
+        session=(dict(state_address=0xc7d0,credits_address=0xc7d2,ready_address=0xc7dd,image_bank=session_image_bank,code_bank=session_bank,keys='5 credit, 1 one-player start'+(', 2 two-player start' if full_game else '')+'; arrows/joystick1 steering, Space/Ctrl/triggerA smoke, P pause, Home reset'+('; F5 advance one round (debug)' if full_game else ''),
+            debug_advance=(dict(key='F5',row=7,mask=2,held_address=0xdfcb,
+                behavior='One original next-round preparation per press; unpause, keep score/lives/credits, no completion award; human gameplay only') if full_game else None),
             direction_gate='Four-way, newest direction edge wins; simultaneous edges choose one direction',
             direction_state_addresses=[0xc7de,0xc7df],
             wall_protection=dict(rollover_refreshes=8,counter_address=0xc7e6,snapshot_address=0xd200,
@@ -989,7 +991,7 @@ def build(root, args):
             motion_divisor=2,player_speed_cap_pixels=2,enemy_speed_cap_pixels=1.875,
             continuous='Fractional movement with doubled enemy delta every other native tick; original lower near/far speeds; smoke immunity in native tick units; 60 Hz contact and startup/spin recovery',
             navigation_mapper=[0x3000,0x3700],decision_cells=[0xd2a8,0xd2b6],
-            contact='Inclusive ten-pixel world rectangle across all seven actors; no virtual OAM dependency') if full_game else None),
+            contact='Inclusive ten-pixel world rectangle; normal startup actors use fourteen pixels for the complete silhouette. Challenge remains ten; signed fine offsets may span two coarse cells; all seven actors, no virtual OAM dependency') if full_game else None),
         full_presentation_timing=(dict(target_hz=1/(2*video_timing(args.hz)['frame_seconds']),
             logic_hz=1/video_timing(args.hz)['frame_seconds'] if args.hz==60 else 1/.0165,
             scope='User-approved stable half-refresh presentation; original art/HUD and real sprite limits retained',

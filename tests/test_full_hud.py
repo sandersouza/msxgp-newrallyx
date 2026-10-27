@@ -20,7 +20,7 @@ class FullHUDTests(unittest.TestCase):
         black=index_for(palette,(0,0,0))
         self.assertEqual(HEADER_LEFT,8)
         for y in range(8):self.assertEqual(base[y*256:y*256+HEADER_LEFT],bytes([black])*8)
-        for field,bounds in [('score',(144,200)),('high',(40,96))]:
+        for field,bounds in [('score',(136,192)),('high',(32,88))]:
             changed=header(assets,palette,full_game=True,**{field:1234567})
             xs=[i%256 for i,(a,b) in enumerate(zip(base,changed)) if a!=b]
             self.assertTrue(xs)
@@ -28,6 +28,11 @@ class FullHUDTests(unittest.TestCase):
         self.assertEqual(header(assets,palette,score=12345678,full_game=True),
                          header(assets,palette,score=2345678,full_game=True))
         self.assertEqual(len(player_label_patterns(assets,palette,full_game=True)),64)
+
+    def test_number_cells_immediately_follow_the_label_colons(self):
+        from scripts.msx.full_hud import HIGH_FIELD_X,SCORE_FIELD_X,PLAYER_LABEL_X
+        self.assertEqual(HIGH_FIELD_X+8,HEADER_LEFT+len('HI:')*8)
+        self.assertEqual(SCORE_FIELD_X+8,PLAYER_LABEL_X+len('1UP:')*8)
 
     def test_infinity_fills_the_two_round_cells_at_the_viewport_right_edge(self):
         palette,assets=fixture();image=header(assets,palette,full_game=True,round_=100)

@@ -42,6 +42,7 @@ stages retain 50 Hz; short native-rate dips remain documented in the performance
 | Arrows / joystick1 | Four-way steering for the selected player |
 | Space / Ctrl / triggerA | Original smoke action and fuel charge |
 | P | Development pause |
+| F5 | Advance one round per press during human gameplay; resume pause, preserve score/lives, no completion award |
 | Home | Development reset |
 
 The original acquired DIP byte is `$c3`: one credit per game, three initial
@@ -95,6 +96,12 @@ end marker; hiding an earlier actor cannot terminate
 the sprite table before a later visible actor. Conservative offscreen rejection
 skips presentation work while preserving exact world/radar positions.
 
+Normal-round enemies waiting for their startup logic use an inclusive fourteen-pixel
+contact rectangle on each axis. Active/stunned enemies and challenge cars retain
+the ten-pixel bound. The coarse filter accepts two-cell differences so opposite
+signed fine offsets cannot hide a nearby car. See the
+[parked-contact, HUD and debug qualification](issue12-parked-controls.md).
+
 MSX pursuit decides once at a new cell centre using reciprocal exits. Enemies
 coast between centres and use the original fractional integrator every other
 native tick with doubled distance. Player speed is capped at two pixels per
@@ -111,6 +118,8 @@ shows seven high-score digits. Credits display one digit, capped at nine; the
 native counter still supports 255. Spare-car presentation caps at nine
 without changing native lives. Fuel retains original units and publication in
 the maze IRQ against the actual scroll latch.
+Visible score digits now immediately follow `HI:` and `1UP:`/`2UP:`; the hidden
+eighth native digit never overwrites the colon.
 Collected flags now prioritize their radar-cell publication in safe video
 intervals. Fresh smoke jobs precede retired-row repairs without increasing the
 stream budget. See [effect publication evidence](issue12-effects-publication.md)

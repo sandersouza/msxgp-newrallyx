@@ -405,10 +405,10 @@ Full_MSXContact:
     ld a,(ix+8)
     ld hl,$e070
     sub (hl)
-    inc a
-    cp 3
+    add a,2
+    cp 5                     ; Opposite fine offsets can bridge two coarse cells.
     jr nc,.next
-    dec a
+    sub 2
     ld d,a
     add a,a
     add a,d
@@ -416,20 +416,31 @@ Full_MSXContact:
     add a,a
     add a,a
     ld d,a
+    ld c,10
+    ld e,21
+    ld a,(ix+0)
+    cp $89
+    jr c,.bounds
+    ld a,($e1b0)
+    and 3
+    jr z,.bounds             ; Challenge parked cars retain the established bound.
+    ld c,14                  ; Normal startup silhouettes must not overlap freely.
+    ld e,29
+.bounds:
     ld a,(ix+5)
     add a,d
     ld hl,$e06d
     sub (hl)
-    add a,10
-    cp 21
+    add a,c
+    cp e
     jr nc,.next
     ld a,(ix+10)
     ld hl,$e072
     sub (hl)
-    inc a
-    cp 3
+    add a,2
+    cp 5
     jr nc,.next
-    dec a
+    sub 2
     ld d,a
     add a,a
     add a,d
@@ -441,8 +452,8 @@ Full_MSXContact:
     ld hl,$e06f
     sub (hl)
     sub d
-    add a,10
-    cp 21
+    add a,c
+    cp e
     jr nc,.next
     push ix
     pop hl
