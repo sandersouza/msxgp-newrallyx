@@ -7,6 +7,7 @@ from scripts.scenes.storage import json_write,require_ignored,seal
 from .build import destination
 from .emulator import reference_machine,tcl
 from .hud_verify import symbols
+from .smoke import published_tiles,verify_publication_counts
 
 
 def verify(root,args,*,kind='death'):
@@ -15,7 +16,11 @@ def verify(root,args,*,kind='death'):
     if info.get('incremental_stage',0)<6:raise ValueError('Grouped copy proof requires stage 06 or later')
     if kind=='flags' and not info.get('enemy_rendered'):raise ValueError('Grouped flag copy proof requires stage 08')
     out=destination(root,args.output);require_ignored(root,[out/'cache.bin']);out.mkdir(parents=True)
-    cases=[(x,y,b) for x in range(64) for y in (0,29,30,31) for b in (1,9)]
+    smoke_guard=kind=='smoke' and info.get('full_game',False)
+    xs=(*range(64),64,78,99) if smoke_guard else range(64)
+    ys=(0,8,9,29,30,31) if smoke_guard else (0,29,30,31)
+    cases=[(x,y,b,g) for x in xs for y in ys
+           for b in (1,9) for g in ((0,1) if smoke_guard else (0,))]
     (out/'cases.bin').write_bytes(bytes(v for c in cases for v in c))
     syms=symbols(bundle/'raster-scroll.sym')
     call,wait=syms['Smoke_Stream' if kind=='smoke' else 'Flag_StreamRows' if kind=='flags' else 'Death_StreamRows'],syms['stage_wait_command']
@@ -27,23 +32,27 @@ def verify(root,args,*,kind='death'):
         f'cart {tcl(args.rom.resolve())} -romtype ASCII16','reset',f'set out {tcl(out)}',
         'set f [open [file join $out cases.bin] rb];set cases [read $f];close $f',
         'set cache [open [file join $out cache.bin] wb];set costs [open [file join $out cycles.tsv] w];set index 0;set started 0',
+        *(['set publication [open [file join $out publication.bin] wb]'] if kind=='smoke' else []),
         'proc issue {} {',
-        ' if {$::index==[string length $::cases]/3} {close $::cache;close $::costs;exit 0;return}',
-        ' binary scan [string range $::cases [expr {$::index*3}] [expr {$::index*3+2}]] cu* c;lassign $c x y budget',
+        ' if {$::index==[string length $::cases]/4} {close $::cache;close $::costs;'+('close $::publication;' if kind=='smoke' else '')+'exit 0;return}',
+        ' binary scan [string range $::cases [expr {$::index*4}] [expr {$::index*4+3}]] cu* c;lassign $c x y budget guard',
         ' debug write_block VRAM 0 [string repeat [binary format c 170] 65536]',
         f' foreach {{a v}} [list 0xc400 {int(kind=="smoke")} 0xc418 0 0xc490 {int(kind=="death")} {ax} $x {ay} $y {jobs} {1 if kind=="smoke" else 9} 0xc602 $budget] {{debug write memory $a $v}}',
         *([' debug write_block memory 0xe400 [string repeat [binary format c 0] 1024]',
            ' debug write_block memory 0xd300 [string repeat [binary format c 0] 2048];debug write_block memory 0xdb00 [string repeat [binary format c 0] 32]',
            ' foreach {a v} [list 0xc701 1 0xc702 $x 0xc703 $y 0xc70c 0 0xc70d 1 0xc70f 0 0xc742 0 0xc5e8 0 0xc46f [expr {($x-4)&255}] 0xc470 [expr {($y-3)&255}]] {debug write memory $a $v}',
            ' for {set sy 0} {$sy<3} {incr sy} {for {set sx 0} {$sx<3} {incr sx} {debug write memory [expr {0xe400+((($y+$sy-10)&31)*32)+(($x+$sx-3)&31)}] [expr {189+$sy*3+$sx}]}}'] if kind=='smoke' else []),
+        *([f' debug write memory {syms["Stage_GuardClosed"]} $guard'] if kind=='smoke' else []),
         f' debug write memory {info.get("death",{}).get("display_state_address",0xc490)} {int(kind=="death")}',
         ' set ::begin [machine_info time];reg SP 0xc7f0;reg PC 0xc600','}',
         f'debug set_bp {syms["main"]} {{!$::started}} {{set ::started 1;',
         *[f'debug write memory {0xc600+i} {v}' for i,v in enumerate(code)],'issue','}',
         'debug set_bp 0xc609 {$::started} {',
-        *([f' if {{[debug read memory {jobs}]}} {{debug write memory {syms["Stage_GuardClosed"]} 0;reg SP 0xc7f0;reg PC 0xc600;return}}'] if kind=='smoke' else []),
+        *([f' if {{[debug read memory {jobs}] && ![debug read memory 0xc742]}} {{puts stderr "Visible smoke starved by prefetch guard";exit 2}}'] if smoke_guard else []),
+        *([f' if {{[debug read memory {jobs}]}} {{'+('' if smoke_guard else f'debug write memory {syms["Stage_GuardClosed"]} 0;')+'reg SP 0xc7f0;reg PC 0xc600;return}'] if kind=='smoke' else []),
         f' if {{[reg SP]!=0xc7f0 || [debug read memory {jobs}]!=0 || [debug read memory 0xc468]!=8'+('' if kind=='smoke' else ' || [reg B]!=0')+f'}} {{puts stderr "Grouped copy invalid case$::index SP[reg SP] jobs[debug read memory {jobs}] width[debug read memory 0xc468] B[reg B]";exit 2}}',
         ' puts -nonewline $::cache [debug read_block VRAM 0 65536]',
+        *([' puts -nonewline $::publication "[debug read_block memory 0xd300 2048][debug read_block memory 0xdb00 32]"'] if kind=='smoke' else []),
         ' puts $::costs "$::index [expr {round(([machine_info time]-$::begin)*3579545)}]"',
         ' incr ::index;issue','}',
         'set VDP.too_fast_vram_access_callback {puts stderr "Grouped death VRAM timing violation";exit 2}',
@@ -61,7 +70,7 @@ def verify(root,args,*,kind='death'):
         world=(bundle/'stage-world.bin').read_bytes();tx=3+cell%32*3;ty=3+cell//32*3
         tiles=bytes(world[(ty*8+y)*816+tx*8+x] for y in range(8) for x in range(8))*9
     with (out/'cache.bin').open('rb') as f:
-        for i,(tx,ty,budget) in enumerate(cases):
+        for i,(tx,ty,budget,guard) in enumerate(cases):
             expected=bytearray([170])*65536
             for y in range(24):
                 for x in range(24):
@@ -73,10 +82,20 @@ def verify(root,args,*,kind='death'):
         if f.read(1):raise ValueError('Extra grouped copy captures')
     costs=[int(r.split()[1]) for r in (out/'cycles.tsv').read_text().splitlines()]
     if len(costs)!=len(cases):raise ValueError('Incomplete grouped copy costs')
+    if kind=='smoke':
+        publication=(out/'publication.bin').read_bytes()
+        if len(publication)!=len(cases)*2080:raise ValueError('Incomplete smoke publication metadata')
+        for i,(x,y,_,_) in enumerate(cases):
+            data=publication[i*2080:(i+1)*2080]
+            verify_publication_counts(data[:2048],data[2048:])
+            expected={(x+dx,y+dy,dy*3+dx) for dy in range(3) for dx in range(3)}
+            if set(published_tiles(data[:2048]))!=expected:raise ValueError(f'Smoke identity metadata differs at case {i}')
     if bios!={str(p):digest(p) for p in args.bios.rglob('*') if p.is_file()}:raise ValueError('BIOS changed')
     verify_manifest(bundle)
     json_write(out/'report.json',dict(cases=len(cases),rom_sha256=digest(args.rom),cache_bytes_per_case=65536,
         kind=kind,median_cycles=statistics.median(costs),max_cycles=max(costs),strict_vram_timing=True,
+        prefetch_guard_levels=[0,1] if smoke_guard else [0],
+        smoke_publication_metadata_checked=kind=='smoke',
         scope='Assembled 24x8 grouped copies; all 64 horizontal cache tile positions, vertical wrap, small budgets, exact original pixels and unchanged surrounding canary; synthetic component harness'))
     require_ignored(root,[p for p in out.rglob('*') if p.is_file()]);seal(out)
     print(f'{len(cases)} exact grouped death/cache-wrap cases: {out}/report.json')

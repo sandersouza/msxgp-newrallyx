@@ -2,7 +2,8 @@
 ; They preserve BC/DE/HL/IX/IY and alternate registers. AF is scratch.
 ; Stable state is separate from game RAM and the keyboard producer.
 
-; HL -> six numeric digits, most significant first. C=1 on invalid digits.
+; HL -> HUD_DIGITS numeric digits, most significant first. Full-game storage
+; retains eight digits while the renderer displays seven. C=1 on invalid input.
 HUD_SetScore:
     push de
     ld de,hud_score_pending
@@ -28,7 +29,7 @@ HUD_SetHiscore:
 hud_copy_number:
     push bc
     push hl
-    ld b,6
+    ld b,HUD_DIGITS
 .validate:
     ld a,(hl)
     cp 10
@@ -38,7 +39,7 @@ hud_copy_number:
     pop hl
     push hl
     push de
-    ld b,6
+    ld b,HUD_DIGITS
     ld c,0
 .compare:
     ld a,(de)
@@ -53,7 +54,7 @@ hud_copy_number:
     pop hl
     push hl
     push af
-    ld bc,6
+    ld bc,HUD_DIGITS
     ldir
     pop af
     pop hl
@@ -171,8 +172,15 @@ hud_fuel_scale:
 
 ; Private neutral-state reset, called by HUD_Init after resource uploads.
 HUD_InitState:
+    IF FULL_GAME
     ld hl,hud_score_pending
     ld de,hud_score_pending+1
+    ld bc,31
+    ld (hl),0
+    ldir
+    ENDIF
+    ld hl,HUD_API_BASE
+    ld de,HUD_API_BASE+1
     ld bc,37
     ld (hl),0
     ldir
@@ -347,6 +355,9 @@ hud_mark_pixel:
 
 ; Scheduled after the header split. Two dirty cells per frame bound VRAM work.
 HUD_FlushFlags:
+    IF FULL_GAME
+    call Radar_AllowIRQ
+    ENDIF
     IF RADAR_BLITTER
     xor a
     ld (hud_flags_dirty),a
@@ -354,6 +365,7 @@ HUD_FlushFlags:
     ret
     ENDIF
     IF RADAR_CELLS_ONLY
+    IF !FULL_GAME
     ld a,(Radar_Initializing)
     or a
     jr nz,.cell_budget
@@ -364,6 +376,7 @@ HUD_FlushFlags:
     cp 2
     ret z
 .cell_budget:
+    ENDIF
     ld b,1                  ; Bound flag-base composition as well as marker work.
     ELSE
     ld b,2
@@ -439,7 +452,10 @@ HUD_FlushFlags:
     ret
 
 hud_render_cell:
-    IF RADAR_CELLS_ONLY
+    IF FULL_GAME
+    call Radar_AllowIRQ       ; Dynamic flag composition is RAM work.
+    ENDIF
+    IF RADAR_CELLS_ONLY && !FULL_GAME
     jp Radar_RebuildBase
     ENDIF
     ld a,HUD_DATA_BANK
@@ -482,7 +498,11 @@ hud_render_cell:
     sub 2
     ld (hud_cell_y),a
     ld hl,hud_flags
+    IF FULL_GAME
+    ld b,10
+    ELSE
     ld b,20
+    ENDIF
 .flag:
     push bc
     ld a,(hl)
@@ -492,6 +512,17 @@ hud_render_cell:
     push hl
     cp 255
     jr z,.next_flag
+    IF FULL_GAME
+    ld d,a
+    ld a,b
+    cp 1
+    jr nz,.visible_flag
+    ld hl,radar_clock
+    bit 5,(hl)
+    jr nz,.next_flag
+.visible_flag:
+    ld a,d
+    ENDIF
     ld (hud_pixel_x),a
     ld a,c
     ld (hud_pixel_y),a
@@ -511,6 +542,19 @@ hud_render_cell:
     djnz .flag
     IF RADAR_CELLS_ONLY
     call Radar_CacheCell
+    IF FULL_GAME
+    ld a,(hud_cell)
+    ld (Radar_PublishCursor),a ; Collection/blink changes precede ordinary markers.
+    call Radar_CellBit
+    ld hl,(Radar_Urgent)
+    ld a,e
+    or l
+    ld l,a
+    ld a,d
+    or h
+    ld h,a
+    ld (Radar_Urgent),hl
+    ENDIF
     jp Radar_RenderCell
     ELSE
     ; Shift both 16-row halves by one row for sentinel avoidance.
@@ -687,6 +731,9 @@ HUD_FinishCoordinates:
     jp Radar_FinishCoordinates
     ENDIF
 HUD_DrawContent:
+    IF FULL_GAME
+    call Radar_AllowIRQ
+    ENDIF
     IFDEF HUD_SCORING_METER
     xor a
     ld (Score_HudPairs),a
@@ -706,7 +753,11 @@ HUD_DrawContent:
     call HUD_ContentWindow
     ret c
     ENDIF
+    IF FULL_GAME
+    ret
+    ELSE
     jp HUD_FlushFlags
+    ENDIF
 
     IF RADAR_CELLS_ONLY
 HUD_ContentWindow:
@@ -716,10 +767,15 @@ HUD_ContentWindow:
     or a
     jr nz,.ready
     ld a,(raster_phase)
+    IF FULL_GAME
+    cp 1
+    jr z,.ready
+    ELSE
     cp 3
     jr z,.ready
     cp 4
     jr z,.ready
+    ENDIF
     scf
     ret
 .ready:
@@ -798,6 +854,9 @@ HUD_Prime:
     ENDIF
     call HUD_PrepareFrame
 .drain:
+    IF FULL_GAME
+    call HUD_FlushFlags
+    ENDIF
     call HUD_DrawContent
     ld hl,(hud_flags_dirty)
     ld a,h
@@ -848,11 +907,19 @@ hud_draw_player_number:
     add hl,de
     ld a,HUD_DATA_BANK
     ld ($7000),a
+    IF !FULL_GAME
     vdp_write 14,4
+    ENDIF
     ld de,PLAYER_LABEL_X/2
     ld a,8
 .row:
     push af
+    IF FULL_GAME
+    ei
+    nop
+    di
+    vdp_write 14,4            ; The radar ISR may have changed R14 between glyph rows.
+    ENDIF
     ld a,e
     out ($99),a
     ld a,d

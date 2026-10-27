@@ -18,10 +18,17 @@ fuel_sat         EQU HUD_WORK_BASE+$280
 life_sat         EQU HUD_WORK_BASE+$290
 hud_player_x         EQU HUD_WORK_BASE+$0c0
 hud_player_y         EQU HUD_WORK_BASE+$0c1
+    IF FULL_GAME
+hud_score_pending EQU $d110
+hud_high_pending EQU $d118
+hud_score_drawn EQU $d120
+hud_high_drawn EQU $d128
+    ELSE
 hud_score_pending    EQU HUD_API_BASE+$000
 hud_high_pending     EQU HUD_API_BASE+$006
 hud_score_drawn      EQU HUD_API_BASE+$00c
 hud_high_drawn       EQU HUD_API_BASE+$012
+    ENDIF
 hud_score_dirty      EQU HUD_API_BASE+$018
 hud_high_dirty       EQU HUD_API_BASE+$019
 hud_score_turn       EQU HUD_API_BASE+$01a

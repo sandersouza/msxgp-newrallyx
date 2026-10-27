@@ -37,6 +37,11 @@ Fuel_Tick:
     ld hl,Fuel_SpeedClock
     inc (hl)
     ld a,(hl)
+    IF FULL_GAME
+    and 7
+    call z,$8472            ; Original acceleration toward the selected forward speed.
+    ld a,(Fuel_SpeedClock)
+    ENDIF
     and 63
     call z,$8482            ; original empty deceleration, once per 64 ticks
     ld a,(Fuel_Work)

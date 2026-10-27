@@ -129,6 +129,10 @@ Flag_Update:
 
     IF ENEMY_COUNT
 Flag_PublishHUD:
+    IF FULL_GAME
+    ei
+    nop
+    ENDIF
     IF HUD_ENABLED
     ld a,(Flag_HudPending)
     or a
@@ -336,7 +340,11 @@ Flag_StreamRows:
     pop bc
     ret
     ENDIF
+    IF FULL_GAME
+Flag_Records EQU $df80
+    ELSE
 Flag_Records:
     INCBIN "flag-records.bin"
     ASSERT $-Flag_Records == 60
+    ENDIF
     ENDIF

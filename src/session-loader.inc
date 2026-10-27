@@ -8,7 +8,11 @@ Session_Edges EQU $c7dc
 Session_Ready EQU $c7dd
 Session_HeldDirections EQU $c7de
 Session_SelectedDirection EQU $c7df
+    IF FULL_GAME
+Session_Digits EQU $d140
+    ELSE
 Session_Digits EQU $c7e0
+    ENDIF
 Session_WallBlocks EQU $c7e6
 Session_RiskFrames EQU $c7e8
 Session_GuardActive EQU $c7e9
@@ -31,12 +35,43 @@ Session_Main:
     ld (frame_tick),a
     jp main
 Session_Check:
+    IF FULL_GAME
+    ld a,7
+    call read_keys
+    and 2
+    ld b,a
+    ld a,(Full_DebugHeld)
+    xor b
+    and b
+    ld c,a
+    ld a,b
+    ld (Full_DebugHeld),a
+    ld a,c
+    or a
+    jr z,.debug_done
+    ld a,SESSION_BANK
+    ld ($7000),a
+    call $b81b
+    or a
+    jp nz,Full_NextRound
+.debug_done:
+    ld a,(Full_Attract)
+    or a
+    jr z,.active
+    ld a,SESSION_BANK
+    ld ($7000),a
+    jp $b818
+.active:
+    ENDIF
     ld a,(Life_State)
     cp 2
     jr z,.finished
     ld a,(Round_State)
     cp 3
     ret nz
+    IF FULL_GAME
+    jp Full_NextRound
+    ENDIF
 .finished:
     ld (Session_State),a
     ret

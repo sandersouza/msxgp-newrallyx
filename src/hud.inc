@@ -1,4 +1,5 @@
 ; Renderer integration contract: src/hud-api.inc and docs/hud.md.
+    IF !FULL_GAME
 HUD_Init:
     IF INCREMENTAL_STAGE >= 9
     ld a,HUD_DATA_BANK
@@ -61,6 +62,7 @@ HUD_Init:
     jp HUD_InitState
     ENDIF
 
+    ENDIF
 ; Reusable SCREEN 5 HUD implementation. Public entries/state: hud-api.inc.
 ; Rendering calls run in the renderer's scheduled VDP phases with DI.
 update_lives:
@@ -193,6 +195,7 @@ update_lives:
     ret
     ENDIF
 
+    IF !FULL_GAME
 point_attribute:
     ld a,e
     and $f8
@@ -413,9 +416,11 @@ point_rows:
     ret
 point_masks:
     db $c0,0,$60,0,$30,0,$18,0,$0c,0,6,0,3,0,1,$80
+    ENDIF
 
 update_fuel_sat:
     ld a,(scroll_y)
+update_fuel_sat_value:
     add a,FUEL_Y-1
     ld d,a
     ld e,132
@@ -455,6 +460,9 @@ update_fuel_sat:
     ret
 
 update_fuel:
+    IF FULL_GAME
+    call Radar_AllowIRQ
+    ENDIF
     IF HUD_ALERTS
     ld a,(hud_fuel_pixels)
     ld c,a
@@ -562,6 +570,7 @@ HUD_FuelPublishIRQ:
 
 update_life_sat:
     ld a,(scroll_y)
+update_life_sat_value:
     add a,LIFE_Y-1
     ld d,a
     ld e,156
@@ -670,6 +679,12 @@ update_life_digit:
     inc hl
     inc de
     djnz .glyph
+    IF FULL_GAME
+    ld de,$7d60              ; Both complete phases, with IRQ-safe pointer resumption.
+    ld b,64
+    ld hl,point_buffer
+    jp Sprite_Upload
+    ELSE
     vdp_write 14,7
     ld a,$60                  ; pattern 172, normal and shifted
     out ($99),a
@@ -679,8 +694,12 @@ update_life_digit:
     ld bc,$4098
     otir
     ret
+    ENDIF
 
 HUD_FlushNumbers:
+    IF FULL_GAME
+    call Radar_AllowIRQ
+    ENDIF
     IF INCREMENTAL_STAGE >= 9
     ld a,(hud_force)
     or a
@@ -745,7 +764,7 @@ HUD_FlushNumbers:
     ld (hud_high_dirty),a
     ld hl,hud_high_pending
     ld de,hud_high_drawn
-    ld bc,36
+    ld bc,HIGH_X/2
     ld ix,$9d00
 .field:
     ld (hud_field_pending),hl
@@ -815,7 +834,7 @@ HUD_FlushNumbers:
     ld a,(hud_field_index)
     inc a
     ld (hud_field_index),a
-    cp 3
+    cp HUD_DIGITS/2
     jr nz,.pair
     ret
 hud_number_due:
@@ -832,6 +851,9 @@ hud_number_due:
 .yes:
     or a
     ret
+    IF FULL_GAME
+hud_write_pair EQU Full_HUDWritePair
+    ELSE
 hud_write_pair:
     IF INCREMENTAL_STAGE < 9
     vdp_write 14,4
@@ -862,6 +884,7 @@ hud_write_pair:
     dec a
     jr nz,.row
     ret
+    ENDIF
 
     INCLUDE "hud-api.inc"
     INCLUDE "hud-native.inc"

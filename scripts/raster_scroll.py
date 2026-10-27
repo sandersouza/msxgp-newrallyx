@@ -47,6 +47,8 @@ def main(argv=None):
     parser.add_argument('--enemy-logic-only', action='store_true', help='Stage 08 control without enemy graphics/contact effects')
     parser.add_argument('--smoke-component', action='store_true', help='Link original smoke/expiry logic for an isolated proof; no gameplay smoke yet')
     parser.add_argument('--completion-component', action='store_true', help='Link bounded remaining-fuel completion converter for isolated original proof')
+    parser.add_argument('--round-component', action='store_true', help='Stage12 isolated original next-round preparation proof; gameplay transitions stay bounded')
+    parser.add_argument('--full-game', action='store_true', help='Development complete-game integration with dynamic original rounds')
     parser.add_argument('--smoke-stress', action='store_true', help='Repeat Space smoke during the steering regression, or extend the stage10 smoke route with firing and rock death/restart')
     parser.add_argument('--natural-game-over', action='store_true', help='Session proof waits for all three real enemy deaths before its isolated UI edge cases')
     parser.add_argument('--lucky-first', action='store_true', help='Completion route collects L first to stress its fuel bonus and header split')

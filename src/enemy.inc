@@ -7,35 +7,63 @@ Enemy_Visible EQU $c5d2
 Enemy_Init:
     xor a
     ld (Enemy_Contact),a
+    IF !FULL_GAME
     ld (Enemy_Visible),a
+    ENDIF
+    IF FULL_GAME
+    ld ($e3f1),a
+    ld ($e3f8),a
+    ld hl,Full_MSXDecision
+    ld de,Full_MSXDecision+1
+    ld bc,13
+    ld (hl),255
+    ldir
+    ENDIF
     dec a
     ld (Enemy_Drawn),a
+    IF !FULL_GAME
     ld a,ENEMY_COUNT
     ld ($e24e),a
+    ENDIF
     ld hl,$2d0a
     ld ($e052),hl
     ld hl,0
     ld ($e054),hl
     call $8ab5              ; original eight descriptors and six virtual slots
+    IF !FULL_GAME
     call $95bd              ; original initial visible-slot registration
+    ENDIF
 Enemy_InitDone:
     ret
 Enemy_PreMove:
+    IF FULL_GAME
+    ret                     ; MSX presentation/contact do not consume arcade OAM.
+    ELSE
     ld ix,$e814
     ld hl,$e015
     ld iy,$e002
     ld b,6
     jp $822b                ; original RAM-only OAM cleanup, return before IRQ
+    ENDIF
 Enemy_AfterMove:
     xor a
     ld (Enemy_Contact),a
+    IF FULL_GAME
+    call $b603              ; World-space contact, including all active enemies.
+    ELSE
     ld ix,$e068
     ld iy,$e004
     ld b,5
     call $838a              ; original strict +/-10 pixel contact on both axes
+    ENDIF
     ld a,(Enemy_Contact)
     or a
+    IF FULL_GAME
+    call z,$b600            ; MSX decisions at cell centres; continuous native motion.
+    ELSE
     call z,$8cd6            ; source AI does not run after a collision transfer
+    ENDIF
+Enemy_CameraOnly:
     ld a,($e050)
     add a,7
     cp 15
@@ -44,7 +72,9 @@ Enemy_AfterMove:
     add a,7
     cp 15
     call nc,$9207
+    IF !FULL_GAME
     call $95bd              ; six original virtual sprite entries, not MSX SAT
+    ENDIF
 Enemy_AfterMoveDone:
     ret
 
@@ -66,12 +96,18 @@ Enemy_Body EQU $c5e2
 Enemy_Window EQU $c5e3
 Enemy_LastEC EQU $c5e4
 Enemy_Index EQU $c5e5
+    IF FULL_GAME
+Enemy_TopRow EQU $c5e6
+Enemy_CacheTop EQU $c5e7
+Enemy_SAT EQU $c5e8          ; Codegen field names only; FULL_GAME uses IX records.
+    ELSE
 Enemy_RadarWork EQU $c5e6
 Enemy_GuardClosed EQU $c5e8
 Enemy_RadarSource EQU $c5ea
 Enemy_TopRow EQU $c5ec
 Enemy_CacheTop EQU $c5ed
 Enemy_SAT EQU $c600
+    ENDIF
 Enemy_Masks EQU $c620
 
 ; Eleven normal frames occupy otherwise unused pattern groups. The final group

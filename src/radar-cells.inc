@@ -3,7 +3,19 @@
 ; RAM base masks retain white scenery; only dirty cells are recomposed.
 Radar_Base EQU $c800
 Radar_Colors EQU $c240
+    IF FULL_GAME
+Radar_Last EQU $c640
+Radar_Next EQU $c650
+Radar_PublishedPoints EQU $db40 ; 12 cells * 16 bytes; smoke rows end DB40
+Radar_StagedVisibility EQU $ce00
+Radar_WorkVisibility EQU $ce0c
+    ELSE
 Radar_Last EQU $cf00            ; player, enemy1, enemy2: packed X/Y pairs
+Radar_Next EQU $cf20
+Radar_PublishedPoints EQU $cf60
+Radar_StagedVisibility EQU $cd88
+Radar_WorkVisibility EQU $cd94
+    ENDIF
 Radar_Dirty EQU $cf08
 Radar_Cell EQU $cf0a
 Radar_PlotColor EQU $cf0b
@@ -21,7 +33,6 @@ Radar_PublishChecked EQU $cf17
 Radar_PendingCell EQU $cf18
 Radar_Scanned EQU $cf19
 Radar_CoordinateSource EQU $cf1e
-Radar_Next EQU $cf20
 Radar_DeferAge EQU $cf28
 Radar_DrawBuffer EQU $cf2a
 Radar_DrawShift EQU $cf2c
@@ -34,12 +45,13 @@ Radar_PlayerVisible EQU $cf3a
 Radar_PlayerColor EQU $cf3b
 Radar_PlayerColors EQU $cf3c
 Radar_PlayerColorDrawn EQU $cf3f
-Radar_PublishedPoints EQU $cf60
 Radar_BaseVisibility EQU $cfa8
 Radar_Payloads EQU $c980          ; twelve80-byte normal/shift/color payloads
 Radar_StagedPoints EQU $cd40
-Radar_StagedVisibility EQU $cd88
-Radar_WorkVisibility EQU $cd94
+    IF FULL_GAME
+Radar_Urgent EQU $ce18            ; two bytes after the flag-visibility work arrays
+Radar_Cleanup EQU $ce1a           ; enemy footprints crossing or straddling cells
+    ENDIF
 
 Radar_Init:
     ld a,1
@@ -63,7 +75,11 @@ Radar_Init:
     ld bc,384
     ldir
     ld hl,Radar_Last
+    IF FULL_GAME
+    ld b,16
+    ELSE
     ld b,6
+    ENDIF
     ld a,255
     ld (Radar_PendingCell),a
 .last:
@@ -76,6 +92,12 @@ Radar_Init:
     ld (Radar_PublishAge),a
     ENDIF
     ld (Radar_Scanned),a
+    IF FULL_GAME
+    ld (Radar_Urgent),a
+    ld (Radar_Urgent+1),a
+    ld (Radar_Cleanup),a
+    ld (Radar_Cleanup+1),a
+    ENDIF
     ld (Radar_Dirty),a
     ld (Radar_Dirty+1),a
     ld (Radar_ScanCell),a
@@ -94,7 +116,11 @@ Radar_Init:
     ldir
     ld hl,Radar_PublishedPoints
     ld de,Radar_PublishedPoints+1
+    IF FULL_GAME
+    ld bc,191
+    ELSE
     ld bc,71
+    ENDIF
     ld (hl),255
     ldir
     ret
@@ -106,6 +132,14 @@ Radar_UpdatePoints:
     ld (Radar_Next),hl
     ld (point_x),hl
     ENDIF
+    IF FULL_GAME
+    ld hl,$ffff
+    ld (Radar_Next),hl       ; Independent player sprite owns its own marker.
+    ld hl,Full_EnemyPoints
+    ld de,Radar_Next+2
+    ld bc,14
+    ldir
+    ELSE
     ld hl,(hud_enemy_x)
     ld (Radar_Next+2),hl
     ld (enemy_x),hl
@@ -115,6 +149,7 @@ Radar_UpdatePoints:
     ld hl,$ffff
     ENDIF
     ld (Radar_Next+4),hl
+    ENDIF
     ld a,BLACK
     ld (point_color),a
     ld a,RADAR_CACHE_BANK
@@ -122,7 +157,11 @@ Radar_UpdatePoints:
     IF RADAR_PLAYER_SPRITE
     ld ix,Radar_Last+2
     ld hl,Radar_Next+2
+    IF FULL_GAME
+    ld b,7
+    ELSE
     ld b,2
+    ENDIF
     ELSE
     ld ix,Radar_Last
     ld hl,Radar_Next
@@ -154,12 +193,18 @@ Radar_UpdatePoints:
     push bc
     push hl
     push de
+    IF FULL_GAME
+    ld b,(ix)
+    ld c,(ix+1)
+    call Full_RadarDeparture
+    ELSE
     ld d,(ix)
     ld e,(ix+1)
     call Radar_Mark
     pop de
     push de
     call Radar_Mark
+    ENDIF
     pop de
     ld (ix),d
     ld (ix+1),e
@@ -172,6 +217,15 @@ Radar_UpdatePoints:
     ret
 
 Radar_Prepare:
+    IF FULL_GAME
+    ld hl,(Radar_Cleanup)
+    ld de,(Radar_Urgent)
+    ld a,h
+    or l
+    or d
+    or e
+    jr nz,Radar_PrepareQueued ; Finish the old footprint before accepting another pose.
+    ENDIF
     call Radar_UpdatePoints
 Radar_PrepareQueued:
     xor a
@@ -184,6 +238,16 @@ Radar_PrepareQueued:
     ld a,(paused)
     or a
     jr nz,.budget_ready
+    IF FULL_GAME
+    ld hl,(Radar_Cleanup)
+    ld a,h
+    or l
+    jr nz,.budget_ready      ; Erase a departed footprint before publishing another.
+    ld a,(player_steps)
+    cp 2
+    jr z,.defer
+    jr .budget_ready         ; Complete queued payloads provide backpressure below.
+    ELSE
     IF (ENEMY_COUNT >= 2 && !STAGE_TILE_STRIPS) || SMOKE_RUNTIME
     ; Let terrain catch up before optional marker composition. Dirty markers
     ; remain queued and retain the existing sixteen-refresh acceptance limit.
@@ -216,6 +280,7 @@ Radar_PrepareQueued:
     ld (Radar_DeferAge),a
     cp 2
     jr nc,.budget_ready      ; Terrain pressure cannot permanently starve markers.
+    ENDIF
     ENDIF
 .defer:
     xor a
@@ -274,7 +339,11 @@ Radar_PrepareQueued:
     ld (Radar_Checked),a
     jr nz,.cell
 .done:
+    IF FULL_GAME
+    call Radar_AllowIRQ
+    ELSE
     di
+    ENDIF
     ret
 
 ; The same pending mask determines tail reservation and actual composition.
@@ -310,6 +379,31 @@ Radar_DirtyMask:
     and h
     and 15
     ld h,a
+    IF FULL_GAME
+    ; A queued cell already has a complete payload. Retain later point dirt
+    ; until that payload is published instead of composing it repeatedly.
+    ld de,(Radar_Ready)
+    ld a,e
+    cpl
+    and l
+    ld l,a
+    ld a,d
+    cpl
+    and h
+    ld h,a
+    ld de,(Radar_Cleanup)
+    ld a,e
+    and l
+    ld c,a
+    ld a,d
+    and h
+    ld b,a
+    or c
+    jr z,.selected_dirty
+    ld h,b
+    ld l,c
+.selected_dirty:
+    ENDIF
     ld a,h
     or l
     ret
@@ -340,6 +434,7 @@ Radar_PrepareTail:
 
 Radar_CellBit:
     ld a,(hud_cell)
+Radar_CellBitA:
     ld l,a
     ld h,0
     add hl,hl
@@ -361,10 +456,12 @@ Radar_EarlyCoordinates:
     call Radar_AllowIRQ
     IF RADAR_PLAYER_SPRITE
     call Radar_PlayerCoordinates
+    IF !FULL_GAME
     ld hl,Radar_PlayerSAT
     ld de,$7600
     ld b,4
     call Sprite_Upload
+    ENDIF
     ENDIF
     ld a,RADAR_SAT_BANK
     ld ($7000),a
@@ -388,6 +485,9 @@ Radar_EarlyCoordinates:
     ld de,$8000
     add hl,de
     ld (Radar_CoordinateSource),hl
+    IF FULL_GAME
+    ret                     ; Maze IRQ owns every fixed-screen radar SAT entry.
+    ELSE
     IF RADAR_PLAYER_SPRITE
     ld de,4
     add hl,de
@@ -395,6 +495,7 @@ Radar_EarlyCoordinates:
     ld de,$7600+RADAR_MAP_SLOT*4
     ld b,12                 ; First radar band precedes every moving actor upload.
     jp Sprite_Upload
+    ENDIF
 Radar_FinishCoordinates:
     call Radar_AllowIRQ
     ld a,RADAR_SAT_BANK
@@ -408,11 +509,15 @@ Radar_FinishCoordinates:
     ldir
     call update_life_sat
     pop hl                   ; Body attributes stream directly from the ROM table.
+    IF FULL_GAME
+    ret
+    ELSE
     ld de,12+RADAR_MAP_SLOT*4
     add hl,de
     ld de,$760c+RADAR_MAP_SLOT*4
     ld b,48
     jp Sprite_Upload
+    ENDIF
 
     IF RADAR_PLAYER_SPRITE
 Radar_PlayerCoordinates:
@@ -534,6 +639,7 @@ Radar_BaseAddress:
 
 ; The current board has at most two flags touching any cell. Precomputed exact
 ; frame/flag subsets avoid rescanning and plotting all20 HUD slots on removal.
+    IF !FULL_GAME
 Radar_RebuildBase:
     ld a,RADAR_CACHE_BANK
     ld ($7000),a
@@ -610,8 +716,12 @@ Radar_FlagVisible:
     ret
 Radar_FlagOffsets:
     INCBIN "radar-cell-flag-offsets.bin"
+    ENDIF
 
 Radar_RenderCell:
+    IF FULL_GAME
+    call Full_RadarBegin      ; Retire the previous payload before writing any replacement.
+    ENDIF
     call Radar_AllowIRQ
     ld hl,Radar_CellsWork
     inc (hl)
@@ -658,7 +768,11 @@ Radar_RenderCell:
     ld (hl),WHITE|$20
     ldir
     ld hl,Radar_Last+2
+    IF FULL_GAME
+    ld b,7
+    ELSE
     ld b,2
+    ENDIF
 .enemy:
     ld d,(hl)
     inc hl
@@ -727,20 +841,34 @@ Radar_BufferAddress:
     ld de,Radar_Payloads
     add hl,de
     ret
+    IF FULL_GAME
+Radar_Commit EQU Full_RadarCommit
+    ELSE
 Radar_Commit:
     ld a,(hud_cell)
     ld l,a
     ld h,0
+    IF FULL_GAME
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    ELSE
     add hl,hl
     ld d,h
     ld e,l
     add hl,hl
     add hl,de
+    ENDIF
     ld de,Radar_StagedPoints
     add hl,de
     ex de,hl
     ld hl,Radar_Last
+    IF FULL_GAME
+    ld bc,16
+    ELSE
     ld bc,6
+    ENDIF
     ldir
     ld a,(hud_cell)
     ld l,a
@@ -772,10 +900,14 @@ Radar_Commit:
     ld (Radar_Ready),hl
     di
     ret
+    ENDIF
 
 ; A cell is uploaded only after its last raster line. The CPU state that
 ; describes the visible points advances at the next frame boundary.
 Radar_WaitPublish:
+    IF FULL_GAME
+    ret                     ; Full-game payloads are consumed only by VBlank.
+    ELSE
     IF PLAYER_FAST_BLITTER
     ; Retain terrain priority in this unaccepted integration experiment.
     ld a,(row_left)
@@ -829,6 +961,7 @@ Radar_WaitPublish:
 .ready:
     di
     jp Radar_PublishReady
+    ENDIF
 
 Radar_PublishReady:
     call Radar_AllowIRQ
@@ -840,17 +973,30 @@ Radar_PublishReady:
     ld a,(paused)
     or a
     jr nz,.budget_ready
+    IF FULL_GAME
+    jr .budget_ready        ; One bounded publication; elapsed simulation has its own budget.
+    ELSE
     ld hl,(player_rate)
     ld de,PLAYER_RATE
     add hl,de
     jr nc,.budget_ready
     di
     ret                     ; preserve CPU room for the predicted second tick
+    ENDIF
 .initial:
     ld a,12
     ld (Radar_PublishBudget),a
 .budget_ready:
+    IF FULL_GAME
+    ld hl,(Radar_Urgent)
+    ld a,h
+    or l
+    jr nz,.selected
+    ENDIF
     ld hl,(Radar_Ready)
+    IF FULL_GAME
+.selected:
+    ENDIF
     ld a,h
     or l
     jr z,.done
@@ -902,6 +1048,10 @@ Radar_PublishReady:
     ld (Radar_PublishChecked),a
     jr nz,.cell
 .done:
+    IF FULL_GAME
+    ld hl,Radar_Scanned
+    set 7,(hl)               ; Retain the publication bit through the close IRQ.
+    ENDIF
     di
     ret
 
@@ -946,9 +1096,13 @@ Radar_UploadCell:
     call Radar_AllowIRQ       ; Metadata commits do not touch VDP control ports.
     ld a,(hud_cell)
     ld (Radar_PendingCell),a
+    IF FULL_GAME
+    call Radar_CommitPublished ; The full payload is already in VRAM; retire its staging slot.
+    ELSE
     ld a,(Radar_Initializing)
     or a
     call nz,Radar_CommitPublished
+    ENDIF
     call Radar_CellBit
     ld hl,(Radar_Ready)
     ld a,e
@@ -960,6 +1114,19 @@ Radar_UploadCell:
     and h
     ld h,a
     ld (Radar_Ready),hl
+    IF FULL_GAME
+    call Radar_CellBit
+    ld hl,(Radar_Urgent)
+    ld a,e
+    cpl
+    and l
+    ld l,a
+    ld a,d
+    cpl
+    and h
+    ld h,a
+    ld (Radar_Urgent),hl
+    ENDIF
     ret
 
 Radar_CommitPublished:
@@ -972,11 +1139,18 @@ Radar_CommitPublished:
     ld a,(hud_cell)
     ld l,a
     ld h,0
+    IF FULL_GAME
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    add hl,hl
+    ELSE
     add hl,hl
     ld d,h
     ld e,l
     add hl,hl
     add hl,de
+    ENDIF
     ld de,Radar_StagedPoints
     add hl,de
     push hl
@@ -984,7 +1158,11 @@ Radar_CommitPublished:
     add hl,de
     ex de,hl
     pop hl
+    IF FULL_GAME
+    ld bc,16
+    ELSE
     ld bc,6
+    ENDIF
     ldir
     ld a,(hud_cell)
     ld l,a
@@ -1152,3 +1330,7 @@ Radar_Next16:
 Radar_Origins:
     db 0,254,16,255,32,0,0,13,16,14,32,15
     db 0,28,16,29,32,30,0,43,16,44,32,45
+    IF FULL_GAME
+Full_RadarHiddenPoint:
+    db 255,192
+    ENDIF

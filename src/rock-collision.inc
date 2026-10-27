@@ -21,6 +21,16 @@ Rock_Update:
     ; PLAYER_BANK is already mapped by Player_Advance, as for movement/steering.
     call $9774
     ld (Rock_ProbeCell),de
+    IF FULL_GAME
+    ld a,($e251)
+    or a
+    jr nz,.dynamic
+    ld (Rock_Contact),a
+    ret
+.dynamic:
+    ld b,a
+    ld hl,($e996)
+    ELSE
     IF ROCK_COUNT == 0
     xor a
     ld (Rock_Contact),a
@@ -28,6 +38,9 @@ Rock_Update:
     ELSE
     ld hl,Rock_Cells
     ld b,ROCK_COUNT
+    ENDIF
+    ENDIF
+    IF FULL_GAME || ROCK_COUNT != 0
     ld c,1
 .next:
     ld a,(hl)

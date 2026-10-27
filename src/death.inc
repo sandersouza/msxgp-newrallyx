@@ -136,8 +136,12 @@ Death_Stream:
     call Player_Patch
     call Player_Draw
     IF ENEMY_RENDER
+    IF FULL_GAME
+    call Full_EnemyFrameRestart
+    ELSE
     call Enemy_Prepare
     call Enemy_Draw
+    ENDIF
     ENDIF
     pop bc
     IF INCREMENTAL_STAGE >= 6

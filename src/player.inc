@@ -26,10 +26,31 @@ player_patch_work EQU $c471
 player_steps EQU $c472
 
 Player_Init:
+    IF FULL_GAME
+    ld a,(Full_Loading)
+    cp 2
+    jr nz,.not_restoring
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call $ae06
+    call Full_RestoreFlagCells
+    jp Player_RestartNative
+.not_restoring:
+    ENDIF
     IF INCREMENTAL_STAGE >= 7
     ld a,(Life_Restarting)
     or a
     jp nz,Player_RestartNative
+    ENDIF
+    IF FULL_GAME
+    ld a,(Full_Loading)
+    or a
+    jr z,.fresh
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call $ae03
+    jr .systems
+.fresh:
     ENDIF
     ld a,PLAYER_DATA_BANK
     ld ($7000),a
@@ -37,8 +58,15 @@ Player_Init:
     ld de,$e000
     ld bc,4096
     ldir
+    IF FULL_GAME
+    call Full_CopyPresentation
+    ENDIF
     ld a,PLAYER_BANK
     ld ($7000),a
+    IF FULL_GAME
+    call $ae00
+.systems:
+    ENDIF
     IF INCREMENTAL_STAGE >= 2
     call Rock_Init
     ENDIF
@@ -110,13 +138,28 @@ Player_Advance:
     or a
     ret nz
     ld a,(player_steps)
+    IF FULL_GAME
+    cp 2
+    ret c
+    dec a
+    ld b,a
+    ELSE
     cp 2
     ret nz
+    ENDIF
     ld a,PLAYER_BANK
     ld ($7000),a
     ei
     nop
+    IF FULL_GAME
+.tick:
+    push bc
+    ENDIF
     call Player_Tick
+    IF FULL_GAME
+    pop bc
+    djnz .tick
+    ENDIF
     IF ENEMY_RENDER
     call Player_Position
     di
@@ -168,14 +211,33 @@ Player_AdvanceEarly:
     ld a,(driving)
     or a
     ret z
+    IF FULL_GAME
+    call Full_ClockFrame
+    ENDIF
     ld a,(paused)
     or a
     ret nz
+    IF FULL_GAME
+    ld a,1
+    ld (player_steps),a
+    xor a
+    ld (Fuel_ConsumeWork),a
+    call Player_Position      ; Snapshot the completed simulation, before new ticks.
+    di
+    ret
+    ELSE
     IF SMOKE_RUNTIME
     xor a
     ld (player_steps),a
     call Smoke_CachePressure
     ret nz                  ; Keep this coherent scene while hidden guards catch up.
+    ENDIF
+    IF FULL_GAME
+    ld a,(Full_ClockDue)
+    or a
+    ret z
+    dec a
+    ld (Full_ClockDue),a
     ENDIF
     call Player_Input
     ld a,PLAYER_BANK
@@ -187,11 +249,23 @@ Player_AdvanceEarly:
     ei
     nop
     call Player_Tick
+    IF FULL_GAME
+    xor a                    ; The other physical tick runs after sealing.
+    ld b,a
+    ld a,(Full_ClockDue)
+    sub b
+    ld (Full_ClockDue),a
+    ld a,b
+    inc a
+    ld (player_steps),a
+    jr .ready
+    ELSE
     ld hl,(player_rate)
     ld de,PLAYER_RATE
     add hl,de
     ld (player_rate),hl
     jr nc,.ready
+    ENDIF
     ld a,2
     ld (player_steps),a
 .ready:
@@ -207,7 +281,15 @@ Player_AdvanceEarly:
     ENDIF
     ENDIF
 
+    ENDIF
 Player_Tick:
+    IF FULL_GAME
+    ld hl,Full_LoopTicks      ; Count all native work in this presentation loop.
+    inc (hl)
+    call Full_TurboOn
+    call $8f24              ; Original IRQ PRNG advances in active/hold/bonus phases.
+    call $83fd              ; Original round phase clock shares the same tick.
+    ENDIF
     IF COMPLETION_RUNTIME
     ld a,(Round_State)
     or a
@@ -231,6 +313,15 @@ Player_AfterFuel:
     or a
     jr nz,Player_CountTick
     ENDIF
+    IF FULL_GAME
+    ld a,(player_native_ticks)
+    and 1
+    jr z,.motion_tick
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp Full_MSXIdleTick
+.motion_tick:
+    ENDIF
     IF ENEMY_COUNT
     call Enemy_PreMove
 Player_AfterEnemyCleanup:
@@ -245,6 +336,9 @@ Player_AfterEnemyCleanup:
     ld a,PLAYER_BANK
     ld ($7000),a
     ENDIF
+    IF FULL_GAME
+    call Full_MSXPlayerSpeed
+    ENDIF
     call $8069               ; Original fractional movement, then steering/wall probes.
     IF SMOKE_RUNTIME
     call Smoke_Tick
@@ -255,6 +349,9 @@ Player_AfterEnemyCleanup:
     or a
     call nz,Player_ValidateMotion
     ENDIF
+    IF FULL_GAME
+    call Full_MSXAnimationTick
+    ELSE
     ld hl,player_animation
     inc (hl)
     ld a,(hl)
@@ -263,6 +360,7 @@ Player_AfterEnemyCleanup:
     ld (hl),0
     call $9ddf              ; Original twelve-angle steering animation.
 .done:
+    ENDIF
     IF ENEMY_COUNT
     call Enemy_AfterMove
     ENDIF
@@ -283,12 +381,28 @@ Player_AfterFlag:
     call Death_Begin
 Player_CountTick:
     ENDIF
+    IF FULL_GAME
+    xor a
+    ld (Full_CellRejectedValid),a ; Rejections cannot survive native smoke/object changes.
+    ENDIF
     ld hl,(player_native_ticks)
     inc hl
     ld (player_native_ticks),hl
+    IF FULL_GAME
+    jp Full_TurboOff
+    ENDIF
     ret
 
 Player_Input:
+    IF FULL_GAME
+    ld a,(Full_Attract)
+    or a
+    jr z,.human
+    ld a,255
+    ld ($e3f0),a
+    ret
+.human:
+    ENDIF
     ; Native active-low joystick bits: up/down/right/left = 5/4/3/2.
     ld b,255
     ld a,(dy)
@@ -372,6 +486,14 @@ Player_Position:
     ld (player_pending_y),hl
     ret
 Player_Apply:
+    IF FULL_GAME
+    ld a,(Full_CacheReady)
+    or a
+    jp nz,Full_PlayerApply
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp $b60c
+    ELSE
     ld hl,(player_pending_x)
     ld (player_x),hl
     ld de,-VIEWPORT_HALF
@@ -383,6 +505,7 @@ Player_Apply:
     add hl,de
     ld (world_y),hl
     ret
+    ENDIF
 Player_AxisY:
     ld c,(hl)
     ld h,0
@@ -444,6 +567,9 @@ Player_Radar:
     ENDIF
 
 Player_Draw:
+    IF FULL_GAME
+    call Full_TurboOff      ; Death redraw can follow pure terrain/actor work.
+    ENDIF
     IF PLAYER_BLITTER
     IF INCREMENTAL_STAGE >= 9
     ld a,($e077)
@@ -555,6 +681,7 @@ Player_Draw:
     nop
     ENDIF
     ld a,(scroll_y)
+.sat_value:
     add a,107                ; Logical centre=(132,116); fixed R18 centres at128.
     ld b,180
     cp 216
@@ -581,6 +708,9 @@ Player_Draw:
     inc hl
     ld (hl),0
 .publish:
+    IF FULL_GAME
+    ret                      ; Maze IRQ owns the complete player SAT pair.
+    ELSE
     IF SPRITE_FLICKER
     ret
     ENDIF
@@ -606,6 +736,7 @@ Player_Draw:
     ld a,216                 ; Slot 19 terminates the thirteen free SAT slots.
     out ($98),a
     ret
+    ENDIF
 
     ENDIF
 ; Restore the previous one-row patch, then complete the shifted full-height car.

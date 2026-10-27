@@ -11,9 +11,10 @@ RADAR_BLITTER ?= 0
 SPRITE_FLICKER ?= 0
 OUTLINE_FLICKER ?= 0
 FLICKER_STRESS ?= 0
-HZ ?= 50
+HZ ?=
 NATIVE ?= 0
 STAGE ?= 12
+FULL_GAME ?= 1
 ENEMIES ?=
 GRAPHICS_INPUT ?= references/roms/nrallyx
 GRAPHICS_OUTPUT ?= references/assets/nrallyx
@@ -42,7 +43,7 @@ prepare-scenes: capture-scenes
 	@$(MAKE) analyze-scenes
 
 build:
-	@$(PYTHON) -B scripts/project.py build $(if $(filter 1,$(NO_HUD)),--no-hud) $(if $(filter 1,$(NATIVE)),--native) $(if $(filter 1,$(PLAYER_BLITTER)),--player-blitter) $(if $(filter 1,$(RADAR_BLITTER)),--radar-blitter) $(if $(filter 1,$(SPRITE_FLICKER)),--sprite-flicker) $(if $(filter 1,$(OUTLINE_FLICKER)),--outline-flicker) $(if $(filter 1,$(FLICKER_STRESS)),--flicker-stress) $(if $(filter-out 50,$(HZ)),--hz "$(HZ)") --stage "$(STAGE)" $(if $(strip $(ENEMIES)),--enemies "$(ENEMIES)")
+	@$(PYTHON) -B scripts/project.py build $(if $(and $(filter 1,$(FULL_GAME)),$(filter 12,$(STAGE)),$(filter 0,$(NO_HUD)),$(filter 0,$(NATIVE)),$(if $(strip $(ENEMIES)),,yes)),--full-game) $(if $(filter 1,$(NO_HUD)),--no-hud) $(if $(filter 1,$(NATIVE)),--native) $(if $(filter 1,$(PLAYER_BLITTER)),--player-blitter) $(if $(filter 1,$(RADAR_BLITTER)),--radar-blitter) $(if $(filter 1,$(SPRITE_FLICKER)),--sprite-flicker) $(if $(filter 1,$(OUTLINE_FLICKER)),--outline-flicker) $(if $(filter 1,$(FLICKER_STRESS)),--flicker-stress) $(if $(strip $(HZ)),--hz "$(HZ)") --stage "$(STAGE)" $(if $(strip $(ENEMIES)),--enemies "$(ENEMIES)")
 
 run:
 ifeq ($(LATEST),1)
