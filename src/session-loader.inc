@@ -25,6 +25,11 @@ Session_Main:
     ld a,SESSION_BANK
     ld ($7000),a
     call $b800
+    IF AUDIO_ENABLED
+    push af
+    call Audio_Work
+    pop af
+    ENDIF
     cp 2
     jp nz,main
     call show_scene
@@ -74,6 +79,10 @@ Session_Check:
     ENDIF
 .finished:
     ld (Session_State),a
+    IF AUDIO_ENABLED
+    ld a,4                  ; Original two-part game-over song request.
+    ld ($e9f5),a
+    ENDIF
     ret
 Session_VBlank:
     ld a,(ticks)
@@ -114,6 +123,10 @@ Session_Joystick:
     jr nz,.credit
     dec (hl)
 .credit:
+    IF AUDIO_ENABLED
+    ld a,$80
+    ld ($e9f6),a
+    ENDIF
     ld a,(hl)
     ld ($e024),a
 .read:
@@ -179,3 +192,25 @@ Session_JoystickReturn:
     ld a,8
     ld (Session_RiskFrames),a
     ret
+
+    IF AUDIO_ENABLED
+; Physical refreshes clock audio after packet readiness. Native ticks stay
+; unchanged; the PSG sustains the preceding note while the renderer works.
+Audio_Work:
+    ld a,(ticks)
+    ld hl,Audio_LastUI
+    sub (hl)
+    cp 2
+    ret c
+    srl a
+    ld (Audio_Elapsed),a
+    ld a,(ticks)
+    ld (hl),a
+    ld a,AUDIO_BANK
+    ld ($7000),a
+    call Audio_RuntimeStep
+Audio_WorkReturn:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    ret
+    ENDIF

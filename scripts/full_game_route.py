@@ -32,6 +32,8 @@ def main(argv=None):
     p.add_argument('--fixture-first-round',type=int,choices=range(1,255),help='Explicit initial displayed round using the original round preparer; changes guest setup')
     p.add_argument('--allow-game-over',action='store_true',help='Keep measured evidence when a legitimate game over ends the keyboard route early')
     p.add_argument('--profile',action='store_true',help='Observe main-loop call durations without guest writes')
+    p.add_argument('--audio-record',action='store_true',help='Record 20 seconds of actual PSG output in an audio-enabled route')
+    p.add_argument('--audio-worker-disabled',action='store_true',help='Diagnostic only: suppress production audio service to compare timing')
     p.add_argument('--record-round',type=int,help='Record eight seconds of actual scanout from this displayed round')
     p.add_argument('--trace-di',action='store_true',help='Observe interrupt-masked intervals without guest writes')
     p.add_argument('--radar-trace',action='store_true',help='Compare live radar SAT against latched R23 before each visible band')
@@ -67,6 +69,10 @@ def main(argv=None):
     program,_=acquire(root)
     for i in range(4):(out/f'board-{i}.bin').write_bytes(cells_from_rom(program,0x30+i))
     syms=symbols(bundle/'raster-scroll.sym')
+    if args.audio_record and not syms.get('AUDIO_ENABLED'):
+        raise ValueError('Audio recording requires an audio-enabled candidate')
+    if args.audio_worker_disabled and (not syms.get('AUDIO_ENABLED') or args.audio_record):
+        raise ValueError('Disabled-worker diagnostic requires audio and cannot record sound')
     lines=['set save_settings_on_exit false',f'set renderer {"SDLGL-PP" if args.record_round else "none"}','set sound_driver null','set vsync off',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
         reference_machine(root,args.machine),'set firmwareswitch off','set throttle off','set pause_on_lost_focus false',
@@ -79,6 +85,20 @@ def main(argv=None):
     if args.effects_trace:
         from scripts.msx.full_effects import trace
         lines.extend(trace(syms))
+    if args.audio_worker_disabled:
+        lines.append(f'debug set_bp {syms["Audio_Work"]} {{1}} {{debug write memory {syms["Audio_LastUI"]} [debug read memory {syms["ticks"]}]}}')
+    if syms.get('AUDIO_ENABLED') and not args.audio_worker_disabled:
+        lines.extend([
+            'set audio_out [open [file join $out audio.tsv] w]',
+            'set audio_state_writes 0',
+            f'set audio_signature [binary decode hex { (bundle/"audio-score.bin").read_bytes()[:16].hex() }]',
+            f'debug set_watchpoint write_mem {{59808 59887}} {{[info exists ::phase] && $::phase eq "game"}} {{incr ::audio_state_writes;set pc [reg PC];if {{!(($pc>={syms["Audio_RuntimeStep"]} && $pc<{syms["Audio_RuntimeEnd"]} && [debug read_block memory 32768 16] eq $::audio_signature) || ($pc>={syms["Player_Init.fresh"]+14} && $pc<={syms["Player_Init.fresh"]+16}))}} {{puts stderr "Unexpected native write to reserved audio state: PC=$pc address=$::wp_last_address";exit 2}}}}',
+            f'debug set_bp {syms["Audio_Work"]} {{[info exists ::phase] && $::phase eq "game" && (([debug read memory {syms["ticks"]}]-[debug read memory {syms["Audio_LastUI"]}])&255)>=2}} {{set ::audio_begin [machine_info time];set ::audio_due [expr {{(([debug read memory {syms["ticks"]}]-[debug read memory {syms["Audio_LastUI"]}])&255)/2}}]}}',
+            f'debug set_bp {syms["Audio_WorkReturn"]} {{[info exists ::audio_begin]}} {{puts $::audio_out "[machine_info time] $::frames $::audio_due [expr {{([machine_info time]-$::audio_begin)*1000}}] [debug read memory {syms["Audio_QueueCount"]}] [debug read memory {syms["Audio_QueueDrops"]}] [debug read memory {syms["Audio_NoiseID"]}] [debug read memory {syms["Audio_MusicMode"]}] [debug read {{PSG regs}} 8] [debug read {{PSG regs}} 9] [debug read {{PSG regs}} 10]";unset ::audio_begin}}',
+        ])
+    if args.audio_record:
+        lines.extend(['set audio_recorded 0',
+            f'debug set_bp {syms["main"]} {{[info exists ::phase] && $::phase eq "game" && !$::audio_recorded}} {{set ::audio_recorded 1;record start -audioonly {tcl(out/"audio.wav")};after time 20 {{record stop}}}}'])
     if args.record_round:
         lines.extend(['set recording_started 0',
             f'debug set_bp {syms["main"]} {{[info exists ::phase] && $::phase eq "game" && [debug read memory 0xe1b0]=={args.record_round+1} && !$::recording_started}} {{',
@@ -400,12 +420,38 @@ def main(argv=None):
     clock_evidence=dict(mode='fixed base diagnostic' if args.fixed_base_clock else 'machine controlled',
         native_instruction_samples=len(clock_rows),native_instruction_cpu_hz=sorted({int(row[2]) for row in clock_rows}),
         vdp_frequency_gate='3.58 MHz at ordinary sprite uploads, command waits and radar IRQs; bounded VBlank packets use factory turbo with real VDP access checks')
-    controlled=args.fixture_enemies is not None or args.fixture_first_round is not None
+    controlled=args.fixture_enemies is not None or args.fixture_first_round is not None or args.audio_worker_disabled
     effects=None
     if args.effects_trace:
         from scripts.msx.full_effects import analyze
-        effects=analyze(out,syms)
-    json_write(out/'report.json',dict(rom_sha256=digest(args.rom),natural_completed_rounds=completed if not controlled else 0,
+        timing=read_json(bundle/'build.json')['timing']
+        # The original nominal 200 ms smoke budget is twelve NTSC refreshes.
+        # Use their actual VDP duration instead of rounding that boundary down.
+        smoke_limit=12*timing['frame_seconds']*1000 if timing['nominal_hz']==60 else 200
+        effects=analyze(out,syms,maximum_smoke_ms=smoke_limit)
+        effects['smoke_budget_basis']='12 physical NTSC refreshes (nominal 200 ms)' if timing['nominal_hz']==60 else '200 ms'
+    audio=None
+    if (out/'audio.tsv').is_file():
+        rows=[list(map(float,line.split())) for line in (out/'audio.tsv').read_text().splitlines()]
+        if not rows:raise ValueError('Audio-enabled route produced no worker samples')
+        costs=sorted(row[3] for row in rows)
+        audio=dict(worker_calls=len(rows),maximum_call_ms=max(costs),mean_call_ms=sum(costs)/len(costs),
+            percentile_95_call_ms=costs[int((len(costs)-1)*.95)],maximum_due_packets=max(row[2] for row in rows),
+            maximum_queued_effects=max(row[4] for row in rows),maximum_queue_drops=max(row[5] for row in rows),
+            observed_noise_ids=sorted({int(row[6]) for row in rows}),
+            active_music_frames=[sum(row[8+ch]>0 for row in rows) for ch in range(2)],
+            scope='Observed production worker wall time includes actual raster interrupts; no guest state changes.')
+        if args.audio_record:
+            import array
+            import wave
+            with wave.open(str(out/'audio.wav'),'rb') as wav:
+                if wav.getsampwidth()!=2:raise ValueError('Expected recorded signed 16-bit PCM')
+                duration=wav.getnframes()/wav.getframerate();samples=array.array('h',wav.readframes(wav.getnframes()))
+            if not 19.9<=duration<=20.1 or not samples or not any(samples):raise ValueError('Missing/non-audible 20-second PCM capture')
+            audio['recording']=dict(seconds=duration,peak=max(abs(n) for n in samples),
+                rms=(sum(n*n for n in samples)/len(samples))**.5,
+                scope='Actual emulator PCM, not a listening/timbre verdict.')
+    json_write(out/'report.json',dict(rom_sha256=digest(args.rom),audio=audio,audio_worker_disabled_diagnostic=args.audio_worker_disabled,natural_completed_rounds=completed if not controlled else 0,
         controlled_completed_rounds=completed if controlled else 0,fixture_first_round=args.fixture_first_round,
         requested_rounds=args.rounds,target_rounds_reached=reached,stopped_on_game_over=not reached,
         fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
@@ -424,7 +470,7 @@ def main(argv=None):
         vertical_update_gate=dict(minimum_hz=args.minimum_vertical_update_hz,passed=vertical_passed),
         camera_ownership_checks=int((out/'camera-count.txt').read_text()) if 'Full_CameraValidated' in syms else None,
         header_reservations=headers,radar_coherence=radar,maximum_smoke_placements=max(r[6] for r in rows),
-        scope=('Explicit initial round/population fixture; requested enemy count is retained across native parameter writes. Real keyboard credit/start, steering and smoke; this is controlled load, not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
+        scope=('Audio-worker-disabled timing diagnostic: the harness advances the audio clock to suppress service. ' if args.audio_worker_disabled else '')+('Explicit initial round/population fixture; requested enemy count is retained across native parameter writes. Real keyboard credit/start, steering and smoke; this is controlled load, not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
     require_ignored(root,[x for x in out.rglob('*') if x.is_file()]);seal(out)
     if not population_passed:raise ValueError(f'Controlled population did not remain at the requested count; evidence retained at {out}/report.json')
     if effects is not None and not effects['passed']:raise ValueError(f'Effects publication gate failed; evidence retained at {out}/report.json')

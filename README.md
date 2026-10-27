@@ -25,7 +25,7 @@ launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
 
 ## Current status
 
-The default `make build` cartridge provides silent normal/challenge rounds,
+The default `make build` cartridge provides PSG music/effects, normal/challenge rounds,
 original flag/rock placement on four maps, MSX-adapted enemies and native smoke, fuel bonuses,
 death/restart, alternating two-player sessions, game over and an autonomous
 attract demonstration. It retains original-size graphics, the complete car
@@ -56,7 +56,15 @@ credits). Both players use arrows or joystick1 on alternating turns. **Space**,
 Ctrl or triggerA releases smoke; **P** pauses; Home resets the development run.
 **F5** advances one round per press for debugging, preserving score and lives
 without awarding the completion bonus. It also resumes a paused game.
+**F4** toggles audio without stopping the music clock or changing gameplay.
 With no credits, the original cast screen periodically enters an automatic demo.
+
+Music uses two PSG tone voices; effects use the independent noise voice, with
+short deferred publication so audio does not block the car/camera snapshot.
+The original melody tables are compiled locally into note packets. Waveforms,
+third musical parts and discrete effects are adapted to the PSG; arcade-exact
+audio timing is not the target. See the [audio contract and validation](docs/issue13-audio-interface.md).
+`make build AUDIO=0` reconstructs the accepted silent full-game baseline.
 
 Builds use fresh sealed directories under `references/build/default-*/` and
 publish `references/build/newrallyx.rom` only after success. `make run` reuses

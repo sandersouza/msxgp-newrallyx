@@ -21,6 +21,7 @@ def main():
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--output', type=Path, required=True)
     p.add_argument('--frames', type=int, default=7200)
+    p.add_argument('--sequencer', action='store_true', help='Capture every sound-call entry/exit for differential execution')
     args = p.parse_args()
     if not 2000 <= args.frames <= 36000:
         raise ValueError('Capture must contain 2000..36000 original refreshes')
@@ -46,6 +47,7 @@ def main():
     with (out/'mame.log').open('w') as log:
         subprocess.run(command, check=True, timeout=240, stdout=log, stderr=subprocess.STDOUT,
                        env=dict(os.environ, AUDIO_INVENTORY_OUTPUT=str(out),
+                                AUDIO_INVENTORY_SEQUENCER=str(int(args.sequencer)),
                                 AUDIO_INVENTORY_FRAMES=str(args.frames)))
     if '[LUA ERROR]' in (out/'mame.log').read_text() or not (out/'complete').is_file():
         raise ValueError(f'Incomplete original sound capture; inspect {out}/mame.log')
@@ -56,6 +58,11 @@ def main():
     if not (out/'boot-ready').is_file():
         raise ValueError('Original reset completion was not observed')
     report = summarize(frames, writes, boot_frame=int((out/'boot-ready').read_text()))
+    if args.sequencer:
+        count = int((out/'sequencer-count').read_text())
+        if count <= 0 or (out/'sequencer.bin').stat().st_size != count * 2 * (3072 + 32):
+            raise ValueError('Incomplete sound-call boundary evidence')
+        report['sequencer_cases'] = count
     if len(frames) != args.frames or not report['maximum_active_voices']:
         raise ValueError('Missing captured refreshes or audible WSG activity')
     if input_records(validate_roms(root/'references/roms/nrallyx', metadata)) != source:

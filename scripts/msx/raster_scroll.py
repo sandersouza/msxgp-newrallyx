@@ -11,7 +11,7 @@ from . import sprite_radar as radar
 from . import sprite_fuel as fuel
 from . import sprite_lives as life_counter
 from . import full_hud
-from scripts.scenes.bundle import digest, load_assets
+from scripts.scenes.bundle import digest, load_assets, read_json
 from scripts.scenes.storage import json_write, require_ignored, seal
 from .display import (LEFT_MASK, VIEWPORT_WIDTH, VIEWPORT_HALF, HORIZONTAL_ADJUST,
                       DISPLAY_SHIFT, PLAYER_X, FUEL_SLOT, PLAYER_SLOT, HUD_SPRITES, TOTAL_SPRITES,
@@ -192,6 +192,9 @@ def build(root, args):
     hud_enabled = not getattr(args, 'no_hud', False)
     stage = getattr(args, 'stage', 0)
     full_game=bool(getattr(args,'full_game',False))
+    audio=bool(getattr(args,'audio',False))
+    if audio and not full_game:
+        raise ValueError('Audio integration currently requires full gameplay')
     if full_game and (stage!=12 or not hud_enabled):
         raise ValueError('Full-game development requires stage12 and the complete HUD')
     tile_mode=bool(getattr(args,'tile_mode',False))
@@ -708,6 +711,23 @@ def build(root, args):
     if full_game:
         terrain_bank=len(banks)+1
         banks.append(bytes([255])*16384)
+    audio_bank=audio_period_bank=0
+    if audio:
+        from .audio_native import build as build_audio
+        from .audio_psg import period_banks,volume_curve
+        from .audio_score import build as build_score
+        image,changes=build_audio(program,output)
+        score_info=build_score(program,output)
+        if any(0x89a0<=patch.get('original',0)<0x89f4 for patch in read_json(output/'player.json')['patches']):
+            raise ValueError('Selected native code now uses the reserved PSG state gap')
+        audio_bank=len(banks)+1
+        banks.append(image)
+        audio_period_bank=len(banks)+1
+        banks.extend(period_banks())
+        (output/'audio-volumes.bin').write_bytes(volume_curve())
+        json_write(output/'audio-relocation.json',dict(changes=changes,compiled_scores=score_info))
+        for name in ('full-audio.inc','full-audio-state.inc','full-audio-mapper.inc','full-audio-runtime.inc'):
+            shutil.copyfile(root/'src'/name,output/name)
     for n, bank in enumerate(banks, 1):
         (output/f'bank-{n}.bin').write_bytes(bank)
     size = 16384*(1 << len(banks).bit_length())
@@ -716,6 +736,8 @@ def build(root, args):
         ('    DEFINE HUD_COLLECTION_METER 1\n' if stage>=4 else '')+
         ('    DEFINE HUD_SCORING_METER 1\n' if stage>=5 else '')+
         ('    DEFINE HUD_FUEL_METER 1\n' if stage>=6 else '')+
+        ('AUDIO_ENABLED EQU 1\n    INCLUDE "full-audio-state.inc"\n    INCLUDE "audio-score.inc"\n' if audio else 'AUDIO_ENABLED EQU 0\n')+
+        f'AUDIO_BANK EQU {audio_bank}\nAUDIO_PERIOD_BANK EQU {audio_period_bank}\n'+
         f'TILE_MODE EQU {int(tile_mode)}\nTILE_DATA_BANK EQU {tile_data_bank}\nMAZE_R0 EQU {4 if tile_mode else 6}\nMAZE_R2 EQU {0x28 if tile_mode else 0x3f}\n'
         f'HUD_WORK_BASE EQU $c000\nHUD_API_BASE EQU $c300\nHUD_ENABLED EQU {int(hud_enabled)}\n'
         f'HUD_ALERTS EQU {int(stage>=12)}\nRADAR_SPECIAL_FLAG_OFFSET EQU {18 if full_game else next((f["hud_slot"]*2 for f in flag_records if f["kind"]==2),0)}\n'
@@ -775,7 +797,8 @@ def build(root, args):
         from .enemy_navigation import original_maps
         (output/'full-navigation.bin').write_bytes(original_maps(program))
     (output/'payload.inc').write_text(''.join(
-        (f'    INCBIN "bank-{n}.bin",0,$3600\n    DISP $b600\n    INCLUDE "full-hud-number.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==hud_bank else
+        (f'    INCBIN "audio-score.bin"\n    DISP $1000\n    INCLUDE "full-audio.inc"\n    ASSERT $ <= $1800\n    defs $1b00-$,$ff\n    ENT\n    DISP $9b00\n    INCLUDE "full-audio-runtime.inc"\n    ASSERT $ <= $a580\n    defs $a580-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2580,$1580\n    defs 32,0\n    defs 11,$ff\n    defs $4d5,0\n' if audio and n==audio_bank else
+         f'    INCBIN "bank-{n}.bin",0,$3600\n    DISP $b600\n    INCLUDE "full-hud-number.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==hud_bank else
          f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n' if n==session_bank else
          '    DISP $1000\nFull_CacheEngineStart:\n    INCLUDE "full-terrain-engine.inc"\nFull_CacheEngineEnd:\n    ENT\n    defs $1000-(Full_CacheEngineEnd-Full_CacheEngineStart),$ff\n    DISP $ea00\nFull_PresentStart:\n    INCLUDE "full-presentation.inc"\nFull_PresentEnd:\n    ASSERT $ <= $ec00\n    ENT\n    defs $1000-(Full_PresentEnd-Full_PresentStart),$ff\n    INCBIN "full-navigation.bin"\n' if full_game and n==terrain_bank else
          f'    INCBIN "bank-{n}.bin",0,$2800\n    INCLUDE "full-load.inc"\n    defs $400-(Full_LoadEnd-Full_LoadStart)-(Full_EnemyHotEnd-Full_EnemyHotStart)-(Full_RadarIRQEnd-Full_RadarIRQStart),$ff\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    DISP $ae00\n    INCLUDE "full-round-native.inc"\n    ASSERT $ <= $b000\n    defs $b000-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3000,$500\n    DISP $b500\n    INCLUDE "full-native-motion.inc"\n    ASSERT $ <= $b600\n    defs $b600-$,$ff\n    ENT\n    DISP $b600\n    INCLUDE "full-native-ai.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==player_bank else
@@ -864,6 +887,12 @@ def build(root, args):
                 player_sat='Complete pair published by the maze IRQ against its actual R23',
                 initialized=0xd2cd,ownership='Both planned and latched views, including mixed corner columns')) if full_game else None),
         full_game=full_game,full_memory=memory_layout,
+        audio=(dict(backend='AY PSG',overlay_bank=audio_bank,period_bank=audio_period_bank,
+            mapper='Production ROM bank with Page3 state; isolated Page3-XOR-2 RAM segment for reference-kernel probes only',mute_key='F4',
+            sequencer='Build-time compilation of original melody tables into two-voice PSG packets; original core retained for reference-kernel proofs',
+            timing='Independent physical-refresh clock; optional audio worker after packet readiness, 30 Hz score/noise scheduling; persistent flag/smoke counters bridge event latency',
+            approximation='Two original melody parts, square waves and nominal linear-volume conversion; eight-entry effect FIFO and channel C noise',
+            scope='Buffered PSG base; use the qualification report for measured workloads and listening status') if audio else None),
         full_hud_layout=(dict(header_left=full_hud.HEADER_LEFT,visible_score_digits=7,native_score_digits=8,
             source_sha256={p:digest(root/p) for p in ('scripts/msx/full_hud.py','src/full-hud-number.inc')},
             score_policy='Lowest seven native digits; scoring and record state unchanged',

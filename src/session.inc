@@ -133,6 +133,10 @@ Session_Frame:
     jr nz,.credit
     dec (hl)                 ; Original credit counter saturates at255.
 .credit:
+    IF AUDIO_ENABLED
+    ld a,$80
+    ld ($e9f6),a
+    ENDIF
     ld a,(Session_Credits)
     ld ($e024),a
     call Session_DrawCredits

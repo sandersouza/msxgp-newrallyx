@@ -417,3 +417,6 @@ Full_CopyColdNative:
     ld (Full_PresentEnabled),a
     ld (Full_PresentReady),a
     jp Full_CacheInitNative
+    IF AUDIO_ENABLED
+    INCLUDE "full-audio-mapper.inc"
+    ENDIF

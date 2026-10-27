@@ -154,6 +154,11 @@ boot:
 startup_mode:
     IF FULL_GAME
     call Full_CopyCold
+    IF AUDIO_ENABLED
+    ld a,AUDIO_BANK
+    ld ($7000),a
+    call Audio_InitOverlay+$8000
+    ENDIF
     ENDIF
     IF SESSION_RUNTIME
     call Session_Init

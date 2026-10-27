@@ -110,6 +110,9 @@ Player_Init:
     ld (player_native_ticks+1),a
     inc a
     ld (player_steps),a
+    IF AUDIO_ENABLED
+    ld (Audio_NewScene),a
+    ENDIF
     ld a,255
     ld (player_drawn),a
     ld (player_phase),a

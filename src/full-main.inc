@@ -74,6 +74,9 @@ Full_MainFrame:
     call Full_PresentSeal
     ld a,1
     ld (Full_SealedFrame),a
+    IF AUDIO_ENABLED
+    call Audio_Work
+    ENDIF
 .maze_wait:
     di
     ld a,(raster_phase)

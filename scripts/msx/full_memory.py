@@ -41,6 +41,9 @@ def layout(symbols):
     add('terrain mapper and native clock workspace',0xd2e1,31)
     add('eight-digit numeric state','hud_score_pending',64)
     add('conservative native smoke rows',0xd160,32)
+    if symbols.get('AUDIO_ENABLED'):
+        add('host audio controls and clock',0xd150,8)
+        add('PSG packet, queue and music cursor in unused native gap',0xe9a0,80)
     add('fuel publication','hud_fuel_payload',128)
     add('wall snapshot',0xd200,44)
     add('inactive player','Full_Shadow',120)
