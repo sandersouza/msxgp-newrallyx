@@ -2,6 +2,8 @@
 ; X=128 is an invalid sentinel and is never accepted as a cache hit.
 ; Scene setup uploads the same red/blue OR pair into all seven destinations.
 Full_InitializeColorDestinations:
+    xor a
+    ld (Full_RadarSATValid),a
     ld hl,Full_PresentEC
     ld b,7
     xor a
@@ -57,6 +59,8 @@ Full_StageQueueNative:
     ld (previous_x),a
     sub b
     jr z,.vertical
+    xor a
+    ld (row_left),a          ; Its old X span can overwrite the new column's torus lap.
     ld a,1
     ld (Full_QueueDirty),a
 .vertical:
@@ -66,6 +70,8 @@ Full_StageQueueNative:
     ld (previous_y),a
     sub b
     jr z,.predict
+    xor a
+    ld (column_left),a       ; Retire old Y spans before they erase an upcoming row.
     ld a,1
     ld (Full_QueueDirty),a
 .predict:
@@ -104,6 +110,9 @@ Full_StageQueueNative:
     ld a,1
     ld (Full_QueueDirty),a
 .pending:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call Full_TrimPendingQueues
     ; A turn can leave the previous axis's guard job alive. It must not
     ; prevent forecasting the current axis before its first edge is exposed.
     ld a,($e06b)
@@ -123,19 +132,18 @@ Full_StageQueueNative:
     ld a,(Full_DirY)
     or a
     jr z,.columns
-    neg
     ld (Full_CheckStep),a
     ld a,(Full_DirY)
     inc a
     ld a,(Full_QueuedY)
     jr z,.up
-    add a,28
+    add a,26
     jr .row_start
 .up:
-    sub 3
+    dec a
 .row_start:
     ld (Full_Edge),a
-    ld a,3
+    ld a,4
     ld (Full_CheckCount),a
 .row_probe:
     ld a,(Full_Edge)
@@ -156,28 +164,26 @@ Full_StageQueueNative:
     ld a,(Full_Edge)
     ld (row_y),a
     ld a,(Full_QueuedX)
-    sub 3
     ld (row_x),a
     ld (Stage_RowLeft),a
-    add a,38
+    add a,32
     ld (Stage_RowEnd),a
-    ld a,38
+    ld a,32
     ld (row_left),a
     jr .done
 .columns:
     ld a,(Full_DirX)
     or a
     jr z,.ready
-    neg
     ld (Full_CheckStep),a
     ld a,(Full_DirX)
     inc a
     ld a,(Full_QueuedX)
     jr z,.left
-    add a,34
+    add a,32
     jr .column_start
 .left:
-    sub 3
+    dec a
 .column_start:
     ld (Full_Edge),a
     ld a,3                   ; One complete cell ahead; turns discard less work.
@@ -201,12 +207,11 @@ Full_StageQueueNative:
     ld a,(Full_Edge)
     ld (column_x),a
     ld a,(Full_QueuedY)
-    sub 3
     ld (column_y),a
     ld (Stage_ColumnTop),a
-    add a,32
+    add a,26
     ld (Stage_ColumnEnd),a
-    ld a,32
+    ld a,26
     ld (column_left),a
     jr .done
 .ready:
@@ -238,16 +243,9 @@ Full_ClockAdvance:
     ld hl,(player_rate)
     ld de,PLAYER_RATE
 .refresh:
-    IF VDP_R9 == $80
-    ; One logical tick per NTSC refresh. The authored MSX cadence is about
-    ; 60 Hz; do not inject the arcade's extra 0.68 ticks/s into render deadlines.
-    ld a,(Full_ClockDue)
-    inc a
-    ELSE
     add hl,de
     ld a,(Full_ClockDue)
-    adc a,1
-    ENDIF
+    adc a,FULL_CLOCK_BASE
     cp 13
     jr c,.retain
     sub 12
@@ -315,14 +313,14 @@ Full_TryIdleTick:
     or a
     jr nz,.done
     ld a,(Full_LoopTicks)
-    cp 3                     ; A sealed packet may also repay one delayed tick.
+    cp 3
     jr nc,.done
     cp 2
     jr c,.clock
     ld a,(row_left)
     ld hl,column_left
     or (hl)
-    jr nz,.done              ; Recovery cannot starve the terrain needed to move.
+    jr nz,.done              ; A recovery tick never takes the remaining guard-copy budget.
 .clock:
     call Full_ClockFrame
     ld a,(Full_ClockDue)
@@ -359,7 +357,7 @@ Full_PresentIdleEngine:
     cp 6
     jr z,.terrain
     cp 1
-    jr z,.cpu_first          ; Complete the other tick before the final VBlank margin.
+    jr z,.work               ; Full-game body lasts until the footer split.
     cp 2
     jr z,.tail
     cp 3
@@ -381,11 +379,7 @@ Full_PresentIdleEngine:
     jr nz,.nothing           ; End at the guard, with a full VBlank margin.
     jr .terrain              ; Footer is published; run copies, not a long tick.
 .work:
-    ld a,(row_left)
-    ld hl,column_left
-    or (hl)
-    jr nz,.terrain
-    call Full_TryIdleTick  ; Retain 60 Hz logic outside the packet deadline.
+    call Full_TryIdleTick    ; The second due tick precedes optional hidden copies.
     jr c,.worked
 .terrain:
     call Stage_PrefetchOne
@@ -397,21 +391,78 @@ Full_PresentIdleEngine:
     ld c,1
     jp Full_IdleExit
 
+Full_AdvanceClockEngine:
+    call Full_TryIdleTick
+    jr c,Full_AdvanceClockEngine
+    ld c,1
+    jp Full_IdleExit
+
+; RAM-only packet traversal keeps its mapper and native helper bank across
+; actors. Drawing may select resource banks; page0 remains executable then.
+Full_EnemyDrawLoop:
+    call Full_TurboOn
+    ld a,PLAYER_SLOT*4+8
+    ld (Full_EnemySATCursor),a
+    xor a
+    ld (Full_EnemyIndex),a
+    ld ix,Full_EnemyRecords
+.actor:
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call Full_EnemyDrawNative
+    ld de,32
+    add ix,de
+    ld hl,Full_EnemyIndex
+    inc (hl)
+    ld a,(hl)
+    ld hl,$e24e
+    cp (hl)
+    jr c,.actor
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    call Full_EnemyTerminator
+    jp Full_TurboOff
+
 Full_WarmCameraEngine:
     call Stage_QueuePriority
-    ld b,4                   ; Urgent edges precede a packet; optional guards follow it.
+    ld b,12                  ; Finish one required complete edge instead of holding several packets.
+    ld a,(Full_CameraBlocked)
+    or a
+    jr nz,.copy
+    ld b,2                   ; Prime the nearest cells before actor preparation.
 .copy:
     push bc
     xor a
     ld (Full_CacheWorked),a
     call Stage_PrefetchOne
     pop bc
+    ld a,(Full_CacheWorked)
+    or a
+    jr z,.ready
+    ld a,(Full_CameraBlocked)
+    or a
+    jr z,.more
+    ld d,a
+    and 1
+    jr z,.column_ready
+    ld a,(row_left)
+    or a
+    jr nz,.more
+.column_ready:
+    bit 1,d
+    jr z,.ready
+    ld a,(column_left)
+    or a
+    jr z,.ready             ; Required edges are done; defer optional guard copies.
+.more:
     djnz .copy
+.ready:
     ld c,1
     jp Full_IdleExit
 
 ; Record the exact rectangle owned by the command, clearing old smoke tags.
 Full_CacheRun:
+    push ix
     call Full_TurboOn
     ld a,(stage_command+8)
     srl a
@@ -439,13 +490,32 @@ Full_CacheRun:
     ld l,a
     ld h,Smoke_DisplayRows/256
     ld c,(hl)
+    ld a,c
+    or a
+    jr z,.row_ready
+    push bc
+    ld b,iyl
+    ld c,iyh
+    call Smoke_DisplayAddress
+    push hl
+    pop ix
+    pop bc
+.row_ready:
     pop hl
     ld a,(Full_CacheWidth)
     ld b,a
 .tile:
     ld a,c
     or a
-    call nz,.erase_old_smoke
+    jr z,.owner
+    ld a,(ix+0)
+    and 15
+    jr z,.smoke_next
+    ld (ix+0),0
+    dec c
+.smoke_next:
+    inc ix
+.owner:
     ld a,iyl
     ld (hl),a
     inc l
@@ -454,6 +524,13 @@ Full_CacheRun:
     inc l
     inc iyl
     djnz .tile
+    push hl
+    ld a,iyh
+    and 31
+    ld l,a
+    ld h,Smoke_DisplayRows/256
+    ld (hl),c                ; One exact row-count transaction, after all overwritten tags.
+    pop hl
     pop iy
     pop hl
     dec d
@@ -466,29 +543,9 @@ Full_CacheRun:
     inc h
     jr .row
 .done:
+    pop ix
     ld c,1
     jp Full_CacheExit
-.erase_old_smoke:
-    push hl
-    push bc
-    push de
-    ld b,iyl
-    ld c,iyh
-    call Smoke_DisplayAddress
-    ld a,(hl)
-    and 15
-    jr z,.smoke_done
-    ld (hl),0
-    ld a,iyh
-    and 31
-    ld l,a
-    ld h,Smoke_DisplayRows/256
-    dec (hl)
-.smoke_done:
-    pop de
-    pop bc
-    pop hl
-    ret
 
 Full_WorldProbe:
     call Full_TurboOn
@@ -719,7 +776,7 @@ Full_CellPrefetch:
 .object_ready:
     ld a,(Smoke_Valid)
     or a
-    jr z,.source
+    jp z,.source
     ld a,(Full_CellTop)
     ld c,a
     ld d,3
@@ -749,14 +806,32 @@ Full_CellPrefetch:
     ld c,a
     ld iyh,3
 .smoke_row:
+    ld a,c
+    sub 10
+    and 31
+    or Smoke_LogicalRows & 255
+    ld l,a
+    ld h,Smoke_LogicalRows/256
+    ld d,(hl)
+    ld a,c
+    and 31
+    ld l,a
+    ld h,Smoke_DisplayRows/256
+    ld a,(hl)
+    or d
+    jr z,.next_smoke_row
     ld a,(Full_CellLeft)
     ld b,a
     ld iyl,3
 .smoke_tile:
+    ld a,d
+    or a
+    jr z,.published_smoke
     call Smoke_CodeAtBC
     sub $bd
     cp 9
     jp c,.none
+.published_smoke:
     ld a,c
     and 31
     ld l,a
@@ -787,6 +862,7 @@ Full_CellPrefetch:
     inc b
     dec iyl
     jr nz,.smoke_tile
+.next_smoke_row:
     inc c
     dec iyh
     jr nz,.smoke_row
@@ -900,6 +976,149 @@ Full_CellPrefetch:
     ld (Full_CellRejectedValid),a
 .failed:
     jp Full_TurboOff
+
+; ISR-only: one complete queued cell per physical VBlank. No foreground HUD
+; scratch or ROM bank changes; the presentation ISR owns mapping and registers.
+Full_RadarIRQCell EQU $0228
+Full_RadarVBlank:
+    ld hl,(Radar_Ready)
+    ld a,h
+    or l
+    ret z
+    ld de,(Radar_Urgent)
+    ld a,h
+    and d
+    ld b,a
+    ld a,l
+    and e
+    ld c,a
+    or b
+    jr z,.selected
+    ld h,b
+    ld l,c
+.selected:
+    ld a,(Radar_PublishCursor)
+    ld c,a
+    ld b,a
+    or a
+    jr z,.scan
+.rotate:
+    srl h
+    rr l
+    jr nc,.rotate_next
+    set 3,h
+.rotate_next:
+    djnz .rotate
+.scan:
+    srl h
+    rr l
+    jr c,.upload
+    inc c
+    ld a,c
+    cp 12
+    jr c,.scan
+    ld c,0
+    jr .scan
+.upload:
+    ld a,c
+    ld (Full_RadarIRQCell),a
+    ld (Radar_PublishCell),a
+    inc a
+    cp 12
+    jr c,.cursor
+    xor a
+.cursor:
+    ld (Radar_PublishCursor),a
+    ld l,c
+    ld h,0
+    REPT 4
+    add hl,hl
+    ENDR
+    push hl                  ; Cell*16: colors and published position snapshot.
+    ld e,l
+    ld d,h
+    add hl,hl
+    push hl                  ; Cell*32: both complete mask phases.
+    add hl,hl
+    add hl,de
+    ld de,Radar_Payloads
+    add hl,de
+    pop de
+    ld a,e
+    add a,$a0
+    ld e,a
+    ld a,d
+    adc a,$78
+    ld d,a
+    vdp_write 14,7
+    ld a,e
+    out ($99),a
+    ld a,d
+    out ($99),a
+    ld bc,$2098
+    otir
+    ld a,e
+    add a,$80
+    out ($99),a
+    ld a,d
+    adc a,1                  ; Shifted mask is 384 bytes beyond the first base.
+    out ($99),a
+    ld bc,$2098
+    otir
+    pop de
+    push de
+    ld a,e
+    add a,RADAR_MAP_SLOT*16
+    out ($99),a
+    ld a,d
+    adc a,$74
+    out ($99),a
+    ld bc,$1098
+    otir
+    pop hl
+    ld de,Radar_StagedPoints
+    add hl,de
+    push hl
+    ld de,Radar_PublishedPoints-Radar_StagedPoints
+    add hl,de
+    ex de,hl
+    pop hl
+    ld bc,16
+    ldir
+    ld a,(Full_RadarIRQCell)
+    ld l,a
+    ld h,0
+    ld de,Radar_StagedVisibility
+    add hl,de
+    ld a,(hl)
+    ld de,Radar_BaseVisibility-Radar_StagedVisibility
+    add hl,de
+    ld (hl),a
+    ld a,(Full_RadarIRQCell)
+    call Radar_CellBitA
+    ld a,e
+    cpl
+    ld e,a
+    ld a,d
+    cpl
+    ld d,a
+    ld hl,(Radar_Ready)
+    ld a,l
+    and e
+    ld l,a
+    ld a,h
+    and d
+    ld h,a
+    ld (Radar_Ready),hl
+    ld hl,(Radar_Urgent)
+    ld a,l
+    and e
+    ld l,a
+    ld a,h
+    and d
+    ld h,a
+    ld (Radar_Urgent),hl
+    ret
 
 ; A=cell start, B=requested tile. Return its contiguous physical fragment
 ; in A/C (global start/pixel extent). Keep both tiles on the wider side of
@@ -1219,46 +1438,10 @@ Full_CheckRow:
     scf
     ret
 
-; Keep the complete perpendicular cache margin. Camera catch-up can move both
-; axes after a turn; their directions and pending queues remain independent.
-Full_CheckGuardRow:
-    ld a,e
-    sub 3
-    ld e,a
-    call Full_WorldAddress
-    ld b,38
-.tile:
-    ld a,(hl)
-    cp 128
-    jr z,.bad
-    cp e
-    jr nz,.bad
-    inc l
-    ld a,(hl)
-    cp d
-    jr nz,.bad
-    inc l
-    inc e
-    ld a,e
-    and 63
-    jr nz,.next
-    ld a,l
-    xor 128
-    ld l,a
-.next:
-    djnz .tile
-    or a
-    ret
-.bad:
-    scf
-    ret
-Full_CheckGuardColumn:
-    ld a,d
-    sub 3
-    ld d,a
-    call Full_WorldAddress
-    ld b,32
-    jr Full_CheckColumn.tile
+; Forecast completion uses the same perpendicular spans that queues fill.
+; The exact newly exposed viewport gate still protects turns on either axis.
+Full_CheckGuardRow EQU Full_CheckRow
+Full_CheckGuardColumn EQU Full_CheckColumn
 Full_CheckColumn:
     call Full_WorldAddress
     ld b,26
@@ -1470,25 +1653,46 @@ Full_SmokeCellNative:
     cp 30
     jp nc,.no
     call Full_TurboOn
+    ld a,(Smoke_Valid)
+    or a
+    jp z,.no
+    ld a,(tile_x)
+    ld b,a
+    ld hl,Smoke_Left
+    sub (hl)
+    cp 30
+    jp nc,.no
+    ld a,b
+    sub 3
+    and 31
+    cp 30
+    jp nc,.no               ; Ring seams retain the ordinary exact row path.
     ld a,(tile_y)
     ld c,a
+    ld hl,Smoke_Top
+    sub (hl)
+    cp 30
+    jp nc,.no
+    ld a,c
+    sub 10
+    and 31
+    cp 30
+    jp nc,.no
+    call Smoke_Address
+    ld bc,29
     ld d,$bd
     ld iyh,3
 .row:
-    ld a,(tile_x)
-    ld b,a
     ld iyl,3
 .tile:
-    push de
-    call Smoke_CodeAtBC
-    pop de
+    ld a,(hl)
     cp d
     jp nz,.no
-    inc b
+    inc hl
     inc d
     dec iyl
     jr nz,.tile
-    inc c
+    add hl,bc
     dec iyh
     jr nz,.row
     ld a,(Full_WideHBank)
@@ -1505,25 +1709,57 @@ Full_SmokeCellNative:
     ld (stage_command+8),hl
     ld (stage_command+10),hl
     call Full_TurboOn
-    ld a,$bd
-    ld (Smoke_DrawCode),a
+    ld a,(ix+0)
+    ld b,a
+    and 64
+    rlca
+    ld d,a
+    ld a,(tile_y)
+    ld c,a
+    and $e0
+    rrca
+    or d
+    inc a
+    ld d,a                  ; Identity high nibble is constant across this exact cell.
+    call Smoke_DisplayAddress
     ld iyh,3
 .publish_row:
-    ld a,(ix+0)
-    ld (tile_x),a
+    ld e,0
     ld iyl,3
 .publish_tile:
-    call Smoke_RecordDisplay
-    ld hl,tile_x
-    inc (hl)
-    ld hl,Smoke_DrawCode
-    inc (hl)
+    ld a,(hl)
+    and 15
+    jr nz,.publish_store
+    inc e
+.publish_store:
+    ld (hl),d
+    inc hl
+    inc d
     dec iyl
     jr nz,.publish_tile
-    ld hl,tile_y
-    inc (hl)
+    push hl
+    ld a,(tile_y)
+    and 31
+    ld l,a
+    ld h,Smoke_DisplayRows/256
+    ld a,(hl)
+    add a,e
+    ld (hl),a
+    pop hl
+    push de
+    ld de,61
+    add hl,de
+    pop de
+    ld a,(tile_y)
+    inc a
+    ld (tile_y),a
     dec iyh
     jr nz,.publish_row
+    ld a,(ix+0)
+    add a,3
+    ld (tile_x),a
+    ld a,$bd+9
+    ld (Smoke_DrawCode),a
     ld (ix+2),6              ; The caller consumes the final three queue units.
     ld a,3
     ld (Smoke_StreamCost),a

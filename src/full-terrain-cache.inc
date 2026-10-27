@@ -46,39 +46,23 @@ Full_LatchScrollY:
     ld (irq_scroll_y),a
     ret
 
-; Spend safe idle intervals on urgent radar content or one hidden terrain command.
+; Spend safe idle intervals on due native clocks or one hidden terrain command.
 Full_PresentIdle:
-    ld a,(Radar_Scanned)
-    dec a
-    cp 3                     ; Scanned phases 1..3, with no publication bit set.
-    jr nc,.terrain
-    ld a,(raster_phase)
-    cp 3                     ; Safe body phases, including the second physical refresh.
-    jr c,.terrain
-    ld hl,(Radar_Urgent)
-    ld a,h
-    or l
-    jr z,.terrain
-    call Radar_CommitPublished ; Idle slots can publish across two physical refreshes.
-    call Radar_PublishReady   ; Nonblocking: this refresh has already fetched the map.
-    scf
-    ret
-.terrain:
-    push iy
-    call Full_CacheEnter
-    ld a,1
-    ld (Full_CacheHeld),a
-    ei                       ; Input/clock preparation can span the footer IRQ.
-    nop
-    jp Full_PresentIdleEngine
+    ld hl,Full_PresentIdleEngine
+    jr Full_EnterFrame
 Full_WarmCamera:
+    ld hl,Full_WarmCameraEngine
+    jr Full_EnterFrame
+Full_AdvanceClock:
+    ld hl,Full_AdvanceClockEngine
+Full_EnterFrame:
     push iy
     call Full_CacheEnter
     ld a,1
     ld (Full_CacheHeld),a
     ei
     nop
-    jp Full_WarmCameraEngine
+    jp (hl)
 Full_PresentBegin:
     ld a,(Full_PresentEnabled)
     or a
@@ -278,13 +262,17 @@ Full_EnqueueSmoke:
     call Full_CacheEnter
     jp Full_EnqueueSmokeNative
 Full_RadarDeparture:
-    push iy
-    call Full_CacheEnter
-    jp Full_RadarDepartureNative
+    ld hl,Full_RadarDepartureNative
+    jr Full_RadarExecute
 Full_RadarCommit:
+    ld hl,Full_RadarCommitNative
+    jr Full_RadarExecute
+Full_RadarBegin:
+    ld hl,Full_RadarBeginNative
+Full_RadarExecute:
     push iy
     call Full_CacheEnter
-    jp Full_RadarCommitNative
+    jp (hl)
 Full_RadarRAMExit:
     call Full_CacheLeave
     pop iy

@@ -679,6 +679,12 @@ update_life_digit:
     inc hl
     inc de
     djnz .glyph
+    IF FULL_GAME
+    ld de,$7d60              ; Both complete phases, with IRQ-safe pointer resumption.
+    ld b,64
+    ld hl,point_buffer
+    jp Sprite_Upload
+    ELSE
     vdp_write 14,7
     ld a,$60                  ; pattern 172, normal and shifted
     out ($99),a
@@ -688,6 +694,7 @@ update_life_digit:
     ld bc,$4098
     otir
     ret
+    ENDIF
 
 HUD_FlushNumbers:
     IF FULL_GAME

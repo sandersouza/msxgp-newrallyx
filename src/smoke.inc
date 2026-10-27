@@ -913,9 +913,11 @@ Smoke_Stream:
     ld a,b
     or a
     ret z
+    IF !FULL_GAME
     ld a,(Stage_GuardClosed)
     or a
     ret nz
+    ENDIF                   ; Visible effects retain their budget after the prefetch guard.
     push bc
     ld a,(Smoke_Head)
     ld l,a

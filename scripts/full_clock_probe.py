@@ -29,7 +29,7 @@ def main():
         current=(last+elapsed)&255;dropped=65535 if n&1 else 0
         cases.append((fraction,last,current,due,paused,dropped))
         total=fraction+min(elapsed,clock['maximum_elapsed_refreshes'])*clock['rate']
-        produced=min(elapsed,clock['maximum_elapsed_refreshes'])+total//65536
+        produced=min(elapsed,clock['maximum_elapsed_refreshes'])*clock.get('base_ticks_per_refresh',1)+total//65536
         pending=due+produced;limit=clock['maximum_pending_ticks']
         expected.append((current,0 if paused else min(limit,pending),
             fraction if paused else total%65536,
@@ -71,7 +71,11 @@ def main():
         at=next((i for i,(a,b) in enumerate(zip(actual,expected)) if a!=b),min(len(actual),len(expected)))
         raise ValueError(f'Elapsed clock mismatch at synthetic case {at}: {cases[at]}')
     verify_manifest(bundle)
+    from scripts.msx.presentation_clock_verify import verify
+    publication_cases=verify(root,args,out/'presentation',syms)
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),cases=len(cases),
+        publication_clock=dict(cases=publication_cases,
+            scope='Minimum two physical refreshes, first-packet parity, both late phases, byte-counter wrap and empty queue. Stack/index/native RAM/mapping preserved; only the expected SAT end marker changes when eligible.'),
         native_ram_unchanged=True,vram_unchanged=True,slot_mapping_restored=True,
         scope='Executed rational elapsed-VBlank accumulation, fractional carries, counter wrap, bounded debt/discard accounting and pause; natural cadence is a separate gate.'))
     require_ignored(root,[p for p in out.rglob('*') if p.is_file()]);seal(out)

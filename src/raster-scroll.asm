@@ -187,8 +187,6 @@ main:
     jr z,.wait               ; Do not sleep past a commit serviced during prefetch.
     jr .sleep
 .packet_available:
-    bit 0,b
-    jr nz,.sleep
     ENDIF
 .frame_check:
     ld a,(frame_tick)
@@ -612,17 +610,29 @@ maze_interrupt:
     ENDIF
     vdp_write 1,$62
     IF FULL_GAME
+    push hl
+    push de
     call Full_RadarIRQ
+    pop de
+    pop hl
     ENDIF
     IF RADAR_CELLS_ONLY && HUD_ENABLED
+    IF FULL_GAME
+    ld a,1                   ; Content publication no longer needs the three radar windows.
+    ELSE
     ld a,3
+    ENDIF
     ELSE
     ld a,1
     ENDIF
     ld (raster_phase),a
     ld a,(irq_scroll_y)
     IF RADAR_CELLS_ONLY && HUD_ENABLED
+    IF FULL_GAME
+    add a,LIFE_SPLIT
+    ELSE
     add a,80
+    ENDIF
     ELSE
     add a,LIFE_SPLIT
     ENDIF

@@ -1,15 +1,17 @@
-; Player motion retains every native tick. Enemies use the same fractional
-; integrator every other tick with twice the bounded delta. A normalized parked
-; enemy only refreshes its cell pointer. Native startup/spin paths remain 60 Hz.
+; Positions advance on even native ticks with twice the fractional delta.
+; The original dispatcher still advances startup/spin on the intervening tick.
 Full_NativeMotion:
+    ld a,(player_native_ticks)
+    and 1
+    ret nz
     ld h,(ix+2)
     ld l,(ix+1)
     ld a,iyl
     or a
-    jr nz,.original          ; Player motion/centering retains its 60 Hz steps.
-    ld a,(player_native_ticks)
-    and 1
-    ret nz                   ; Complete enemy positions are presented at 30 Hz.
+    jr z,.enemy
+    add hl,hl
+    jr .original
+.enemy:
     ld de,Full_MSXEnemyMaxSpeed
     call Full_MSXBoundVelocity
     add hl,hl                ; Same fractional distance over two native ticks.

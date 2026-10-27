@@ -10,6 +10,10 @@ Full_Loading EQU $dfc8
 Full_Layout EQU $dfc9
 Full_Transitions EQU $dfca
 Full_DebugHeld EQU $dfcb      ; F5 edge survives scene reloads while the key is held.
+Full_PresentLastTick EQU $dfcc
+Full_PresentClockValid EQU $dfcd
+Full_RadarSATY EQU $dfce
+Full_RadarSATValid EQU $dfcf
 Full_RadarFlags EQU $dfd0
 Full_WideHBank EQU $d2d8
 Full_WideVBank EQU $d2d9
@@ -69,6 +73,29 @@ Full_ObjectAtTile:
 ; The radar IRQ leaves its SAT pointer at fuel slot13. Restore fuel and the
 ; complete player pair against the same R23, every physical refresh. Foreground
 ; pattern preparation must not publish a player Y from a newer camera plan.
+Full_RadarSATCheck:
+    ld a,(Full_RadarSATValid)
+    or a
+    jr z,.map
+    ld a,(Full_RadarSATY)
+    cp d
+    jr nz,.map
+    ; The twelve fixed map sprites still match this scroll. The player dot
+    ; was updated independently; reposition the VDP pointer for shared fuel.
+    ld a,$34
+    out ($99),a
+    ld a,$76
+    out ($99),a
+    or a
+    ret
+.map:
+    ld a,d
+    ld (Full_RadarSATY),a
+    ld a,1
+    ld (Full_RadarSATValid),a
+    scf
+    ret
+
 Full_FuelIRQ:
     ld a,(irq_scroll_y)
     call update_fuel_sat_value

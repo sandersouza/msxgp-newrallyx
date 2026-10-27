@@ -31,6 +31,22 @@ Full_EnemyTerminator:
     nop
     ret
 
+Full_MSXIdleTick:
+    call $8069               ; Startup/spin retain their 60 Hz original dispatcher.
+    call Smoke_Tick
+    call Full_MSXAnimationTick
+    call $b600               ; Odd AI pass advances its clock without decisions.
+    call Enemy_CameraOnly
+    jp Player_CountTick
+Full_MSXAnimationTick:
+    ld hl,player_animation
+    inc (hl)
+    ld a,(hl)
+    cp 4
+    ret c
+    ld (hl),0
+    jp $9ddf
+
 Full_PresentTerminator:
     call Full_CacheEnter
     ld a,(Full_EnemySATCursor)
@@ -60,17 +76,25 @@ Full_PresentSealed:
     ret
 
 Full_EnemyDrawNative:
-    call Full_TurboOff        ; Drawing may write VRAM directly or via Sprite_Upload.
     ld a,(driving)
     or a
     jr z,.hidden
     ld a,(ix+0)
     or a
     jr z,.hidden
+    ld a,(Full_CacheHeld)
+    or a
+    jr z,.map_assign
+    push iy
+    call Full_PoolAssign
+    pop iy
+    jr .assigned
+.map_assign:
     call Full_PoolAssignNative
+.assigned:
     ld a,(Full_PresentEnabled)
     or a
-    call z,Full_TurboOff      ; Scene setup still uploads directly.
+    call z,Full_TurboOff      ; Only scene setup uploads directly; packets own RAM.
     ld a,(Full_EnemySATCursor)
     ld (Full_EnemySATByte),a
     cp (ix+30)
@@ -87,10 +111,78 @@ Full_EnemyDrawNative:
     ld a,(Full_EnemySATCursor)
     add a,8
     ld (Full_EnemySATCursor),a
+    ld a,(Full_PresentEnabled)
+    or a
+    jr z,.draw
+    ld a,(ix+13)
+    or a
+    jp z,Full_EnemySATNative
+.draw:
     jp FullEnemy_DrawPrepared ; Tail call: drawing may switch the resource bank.
 .hidden:
     ld (ix+30),255
     ret
+
+; An unchanged complete mask needs only its two RAM SAT entries. Fixed OR
+; colors were initialized for every destination; no VDP/resource-bank work.
+Full_EnemySATNative:
+    call Full_CacheEnter
+    ld a,(ix+7)
+    bit 7,a
+    ld b,(ix+6)
+    jr z,.x
+    ld b,0
+.x:
+    ld a,(Full_EnemySATByte)
+    sub 72
+    add a,Full_PresentSAT & 255
+    ld l,a
+    ld h,Full_PresentSAT/256
+    ld a,(ix+12)
+    ld (hl),a
+    inc hl
+    ld (hl),b
+    inc hl
+    ld a,(ix+16)
+    ld (hl),a
+    inc hl
+    ld (hl),0
+    inc hl
+    ld a,(ix+12)
+    ld (hl),a
+    inc hl
+    ld (hl),b
+    inc hl
+    ld a,(ix+17)
+    ld (hl),a
+    inc hl
+    ld (hl),0
+    ld (ix+18),0
+    ld (ix+22),216           ; A later full draw must rebuild its private SAT cache.
+    jp Full_CacheLeave
+
+; A complete gameplay packet touches only mapper RAM. Retain one mapping
+; through reservation, assignment and queued masks/SAT, restoring nested owners.
+; The terminator remaps PLAYER_BANK before the resident loop returns here.
+Full_EnemyDrawBatch:
+    ld a,(Full_PresentEnabled)
+    or a
+    jr nz,.packet
+    call Enemy_Prepare
+    call Full_PoolReserveNative
+    jp Enemy_Draw
+.packet:
+    ld a,(Full_CacheHeld)
+    push af
+    call Full_CacheEnter
+    ld a,1
+    ld (Full_CacheHeld),a
+    call Full_EnemyPrepareLoop
+    call Full_PoolReserve
+    call Full_EnemyDrawLoop
+    pop af
+    ld (Full_CacheHeld),a
+    jp Full_CacheLeave
 
 Full_PoolReserveNative:
     push iy
@@ -132,6 +224,9 @@ Full_PoolPreloadNative:
 ; facing, registration and contact still pass through ordinary pose preparation.
 FullEnemyWorldNative:
     ld iy,(Full_EnemySource)
+    ld a,(iy+0)
+    cp $89
+    jr nc,.stationary        ; Startup holds position despite a nonzero saved velocity.
     ld a,(iy+1)
     or (iy+2)
     jr z,.stationary
@@ -148,8 +243,8 @@ FullEnemyWorldNative:
     ld l,a
     ld h,Full_EnemyWorldKeys/256
     ld a,(ix+31)
-    or a
-    jr z,.changed
+    cp 1                    ; Tag 2 belongs to the far-radar sampling clock.
+    jr nz,.changed
     ld a,(iy+5)
     cp (hl)
     jr nz,.changed

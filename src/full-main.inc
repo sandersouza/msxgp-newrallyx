@@ -35,10 +35,10 @@ Full_MainFrame:
     ld a,(paused)
     or a
     jr nz,.camera_ready
+    call Full_WarmCamera     ; Prime nearest cells; blocked edges retain their repair budget.
     ld a,(Full_CameraBlocked)
     or a
     jr z,.camera_ready
-    call Full_WarmCamera
     xor a
     ld (Full_CameraAppliedValid),a
     call Player_Apply
@@ -88,11 +88,11 @@ Full_MainFrame:
     call HUD_PrepareFrame
     call HUD_FlushFlags       ; Bounded RAM work precedes optional numeric VRAM writes.
     call Full_TurboOff
-    call Radar_WaitPublish
     ld a,(paused)
     or a
     call z,hud_demo_numbers
     call HUD_DrawContent
+    call Full_AdvanceClock   ; Timer debt survives a packet that already committed.
 .prefetch:
     ld a,(Full_SealedFrame)
     or a

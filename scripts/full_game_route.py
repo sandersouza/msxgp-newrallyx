@@ -28,7 +28,7 @@ def main(argv=None):
     p.add_argument('--rounds',type=int,choices=range(1,255),default=2)
     p.add_argument('--steering-margin',type=int,choices=range(3,10),default=6,help='Host driver turn-planning margin in pixels')
     p.add_argument('--avoid-enemies',action='store_true',help='Route around current enemy cells using host-side BFS')
-    p.add_argument('--fixture-enemies',type=int,choices=range(1,8),help='Explicit controlled population using the original spawn initializer; changes guest setup')
+    p.add_argument('--fixture-enemies',type=int,choices=range(1,8),help='Controlled population using original spawns, retained after parameter updates; changes guest setup')
     p.add_argument('--fixture-first-round',type=int,choices=range(1,255),help='Explicit initial displayed round using the original round preparer; changes guest setup')
     p.add_argument('--allow-game-over',action='store_true',help='Keep measured evidence when a legitimate game over ends the keyboard route early')
     p.add_argument('--profile',action='store_true',help='Observe main-loop call durations without guest writes')
@@ -93,6 +93,7 @@ def main(argv=None):
     if args.fixture_enemies is not None:
         if 'Full_MSXAI' not in syms:raise ValueError('Population fixture requires the full MSX enemy adapter')
         lines.append(f'debug set_bp {syms["Enemy_Init"]} {{1}} {{debug write memory 0xe24e {args.fixture_enemies}}}')
+        lines.append(f'debug set_watchpoint write_mem 0xe24e {{$::wp_last_value!={args.fixture_enemies} && [info exists ::phase] && $::phase eq "game"}} {{debug write memory 0xe24e {args.fixture_enemies}}}')
     if args.fixture_first_round is not None:
         lines.extend(['set first_round_seeded 0',
             f'debug set_bp {syms["Full_NextBody"]} {{!$::first_round_seeded && [info exists ::phase] && $::phase eq "start" && [debug read memory 0xc7ee]==0}} {{set ::first_round_seeded 1;debug write memory 0xe1b0 {first_round}}}'])
@@ -114,7 +115,8 @@ def main(argv=None):
                 f'debug set_bp {syms["Full_PresentCommit.restore"]} {{[info exists ::commit_start]}} {{puts $::commits_out "$::commit_start [debug read memory 0xe1b0] $::commit_masks [expr {{([machine_info time]-$::commit_start)*1000}}]";unset ::commit_start}}',
             ])
         script+='\nrename snapshot capture_snapshot\nset snapshot_pending 0\nproc snapshot {} {set ::snapshot_pending 1}\n'
-        script+=f'debug set_bp {syms["Full_PresentCommit.restore"]} {{[info exists ::phase] && $::phase eq "game" && $::snapshot_pending}} {{capture_snapshot;set ::snapshot_pending 0}}\n'
+        script+=f'debug set_bp {syms["Full_PresentCommit.clock_ready"]} {{[info exists ::phase] && $::phase eq "game" && $::snapshot_pending}} {{set ::snapshot_committing 1}}\n'
+        script+=f'debug set_bp {syms["Full_PresentCommit.restore"]} {{[info exists ::snapshot_committing]}} {{capture_snapshot;set ::snapshot_pending 0;unset ::snapshot_committing}}\n'
     if 'Full_MSXAI' in syms:
         if 'Full_PoolFault' in syms:
             lines.append(f'debug set_watchpoint write_mem {syms["Full_PoolFault"]} {{$::wp_last_value!=0 && [info exists ::phase] && $::phase eq "game"}} {{puts stderr "Complete-mask cache exhausted";exit 2}}')
@@ -273,6 +275,13 @@ def main(argv=None):
         ])
     if args.profile:
         lines.append('set raster_out [open [file join $out raster.tsv] w]')
+        if 'Full_CameraValidateCore.missing_row' in syms:
+            lines.append('set cache_misses [open [file join $out cache-misses.tsv] w]')
+            for kind,label,x,y,left in (
+                    ('row','Full_CameraValidateCore.missing_row','row_x','row_y','row_left'),
+                    ('column','Full_CameraValidateCore.missing_column','column_x','column_y','column_left')):
+                lines.append(f'debug set_bp {syms[label]} {{$::phase eq "game"}} {{set at [expr {{[reg HL]&65534}}];puts $::cache_misses "[machine_info time] $::frames {kind} [reg E] [reg D] [debug read memory $at] [debug read memory [expr {{$at+1}}]] [debug read memory {syms[x]}] [debug read memory {syms[y]}] [debug read memory {syms[left]}] [debug read memory {syms["previous_x"]}] [debug read memory {syms["previous_y"]}] [debug read memory {syms["Full_DirX"]}] [debug read memory {syms["Full_DirY"]}]"}}')
+            lines.append(f'debug set_bp {syms["Full_CacheTileSafe.unsafe"]} {{$::phase eq "game"}} {{set x [debug read memory {syms["tile_x"]}];set y [debug read memory {syms["tile_y"]}];set at [expr {{8192+($y&31)*128+($x&63)*2}}];puts $::cache_misses "[machine_info time] $::frames unsafe $x $y [debug read memory $at] [debug read memory [expr {{$at+1}}]] 0 0 0 [debug read memory {syms["previous_x"]}] [debug read memory {syms["previous_y"]}] [debug read memory {syms["Full_DirX"]}] [debug read memory {syms["Full_DirY"]}]"}}')
         for name in ('interrupt','maze_interrupt','vertical'):
             lines.append(f'debug set_bp {syms[name]} {{[info exists ::phase] && $::phase eq "game"}} {{puts $::raster_out "[machine_info time] $::frames {name} [machine_info VDP_msx_y_pos] [machine_info VDP_line_in_frame] [debug read memory {syms["raster_phase"]}] [debug read {{VDP status regs}} 0] [debug read {{VDP status regs}} 1]"}}')
         idle='Full_PresentIdleEngine' if 'Full_PresentIdleEngine.terrain' in syms else 'Full_PresentIdle'
@@ -304,11 +313,14 @@ def main(argv=None):
                  '$91bf':'NativeCameraX','$9207':'NativeCameraY','$838a':'NativeContact',
                  '$8069':'NativeMotion','$9052':'NativeSteering'}
         for row in (bundle/'raster-scroll.lst').read_text().splitlines():
-            match=re.search(r'[+\s]([0-9A-F]{4}) (?:CD|C4|CC|D4|DC|E4|EC|F4|FC) [0-9A-F]{2} [0-9A-F]{2}\s+call (?:[a-z]+,)?([\w$]+)',row)
-            if not match or match[2] not in names|aliases.keys():continue
-            address=int(match[1],16);name=aliases.get(match[2],match[2])
-            lines.extend([f'debug set_bp {address} {{$::phase eq "game"}} {{set ::profile_{name} [machine_info time];set ::profile_irq_{name} $::profile_irq_total}}',
-                f'debug set_bp {address+3} {{$::phase eq "game" && [info exists ::profile_{name}]}} {{puts $::profile_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [debug read memory 0xe1b0]";puts $::profile_cpu_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}] [debug read memory 0xe1b0]"}}'])
+            match=re.search(r'[+\s]([0-9A-F]{4}) ((?:CD|C4|CC|D4|DC|E4|EC|F4|FC) [0-9A-F]{2} [0-9A-F]{2})\s+call (?:[a-z]+,)?([\w$]+)',row)
+            if not match or match[3] not in names|aliases.keys():continue
+            address=int(match[1],16);name=aliases.get(match[3],match[3])
+            condition='$::phase eq "game"'
+            if 0x8000<=address<0xc000:
+                condition+=f' && [debug read_block memory {address} 3] eq [binary format H* {match[2].replace(" ","")}]'
+            lines.extend([f'debug set_bp {address} {{{condition}}} {{set ::profile_{name} [machine_info time];set ::profile_irq_{name} $::profile_irq_total;set ::profile_site_{name} {address}}}',
+                f'debug set_bp {address+3} {{{condition} && [info exists ::profile_{name}] && $::profile_site_{name}=={address}}} {{puts $::profile_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [debug read memory 0xe1b0]";puts $::profile_cpu_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}] [debug read memory 0xe1b0]";unset ::profile_{name} ::profile_irq_{name} ::profile_site_{name}}}'])
             if name=='stage_stream':
                 lines.extend([
                     f'debug set_bp {address} {{$::phase eq "game"}} {{set ::stream_before [list [machine_info time] [debug read memory 0xc0b6] [debug read memory 0xc0b7] [debug read memory {syms["Stage_GuardClosed"]}] [debug read memory {syms["raster_phase"]}]]}}',
@@ -365,7 +377,8 @@ def main(argv=None):
         if args.require_stable_player and (player_mismatches or not player_samples):raise ValueError('Player sprites missed their fixed-centre scanline gate')
     verify_manifest(bundle)
     cadence=analyze_cadence(out/'cadence.tsv')
-    packet_cadence=analyze_presentation(out/'presentation.tsv',read_json(bundle/'build.json')['timing']['frame_seconds']) if (out/'presentation.tsv').exists() else None
+    population_passed=args.fixture_enemies is None or all(r['enemy_counts']==[args.fixture_enemies] for r in cadence['rounds'])
+    packet_cadence=analyze_presentation(out/'presentation.tsv',read_json(bundle/'build.json')['timing']['frame_seconds'],out/'cadence.tsv') if (out/'presentation.tsv').exists() else None
     physical_motion=analyze_motion(out/'motion.tsv',read_json(bundle/'build.json')['timing']['frame_seconds']) if args.radar_trace else None
     if (args.maximum_packet_miss_percent is not None or args.maximum_packet_gap_ms is not None) and packet_cadence is None:
         raise ValueError('Packet gate requires a deferred presentation build')
@@ -377,7 +390,8 @@ def main(argv=None):
     presentation_passed=args.minimum_presentation_hz is None or all(r['presentation_loop_hz']>=args.minimum_presentation_hz for r in cadence['rounds'] if r['active_seconds']>=5)
     active_rounds=[r for r in cadence['rounds'] if r['active_seconds']>=5]
     retained_passed=not args.require_retained_native_ticks or bool(active_rounds) and all(r['discarded_ticks']==0 for r in active_rounds)
-    packet_passed=(args.maximum_packet_miss_percent is None or all(r['missed_slots_percent']<=args.maximum_packet_miss_percent for r in packet_cadence['rounds'])) and (args.maximum_packet_gap_ms is None or all(r['maximum_gap_ms']<=args.maximum_packet_gap_ms for r in packet_cadence['rounds']))
+    packet_groups=(packet_cadence['rounds']+[r for r in packet_cadence['populations'] if r['active_seconds']>=2]) if packet_cadence else []
+    packet_passed=(args.maximum_packet_miss_percent is None or all(r['missed_slots_percent']<=args.maximum_packet_miss_percent for r in packet_groups)) and (args.maximum_packet_gap_ms is None or all(r['maximum_gap_ms']<=args.maximum_packet_gap_ms for r in packet_groups))
     owed_passed=args.maximum_owed_repeat_ms is None or all(r['maximum_owed_repeat_ms']<=args.maximum_owed_repeat_ms for r in physical_motion['rounds'] if r['seconds']>=2)
     stutter_passed=(args.maximum_p95_loop_ms is None or bool(active_rounds) and all(r['percentile_95_loop_ms']<=args.maximum_p95_loop_ms for r in active_rounds)) and (args.maximum_over40_percent is None or bool(active_rounds) and all(r['loops_over_40_ms']*100/r['foreground_loops']<=args.maximum_over40_percent for r in active_rounds))
     moving_rounds=[r for r in camera_motion['moving_vertical_rounds'] if r['moving_seconds']>=2] if camera_motion else []
@@ -395,9 +409,11 @@ def main(argv=None):
         controlled_completed_rounds=completed if controlled else 0,fixture_first_round=args.fixture_first_round,
         requested_rounds=args.rounds,target_rounds_reached=reached,stopped_on_game_over=not reached,
         fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
+        fixture_population_retained=args.fixture_enemies is not None,
+        fixture_population_gate=dict(required=args.fixture_enemies is not None,passed=population_passed),
         physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,
         retained_tick_gate=dict(required=args.require_retained_native_ticks,passed=retained_passed),
-        packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,passed=packet_passed),
+        packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,population_minimum_seconds=2,passed=packet_passed),
         owed_motion_gate=dict(maximum_ms=args.maximum_owed_repeat_ms,passed=owed_passed),
         foreground_loops=len(rows),cadence=cadence,camera_motion=camera_motion,
         recorded_displayed_round=args.record_round,
@@ -408,8 +424,9 @@ def main(argv=None):
         vertical_update_gate=dict(minimum_hz=args.minimum_vertical_update_hz,passed=vertical_passed),
         camera_ownership_checks=int((out/'camera-count.txt').read_text()) if 'Full_CameraValidated' in syms else None,
         header_reservations=headers,radar_coherence=radar,maximum_smoke_placements=max(r[6] for r in rows),
-        scope=('Explicit initial round/population fixture before original preparation; real keyboard credit/start, steering and smoke. Not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
+        scope=('Explicit initial round/population fixture; requested enemy count is retained across native parameter writes. Real keyboard credit/start, steering and smoke; this is controlled load, not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
     require_ignored(root,[x for x in out.rglob('*') if x.is_file()]);seal(out)
+    if not population_passed:raise ValueError(f'Controlled population did not remain at the requested count; evidence retained at {out}/report.json')
     if effects is not None and not effects['passed']:raise ValueError(f'Effects publication gate failed; evidence retained at {out}/report.json')
     if not cadence_passed:raise ValueError(f'Natural route missed its native simulation cadence gate; evidence retained at {out}/report.json')
     if not retained_passed or not packet_passed or not owed_passed:raise ValueError(f'Loaded presentation/tick gate failed; evidence retained at {out}/report.json')

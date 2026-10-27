@@ -8,7 +8,7 @@ RECORD_BYTES = RAM_BYTES + PATTERN_BYTES
 
 
 def trace(syms):
-    return [
+    lines=[
         'set effects_state [open [file join $out effects.bin] wb]',
         'set effects_times [open [file join $out effects-times.tsv] w]',
         'set effects_uploads [open [file join $out effects-uploads.tsv] w]',
@@ -18,9 +18,13 @@ def trace(syms):
         ' puts -nonewline $::effects_state [debug read_block VRAM 0x1f8a0 768]',
         '}',
         f'debug set_bp {syms["Radar_UploadCell"]} {{[info exists ::phase] && $::phase eq "game" && ![debug read memory {syms["Radar_Initializing"]}]}} {{',
-        f' puts $::effects_uploads "[machine_info time] [debug read memory {syms["ticks"]}] [debug read memory {syms["Radar_Scanned"]}]"',
+        f' puts $::effects_uploads "[machine_info time] [debug read memory {syms["ticks"]}] [debug read memory {syms["Radar_Scanned"]}] foreground"',
         '}',
     ]
+    if 'Full_RadarVBlank.upload' in syms:
+        lines.extend([f'debug set_bp {syms["Full_RadarVBlank.upload"]} {{[info exists ::phase] && $::phase eq "game"}} {{',
+            f' puts $::effects_uploads "[machine_info time] [debug read memory {syms["ticks"]}] [debug read memory {syms["raster_phase"]}] vblank"','}'])
+    return lines
 
 
 def visible_smoke(state):
@@ -99,11 +103,11 @@ def analyze(directory,syms,*,maximum_flag_ms=250,maximum_smoke_ms=200):
         maximum_smoke_lag_ms=smoke_max,unpublished_tiles_leaving_view=retired_unpublished,
         maximum_flag_ms=maximum_flag_ms,maximum_smoke_ms=maximum_smoke_ms,
         smoke_observed=bool(seen_smoke),
-        passed=bool(seen_flags) and flag_max<=maximum_flag_ms and smoke_max<=maximum_smoke_ms,
+        passed=bool(seen_flags) and bool(seen_smoke) and not retired_unpublished and flag_max<=maximum_flag_ms and smoke_max<=maximum_smoke_ms,
         scope='Natural native flags versus HUD/base/actual radar masks; live visible smoke versus published tiles. Enemy-overlapped radar pixels excluded. Durations are sampled foreground observations, not physical frame latency.')
     if (directory/'effects-uploads.tsv').exists():
         uploads=[line.split() for line in (directory/'effects-uploads.tsv').read_text().splitlines()]
-        invalid=sum(int(row[2]) not in (1,2,3) for row in uploads)
+        invalid=sum((int(row[2])!=0 if len(row)>3 and row[3]=='vblank' else int(row[2]) not in (1,2,3)) for row in uploads)
         duplicate=sum(a[1]==b[1] and float(b[0])-float(a[0])<0.02 for a,b in zip(uploads,uploads[1:]))
         result.update(radar_publications=len(uploads),unsafe_publications=invalid,
                       repeated_publications_in_refresh=duplicate)

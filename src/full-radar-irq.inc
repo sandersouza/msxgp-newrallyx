@@ -1,8 +1,6 @@
 ; Called after the maze scroll latch, before the first radar band is fetched.
 ; No mapper change. Publish each band in scan order, independent of actor load.
 Full_RadarIRQ:
-    push hl
-    push de
     vdp_write 14,7
     xor a
     out ($99),a
@@ -19,15 +17,16 @@ Full_RadarIRQ:
 .point:
     ld e,RADAR_PLAYER_PATTERN
     call .sprite
+    call Full_RadarSATCheck
+    jr nc,.fuel
     ld e,20
     ld hl,Radar_Origins+1
     ld b,12
 .body:
     call .sprite
     djnz .body
+.fuel:
     call Full_FuelIRQ
-    pop de
-    pop hl
     ret
 .sprite:
     ld c,e

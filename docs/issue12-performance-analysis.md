@@ -1,6 +1,12 @@
 # Issue #12: bounded 30 Hz presentation
 
-The current parked-contact/HUD/F5 follow-up uses ROM
+The current sustained-load correction uses ROM
+`a31e3b43ae05fae4accac1e6fae58c81c600acd1253b13b6590749e23c6c6953`.
+The [current measurements below](#sustained-enemy-load-and-physical-presentation)
+qualify eight natural rounds and retained two/four/six/seven-enemy loads.
+Original artwork, colors, complete cars, the HUD and real sprite limits remain enabled.
+
+The preceding parked-contact/HUD/F5 follow-up uses ROM
 `e03679715eeeafd4c76c53f7541413ca6acc8116cc1f4d08c3ef937e4ea31448`.
 [Current follow-up evidence](issue12-parked-controls.md) covers normal startup
 contact, unchanged challenge bounds, score spacing, real debug key inputs and
@@ -39,6 +45,129 @@ decisions and movement scheduling; it does not claim identical arcade AI or
 speed. The reference machine is openMSX 21.0's Panasonic FS-A1WSX with a
 128 KB main RAM mapper, 128 KB VRAM and its factory 5.37 MHz CPU mode.
 
+## Sustained enemy load and physical presentation
+
+The previous controlled fixtures did not retain their requested populations.
+The first collected flag can invoke the native parameter refresh and restore
+round one's population from seven to one, or round six's from six to four.
+Earlier text attributed this only to restarts. Those historical rates therefore
+blend different loads and do not qualify sustained six/seven-enemy play.
+The controlled driver now retains the requested count across native parameter
+writes and rejects any measured active population different from that count.
+These are explicit fixtures, separate from the no-write natural route.
+
+The critical changes are:
+
+- Prepare a complete packet from completed native state before servicing new
+  ticks. Timers, fuel, input and startup/spin continue near 60 Hz. Player/enemy
+  fractional motion and spatial queries run every other tick with doubled
+  distance; presentation adds one snapshot of latency. Caps remain two/1.875
+  pixels per native tick, with lower original speeds retained.
+- Keep one mapper overlay across the complete actor batch, reuse validated
+  complete-mask slots and write unchanged poses directly into the back SAT.
+  Offscreen radar anchors sample every six refreshes, approximately 10 Hz;
+  their world simulation is unchanged.
+- Forecast the nearest missing terrain edge first. Row/column ownership checks
+  now match the exact 32/26-tile spans filled by their queues. Retire stale
+  perpendicular jobs when their span changes, trim already-owned tails, and
+  finish required edges before they freeze several consecutive packets.
+  Physical seams retain exact source fragments; graphics are unchanged.
+- Publish one complete ready radar cell in VBlank, with its actor/visibility
+  metadata in the same transaction. Producer invalidation and backpressure
+  prevent partial or obsolete snapshots. This removes foreground-window
+  starvation. The four-IRQ raster schedule retains the header, footer and guard;
+  unchanged map SAT entries are reused while the camera is held. Independent
+  player, fuel and footer attributes still follow every physical refresh.
+- Preserve the existing three-unit smoke budget after the hidden-terrain guard.
+  Atomic player-label rows and resumable life-digit uploads protect their VRAM
+  pointers from radar interrupts. The HUD boundary probe exposed the label race
+  on the preceding candidate and passes with this correction.
+
+Current qualification uses openMSX 21.0, Panasonic FS-A1WSX with a 128 KB main
+mapper and 128 KB VRAM, factory 5.37 MHz for CPU work, base-clock ordinary VDP
+accesses, real command timing and real sprite limits. This is not a performance
+claim for base-clock machines, PAL or physical hardware.
+
+| Workload | Packet FPS | Late publication intervals | Native Hz | Discarded ticks |
+| --- | ---: | ---: | ---: | ---: |
+| Eight naturally completed rounds | 29.93..29.96 | 0..0.20% | 59.89..59.92 | 0 |
+| Retained two enemies, round one | 29.96 | 0.00% | 59.93 | 0 |
+| Retained four enemies, round one | 29.92 | 0.28% | 59.92 | 0 |
+| Retained six enemies, round six | 29.54 | 2.87% | 59.92 | 0 |
+| Retained seven enemies, round one | 29.57 | 2.54% | 59.92 | 0 |
+
+The existing ordinary 2.5% / loaded 3.5% publication allowances remain; active
+stalls stay in the denominator. Late means an interval beyond 2.5 physical
+refreshes. Publication requires at least two refreshes, but a late packet may
+change parity rather than waiting another entire 30 Hz slot. Maximum complete
+packet interval remains below 67 ms in this matrix.
+
+Packet FPS is not a guarantee of an updated camera on every packet. Actual
+pre-fetch maze latches show maximum owed-camera repeats of 67 ms over the
+natural route and 50 ms under retained seven-enemy play. The latter's physical
+moving-axis p95 is approximately 33.38 ms; occasional turns/cache repairs and
+eight-pixel catch-up steps remain. Stops and turns also affect update-rate
+averages, so packet and physical-motion reports remain separate.
+
+For comparison, the preceding parked-contact ROM, rerun with the corrected
+retained-seven driver, measured 27.72 packet FPS, 8.07% late intervals,
+50.41 native Hz and 427 discarded ticks. Its owed-camera repeat reached
+117 ms. Routes and AI outcomes differ; this is not an identical-frame replay.
+
+All flag/smoke, actual radar-pattern and fixed radar/fuel/footer/player gates
+pass. Natural and retained two/four/seven-enemy routes have no duplicate enemy
+markers. The retained-six route has two transient duplicate samples, lasting at
+most 61 ms, with no accumulation. No route has unowned ink, unsafe or repeated
+per-refresh cell publications, or smoke tiles leaving view unpublished. Worst
+sampled flag/smoke lag across the matrix is 150/124 ms. These are sampled
+foreground observations rather than a physical-frame latency bound.
+
+Executed complete-car component timing, locked at 3.58 MHz with raster IRQs
+disabled, excludes sealing/preloading/commit and is separate from gameplay FPS:
+
+| Seven complete-car poses | Previous ms | Current ms |
+| --- | ---: | ---: |
+| Newly visible | 19.84 | 15.78 |
+| Replacement clipped masks | 20.13 | 16.74 |
+| Same poses on the next packet | 12.09 | 7.74 |
+
+The steady fixture saves 36% of preparation time. All 13,496 facing, clipping,
+cache and SAT cases plus four simultaneous seven-car images pass. Front masks
+and attributes remain unchanged before commit. No original car drawing is reduced.
+
+Validation also passes 396 authored tests; 48,878 executed MSX contracts;
+384 native-clock and 1,802 presentation-clock cases; 3,072 forecast convergence,
+2,451 ownership/smoke metadata and 1,608 grouped smoke-copy cases; and 1,308
+isolated radar IRQ transactions with complete VRAM/native-state canaries.
+The forecast controls fail on the preceding wrong-span/wrong-priority images.
+The isolated radar proof disables the display and IRQs at locked 3.58 MHz;
+gameplay independently checks actual VBlank safety and VDP access timing.
+
+Six real normal-round entries (1/2/4/5/6/8) collide with a still-stationary car
+through credit/start/F5/down, without guest-state writes. Four real F5 advances,
+14 score/round HUD and seven credit limits, partial-board/two-player restoration,
+natural two-player sessions, original phase clocks and attract pass. Natural
+and retained-seven cache/HUD/car source pixels pass independently. Actual
+round-six scanout contains one initialization frame and 478 nonblack gameplay
+frames; selected frames are inspected. Black frontend recordings made with the host
+display asleep are excluded from visual evidence. Human gameplay and physical
+hardware acceptance remain open.
+
+The default rebuild and `latest.rom` must match the current hash above.
+The bounded Issue 11 image remains byte-identical:
+`9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
+Current local ignored evidence uses `issue12-qualified-*-v308` and
+`issue12-final-*-v308`. The historical gameplay comparator is
+`issue12-enemy-7-baseline-retained-v297`; identical car fixtures are rerun in
+`issue12-final-car-baseline-v307`. Original inputs and generated payloads remain
+local and ignored.
+
+```sh
+.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-retained-seven --rounds 1 --fixture-enemies 7 --avoid-enemies --steering-margin 8 --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --minimum-native-hz 57 --maximum-packet-miss-percent 3.5 --maximum-packet-gap-ms 67 --maximum-owed-repeat-ms 100 --maximum-scroll-step 8
+.venv/bin/python -B scripts/full_startup_probe.py --rom "$ROM" --output references/build/my-startup-entries
+.venv/bin/python -B scripts/full_radar_irq_probe.py --rom "$ROM" --output references/build/my-radar-irq
+```
+
 ## Why earlier measurements were insufficient
 
 Native tick rate, foreground loop rate and visible motion are different clocks.
@@ -61,8 +190,8 @@ cannot replace another pending packet. Both scroll axes and complete enemy
 attributes/masks share the same publication. Player, radar, fuel and footer use
 the actual latched scroll every physical refresh.
 
-The player, input, fuel, phase clocks, contact and original startup/spin recovery
-continue at the native clock. Enemy movement and decisions run every other
+Input, fuel, phase clocks and original startup/spin recovery continue at the
+native clock. Player/enemy movement and spatial decisions run every other
 native tick, using twice the fractional delta. Their source descriptors retain
 the ordinary per-tick velocity. Smoke immunity is decremented in native tick
 units; smoke detection is sampled with the enemy update. Maximum player speed
@@ -95,8 +224,8 @@ Old smoke shadows from another torus lap do not invalidate unrelated cells.
 
 Camera candidates validate both axes independently and advance at most eight
 pixels from the packet's starting centre, including an urgent in-frame retry.
-Hidden queues retain perpendicular guards and forecast the current movement
-axis. Urgent copies precede the snapshot within a bounded budget; optional
+Hidden queues retire stale perpendicular spans and forecast the nearest edge
+on the current movement axis. Urgent copies precede the snapshot within a bounded budget; optional
 guards, scoring and bitmap-HUD maintenance follow readiness. A completed packet
 does not wait for future scenery work.
 

@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import statistics
 
 if __package__ in (None, ''):
     sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
@@ -64,6 +65,10 @@ def main():
     if packet:
         lines.extend([
             'set commit_max_ms 0;set commit_peak {};set seven_waited 0;set seven_ms 0',
+            'set prepare_times [open [file join $out preparation.tsv] w]',
+            *([f'debug set_bp {entry} {{$::started}} {{debug write memory {syms["Full_PresentClockValid"]} 0}}'] if 'Full_PresentClockValid' in syms else []),
+            f'debug set_bp {entry} {{$::started}} {{set ::prepare_begin [machine_info time]}}',
+            f'debug set_bp {front_after} {{$::started && [info exists ::prepare_begin]}} {{puts $::prepare_times "$::index $::sentinel [expr {{([machine_info time]-$::prepare_begin)*1000}}]";unset ::prepare_begin}}',
             f'debug set_bp {odd_call} {{$::started && $::sentinel>=5 && !$::seven_waited}} {{set ::seven_waited 1;reg PC 0xd100}}',
             f'debug set_bp {syms["Full_PresentCommit.clock_ready"]} {{$::started}} {{set ::commit_begin [machine_info time];set ::commit_clock [machine_info z80_freq];set ::commit_enable [debug read memory {syms["Full_TurboEnabled"]}];set ::commit_size [debug read memory {syms["Full_PresentLength"]}]}}',
             f'debug set_bp {syms["Full_PresentCommit.restore"]} {{$::started && [info exists ::commit_begin]}} {{set ms [expr {{([machine_info time]-$::commit_begin)*1000}}];if {{$::sentinel>=5}} {{set ::seven_ms [expr {{max($::seven_ms,$ms)}}]}};if {{$ms>$::commit_max_ms}} {{set ::commit_max_ms $ms;set ::commit_peak [list $ms $::commit_clock $::commit_enable $::commit_size [reg IFF]]}};unset ::commit_begin}}',
@@ -166,6 +171,22 @@ debug set_bp 0xd160 {$::started} {
         foreach {name payload} [list all-seven-new.state [debug read_block memory 0xc000 12288] all-seven-new.vram [debug read_block VRAM 0 131072]] {
             set f [open [file join $::out $name] wb];puts -nonewline $f $payload;close $f
         }
+        set ::seven_waited 0;set ::sentinel 7;reg PC 0xd150
+    } elseif {$::sentinel==7} {
+        foreach {name payload} [list all-seven-steady.state [debug read_block memory 0xc000 12288] all-seven-steady.vram [debug read_block VRAM 0 131072]] {
+            set f [open [file join $::out $name] wb];puts -nonewline $f $payload;close $f
+        }
+        for {set i 0} {$i<7} {incr i} {
+            set p [expr {0xe088+$i*32}]
+            debug write memory $p 137;debug write memory [expr {$p+1}] 32;debug write memory [expr {$p+2}] 2
+        }
+        set ::seven_waited 0;set ::sentinel 8;reg PC 0xd150
+    } elseif {$::sentinel==8} {
+        set ::seven_waited 0;set ::sentinel 9;reg PC 0xd150
+    } elseif {$::sentinel==9} {
+        foreach {name payload} [list all-seven-startup.state [debug read_block memory 0xc000 12288] all-seven-startup.vram [debug read_block VRAM 0 131072]] {
+            set f [open [file join $::out $name] wb];puts -nonewline $f $payload;close $f
+        }
         set ::sentinel 0;issue
     } else {
     if {[reg SP]!=0xf380} {error "Enemy presentation damaged stack"}
@@ -230,16 +251,25 @@ after time 600 {puts stderr "Full enemy presentation timeout";exit 2}
         if masks!=expected_masks:raise ValueError(f'Actor {actor} complete source masks differ: {n}')
     verify_manifest(bundle)
     simultaneous=None
+    preparation=None
     if packet:
         from scripts.full_game_evidence import actors
-        for name in ('all-seven','all-seven-new') if 'Full_PoolKeys' in syms else ('all-seven',):
+        for name in ('all-seven','all-seven-new','all-seven-steady','all-seven-startup') if 'Full_PoolKeys' in syms else ('all-seven',):
             simultaneous=actors((out/f'{name}.state').read_bytes(),(out/f'{name}.vram').read_bytes(),pixels,0,compact=True,projected='Full_PoolKeys' in syms)[0]
             if simultaneous!=7:raise ValueError('Simultaneous seven-car packet was incomplete')
+        times=[(int(i),int(s),float(ms)) for i,s,ms in
+               (line.split() for line in (out/'preparation.tsv').read_text().splitlines())]
+        ordinary=[ms for _,sentinel,ms in times if sentinel==0]
+        preparation=dict(single_actor_case_median_ms=statistics.median(ordinary),
+            single_actor_case_maximum_ms=max(ordinary),
+            seven_car_cases_ms={str(s):ms for _,s,ms in times if 5<=s<=9},
+            scope='Executed Full_EnemyFrame at locked 3.58 MHz, raster IRQs disabled in this explicit component fixture; excludes sealing/preload/commit. Compare identical fixtures, not gameplay FPS.')
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),cases=len(cases),visible=visible,actors=7,
         deferred_packet_checks=packet,
         simultaneous_complete_cars=simultaneous,
         maximum_packet_commit_ms=float((out/'commit-ms.txt').read_text()) if packet else None,
         seven_car_vblank_commit_ms=float((out/'seven-ms.txt').read_text()) if packet else None,
+        preparation=preparation,
         scope='Explicit presentation fixtures: all original facings, source-pointer pages, cache eviction, clipping, OR colors, SAT positions/traversal and independent radar masks. Deferred packets must leave front attributes/masks/colors unchanged until the permitted commit. Hardware culling remains enabled; scanout requires separate checks.'))
     require_ignored(root,[p for p in out.rglob('*') if p.is_file()]);seal(out)
     print(f'{len(cases)} seven-car presentation cases pass: {out}/report.json')

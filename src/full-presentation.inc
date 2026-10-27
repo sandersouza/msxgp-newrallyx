@@ -143,14 +143,16 @@ Full_QueueTopMask:
 .zero:
     db 0
 
-; VBlank-only transaction. Publish every second refresh, after the entire
+; VBlank-only transaction. Publish no sooner than two refreshes, after the entire
 ; packet is prepared. The ISR owns all ports; no bank switch is required.
 Full_PresentCommit:
-    ld a,(ticks)
-    and 1
-    ret z                    ; ticks increments after this call.
+    ld a,(Radar_Ready)
+    ld b,a
+    ld a,(Radar_Ready+1)
+    or b
+    ld b,a
     ld a,(Full_PresentReady)
-    or a
+    or b
     ret z
     push hl
     push de
@@ -169,9 +171,29 @@ Full_PresentCommit:
     call Full_CacheEnter
     ld a,(Full_TurboEnabled)
     or a
-    jr z,.clock_ready
+    jr z,.io_ready
     xor a
     out ($41),a              ; OTIR remains slower than the VDP access interval.
+.io_ready:
+    call Full_RadarVBlank
+    ld a,(Full_PresentReady)
+    or a
+    jp z,.finish
+    ld a,(Full_PresentClockValid)
+    or a
+    jr z,.first
+    ld a,(Full_PresentLastTick)
+    ld b,a
+    ld a,(ticks)
+    sub b
+    cp 2
+    jp c,.finish             ; A late packet may shift phase, never exceed 30 Hz.
+    jr .ready
+.first:
+    ld a,(ticks)
+    and 1
+    jp z,.finish
+.ready:
 .clock_ready:
     ld ix,Full_PresentDirty
     ld iy,Full_PresentPatterns
@@ -256,6 +278,11 @@ Full_PresentCommit:
     ld (irq_scroll_y),a
     xor a
     ld (Full_PresentReady),a
+    ld a,(ticks)
+    ld (Full_PresentLastTick),a
+    ld a,1
+    ld (Full_PresentClockValid),a
+.finish:
     ld a,(Full_TurboEnabled)
     or a
     jr z,.restore

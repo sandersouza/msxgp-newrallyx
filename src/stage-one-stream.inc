@@ -503,6 +503,18 @@ stage_stream_driving:
 .enemy_budgeted:
     ENDIF
 .next:
+    IF FULL_GAME
+    ld a,(Full_PresentEnabled)
+    or a
+    jr z,.packet_pending
+    ld a,(Full_SealedFrame)
+    or a
+    jr z,.packet_pending
+    ld a,(Full_PresentReady)
+    or a
+    ret z                    ; A committed packet yields before another hidden copy.
+.packet_pending:
+    ENDIF
     IF RASTER_GUARD && !FULL_GAME
     ld a,(Stage_GuardClosed)
     or a

@@ -89,8 +89,8 @@ def main():
         descriptor[offset]=fraction;descriptor[offset+1]=fine&255
         descriptor[8]=15;descriptor[10]=25;descriptor[17:19]=bytes.fromhex('cdab')
         writes=[(at+i,v) for i,v in enumerate(descriptor)]+[(s['player_native_ticks'],parity),(0xe05a,0),(0xe05b,0)]
-        moving=player or not parity or enemy_divisor==1
-        step=velocity if player else max(-enemy_cap,min(enemy_cap,velocity))*enemy_divisor
+        moving=not parity
+        step=velocity*s.get("Full_MSXPlayerMotionDivisor",1) if player else max(-enemy_cap,min(enemy_cap,velocity))*enemy_divisor
         if moving:
             fixed=fine*256+fraction+step
             while fixed>=24*256:

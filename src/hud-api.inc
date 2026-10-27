@@ -767,10 +767,15 @@ HUD_ContentWindow:
     or a
     jr nz,.ready
     ld a,(raster_phase)
+    IF FULL_GAME
+    cp 1
+    jr z,.ready
+    ELSE
     cp 3
     jr z,.ready
     cp 4
     jr z,.ready
+    ENDIF
     scf
     ret
 .ready:
@@ -902,11 +907,19 @@ hud_draw_player_number:
     add hl,de
     ld a,HUD_DATA_BANK
     ld ($7000),a
+    IF !FULL_GAME
     vdp_write 14,4
+    ENDIF
     ld de,PLAYER_LABEL_X/2
     ld a,8
 .row:
     push af
+    IF FULL_GAME
+    ei
+    nop
+    di
+    vdp_write 14,4            ; The radar ISR may have changed R14 between glyph rows.
+    ENDIF
     ld a,e
     out ($99),a
     ld a,d

@@ -1,6 +1,20 @@
 ; BC=previous logical anchor, DE=new anchor. Prioritize the existing footprint
 ; at crossings and along seams. Ordinary one-cell motion stays optional.
 ; Radar_UpdatePoints retains the RADAR_CACHE_BANK lookup mapping throughout.
+Full_RadarBeginNative:
+    call Radar_CellBit
+    ld hl,(Radar_Ready)
+    ld a,e
+    cpl
+    and l
+    ld l,a
+    ld a,d
+    cpl
+    and h
+    ld h,a
+    ld (Radar_Ready),hl
+    jp Full_RadarRAMExit
+
 Full_RadarDepartureNative:
     ld iyh,d
     ld iyl,e

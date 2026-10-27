@@ -238,8 +238,8 @@ def build(root, args):
     clock=native_clock(args.hz,logic_hz)
     if full_game and args.hz==60:
         frame=video_timing(args.hz)['frame_seconds']
-        clock=dict(clock,tick_seconds=frame,rate=0,speed_ratio=.0165/frame,
-            adapted=True,mode='One logical tick per physical NTSC refresh')
+        clock=dict(clock,tick_seconds=frame,rate=0,base_ticks_per_refresh=1,
+            speed_ratio=.0165/frame,adapted=True,mode='One logical tick per physical NTSC refresh')
     smoke_component=bool(getattr(args,'smoke_component',False) or smoke_runtime)
     completion_component=bool(getattr(args,'completion_component',False) or stage>=11)
     round_preparation=bool(getattr(args,'round_component',False) or full_game)
@@ -756,6 +756,7 @@ def build(root, args):
         f'DEATH_HOLD_TICKS EQU {death_ticks}\n'
         f'FLAG_EMPTY_X EQU {(empty_id%32)*8}\nFLAG_EMPTY_Y EQU {16+empty_id//32*8}\n'
         f'PLAYER_RATE EQU {clock["rate"]}\n'
+        f'FULL_CLOCK_BASE EQU {clock.get("base_ticks_per_refresh",1)}\n'
         f'LIFE_X0 EQU {LIFE_X[0]}\nLIFE_X1 EQU {LIFE_X[1]}\nMASK_SPRITES EQU {len(MASK_ROWS)}\n'
         f'VIEWPORT_WIDTH EQU {VIEWPORT_WIDTH}\nVIEWPORT_HALF EQU {VIEWPORT_HALF}\n'
         f'HORIZONTAL_ADJUST EQU {HORIZONTAL_ADJUST}\nPLAYER_X EQU {PLAYER_X}\n'
@@ -962,7 +963,7 @@ def build(root, args):
             sat='Visible complete pairs in original actor order, one trailing terminator',
             unchanged_attributes='Skip only identical attributes at the same destination',
             source_registration='World viewport for all seven descriptors; seven independent radar anchors',
-            publication='Complete deferred mask/color/SAT packet on every second VBlank; fixed scroll snapshot',
+            publication='Complete deferred mask/color/SAT packet no sooner than two VBlanks; late packets may shift phase, with one coherent scroll snapshot',
             radar_coordinates='Maze IRQ after R23 latch; player dot, twelve body sprites, three shared fuel slots and the complete player pair',
             actor_cpu_clock='Factory turbo for pure descriptor/cache/RAM work; base clock for ordinary VDP transfers',
             hardware_sprite_limit_enabled=True) if full_game else None),
@@ -988,11 +989,13 @@ def build(root, args):
         msx_enemy_navigation=(dict(entry=0xb600,source_sha256=digest(root/'src/full-msx-enemies.inc'),
             decisions='New cell centres only; reciprocal wall exits, actor-dependent axis priority, no reverse outside dead ends',
             motion_hz=1/(2*video_timing(args.hz)['frame_seconds']) if args.hz==60 else None,
-            motion_divisor=2,player_speed_cap_pixels=2,enemy_speed_cap_pixels=1.875,
-            continuous='Fractional movement with doubled enemy delta every other native tick; original lower near/far speeds; smoke immunity in native tick units; 60 Hz contact and startup/spin recovery',
+            motion_divisor=2,player_motion_divisor=2,player_speed_cap_pixels=2,enemy_speed_cap_pixels=1.875,
+            continuous='Player/enemy fractional movement and spatial queries every other native tick with doubled delta; original lower near/far speeds; smoke immunity in native tick units; timers and startup/spin recovery every native tick',
             navigation_mapper=[0x3000,0x3700],decision_cells=[0xd2a8,0xd2b6],
             contact='Inclusive ten-pixel world rectangle; normal startup actors use fourteen pixels for the complete silhouette. Challenge remains ten; signed fine offsets may span two coarse cells; all seven actors, no virtual OAM dependency') if full_game else None),
         full_presentation_timing=(dict(target_hz=1/(2*video_timing(args.hz)['frame_seconds']),
+            publication_clock=dict(minimum_refreshes=2,last_tick_address=0xdfcc,
+                valid_address=0xdfcd,first_packet='Odd VBlank; late packets may shift phase'),
             logic_hz=1/video_timing(args.hz)['frame_seconds'] if args.hz==60 else 1/.0165,
             scope='User-approved stable half-refresh presentation; original art/HUD and real sprite limits retained',
             packet_mapper=[0,0x384],code=[0xea00,0xec00],

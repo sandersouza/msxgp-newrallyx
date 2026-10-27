@@ -103,8 +103,8 @@ signed fine offsets cannot hide a nearby car. See the
 [parked-contact, HUD and debug qualification](issue12-parked-controls.md).
 
 MSX pursuit decides once at a new cell centre using reciprocal exits. Enemies
-coast between centres and use the original fractional integrator every other
-native tick with doubled distance. Player speed is capped at two pixels per
+coast between centres. Player/enemy movement and spatial queries use the
+fractional integrator every other native tick with doubled distance. Player speed is capped at two pixels per
 native tick, enemies at 1.875; lower source speeds and challenge activation
 remain effective. Original phase, fuel and startup/spin clocks continue near
 60 Hz. Twelve shared complete-mask slots bound VBlank replacements to two.

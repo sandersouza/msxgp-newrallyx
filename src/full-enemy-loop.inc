@@ -55,22 +55,18 @@ Enemy_Radar:
     jp HUD_SetEnemy
 Full_EnemyFrame:
     call Full_PresentBegin
-    call Enemy_Prepare
-    call Full_PoolReserveNative
-    jp Enemy_Draw
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp Full_EnemyDrawBatch
 Full_EnemyFrameRestart:
     ld a,1
     ld (Full_RenderRestart),a
     jp Full_EnemyFrame
 FullEnemy_DrawOne:
-    ld a,PLAYER_BANK
-    ld ($7000),a
     jp Full_EnemyDrawNative
 Full_EnemyPrepareRadar:
-    call Full_TurboOn
-    call FullEnemy_PrepareOne
-    call FullEnemy_RadarOne
-    jp Full_TurboOff
+    call FullEnemyPrepareNative
+    jp FullEnemyRadarNative ; Selection already mapped the RAM-only player helpers.
 Full_EnemyPatterns:
     db 192,200,208,216,224,232,248
 

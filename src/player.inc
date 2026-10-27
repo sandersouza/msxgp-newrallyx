@@ -217,6 +217,15 @@ Player_AdvanceEarly:
     ld a,(paused)
     or a
     ret nz
+    IF FULL_GAME
+    ld a,1
+    ld (player_steps),a
+    xor a
+    ld (Fuel_ConsumeWork),a
+    call Player_Position      ; Snapshot the completed simulation, before new ticks.
+    di
+    ret
+    ELSE
     IF SMOKE_RUNTIME
     xor a
     ld (player_steps),a
@@ -272,6 +281,7 @@ Player_AdvanceEarly:
     ENDIF
     ENDIF
 
+    ENDIF
 Player_Tick:
     IF FULL_GAME
     ld hl,Full_LoopTicks      ; Count all native work in this presentation loop.
@@ -303,6 +313,15 @@ Player_AfterFuel:
     or a
     jr nz,Player_CountTick
     ENDIF
+    IF FULL_GAME
+    ld a,(player_native_ticks)
+    and 1
+    jr z,.motion_tick
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    jp Full_MSXIdleTick
+.motion_tick:
+    ENDIF
     IF ENEMY_COUNT
     call Enemy_PreMove
 Player_AfterEnemyCleanup:
@@ -330,6 +349,9 @@ Player_AfterEnemyCleanup:
     or a
     call nz,Player_ValidateMotion
     ENDIF
+    IF FULL_GAME
+    call Full_MSXAnimationTick
+    ELSE
     ld hl,player_animation
     inc (hl)
     ld a,(hl)
@@ -338,6 +360,7 @@ Player_AfterEnemyCleanup:
     ld (hl),0
     call $9ddf              ; Original twelve-angle steering animation.
 .done:
+    ENDIF
     IF ENEMY_COUNT
     call Enemy_AfterMove
     ENDIF
@@ -357,6 +380,10 @@ Player_AfterFlag:
     IF INCREMENTAL_STAGE >= 3
     call Death_Begin
 Player_CountTick:
+    ENDIF
+    IF FULL_GAME
+    xor a
+    ld (Full_CellRejectedValid),a ; Rejections cannot survive native smoke/object changes.
     ENDIF
     ld hl,(player_native_ticks)
     inc hl

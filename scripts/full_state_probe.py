@@ -115,9 +115,7 @@ proc step {} {
             }
             incr ::hudindex
             if {$::hudindex==[string length $::huddata]/19} {
-                debug write memory 0xc7d0 1;debug write memory 0xc7d1 0
-                debug write memory 0xc7ee 0;debug write memory 0xc7d2 0
-                set ::phase credit_screen;set ::age 0
+                set ::phase credit_switch;set ::age 0
             } else {set ::phase hud_seed}
         }}
         credit_screen {if {$::age>30 && [debug read memory 0xc7dd]} {
@@ -128,8 +126,15 @@ proc step {} {
 }
 proc poll {} {if {[catch {step} p]} {puts stderr $p;exit 2}}
 set VDP.too_fast_vram_access_callback {puts stderr "State transition VRAM timing violation";exit 2}
-after time 120 {puts stderr "State transition timeout";exit 2}
+after time 120 {puts stderr "State transition timeout: phase=$::phase age=$::age PC=[reg PC] SP=[reg SP] IFF=[reg IFF] session=[debug read memory 0xc7d0] ready=[debug read memory 0xc7dd] ticks=[debug read memory 0xc00a] A=[reg A] BC=[reg BC] DE=[reg DE] HL=[reg HL] primary=[debug read ioports 168] page=[debug read ioports 252] held=[debug read memory 0xd2ea]";foreach {name start size} {timeout.state 49152 12288 timeout.page0 0 16384} {set f [open [file join $::out $name] wb];puts -nonewline $f [debug read_block memory $start $size];close $f};exit 2}
 after time 0.02 poll
+# Switch the synthetic gameplay fixture at a renderer boundary, never while
+# an overlay or VDP transaction is live in a timed host callback.
+debug set_bp @MAIN@ {$::phase eq "credit_switch"} {
+    debug write memory 0xc7d0 1;debug write memory 0xc7d1 0
+    debug write memory 0xc7ee 0;debug write memory 0xc7d2 0
+    set ::phase credit_screen;set ::age 0
+}
 debug set_bp @MAIN@ {$::phase eq "hud_seed"} {
     set entry [string range $::huddata [expr {$::hudindex*19}] [expr {$::hudindex*19+18}]]
     debug write_block memory 0xe0a0 [string range $entry 0 7]

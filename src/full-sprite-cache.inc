@@ -38,6 +38,7 @@ Full_PoolInit:
     ldir
     xor a
     ld (Full_PoolFault),a
+    ld (Full_PresentClockValid),a
     ret
 
 Full_PoolBegin:
@@ -92,11 +93,13 @@ Full_PoolBegin:
     ld de,32
     add ix,de
     djnz .actor
+    jr .clear_back           ; Current keys already equal the saved restart image.
 .back:
     ld hl,Full_PoolSaved
     ld de,Full_PoolKeys
     ld bc,36
     ldir
+.clear_back:
     ld hl,Full_PoolBack
     ld de,Full_PoolBack+1
     ld bc,11
@@ -108,6 +111,41 @@ Full_PoolBegin:
 
 ; IX=pose. Carry reports a hit; D is the slot. Keys are frame/clip/top-row.
 Full_PoolFind:
+    ld a,(ix+16)
+    cp 24
+    jr c,.linear            ; The first three common slots already have a short scan.
+    ld a,ixl
+    sub Full_EnemyRecords & 255
+    rlca
+    rlca
+    rlca
+    and 7
+    add a,Full_PoolActors & 255
+    ld l,a
+    ld h,Full_PoolActors/256
+    ld d,(hl)
+    ld a,d
+    cp 12
+    jr nc,.linear
+    add a,a
+    add a,d
+    add a,Full_PoolKeys & 255
+    ld l,a
+    ld h,Full_PoolKeys/256
+    ld a,(hl)
+    cp (ix+19)
+    jr nz,.linear
+    inc hl
+    ld a,(hl)
+    cp (ix+10)
+    jr nz,.linear
+    inc hl
+    ld a,(hl)
+    cp (ix+20)
+    jr nz,.linear
+    scf
+    ret                     ; Validate the complete key before reusing a previous slot.
+.linear:
     ld hl,Full_PoolKeys
     ld d,0
     ld b,12

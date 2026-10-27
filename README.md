@@ -38,8 +38,9 @@ their full range. The life digit shows spare cars, capped at nine.
 A 248x201 maze viewport preserves world coordinates. The full game targets
 **30 FPS presentation** on approximately 60 Hz NTSC output, as approved by the
 user. Complete car masks, attributes and both camera axes publish together.
-The player, input, fuel and phase clocks target approximately 59.92 Hz; enemy
-motion/decisions use doubled fractional steps every other tick. Pursuit is
+Input, fuel, phase and startup/spin clocks target approximately 59.92 Hz.
+Player/enemy motion and spatial decisions use doubled fractional steps every
+other tick; presentation consumes the completed preceding simulation snapshot. Pursuit is
 adapted for the MSX, with decisions at intersections and bounded speeds.
 Original art, colors, complete cars and the HUD remain intact. Occasional
 missed publication slots and camera waits remain measured separately from

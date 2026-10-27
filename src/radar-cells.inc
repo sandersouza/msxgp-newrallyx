@@ -217,6 +217,15 @@ Radar_UpdatePoints:
     ret
 
 Radar_Prepare:
+    IF FULL_GAME
+    ld hl,(Radar_Cleanup)
+    ld de,(Radar_Urgent)
+    ld a,h
+    or l
+    or d
+    or e
+    jr nz,Radar_PrepareQueued ; Finish the old footprint before accepting another pose.
+    ENDIF
     call Radar_UpdatePoints
 Radar_PrepareQueued:
     xor a
@@ -425,6 +434,7 @@ Radar_PrepareTail:
 
 Radar_CellBit:
     ld a,(hud_cell)
+Radar_CellBitA:
     ld l,a
     ld h,0
     add hl,hl
@@ -709,6 +719,9 @@ Radar_FlagOffsets:
     ENDIF
 
 Radar_RenderCell:
+    IF FULL_GAME
+    call Full_RadarBegin      ; Retire the previous payload before writing any replacement.
+    ENDIF
     call Radar_AllowIRQ
     ld hl,Radar_CellsWork
     inc (hl)
@@ -893,29 +906,7 @@ Radar_Commit:
 ; describes the visible points advances at the next frame boundary.
 Radar_WaitPublish:
     IF FULL_GAME
-    ; A presentation loop spans two physical refreshes. The terrain guard may
-    ; still describe the first one; use the current raster phase instead.
-    di
-    ld a,(raster_phase)
-    cp 3
-    ret c
-    ld a,(Stage_GuardClosed)
-    or a
-    jr z,.phase
-    ld hl,(Radar_Urgent)
-    ld a,h
-    or l
-    ret z                    ; Only content changes borrow the second-refresh slot.
-.phase:
-    ld a,(Radar_Scanned)
-    dec a
-    cp 3
-    ret nc
-    ld hl,(Radar_Ready)
-    ld a,h
-    or l
-    ret z
-    jp Radar_PublishReady
+    ret                     ; Full-game payloads are consumed only by VBlank.
     ELSE
     IF PLAYER_FAST_BLITTER
     ; Retain terrain priority in this unaccepted integration experiment.
@@ -982,12 +973,16 @@ Radar_PublishReady:
     ld a,(paused)
     or a
     jr nz,.budget_ready
+    IF FULL_GAME
+    jr .budget_ready        ; One bounded publication; elapsed simulation has its own budget.
+    ELSE
     ld hl,(player_rate)
     ld de,PLAYER_RATE
     add hl,de
     jr nc,.budget_ready
     di
     ret                     ; preserve CPU room for the predicted second tick
+    ENDIF
 .initial:
     ld a,12
     ld (Radar_PublishBudget),a
@@ -1101,9 +1096,13 @@ Radar_UploadCell:
     call Radar_AllowIRQ       ; Metadata commits do not touch VDP control ports.
     ld a,(hud_cell)
     ld (Radar_PendingCell),a
+    IF FULL_GAME
+    call Radar_CommitPublished ; The full payload is already in VRAM; retire its staging slot.
+    ELSE
     ld a,(Radar_Initializing)
     or a
     call nz,Radar_CommitPublished
+    ENDIF
     call Radar_CellBit
     ld hl,(Radar_Ready)
     ld a,e

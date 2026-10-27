@@ -12,6 +12,7 @@ Full_MSXNavigation EQU $3000
 Full_MSXPlayerMaxSpeed EQU 512  ; Two pixels per native tick, four per packet.
 Full_MSXEnemyMaxSpeed EQU 480   ; 1.875 pixels, with the original lower speeds.
 Full_MSXEnemyMotionDivisor EQU 2
+Full_MSXPlayerMotionDivisor EQU 2
 
 ; Keep player terrain bandwidth bounded without changing fractional motion.
 Full_MSXPlayerSpeed:

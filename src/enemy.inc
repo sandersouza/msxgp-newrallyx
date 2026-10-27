@@ -63,6 +63,7 @@ Enemy_AfterMove:
     ELSE
     call z,$8cd6            ; source AI does not run after a collision transfer
     ENDIF
+Enemy_CameraOnly:
     ld a,($e050)
     add a,7
     cp 15
