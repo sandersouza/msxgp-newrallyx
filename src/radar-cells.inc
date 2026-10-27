@@ -50,6 +50,7 @@ Radar_Payloads EQU $c980          ; twelve80-byte normal/shift/color payloads
 Radar_StagedPoints EQU $cd40
     IF FULL_GAME
 Radar_Urgent EQU $ce18            ; two bytes after the flag-visibility work arrays
+Radar_Cleanup EQU $ce1a           ; enemy footprints crossing or straddling cells
     ENDIF
 
 Radar_Init:
@@ -94,6 +95,8 @@ Radar_Init:
     IF FULL_GAME
     ld (Radar_Urgent),a
     ld (Radar_Urgent+1),a
+    ld (Radar_Cleanup),a
+    ld (Radar_Cleanup+1),a
     ENDIF
     ld (Radar_Dirty),a
     ld (Radar_Dirty+1),a
@@ -190,12 +193,18 @@ Radar_UpdatePoints:
     push bc
     push hl
     push de
+    IF FULL_GAME
+    ld b,(ix)
+    ld c,(ix+1)
+    call Full_RadarDeparture
+    ELSE
     ld d,(ix)
     ld e,(ix+1)
     call Radar_Mark
     pop de
     push de
     call Radar_Mark
+    ENDIF
     pop de
     ld (ix),d
     ld (ix+1),e
@@ -221,6 +230,10 @@ Radar_PrepareQueued:
     or a
     jr nz,.budget_ready
     IF FULL_GAME
+    ld hl,(Radar_Cleanup)
+    ld a,h
+    or l
+    jr nz,.budget_ready      ; Erase a departed footprint before publishing another.
     ld a,(player_steps)
     cp 2
     jr z,.defer
@@ -369,6 +382,18 @@ Radar_DirtyMask:
     cpl
     and h
     ld h,a
+    ld de,(Radar_Cleanup)
+    ld a,e
+    and l
+    ld c,a
+    ld a,d
+    and h
+    ld b,a
+    or c
+    jr z,.selected_dirty
+    ld h,b
+    ld l,c
+.selected_dirty:
     ENDIF
     ld a,h
     or l
@@ -803,6 +828,9 @@ Radar_BufferAddress:
     ld de,Radar_Payloads
     add hl,de
     ret
+    IF FULL_GAME
+Radar_Commit EQU Full_RadarCommit
+    ELSE
 Radar_Commit:
     ld a,(hud_cell)
     ld l,a
@@ -859,6 +887,7 @@ Radar_Commit:
     ld (Radar_Ready),hl
     di
     ret
+    ENDIF
 
 ; A cell is uploaded only after its last raster line. The CPU state that
 ; describes the visible points advances at the next frame boundary.

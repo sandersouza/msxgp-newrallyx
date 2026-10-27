@@ -15,7 +15,7 @@ class FullMemoryTests(unittest.TestCase):
             hud_score_pending=0xd110,hud_fuel_payload=0xd180,Full_Shadow=0xd230,
             Full_AITable0=0xd2a8,Full_AIBefore=0xd2c4,Full_AITick=0xd2cb,
             Smoke_Display=0xd300,Smoke_DisplayRows=0xdb00,
-            Radar_PublishedPoints=0xdb40,Round_Objects=0xdc00,
+            Radar_PublishedPoints=0xdb40,Full_EnemyRecords=0xce20,Round_Objects=0xdc00,
             Flag_Records=0xdf80,Full_IDBank=0xdfbc,Full_RadarFlags=0xdfd0,
             Full_AIValid=0xe3f1,Full_LoadStart=0xf000,Full_LoadEnd=0xf2ed)
 
@@ -54,4 +54,10 @@ class FullMemoryTests(unittest.TestCase):
         symbols=self.symbols();symbols['Radar_Urgent']=0xce18
         layout(symbols)
         symbols['Radar_Urgent']=0xce17
+        with self.assertRaisesRegex(ValueError,'overlap'):layout(symbols)
+        symbols.update(Radar_Urgent=0xce18,Radar_Cleanup=0xce1a)
+        layout(symbols)
+        symbols['Radar_Cleanup']=0xce19
+        with self.assertRaisesRegex(ValueError,'overlap'):layout(symbols)
+        symbols['Radar_Cleanup']=0xce1f
         with self.assertRaisesRegex(ValueError,'overlap'):layout(symbols)

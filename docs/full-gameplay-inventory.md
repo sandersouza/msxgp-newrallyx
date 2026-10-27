@@ -115,6 +115,9 @@ Collected flags now prioritize their radar-cell publication in safe video
 intervals. Fresh smoke jobs precede retired-row repairs without increasing the
 stream budget. See [effect publication evidence](issue12-effects-publication.md)
 for native-to-display lag checks and the loaded-scene timing comparison.
+Enemy markers crossing or straddling cells now prioritize erasing their
+previous footprint. [Radar motion evidence](issue12-radar-motion.md) checks
+actor identity across cells and rejects accumulated or unowned pattern ink.
 The scenery palette reuses a spare third black entry for the later orange;
 both dependent car-plane blacks and every other existing entry remain intact.
 Every required source tile/cast color must map through the established RGB333

@@ -108,4 +108,8 @@ def analyze(directory,syms,*,maximum_flag_ms=250,maximum_smoke_ms=200):
         result.update(radar_publications=len(uploads),unsafe_publications=invalid,
                       repeated_publications_in_refresh=duplicate)
         result['passed'] &= not (invalid or duplicate)
+    if 'Full_EnemyPoints' in syms:
+        from .radar_motion import analyze as analyze_motion
+        result['enemy_motion']=analyze_motion(directory,syms)
+        result['passed'] &= result['enemy_motion']['passed']
     return result

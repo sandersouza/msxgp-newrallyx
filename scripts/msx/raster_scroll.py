@@ -789,7 +789,7 @@ def build(root, args):
     if round_preparation:
         shutil.copyfile(root/'src/round-objects.inc', output/'round-objects.inc')
     if full_game:
-        for name in ('full-hud-number.inc','full-round-native.inc','full-msx-enemies.inc','full-presentation.inc','full-sprite-cache.inc','full-main.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
+        for name in ('full-radar-motion.inc','full-hud-number.inc','full-round-native.inc','full-msx-enemies.inc','full-presentation.inc','full-sprite-cache.inc','full-main.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
             shutil.copyfile(root/'src'/name,output/name)
     shutil.copyfile(root/'src/player.inc',output/'player.inc')
     if smoke_runtime:shutil.copyfile(root/'src/smoke.inc',output/'smoke.inc')

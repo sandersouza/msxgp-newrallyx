@@ -1,6 +1,11 @@
 # Issue #12: bounded 30 Hz presentation
 
-The current flag-radar/smoke correction uses ROM
+The current enemy-radar cleanup uses ROM
+`06fb29529e3bb17a3d18ec0f62db43edaf7008cafe32441ad43ad7e8d29514e3`.
+[Radar motion evidence](issue12-radar-motion.md) records zero accumulated enemy
+markers and the explicit loaded-workload timing concession.
+
+The preceding flag-radar/smoke correction uses ROM
 `2e8a91d43232b76d6d890dce4438cba4b5ad62b4e22ef988ddd924b4e8e299ab`.
 [Effect publication evidence](issue12-effects-publication.md) records the
 native-to-VRAM checks and the 29.44..29.96 FPS follow-up workloads.

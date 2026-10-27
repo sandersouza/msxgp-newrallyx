@@ -60,6 +60,9 @@ def layout(symbols):
     if 'Radar_Urgent' in symbols:
         add('radar flag visibility snapshots',0xce00,24)
         add('radar content publication priority','Radar_Urgent',2)
+    if 'Radar_Cleanup' in symbols:
+        add('departed enemy radar cells','Radar_Cleanup',2)
+        add('prepared enemy records','Full_EnemyRecords',224)
     add('dynamic object owners','Round_Objects',896)
     add('dynamic flag records','Flag_Records',60)
     add('round bank metadata','Full_IDBank',20)

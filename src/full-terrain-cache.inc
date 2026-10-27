@@ -277,6 +277,18 @@ Full_EnqueueSmoke:
     push iy
     call Full_CacheEnter
     jp Full_EnqueueSmokeNative
+Full_RadarDeparture:
+    push iy
+    call Full_CacheEnter
+    jp Full_RadarDepartureNative
+Full_RadarCommit:
+    push iy
+    call Full_CacheEnter
+    jp Full_RadarCommitNative
+Full_RadarRAMExit:
+    call Full_CacheLeave
+    pop iy
+    ret
 Full_SmokeCellExit:
     ld a,c
     pop bc

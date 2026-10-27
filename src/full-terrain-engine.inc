@@ -1533,6 +1533,7 @@ Full_SmokeCellNative:
     ld c,1
     jp Full_SmokeCellExit
 
+    INCLUDE "full-radar-motion.inc"
     INCLUDE "full-sprite-cache.inc"
 
 ; HL=desired centre, DE=last presented centre. Validate at most one new tile
