@@ -545,8 +545,8 @@ UI_OnePlayerText:
 UI_TwoPlayerText:
     db 64,72,"1 OR 2 PLAYERS  ",0,255
 UI_CopyrightText:
-    db 64,176,"@ namco 1981 2ST",0
-    db 64,192,"@ retrowork 2026",0,255
+    db 64,176,"@ NAMCO 1981 2ST",0
+    db 64,192,"@ RETROWORK 2026",0,255
 UI_OverText:
     db 92,96,"GAME OVER",0,255
 UI_ChallengeTitle:

@@ -22,26 +22,10 @@ def cast_reveal(image,background):
 def font(assets):
     result=bytearray()
     for code in range(128):
-        source=code-48 if 48<=code<=57 else code
+        source=0x18 if code==ord('@') else code-48 if 48<=code<=57 else code
         glyph=assets.pixels['tiles'][source*64:(source+1)*64]
         result.extend(sum((128>>x) for x in range(8)
             if assets.palette['lookup'][38*4+glyph[y*8+x]]) for y in range(8))
-    # New credits use a small authored lower-case alphabet and copyright mark.
-    lower={
-        'a':('00000','00000','01110','00001','01111','10001','01111'),
-        'c':('00000','00000','01111','10000','10000','10000','01111'),
-        'e':('00000','00000','01110','10001','11111','10000','01111'),
-        'k':('10000','10000','10010','10100','11000','10100','10010'),
-        'm':('00000','00000','11010','10101','10101','10101','10101'),
-        'n':('00000','00000','11110','10001','10001','10001','10001'),
-        'o':('00000','00000','01110','10001','10001','10001','01110'),
-        'r':('00000','00000','10110','11001','10000','10000','10000'),
-        't':('01000','01000','11100','01000','01000','01001','00110'),
-        'w':('00000','00000','10001','10001','10101','10101','01010'),
-        '@':('01110','10001','10111','10100','10111','10001','01110'),
-    }
-    for char,rows in lower.items():
-        result[ord(char)*8:ord(char)*8+8]=bytes([0]+[int(row,2)<<2 for row in rows])
     result[32*8:33*8]=bytes(8)
     return bytes(result)
 
@@ -65,4 +49,4 @@ def build(root,out,assets,palette):
         parts.extend((f'UI_{name}:',f'    INCBIN "ui-{name.lower()}.bin"'))
     (out/'full-ui-data.inc').write_text('\n'.join(parts)+'\n')
     return dict(cast_units=len(units),cast_background=background,source_scale='1:1',
-                selection_credits=['@ namco 1981 2ST','@ retrowork 2026'])
+                selection_credits=['@ NAMCO 1981 2ST','@ RETROWORK 2026'])

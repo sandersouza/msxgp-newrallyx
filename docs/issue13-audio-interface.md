@@ -101,7 +101,9 @@ Icons appear in sequence and labels type character by character. An idle screen
 starts the autonomous demo; demo death returns to the cast. A coin switches to
 a separate black player-selection screen. Insufficient credit rejects 2P without
 consuming credit or requesting Start. The red credit lines read
-`@ namco 1981 2ST` and `@ retrowork 2026`. Only accepted 1P/2P selection starts
+`@ NAMCO 1981 2ST` and `@ RETROWORK 2026`. Both names use the original 8x8
+uppercase tile font; `@` maps to the original copyright tile 0x18. No authored
+lowercase alphabet is used. Only accepted 1P/2P selection starts
 the three-part introduction. Challenge entry shows its own original-size rock
 and car icons, counts and instructions, then restores video without resetting
 the native challenge velocities, player shadow, lives or credits. F5 bypasses

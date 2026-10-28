@@ -9,7 +9,6 @@ if __package__ in (None,''):sys.path.insert(0,str(Path(__file__).resolve().paren
 from scripts.msx.emulator import reference_machine,tcl,scanout_recording_tcl
 from scripts.msx.hud_verify import symbols
 from scripts.msx.attract import cast
-from scripts.msx.full_ui import font
 from scripts.msx.screen5 import packed
 from scripts.scenes.bundle import digest,verify_manifest,load_assets,read_json
 from scripts.scenes.storage import require_ignored,json_write,seal
@@ -163,13 +162,15 @@ after time 0.02 poll
     def count(data):return sum(v!=background for byte in data for v in (byte>>4,byte&15))
     if not count(bitmap('cast-initial'))<count(bitmap('cast-partial'))<count(bitmap('cast-complete')):
         raise ValueError('Cast did not reveal progressively')
-    assets=load_assets(root/'references/assets/nrallyx');glyphs=font(assets)
+    assets=load_assets(root/'references/assets/nrallyx')
     def check_text(name,text,x,y,color):
         data=bitmap(name)
         for i,char in enumerate(text):
+            source=0x18 if char=='@' else int(char) if char.isdigit() else ord(char)
+            glyph=assets.pixels['tiles'][source*64:(source+1)*64]
             for dy in range(8):
                 for dx in range(8):
-                    ink=bool(glyphs[ord(char)*8+dy]&(128>>dx))
+                    ink=char!=' ' and bool(assets.palette['lookup'][38*4+glyph[dy*8+dx]])
                     xx=x+i*8+dx;byte=data[(y+dy)*128+xx//2]
                     actual=byte&15 if xx&1 else byte>>4
                     if actual!=(color if ink else s['BLACK']):raise ValueError(f'{name} text/black background mismatch: {text}, {i},{dx},{dy}')
@@ -179,8 +180,8 @@ after time 0.02 poll
         check_text(name,'PUSH START BUTTON',60,48,s['WHITE'])
         check_text(name,'1ST BONUS FOR 20000 PTS',40,96,s['WHITE'])
         check_text(name,'2ND BONUS FOR 80000 PTS',40,112,s['WHITE'])
-        check_text(name,'@ namco 1981 2ST',64,176,s['RED'])
-        check_text(name,'@ retrowork 2026',64,192,s['RED'])
+        check_text(name,'@ NAMCO 1981 2ST',64,176,s['RED'])
+        check_text(name,'@ RETROWORK 2026',64,192,s['RED'])
     check_text('select-one','   1 PLAYER     ',64,72,s['WHITE'])
     check_text('select-two','1 OR 2 PLAYERS  ',64,72,s['WHITE'])
     timing=list(map(float,(out/'timing.txt').read_text().split()))

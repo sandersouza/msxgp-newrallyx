@@ -5,19 +5,35 @@ Updated: 2026-10-28. Implementation and channel policy:
 
 ## Delivered cartridge
 
-The current tested build is `references/build/issue13-startup-v62/`, privately
-delivered as `newrallyx-audio-v6 [ASCII16].rom`:
+The current tested build is `references/build/issue13-original-font-v63/`, privately
+delivered as `newrallyx-audio-v7 [ASCII16].rom`:
 
-`2d17cd4c4bd88a8e5f021a77abe5d7419d2397cf8473bcd95319adc2f47866dd`.
+`2368907cfefcd26a3b677d0bc795a5ca63f54426480d4e72933e1b429335fdb8`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
 original scenery/colors, complete cars and real sprite limits remain enabled.
 
 The silent full game includes the same presentation/mechanics, with SHA-256
-`511b8485461c075fad181854608a138788a06bb0804020ae63c44a6023cff6c9`.
+`1e9349ed2f83b22ae95cfb9aeb2bb6104d3ff3e906330c750c3320aab7693f6a`.
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
+
+## Original credit font (v63 / private v7)
+
+The authored lowercase credit alphabet is removed. Both `NAMCO` and `RETROWORK`
+now use the original 8x8 uppercase tile masks, and the copyright mark comes from
+original tile 0x18. No letter is redrawn or rescaled. The actual black-selection
+screen is checked pixel by pixel directly against the contributor assets,
+independently of the font generator (`issue13-ui-v63`); five targeted session
+resource tests pass (`issue13-font-unit-v63.log`). The captured selection PNG
+was inspected as well.
+
+`issue13-original-font-diff-v63` verifies that all 102 changed cartridge bytes
+are inside the UI font table or the two equal-length credit strings. Every
+executable instruction and gameplay resource remains byte-identical to v62;
+the preceding timing and gameplay evidence therefore remains scoped to that
+unchanged runtime. The silent variant is rebuilt with the same original glyphs.
 
 ## Arcade presentation, lives, contact and optional points (v58)
 
