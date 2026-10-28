@@ -11,6 +11,7 @@ if __package__ in (None, ''):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from scripts.msx.emulator import reference_machine, tcl
+from scripts.msx.maze_capture import setup as capture_setup
 from scripts.scenes.bundle import digest
 from scripts.scenes.storage import json_write, require_ignored
 
@@ -24,27 +25,14 @@ def main():
     if not rom.is_file():raise ValueError('Build the cartridge before starting the debug session')
     out=root/'references/build'/f'maze-debug-{uuid4().hex}'
     require_ignored(root,[out/'session.tcl']);out.mkdir(parents=True)
-    json_write(out/'session.json',dict(rom=str(rom),rom_sha256=digest(rom),capture_key='F6'))
+    json_write(out/'session.json',dict(rom=str(rom),rom_sha256=digest(rom),capture_key='F6',capture_on_quit=True))
     lines=['set save_settings_on_exit false',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),'set firmwareswitch off',
         f'set throttle {"off" if args.self_test else "on"}','set speed 100',
         'set z80_freq 3579545','set z80_freq_locked true','set cmdtiming real','set limitsprites true',
-        'set pause_on_lost_focus false',f'cart {tcl(rom)} -romtype ASCII16','reset','reverse start',
-        f'set maze_capture_dir {tcl(out)};set maze_capture_count 0',
-        'proc maze_capture {} {',
-        ' set base [file join $::maze_capture_dir capture-[incr ::maze_capture_count]]',
-        ' reverse savereplay $base.omr',
-        ' store_machine [machine] $base.oms',
-        ' screenshot -raw $base.png',
-        ' foreach {extension data} [list state [debug read_block memory 0xc000 12288] vram [debug read_block VRAM 0 131072] vdp [debug read_block {VDP regs} 0 64]] {',
-        '  set stream [open $base.$extension wb];puts -nonewline $stream $data;close $stream',
-        ' }',
-        ' set stream [open $base.txt w]',
-        ' puts $stream "time=[machine_info time] PC=[reg PC] SP=[reg SP] primary=[debug read ioports 168] page0=[debug read ioports 252] page3=[debug read ioports 255]";close $stream',
-        ' puts stderr "Maze capture saved: $base"',
-        '}',
-        'bind F6 maze_capture']
+        'set pause_on_lost_focus false',f'cart {tcl(rom)} -romtype ASCII16','reset',
+        *capture_setup(out)]
     if args.self_test:
         lines.extend(['set maze_test_phase boot;set maze_test_age 0',
             'proc maze_test_poll {} {',
@@ -55,7 +43,7 @@ def main():
             ' release {if {$::maze_test_age==4} {keymatrixdown 0 2;set ::maze_test_phase start;set ::maze_test_age 0}}',
             ' start {if {$::maze_test_age==4} {keymatrixup 0 2};if {$state==0} {',
             f'  record start -videoonly {tcl(out/"capture-test.avi")}',
-            '  after time 0.2 {if {[catch maze_test_capture problem]} {puts stderr $problem;exit 2};exit 0}',
+            '  after time 0.2 {if {[catch maze_test_capture problem]} {puts stderr $problem;exit 2};quit}',
             '  return',
             ' }}',
             ' }',
@@ -64,7 +52,7 @@ def main():
             'proc maze_test_capture {} {',
             ' maze_capture;record stop',
             ' set expected [debug read_block memory 0xc000 12288];set expected_vram [debug read_block VRAM 0 131072]',
-            ' reverse loadreplay -goto savetime -viewonly [file join $::maze_capture_dir capture-1.omr]',
+            ' reverse loadreplay -goto savetime -viewonly [file join $::nrallyx_capture_dir capture-1.omr]',
             ' set pause on',
             ' if {[debug read_block memory 0xc000 12288] ne $expected || [debug read_block VRAM 0 131072] ne $expected_vram} {error "Saved replay does not restore captured RAM/VRAM"}',
             '}',
@@ -80,6 +68,8 @@ def main():
         required=('omr','oms','png','state','vram','vdp','txt')
         if any(not (out/f'capture-1.{extension}').is_file() for extension in required):
             raise ValueError(f'Incomplete F6 capture: inspect {out}/emulator.log')
+        if any(not (out/f'exit.{extension}').is_file() for extension in ('omr','oms','state','vram','vdp','txt')):
+            raise ValueError(f'Incomplete automatic exit capture: inspect {out}/emulator.log')
         if (out/'capture-1.state').read_bytes()[0x7d0]!=0:
             raise ValueError('Capture test did not reach actual gameplay')
         from PIL import Image

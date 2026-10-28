@@ -2,7 +2,7 @@
 import os
 import subprocess
 from scripts.scenes.bundle import digest
-from scripts.scenes.storage import require_ignored
+from scripts.scenes.storage import require_ignored, json_write
 from .build import destination
 
 
@@ -40,6 +40,8 @@ def run(root, args):
                    for p in sorted(args.bios.rglob('*')) if p.is_file()}
     require_ignored(root,[output/'session.tcl', output/'emulator.log'])
     output.mkdir(parents=True)
+    json_write(output/'session.json',dict(rom=str(args.rom.resolve()),rom_sha256=digest(args.rom),
+                                        capture_key='F6',capture_on_quit=True))
     env = dict(os.environ, OPENMSX_HOME=str(output/'home'), OPENMSX_USER_DATA=str(output/'userdata'))
     # Session-local settings. "Locked" uses the machine-selected clock, including
     # factory CPU switching; false would force the user frequency override.
@@ -55,6 +57,9 @@ def run(root, args):
              'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',
              'set scanline 0', 'set blur 0', 'set noise 0',
              f'cart {tcl(args.rom.resolve())} -romtype ASCII16', 'reset']
+    from .maze_capture import setup as capture_setup
+    lines.extend(capture_setup(output))
+    print(f'Diagnostics: {output}; F6 captures now; closing openMSX saves the replay.',flush=True)
     script=output/'session.tcl'
     script.write_text('if {[catch {\n'+'\n'.join(lines)+'\n} problem]} {puts stderr $problem; exit 2}\n')
     command=[args.openmsx,'-script',str(script)]

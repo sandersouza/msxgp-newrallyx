@@ -57,6 +57,9 @@ Ctrl or triggerA releases smoke; **P** pauses; Home resets the development run.
 **F5** advances one round per press for debugging, preserving score and lives
 without awarding the completion bonus. It also resumes a paused game.
 **F4** toggles audio without stopping the music clock or changing gameplay.
+Development openMSX launches bind **F6** to save the screen, complete state and
+preceding replay. Closing the emulator also saves the replay automatically in
+the printed session directory under ignored `references/build/`.
 With no credits, the original cast screen periodically enters an automatic demo.
 
 Start/completion music plays all three original parts together. During driving,

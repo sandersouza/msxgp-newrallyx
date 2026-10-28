@@ -46,7 +46,7 @@ This proxy includes the corrected pitch selection as well as changed timbre;
 it is not a perceptual score or a claim of matching waveforms. Human listening
 acceptance remains open.
 
-Current checks: 420 tests (`issue13-engine-tests-final.log`), 27,000 playback
+Current checks: 421 tests (`issue13-maze-replay-tests-final.log`), 27,000 playback
 cases covering all four headings, wall/normal/second-note states and the
 fractional boundary (`issue13-engine-runtime-final`), real keyboard UI/Start/F5
 (`issue13-engine-session-v43`) and 600 live sound-on/muted ticks
@@ -95,6 +95,34 @@ reaches gameplay and rejects a blank screenshot. All captures remain ignored.
 Loading its saved replay at the capture instant also reproduces RAM and VRAM
 byte for byte; the restore is paused immediately to avoid comparing later ticks.
 Capture the user's failure before identifying its cause or claiming a fix.
+
+The user subsequently confirmed that the fault occurs in the first round of
+the audio ROM with the top HUD, and looks scrambled rather than like another
+intact maze. The separately running fixed-HUD experiment is not the reported
+configuration and its captures do not qualify this defect.
+
+Three deterministic keyboard stress routes (seeds 1/27/343) add abrupt turns,
+reversals and smoke without guest-memory writes. All end at a legitimate first-
+round game over rather than completing a phase; 2,280 eligible foreground
+packets and 4,642 physical-latch samples pass scenery/HUD checks
+(`issue13-maze-input-stress-final-*`). They did not reproduce the fault.
+
+Normal `make run` now shares F6 capture with the debug launcher and saves the
+replay/state automatically on a normal quit. The manual capture/replay-restore
+self-test and automatic exit capture pass. A real 155.065-second session of
+the current v43 audio ROM was retained this way. `full_replay_probe.py` checks
+the selected cartridge fingerprint before replaying, injects no new gameplay
+inputs or RAM writes, and checks scenery plus actual video-mode/scroll values.
+The complete saved session passes 7,195 latch register checks and 6,833 eligible
+terrain samples / 5,295,575 pixels (`issue13-human-replay-exit`). It also has no
+adjacent active latch displacement over eight pixels in either circular axis.
+
+`--record` retains actual raw scanout frames as well; this replay has 8,973
+frames / 149.743 seconds from cartridge startup (`issue13-human-replay-scanout-v2`).
+Retaining the video is not an every-pixel validation claim. Whether this session
+contains the user-observed corruption still needs confirmation; none of the
+passing checks establishes that the reported defect is fixed. The full suite
+now passes 421 tests (`issue13-maze-replay-tests-final.log`).
 
 ## Historical listening-feedback adaptation (v41)
 

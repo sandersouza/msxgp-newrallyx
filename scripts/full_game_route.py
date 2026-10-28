@@ -39,6 +39,8 @@ def main(argv=None):
     p.add_argument('--radar-trace',action='store_true',help='Compare live radar SAT against latched R23 before each visible band')
     p.add_argument('--effects-trace',action='store_true',help='Require bounded flag removal and visible smoke publication')
     p.add_argument('--terrain-trace',action='store_true',help='Check scenery pixels throughout the route, not only sparse snapshots')
+    p.add_argument('--stress-seed',type=int,help='Deterministic abrupt keyboard turns/reversals/smoke, with no guest-memory writes')
+    p.add_argument('--stress-frames',type=int,default=3600,help='Foreground-frame limit for the seeded input stress run')
     p.add_argument('--require-stable-radar',action='store_true')
     p.add_argument('--require-stable-fuel',action='store_true')
     p.add_argument('--require-stable-player',action='store_true')
@@ -56,6 +58,9 @@ def main(argv=None):
     p.add_argument('--bios',type=Path,default=Path('references/msxbios'))
     p.add_argument('--machine',default='Panasonic_FS-A1WSX');p.add_argument('--openmsx',default='openmsx')
     args=p.parse_args(argv);root=Path(__file__).resolve().parents[1]
+    if args.stress_seed is not None:
+        if not 300<=args.stress_frames<=12000:raise ValueError('Stress run requires 300..12000 foreground frames')
+        args.allow_game_over=True
     first_round=args.fixture_first_round or 1
     last_round=first_round+args.rounds-1
     if last_round>254:raise ValueError('Controlled route exceeds the acquired round range')
@@ -111,6 +116,16 @@ def main(argv=None):
         from scripts.msx.terrain_live import observer
         lines.extend(observer())
     script=(root/'scripts/msx/full-route-probe.tcl').read_text().replace('@SHOW_SCENE@',str(syms['show_scene']))
+    if args.stress_seed is not None:
+        lines.append(f'set stress_rng {args.stress_seed&0xffffffff}')
+        script=script.replace('    if {$::frames>40000 || $state==2} {',
+            f'    if {{$::frames>={args.stress_frames}}} {{snapshot;close $::events;close $::headers;exit 0;return}}\n    if {{$::frames>40000 || $state==2}} {{')
+        script=script.replace('    # Plan the next input from the current native position.',
+            '    if {$::frames%17==0} {set ::stress_rng [expr {($::stress_rng*1664525+1013904223)&0xffffffff}];set ::mask [lindex {16 128 32 64} [expr {($::stress_rng>>16)&3}]]}\n'
+            '    if {$::frames%113<7} {set ::mask [expr {$::mask in {16 128}?($::mask^144):($::mask^96)}]}\n'
+            '    keys $::mask [expr {$::frames%23<6}]\n'
+            '    if {$::frames%240==0 && ![debug read memory 0xc50e] && ![debug read memory 0xc494] && ![debug read memory 0xc70e]} {snapshot}\n'
+            '    return\n    # Plan the next input from the current native position.')
     if args.terrain_trace:
         script=script.replace('    if {$::frames%240', '    terrain_observe\n    if {$::frames%240')
     if args.allow_game_over:
@@ -490,11 +505,13 @@ def main(argv=None):
                 scope='Actual emulator PCM, not a listening/timbre verdict.')
     json_write(out/'report.json',dict(rom_sha256=digest(args.rom),audio=audio,audio_worker_disabled_diagnostic=args.audio_worker_disabled,natural_completed_rounds=completed if not controlled else 0,
         controlled_completed_rounds=completed if controlled else 0,fixture_first_round=args.fixture_first_round,
-        requested_rounds=args.rounds,target_rounds_reached=reached,stopped_on_game_over=not reached,
+        requested_rounds=args.rounds,target_rounds_reached=reached,
+        stopped_on_game_over=not reached and not (args.stress_seed is not None and len(rows)>=args.stress_frames),
         fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
         fixture_population_retained=args.fixture_enemies is not None,
         fixture_population_gate=dict(required=args.fixture_enemies is not None,passed=population_passed),
         physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,terrain_live=terrain_live,
+        input_stress=(dict(seed=args.stress_seed,frame_limit=args.stress_frames,stopped_at_limit=len(rows)>=args.stress_frames) if args.stress_seed is not None else None),
         retained_tick_gate=dict(required=args.require_retained_native_ticks,passed=retained_passed),
         packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,population_minimum_seconds=2,passed=packet_passed),
         owed_motion_gate=dict(maximum_ms=args.maximum_owed_repeat_ms,passed=owed_passed),
@@ -507,7 +524,7 @@ def main(argv=None):
         vertical_update_gate=dict(minimum_hz=args.minimum_vertical_update_hz,passed=vertical_passed),
         camera_ownership_checks=int((out/'camera-count.txt').read_text()) if 'Full_CameraValidated' in syms else None,
         header_reservations=headers,radar_coherence=radar,maximum_smoke_placements=max(r[6] for r in rows),
-        scope=('Audio-worker-disabled timing diagnostic: the harness advances the audio clock to suppress service. ' if args.audio_worker_disabled else '')+('Explicit initial round/population fixture; requested enemy count is retained across native parameter writes. Real keyboard credit/start, steering and smoke; this is controlled load, not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
+        scope=('Audio-worker-disabled timing diagnostic: the harness advances the audio clock to suppress service. ' if args.audio_worker_disabled else '')+('Seeded abrupt keyboard turns/reversals/smoke, ending at game over or the declared foreground-frame limit; no guest-state writes. ' if args.stress_seed is not None else '')+('Explicit initial round/population fixture; requested enemy count is retained across native parameter writes. Real keyboard credit/start, steering and smoke; this is controlled load, not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
     require_ignored(root,[x for x in out.rglob('*') if x.is_file()]);seal(out)
     if not population_passed:raise ValueError(f'Controlled population did not remain at the requested count; evidence retained at {out}/report.json')
     if effects is not None and not effects['passed']:raise ValueError(f'Effects publication gate failed; evidence retained at {out}/report.json')

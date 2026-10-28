@@ -153,9 +153,11 @@ make build AUDIO=0
 .venv/bin/python -B scripts/maze_debug.py
 ```
 
-The debug launcher keeps the full HUD and real hardware limits. F6 saves a PNG,
+Development openMSX launches and the debug launcher keep the full HUD and real
+hardware limits. F6 saves a PNG,
 full machine state, RAM/VRAM/VDP registers and the preceding openMSX replay in
-its printed ignored session directory. It does not modify game memory. Use it
+their printed ignored session directory. Closing openMSX automatically saves
+the replay and machine state too. They do not modify game memory. Use them
 to retain the transient maze corruption reported on 2026-10-28, which has not
 yet been reproduced by the automated routes. The replay contains private game
 state and must not be committed.
