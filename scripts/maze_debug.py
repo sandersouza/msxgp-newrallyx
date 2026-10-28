@@ -10,7 +10,7 @@ from uuid import uuid4
 if __package__ in (None, ''):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.msx.emulator import reference_machine, tcl
+from scripts.msx.emulator import reference_machine, tcl, retain_cartridge
 from scripts.msx.maze_capture import setup as capture_setup
 from scripts.scenes.bundle import digest
 from scripts.scenes.storage import json_write, require_ignored
@@ -25,7 +25,8 @@ def main():
     if not rom.is_file():raise ValueError('Build the cartridge before starting the debug session')
     out=root/'references/build'/f'maze-debug-{uuid4().hex}'
     require_ignored(root,[out/'session.tcl']);out.mkdir(parents=True)
-    json_write(out/'session.json',dict(rom=str(rom),rom_sha256=digest(rom),capture_key='F6',capture_on_quit=True))
+    source_rom=rom;rom=retain_cartridge(rom,out)
+    json_write(out/'session.json',dict(rom=str(rom),source_rom=str(source_rom),rom_sha256=digest(rom),capture_key='F6',capture_on_quit=True))
     lines=['set save_settings_on_exit false',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),'set firmwareswitch off',

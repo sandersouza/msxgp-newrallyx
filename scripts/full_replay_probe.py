@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Observe a saved human-input replay without injecting gameplay or RAM state."""
+"""Observe saved replays or reapply their keyboard inputs to a fresh cartridge."""
 import argparse
 import gzip
 import hashlib
@@ -25,6 +25,31 @@ def verify_replay_rom(replay,rom):
     snapshot=ET.fromstring(gzip.decompress(replay.read_bytes()))
     if fingerprint not in {node.text for node in snapshot.iter('resolvedSha1')}:
         raise ValueError('Replay does not contain the selected cartridge fingerprint')
+
+
+def bind_replay_rom(replay,rom,target):
+    """Relocate matching cartridge paths in a private copy; keep states intact.
+
+    openMSX can warn and load a different ROM from an existing recorded path.
+    Checking the saved hash alone therefore does not bind the loaded cartridge.
+    """
+    verify_replay_rom(replay,rom)
+    fingerprint=hashlib.sha1(rom.read_bytes()).hexdigest()
+    source=gzip.decompress(replay.read_bytes())
+    snapshot=ET.fromstring(source)
+    count=0
+    for node in snapshot.iter('rom'):
+        if node.findtext('resolvedSha1')!=fingerprint:continue
+        for field in ('filename','resolvedFilename'):
+            entry=node.find(field)
+            if entry is not None:entry.text=str(rom.resolve())
+        count+=1
+    if not count:raise ValueError('Replay has no bindable cartridge references')
+    # openMSX requires the original DOCTYPE/systemID, which ElementTree drops.
+    prefix=source[:source.index(b'<serial')]
+    target.write_bytes(gzip.compress(prefix+ET.tostring(snapshot,encoding='utf-8'),mtime=0))
+    return dict(cartridge_references=count,rom_sha1=fingerprint,
+                scope='Private replay copy with matching cartridge filenames relocated; snapshots, timing and inputs retained; source replay unchanged.')
 
 
 def replay_keyboard(replay):
@@ -59,13 +84,22 @@ def main():
     end,events=replay_keyboard(replay) if args.reapply_inputs else (None,[])
     s=symbols(rom.parent/'raster-scroll.sym');out=destination(root,args.output)
     require_ignored(root,[out/'terrain-latch.bin']);out.mkdir(parents=True)
+    binding=None;playback=replay
+    if not args.reapply_inputs:
+        playback=out/'bound-input.omr'
+        binding=bind_replay_rom(replay,rom,playback)
     lines=['set save_settings_on_exit false',f'set renderer {"SDLGL-PP" if args.record else "none"}','set sound_driver null',
+        'set z80_freq 3579545','set z80_freq_locked true',
         'set gamma 1','set brightness 0','set contrast 0','set blur 0','set noise 0','set scanline 0',
         'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),
         *([f'cart {tcl(rom)} -romtype ASCII16','set firmwareswitch off','reset'] if args.reapply_inputs else
-          [f'reverse loadreplay -goto begin -viewonly {tcl(replay)}']),
+          [f'reverse loadreplay -goto begin -viewonly {tcl(playback)}']),
+        'set nr_loaded_cartridge 0;foreach device [machine_info device] {',
+        ' set nr_device_info [machine_info device $device]',
+        f' if {{[dict exists $nr_device_info actualSHA1] && [dict get $nr_device_info actualSHA1] eq "{hashlib.sha1(rom.read_bytes()).hexdigest()}"}} {{set nr_loaded_cartridge 1}}',
+        '};if {!$nr_loaded_cartridge} {error "Loaded replay cartridge does not match the selected ROM"}',
         'set throttle off',
         *[f'after time {time:.10f} {{'+(';'.join(f'keymatrix{direction} {row} {mask}' for direction,mask in [('down',press),('up',release)] if mask))+'}' for time,row,press,release in events],
         f'set out {tcl(out)}',
@@ -106,12 +140,15 @@ def main():
         subprocess.run(['openmsx','-script',str(out/'session.tcl')],check=True,timeout=240,
             stdout=log,stderr=subprocess.STDOUT,
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
+    if 'has changed since the time this savestate was created' in (out/'emulator.log').read_text():
+        raise ValueError('Replay loaded changed ROM content; reject these observations')
     terrain=analyze(root,rom.parent,out/'terrain-latch.bin')
     latches,mode_failures=map(int,(out/'counts.txt').read_text().split())
     bounds=camera_bounds(out/'terrain-latch.bin')
     report=dict(rom_sha256=digest(rom),replay_sha256=digest(replay),latches=latches,
         mode_failures=mode_failures,terrain=terrain,scanout_recorded=args.record,
         reapplied_keyboard_events=len(events),
+        replay_cartridge_binding=binding,
         camera_bounds=bounds,
         passed=terrain['passed'] and mode_failures==0 and (not args.require_map_bounds or bounds['passed']),
         scope=('Fresh ROM with keyboard timings extracted from the saved session; execution can diverge from the original. No guest RAM writes. ' if args.reapply_inputs else 'Saved human-input replay, no new gameplay inputs or RAM writes. ')+

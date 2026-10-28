@@ -66,6 +66,51 @@ maze report resolved. Audio synthesis is unchanged from v43 and still awaits
 listening acceptance. Keep #13 and PR #31 open; no merge or hardware/PAL/WebMSX
 gameplay acceptance is claimed.
 
+### Rapid alternating-frame report and replay binding
+
+The user clarified that several briefly alternating frames contained unrelated
+looking graphics before returning to normal, and could not distinguish their
+locations. This remains open; the camera correction alone does not establish
+that every reported defect is resolved. The delivered v4 ROM bytes are unchanged.
+
+An additional v43 audit retains full RAM, bitmap VRAM and video registers at
+all 7,195 gameplay latches, without the previous death/flag/smoke frame
+exclusions (`issue13-all-scanout-v43-bound2`). A 2,430-point raw-scanout grid
+shows only two large differences from latch-time VRAM: partial blanking during
+scene transitions at 58.261 and 93.189 seconds. Other differences peak at 35
+points, including sprites. The independent scenery grid checks 5,576,125 pixels;
+its bounded differences peak at eight during death effects. Excluding death
+leaves two one-pixel flag-transition differences. These are diagnostic results,
+not a passing all-pixel or effect-transition acceptance gate.
+
+The scaled-window follow-up retains 7,491 screenshots. Its exploratory palette
+grid compares 7,194 gameplay screenshots against nearby raw frames; at least
+1,323 of 2,430 points remain after excluding blended OSD/scaler colors and
+white/yellow overlay text. Maximum disagreement is 27 points after temporal
+alignment. This capture path can return a previously displayed frame; comparison
+against nearby frames does not establish presentation timing or every-pixel
+correctness. No additional large scrambled frame has been localized here.
+Artifacts remain private under `issue13-window-replay-v43`.
+
+Replay diagnosis exposed a separate tooling defect: openMSX can warn and load
+changed bytes from a recorded filename even when the selected analysis ROM
+matches the replay's saved hash. Once `newrallyx.rom` advanced to v4, that path
+was unsuitable for v43 playback. The probe now relocates matching cartridge
+filenames in a private replay copy, preserves the required XML system ID and
+state/input/timing payloads, verifies the actually loaded ROM's SHA-1, and
+rejects changed-ROM warnings. The source replay remains untouched. The full
+old replay passes the earlier bounded grid/latch checks with the v4 default
+file still present (`issue13-human-replay-bound-v43`); that result still does
+not resolve the user's visual report.
+
+Normal and debug launches now retain a session-local `cartridge.rom` beside
+their replay and record the source path/hash separately. Later builds cannot
+replace the captured cartridge. The updated launcher passes real keyboard
+capture, replay restoration and normal-quit capture
+(`issue13-retained-cartridge-capture.log`). The current suite passes 426 tests
+(`issue13-retained-replay-tests.log`). No additional game renderer, graphics,
+audio or timing change accompanies this diagnostic correction.
+
 ## Historical engine revision and transient-maze investigation (v43)
 
 The user rejected the v41 engine and reported severe transient maze corruption

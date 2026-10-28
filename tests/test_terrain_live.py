@@ -47,6 +47,8 @@ class LiveTerrainTests(unittest.TestCase):
             result=self.observe(directory,corrupt=True)
         self.assertFalse(result['passed'])
         self.assertEqual(result['frames'],3)
+        self.assertEqual(result['failed_frames'],1)
+        self.assertEqual(result['maximum_mismatches'],1)
         self.assertEqual(result['first_failures'][0]['sample'],1)
         self.assertEqual(result['first_failures'][0]['mismatches'],1)
 

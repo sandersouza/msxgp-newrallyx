@@ -57,7 +57,7 @@ def analyze(root, bundle, path):
     program, _ = acquire(root)
     assets = load_assets(root/'references/assets/nrallyx')
     palette = (bundle/'palette.bin').read_bytes()
-    images = {}; count = checked = ignored = 0; failures = []
+    images = {}; count = checked = ignored = failed = maximum = 0; failures = []
     with path.open('rb') as source:
         while row := source.read(STRIDE):
             if len(row) != STRIDE:
@@ -88,12 +88,15 @@ def analyze(root, bundle, path):
                 checked += 1
                 if actual != expected:
                     mismatches.append((x, y, actual, expected))
-            if mismatches and len(failures) < 20:
-                failures.append(dict(sample=count, camera=[wx, wy], mismatches=len(mismatches), first=mismatches[:5]))
+            if mismatches:
+                failed += 1;maximum = max(maximum, len(mismatches))
+                if len(failures) < 20:
+                    failures.append(dict(sample=count, camera=[wx, wy], mismatches=len(mismatches), first=mismatches[:5]))
             count += 1
     if not count:
         raise ValueError('No live terrain observations')
     return dict(passed=not failures, frames=count, checked_pixels=checked,
+                failed_frames=failed, maximum_mismatches=maximum,
                 ignored_dynamic_pixels=ignored, first_failures=failures,
                 scope='Every eligible foreground packet: an 8-pixel grid over the full maze cache, '
                       'independent original scenery oracle; published smoke/player patch pixels excluded. '

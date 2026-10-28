@@ -1,5 +1,6 @@
 """Launch the current cartridge in an isolated openMSX session."""
 import os
+import shutil
 import subprocess
 from scripts.scenes.bundle import digest
 from scripts.scenes.storage import require_ignored, json_write
@@ -15,6 +16,14 @@ def tcl(value):
 def reference_machine(root, name):
     return (f'source {tcl(root/"scripts/msx/mapper_reference.tcl")}\n'
             f'nrallyx_reference_machine {tcl(name)}')
+
+
+def retain_cartridge(rom, output):
+    """Keep the exact session ROM beside its replay, independent of later builds."""
+    retained=output/'cartridge.rom'
+    if retained.exists():raise ValueError('Session cartridge already exists')
+    shutil.copyfile(rom,retained)
+    return retained
 
 
 def scanout_recording_tcl(output, startup_pc):
@@ -40,7 +49,8 @@ def run(root, args):
                    for p in sorted(args.bios.rglob('*')) if p.is_file()}
     require_ignored(root,[output/'session.tcl', output/'emulator.log'])
     output.mkdir(parents=True)
-    json_write(output/'session.json',dict(rom=str(args.rom.resolve()),rom_sha256=digest(args.rom),
+    retained=retain_cartridge(args.rom,output)
+    json_write(output/'session.json',dict(rom=str(retained),source_rom=str(args.rom.resolve()),rom_sha256=digest(retained),
                                         capture_key='F6',capture_on_quit=True))
     env = dict(os.environ, OPENMSX_HOME=str(output/'home'), OPENMSX_USER_DATA=str(output/'userdata'))
     # Session-local settings. "Locked" uses the machine-selected clock, including
@@ -56,7 +66,7 @@ def run(root, args):
              'set gamma 1.0', 'set brightness 0', 'set contrast 0',
              'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',
              'set scanline 0', 'set blur 0', 'set noise 0',
-             f'cart {tcl(args.rom.resolve())} -romtype ASCII16', 'reset']
+             f'cart {tcl(retained)} -romtype ASCII16', 'reset']
     from .maze_capture import setup as capture_setup
     lines.extend(capture_setup(output))
     print(f'Diagnostics: {output}; F6 captures now; closing openMSX saves the replay.',flush=True)
