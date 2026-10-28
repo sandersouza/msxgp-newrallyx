@@ -1,13 +1,13 @@
 # Issue #13 audio validation
 
-Date: 2026-10-27. Implementation and channel policy:
+Updated: 2026-10-28. Implementation and channel policy:
 [audio contract](issue13-audio-interface.md).
 
 ## Delivered cartridge
 
-The current tested build is `references/build/issue13-sound-v41/`:
+The current tested build is `references/build/issue13-engine-v43/`:
 
-`230469ce4befe540785315759deeceaeafaebbbbfc7032a5f5d6163f492bd61c`.
+`98999baf46637736c55e3ef44c77a9c2fd2da1d1c51160aae6894f99021bea5a`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
@@ -18,7 +18,85 @@ The reconstructed silent full game is byte-identical to the accepted baseline:
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
 
-## Listening-feedback adaptation (v41)
+## Engine revision and transient-maze investigation (v43)
+
+The user rejected the v41 engine and reported severe transient maze corruption
+in openMSX. **The maze defect is not reproduced or fixed.** Passing cadence or
+audio-register tests do not settle this report. No speculative renderer or
+memory-mapping change is included.
+
+The engine's coarse integer-speed selector was inconsistent with original
+code at 266F..2685: the original selects the second engine note only when the
+fractional speed byte equals `$20`. The current adapter follows that selection
+and removes the invented intermediate pitch. The preceding approximation
+replaced each complex waveform with its dominant harmonic and an ultrasonic
+gate. Audible carrier/envelope combinations now produce pulse clusters and
+sidebands; the chip runs both oscillators between parameter packets. Shapes
+10/8 and per-heading ratios approximate the four original engine waveforms.
+No game velocity, graphics, HUD or memory ownership is changed.
+
+Actual 25-second PCM recordings with identical input fixtures are retained in
+`issue13-engine-audition-before` (v41) and `issue13-engine-audition-v43`.
+The new recording peaks at 17,840 / 32,767 without clipping. Up-heading normal
+and second-state pitches measure 49.904 / 65.917 Hz against source targets
+49.804 / 65.917 Hz. An isolated four-heading comparison of twelve normalized
+harmonics against the original PROM measures squared distances
+0.176 / 0.128 / 0.195 / 0.174, versus 1.570 / 1.221 / 1.555 / 1.747 for v41.
+This proxy includes the corrected pitch selection as well as changed timbre;
+it is not a perceptual score or a claim of matching waveforms. Human listening
+acceptance remains open.
+
+Current checks: 420 tests (`issue13-engine-tests-final.log`), 27,000 playback
+cases covering all four headings, wall/normal/second-note states and the
+fractional boundary (`issue13-engine-runtime-final`), real keyboard UI/Start/F5
+(`issue13-engine-session-v43`) and 600 live sound-on/muted ticks
+(`issue13-engine-live-mute-v43`) pass. The eight-round full-HUD route retains
+29.937..29.961 packet FPS, at most 0.160% late slots, no discarded ticks and no
+audio queue drops (`issue13-engine-eight-v43`). Controlled six cars pass at
+29.463 FPS / 3.218% late slots (`issue13-engine-six-v43`). Seven cars still
+complete but **fail** the existing 4% gate at 4.3515%, 29.311 FPS / 67.864 ms
+maximum gap (`issue13-engine-seven-v43`); this gate remains open.
+
+The six-car audio ledger averages 2,039 CPU / 2,507 inclusive equivalent cycles
+per worker-containing loop, with 1.001 calls/presented packet; self mean 160,
+inclusive p95/max 6,940 / 8,768. These are 3.58 MHz-equivalent elapsed cycles
+under factory clock switching, not raw turbo instruction counts. IRQ time is
+excluded from CPU and retained in inclusive cost. Only subtracting audio leaves
+117,432 of the nominal 119,472-cycle two-refresh packet; rendering, game logic,
+waits and IRQs still consume that remainder. VBlank reserve remains unknown.
+Do not add nested inclusive rows. Full ledgers remain in the private reports.
+
+### Maze investigation coverage and capture
+
+Sparse source-pixel checks on the delivered v41 ROM pass 48 natural and six
+controlled-seven snapshots (`issue13-corruption-pixels-before`,
+`issue13-corruption-seven-before`). New `--terrain-trace` observations compare
+an 8-pixel grid across the entire visible cache against independently rebuilt
+original scenery on every eligible foreground packet. Tests deliberately
+corrupt a middle frame, then restore it; the verifier retains that failure.
+Known published smoke/player-patch pixels and active scene/effect transitions
+are excluded. This is not an every-pixel or continuous scanout proof.
+
+On v41, the alternate eight-round route checks 9,512 eligible packets / 7.35M
+pixels, a route with deaths/restarts checks 2,011 / 1.56M, and the controlled
+six-car route also passes. None reproduces the report. Current v43 checks
+10,113 packets / 7.82M pixels over eight rounds, plus 1,176 six-car packets.
+When paired with `--radar-trace`, it also samples terrain at the physical maze
+scroll latch using the actual hardware camera. The two-round v41 and v43
+checks each pass 5,106 physical-latch samples / 3.95M pixels
+(`issue13-maze-physical-before-v2`, `issue13-engine-physical-v43`); controlled
+seven v43 passes 2,563 latch samples. These bounded workloads do not prove
+that the user's transient fault is absent.
+
+`scripts/maze_debug.py` enables openMSX reverse recording and binds F6 to save
+the preceding replay, full machine state, screenshot, RAM, VRAM and VDP
+registers, with the ROM hash. Its self-test uses real keyboard credit/Start,
+reaches gameplay and rejects a blank screenshot. All captures remain ignored.
+Loading its saved replay at the capture instant also reproduces RAM and VRAM
+byte for byte; the restore is paused immediately to avoid comparing later ticks.
+Capture the user's failure before identifying its cause or claiming a fix.
+
+## Historical listening-feedback adaptation (v41)
 
 The two-voice/noise-only policy was rejected in listening review and is
 superseded. Start and completion now play all three original parts together,

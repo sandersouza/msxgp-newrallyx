@@ -140,10 +140,16 @@ def build(program, out):
         note=program[engine_at+offset]
         word=int.from_bytes(program[0x2afd+(note&15)*2:0x2aff+(note&15)*2],'little')>>(note>>4)
         engine_words.append(word)
-    for heading,harmonic in enumerate((3,1,3,5)):
-        for name,word in zip(('Idle','Cruise','Drive'),(engine_words[0],sum(engine_words)//2,engine_words[1])):
-            pitch=period(word*harmonic)
-            declarations.append(f'Audio_Engine{heading}{name}Envelope EQU {max(1,round(pitch/16))}')
+    # Tone gating plus a repeating envelope retains several pulse clusters and
+    # sidebands, instead of replacing a complex engine wave by one harmonic.
+    for heading,(shape,envelope_harmonic,tone_harmonic) in enumerate(((10,3,3),(10,1,6),(10,3,3),(8,3,5))):
+        for name,word in zip(('Idle','Cruise','Drive'),(engine_words[0],engine_words[0],engine_words[1])):
+            pitch=period(word)
+            envelope_pitch=period(word*envelope_harmonic)
+            divisor=32 if shape in (10,14) else 16
+            declarations.append(f'Audio_Engine{heading}{name}Envelope EQU {max(1,round(envelope_pitch/divisor))}')
+            declarations.append(f'Audio_Engine{heading}{name}Tone EQU {period(word*tone_harmonic)}')
+            declarations.append(f'Audio_Engine{heading}{name}Shape EQU {shape}')
             if heading==1:
                 declarations.append(f'Audio_Engine{name}Period EQU {pitch}')
     tones={(0,0):0}

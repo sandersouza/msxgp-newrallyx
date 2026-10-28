@@ -542,16 +542,12 @@ Audio_NoiseTick:
     ld a,(Round_State)
     or a
     jr nz,.quiet
-    ld a,($e06a)             ; Coarse signed native velocity; no division in gameplay.
-    bit 7,a
-    jr z,.magnitude
-    neg
-.magnitude:
-    cp 3
-    jr c,.bounded
-    ld a,2
+    ld b,1
+    ld a,($e069)             ; Original engine selects its second note at fine speed $20.
+    cp $20
+    jr nz,.bounded
+    inc b
 .bounded:
-    ld b,a
     ld a,($e048)
     and 3
     jr z,.heading
@@ -580,7 +576,10 @@ Audio_NoiseTick:
     ret z
     ld (hl),a
     dec a
+    ld c,a
     add a,a
+    add a,a
+    add a,c                  ; Five bytes: envelope period, audible carrier, shape.
     ld e,a
     ld d,0
     ld hl,Audio_EnginePeriods
@@ -592,12 +591,16 @@ Audio_NoiseTick:
     ld (Audio_PlayDesired+11),a
     ld a,d
     ld (Audio_PlayDesired+12),a
-    ld a,8                   ; Repeating exponential decay makes a mechanical buzz.
+    inc hl
+    ld e,(hl)
+    inc hl
+    ld d,(hl)
+    inc hl
+    ld a,(hl)
     ld (Audio_PlayDesired+13),a
     ld a,1
     ld (Audio_NoiseDirty),a
-    ld de,4                  ; Ultrasonic 50% carrier halves the audible envelope.
-    ld a,16                  ; Hardware envelope runs without per-sample CPU work.
+    ld a,16                  ; Audible tone and envelope run without per-sample CPU work.
     ld bc,$0020
     jp Audio_ApplyC
 .quiet:
@@ -691,8 +694,20 @@ Audio_FXTable:
     dw Audio_FX5Score+$8000,Audio_FX6Score+$8000,Audio_FX7Score+$8000,Audio_FX8Score+$8000
     dw Audio_FX9Score+$8000
 Audio_EnginePeriods:
-    dw Audio_Engine0IdleEnvelope,Audio_Engine0CruiseEnvelope,Audio_Engine0DriveEnvelope
-    dw Audio_Engine1IdleEnvelope,Audio_Engine1CruiseEnvelope,Audio_Engine1DriveEnvelope
-    dw Audio_Engine2IdleEnvelope,Audio_Engine2CruiseEnvelope,Audio_Engine2DriveEnvelope
-    dw Audio_Engine3IdleEnvelope,Audio_Engine3CruiseEnvelope,Audio_Engine3DriveEnvelope
+    MACRO engine_parameters envelope,tone,shape
+    dw envelope,tone
+    db shape
+    ENDM
+    engine_parameters Audio_Engine0IdleEnvelope,Audio_Engine0IdleTone,Audio_Engine0IdleShape
+    engine_parameters Audio_Engine0CruiseEnvelope,Audio_Engine0CruiseTone,Audio_Engine0CruiseShape
+    engine_parameters Audio_Engine0DriveEnvelope,Audio_Engine0DriveTone,Audio_Engine0DriveShape
+    engine_parameters Audio_Engine1IdleEnvelope,Audio_Engine1IdleTone,Audio_Engine1IdleShape
+    engine_parameters Audio_Engine1CruiseEnvelope,Audio_Engine1CruiseTone,Audio_Engine1CruiseShape
+    engine_parameters Audio_Engine1DriveEnvelope,Audio_Engine1DriveTone,Audio_Engine1DriveShape
+    engine_parameters Audio_Engine2IdleEnvelope,Audio_Engine2IdleTone,Audio_Engine2IdleShape
+    engine_parameters Audio_Engine2CruiseEnvelope,Audio_Engine2CruiseTone,Audio_Engine2CruiseShape
+    engine_parameters Audio_Engine2DriveEnvelope,Audio_Engine2DriveTone,Audio_Engine2DriveShape
+    engine_parameters Audio_Engine3IdleEnvelope,Audio_Engine3IdleTone,Audio_Engine3IdleShape
+    engine_parameters Audio_Engine3CruiseEnvelope,Audio_Engine3CruiseTone,Audio_Engine3CruiseShape
+    engine_parameters Audio_Engine3DriveEnvelope,Audio_Engine3DriveTone,Audio_Engine3DriveShape
 Audio_RuntimeEnd:

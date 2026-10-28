@@ -38,6 +38,7 @@ def main(argv=None):
     p.add_argument('--trace-di',action='store_true',help='Observe interrupt-masked intervals without guest writes')
     p.add_argument('--radar-trace',action='store_true',help='Compare live radar SAT against latched R23 before each visible band')
     p.add_argument('--effects-trace',action='store_true',help='Require bounded flag removal and visible smoke publication')
+    p.add_argument('--terrain-trace',action='store_true',help='Check scenery pixels throughout the route, not only sparse snapshots')
     p.add_argument('--require-stable-radar',action='store_true')
     p.add_argument('--require-stable-fuel',action='store_true')
     p.add_argument('--require-stable-player',action='store_true')
@@ -106,7 +107,12 @@ def main(argv=None):
             f' record start -videoonly {tcl(out/"scanout.avi")}',
             f' after time 8 {{record stop;screenshot -raw {tcl(out/"scanout-last.png")};set renderer none}}',
             '}'])
+    if args.terrain_trace:
+        from scripts.msx.terrain_live import observer
+        lines.extend(observer())
     script=(root/'scripts/msx/full-route-probe.tcl').read_text().replace('@SHOW_SCENE@',str(syms['show_scene']))
+    if args.terrain_trace:
+        script=script.replace('    if {$::frames%240', '    terrain_observe\n    if {$::frames%240')
     if args.allow_game_over:
         script=script.replace('    if {$::frames>40000 || $state==2} {',
             '    if {$state==2} {snapshot;close $::events;close $::headers;exit 0;return}\n    if {$::frames>40000 || $state==2} {')
@@ -223,6 +229,7 @@ def main(argv=None):
             ' set hardware_x [expr {[debug read {VDP regs} 26]*8+8-([debug read {VDP regs} 27]&7)}]',
             ' set wx [expr {$wx+(($hardware_x-$wx+256)&511)-256}]',
             f' set wy [expr {{$wy+(($sy+{syms["BODY_TOP"]}-$wy+128)&255)-128}}]',
+            *(['terrain_capture $wx $wy $::terrain_latch_out'] if args.terrain_trace else []),
             f' puts $::camera_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $sy [debug read memory {syms["scroll_y"]}] $wy [u16 0xc407] [u16 0xc452]"',
             f' puts $::motion_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $wx $wy [u16 0xc450] [u16 0xc452] [debug read memory 0xe06b] [debug read memory 0xe048] [u16 0xe069] [debug read memory 0xe068] [u16 {syms["player_native_ticks"]}] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0] [debug read memory 0xc009] [debug read memory 0xc49a] [debug read memory 0xc5b0]"',
             ' set queue [list [machine_info time]]',
@@ -388,6 +395,18 @@ def main(argv=None):
         subprocess.run([args.openmsx,'-script',str(out/'session.tcl')],check=True,timeout=240,
             stdout=log,stderr=subprocess.STDOUT,
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
+    terrain_live=None
+    if args.terrain_trace:
+        from scripts.msx.terrain_live import analyze
+        terrain_live=analyze(root,bundle,out/'terrain-live.bin')
+        json_write(out/'terrain-live.json',terrain_live)
+        if args.radar_trace:
+            latch=analyze(root,bundle,out/'terrain-latch.bin')
+            json_write(out/'terrain-latch.json',latch)
+            if not latch['passed']:
+                raise ValueError(f'Latched terrain differs from original scenery: {out}/terrain-latch.json')
+        if not terrain_live['passed']:
+            raise ValueError(f'Live terrain differs from original scenery: {out}/terrain-live.json')
     rows=[list(map(int,line.split())) for line in (out/'events.tsv').read_text().splitlines()]
     if args.fixture_first_round is not None and (not rows or rows[0][1]!=first_round+1):
         raise ValueError('Original preparer did not apply the declared initial-round fixture')
@@ -475,7 +494,7 @@ def main(argv=None):
         fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
         fixture_population_retained=args.fixture_enemies is not None,
         fixture_population_gate=dict(required=args.fixture_enemies is not None,passed=population_passed),
-        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,
+        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,terrain_live=terrain_live,
         retained_tick_gate=dict(required=args.require_retained_native_ticks,passed=retained_passed),
         packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,population_minimum_seconds=2,passed=packet_passed),
         owed_motion_gate=dict(maximum_ms=args.maximum_owed_repeat_ms,passed=owed_passed),

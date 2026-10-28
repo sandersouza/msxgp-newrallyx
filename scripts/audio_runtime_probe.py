@@ -78,7 +78,7 @@ def main():
         ' }',
         ' if {$kind==5} {if {$::step==0} {set credit 64};if {$::step==2} {set event 128}}',
         ' if {$kind==5 && $::step==3} {set credit 64}',
-        ' if {$kind==10} {set heading [expr {$::step/120%4}];debug write memory 0xe048 0;debug write memory 0xe06b [expr {$heading&1?0:255}];debug write memory 0xe06a [expr {$heading<2?2:254}]}',
+        ' if {$kind==10} {set heading [expr {$::step/120%4}];set state [expr {$::step/30%4}];debug write memory 0xe048 [expr {$state==0}];debug write memory 0xe069 [lindex {0 0 32 31} $state];debug write memory 0xe06b [expr {$heading&1?0:255}];debug write memory 0xe06a [expr {$heading<2?2:254}]}',
         ' if {$kind==6 && $::step in {12 24 36}} {debug write memory 0xc50b [expr {$::step/12}];debug write memory 0xc50d [lindex {0 1 2 4} [expr {$::step/12}]]}',
         ' if {$kind==6 && $::step==100} {debug write memory 0xc50b 0}',
         ' if {$kind==7 && $::step in {12 24 36}} {debug write memory 0xc711 [expr {$::step/12}]}',
@@ -174,8 +174,11 @@ def main():
                 if name in ('intro','complete') and frame[8] and not muted:
                     if psg[4:6]!=frame[4:6] or psg[10]!=frame[8]:raise ValueError('Third music voice did not reach the PSG')
                 if name=='late_clock':
-                    heading=step//120%4;expected=s[f'Audio_Engine{heading}DriveEnvelope']
-                    if int.from_bytes(psg[11:13],'little')!=expected or psg[13]!=8 or psg[10]!=(0 if muted else 16):
+                    heading=step//120%4;phase=step//30%4
+                    speed='Idle' if phase==0 else 'Drive' if phase==2 else 'Cruise'
+                    expected=s[f'Audio_Engine{heading}{speed}Envelope']
+                    if (int.from_bytes(psg[11:13],'little')!=expected or psg[13]!=s[f'Audio_Engine{heading}{speed}Shape'] or
+                        int.from_bytes(psg[4:6],'little')!=s[f'Audio_Engine{heading}{speed}Tone'] or psg[10]!=(0 if muted else 16)):
                         raise ValueError('Engine envelope did not follow native heading/velocity')
                 if name=='effects' and step>=12:
                     effect=min(9,step//12);age=step-effect*12;source=effects[effect]

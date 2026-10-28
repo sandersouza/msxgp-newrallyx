@@ -37,7 +37,8 @@ def main():
     out=destination(root,args.output);require_ignored(root,[out/'audition.wav']);out.mkdir(parents=True)
     events={0:'credit',30:'three-voice Start',155:'music and driving engine',210:'idle engine',
             230:'cruising engine',250:'driving engine',290:'fuel refill',320:'fuel conversion',340:'smoke',380:'flag',
-            420:'special flag',480:'low-fuel warning',550:'extra life',590:'crash'}
+            420:'special flag',480:'low-fuel warning',550:'extra life',590:'crash',
+            630:'engine right',660:'engine up',690:'engine left',720:'engine down'}
     lines=['set save_settings_on_exit false','set renderer none','set sound_driver null','set throttle off',
         'set z80_freq 3579545','set z80_freq_locked false',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
@@ -45,17 +46,19 @@ def main():
         f'cart {tcl(rom)} -romtype ASCII16','reset',f'set out {tcl(out)}',
         'set started 0;set active 0;set step 0;set rows [open [file join $out psg.tsv] w]',
         'proc issue {} {',
-        ' if {$::step==630} {record stop;close $::rows;exit 0;return}',
+        ' if {$::step==750} {record stop;close $::rows;exit 0;return}',
         ' switch $::step {',
         ' 0 {debug write memory 0xe9f6 128}',
         f' 30 {{debug write memory 0xc7d0 5;debug write memory 0xe9f5 128;debug write memory {s["Audio_NewScene"]} 1}}',
         f' 155 {{debug write memory 0xc7d0 0;debug write memory 0xe9f5 16;debug write memory {s["Audio_NewScene"]} 1}}',
-        ' 210 {debug write memory 0xe9f5 0;debug write memory 0xe06a 0} 230 {debug write memory 0xe06a 1} 250 {debug write memory 0xe06a 2}',
+        ' 210 {debug write memory 0xe9f5 0;debug write memory 0xe048 1;debug write memory 0xe069 0;debug write memory 0xe06a 0} 230 {debug write memory 0xe048 0;debug write memory 0xe06a 1} 250 {debug write memory 0xe069 32;debug write memory 0xe06a 2}',
         ' 270 {debug write memory 0xe9f5 16}',
         ' 290 {debug write memory 0xe9f6 64} 320 {debug write memory 0xe9f4 2} 340 {debug write memory 0xe9f4 16}',
         ' 380 {debug write memory 0xe9f4 4} 420 {debug write memory 0xe9f4 8}',
         ' 480 {debug write memory 0xe9f4 32} 550 {debug write memory 0xe9f4 1}',
         ' 590 {debug write memory 0xe9f4 128}',
+        ' 630 {debug write memory 0xe9f5 0;debug write memory 0xe069 0;debug write memory 0xe06a 2;debug write memory 0xe06b 255}',
+        ' 660 {debug write memory 0xe06b 0} 690 {debug write memory 0xe06a 254;debug write memory 0xe06b 255} 720 {debug write memory 0xe06b 0}',
         ' }',
         f' debug write memory 0x7000 {s["PLAYER_BANK"]}',
         f' debug write memory {s["ticks"]} [expr {{([debug read memory {s["ticks"]}]+2)&255}}]',
@@ -84,13 +87,13 @@ def main():
             stdout=log,stderr=subprocess.STDOUT,
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
     rows=[line.split() for line in (out/'psg.tsv').read_text().splitlines()]
-    if len(rows)!=630:raise ValueError('Incomplete timed audition')
+    if len(rows)!=750:raise ValueError('Incomplete timed audition')
     with wave.open(str(out/'audition.wav'),'rb') as wav:
         if wav.getsampwidth()!=2:raise ValueError('Expected signed 16-bit recording')
         rate=wav.getframerate();channels=wav.getnchannels()
         seconds=wav.getnframes()/rate;pcm=array.array('h',wav.readframes(wav.getnframes()))
     peak=max(map(abs,pcm));rms=(sum(v*v for v in pcm)/len(pcm))**.5
-    if not 20<seconds<22 or not 100<rms or peak>=32767:raise ValueError('Audition silent, clipped or mistimed')
+    if not 24<seconds<26 or not 100<rms or peak>=32767:raise ValueError('Audition silent, clipped or mistimed')
     engine=[]
     if int(rows[220][12])==16:  # PSG register 10, after step/time and registers 0..9.
         for step,name in ((220,'Idle'),(240,'Cruise'),(260,'Drive')):
@@ -107,7 +110,19 @@ def main():
                 raise ValueError(f'Engine PCM pitch disagrees with the original spectral target: {name}')
             engine.append(dict(velocity=name,expected_hz=expected,measured_hz=measured,
                 second_harmonic_ratio=magnitude(window,rate,measured*2)/fundamental))
+    headings=[]
+    for heading,step in enumerate((640,670,700,730)):
+        start=round(step*2*.01668815450008311*rate)*channels
+        raw=pcm[start:start+round(.4*rate)*channels]
+        samples=[sum(raw[i:i+channels])/channels for i in range(0,len(raw),channels)]
+        mean=sum(samples)/len(samples)
+        window=[(v-mean)*(.5-.5*math.cos(2*math.pi*i/(len(samples)-1))) for i,v in enumerate(samples)]
+        fundamental=1789772.5/(16*s['Audio_EngineIdlePeriod'])
+        partials=[max(magnitude(window,rate,fundamental*k*(1+detune*.002)) for detune in (-2,-1,0,1,2)) for k in range(1,13)]
+        norm=sum(v*v for v in partials)**.5
+        headings.append(dict(heading=heading,normalized_harmonics=[v/norm for v in partials]))
     json_write(out/'report.json',dict(rom_sha256=digest(rom),passed=True,seconds=seconds,peak=peak,rms=rms,
+        engine_headings=headings,
         engine_spectrum=engine,events=[dict(seconds=step*2*.01668815450008311,label=label) for step,label in events.items()],
         scope='Actual emulator PCM from production PSG worker at physical-clock cadence, with seeded UI/velocity/event fixtures. '
               'No raster/gameplay performance or subjective listening verdict is implied.'))

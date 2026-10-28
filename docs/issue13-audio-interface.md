@@ -74,13 +74,17 @@ fuel recovery ID 9. Other pending effects wait for the active contour to finish.
 Effect durations advance from elapsed physical-clock packets. The bounded fuel
 adapter explicitly requests recovery after restoring the Lucky fuel gauge.
 
-The engine derives idle/cruise/drive pitch from the original engine note table,
-with four heading-dependent dominant-harmonic approximations. PSG shape 8
-repeats a decaying envelope; period changes follow coarse native velocity and
-wall state. An ultrasonic tone gate halves its audible gain. The measured
-up-heading fundamentals are approximately 50, 57 and 66 Hz. A cached engine key
-avoids steady-state recomputation. This approximates the original harmonic
-character without per-sample CPU synthesis; it does not reproduce the PROM.
+The engine selects the original two engine notes from the native fractional
+speed byte: `$e069 == $20` selects the second note, as in the original sound
+routine. Wall/idle and ordinary cruise retain the first note. The previous
+integer-speed selector and invented intermediate note are superseded.
+An audible tone carrier gates a repeating triangle/decay envelope (shapes
+10/8), with four heading-dependent carrier/envelope ratios. This produces
+pulse clusters and sidebands rather than a single dominant harmonic with an
+ultrasonic gate. Up-heading fundamentals measure approximately 50 Hz normally
+and 66 Hz in the second state. A cached key avoids steady-state recomputation;
+both generators run in the chip without CPU sample synthesis. This remains
+a PSG approximation of the PROM; human listening acceptance is open.
 
 ## Hardware and memory
 
@@ -146,7 +150,15 @@ make build AUDIO=0
 .venv/bin/python -B scripts/audio_inventory.py --sequencer --output references/build/my-audio-reference
 .venv/bin/python -B scripts/audio_runtime_probe.py --rom references/build/my-audio-build/raster-scroll.rom --output references/build/my-audio-proof
 .venv/bin/python -B scripts/audio_gameplay_probe.py --rom references/build/my-audio-build/raster-scroll.rom --output references/build/my-live-mute-proof
+.venv/bin/python -B scripts/maze_debug.py
 ```
+
+The debug launcher keeps the full HUD and real hardware limits. F6 saves a PNG,
+full machine state, RAM/VRAM/VDP registers and the preceding openMSX replay in
+its printed ignored session directory. It does not modify game memory. Use it
+to retain the transient maze corruption reported on 2026-10-28, which has not
+yet been reproduced by the automated routes. The replay contains private game
+state and must not be committed.
 
 ## Optional SCC decision
 
