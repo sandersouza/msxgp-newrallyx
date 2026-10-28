@@ -258,6 +258,7 @@ Full_UIBlit:
     dec a
     ld (Full_UIRows),a
     jr nz,.row
+.done:
     ret
 
 ; DE=offset in the UI bitmap at VRAM10000, preserving source HL.

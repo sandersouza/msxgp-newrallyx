@@ -1,10 +1,11 @@
 """Original-size cast reveal units and authored session/challenge presentation."""
 from .screen5 import packed
 
-CAST_ROWS=((44,52,16,16,56,'MY CAR'),(44,68,16,16,72,'RED CAR'),
+# The 24-pixel smoke drawing needs one background pixel on each side for even X/width.
+CAST_ROWS=((46,51,16,16,56,'MY CAR'),(46,69,16,16,72,'RED CAR'),
            (44,84,16,16,88,'CHECK POINT'),(44,100,16,16,104,'SPECIAL CHECK POINT'),
-           (44,116,16,16,120,'LUCKY CHECK POINT'),(40,136,24,24,144,'ROCK ( DANGER ! )'),
-           (40,160,24,24,168,'SMOKE SCREEN'))
+           (44,116,16,16,120,'LUCKY CHECK POINT'),(44,136,24,24,144,'ROCK ( DANGER ! )'),
+           (42,160,26,24,168,'SMOKE SCREEN'))
 
 
 def cast_reveal(image,background):

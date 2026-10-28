@@ -5,19 +5,47 @@ Updated: 2026-10-28. Implementation and channel policy:
 
 ## Delivered cartridge
 
-The current tested build is `references/build/issue13-original-font-v63/`, privately
-delivered as `newrallyx-audio-v7 [ASCII16].rom`:
+The current tested build is `references/build/issue13-cast-v65/`, privately
+delivered as `newrallyx-audio-v8 [ASCII16].rom`:
 
-`2368907cfefcd26a3b677d0bc795a5ca63f54426480d4e72933e1b429335fdb8`.
+`e95a4a803c0ac3d0096b7021c877a56086d09d6ba8ed307dde7a8d039198537c`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
 original scenery/colors, complete cars and real sprite limits remain enabled.
 
 The silent full game includes the same presentation/mechanics, with SHA-256
-`1e9349ed2f83b22ae95cfb9aeb2bb6104d3ff3e906330c750c3320aab7693f6a`.
+`4cef16a861f42752d3d258fb23f361f525c1eacad89cb308c9ffd99f7b08d9c3`.
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
+
+## Complete cast reveal rectangles (v65 / private v8)
+
+The cast's initial bitmap left source fragments visible because the icon
+rectangles missed the rightmost car column and the rock/smoke right edges.
+The blue car's first row and red car's last row were also outside their own
+rectangles. Correct the source origins without moving or resizing any drawing.
+The smoke's 24-pixel original shape gets one background pixel of padding on
+either side, producing an even 26-pixel copy width. Rock/red-car resources used
+by the challenge card now include their complete original drawings too.
+
+The expanded `full_arcade_ui_probe.py` checks 97 complete bitmap states against
+an independent broad-body/row oracle: the blank body before any object appears,
+then every icon and typed character. The old v63 ROM fails at state 0 with
+premature pixels (`issue13-cast-before-v63`). V65 passes all 97 states, the final
+original 1:1 bitmap, exact credit glyphs and the existing UI/audio/session
+transition fixtures (`issue13-ui-v65`). Initial/partial/final screenshots were
+inspected. The demo/death/coin cycle and all 20 point-label/erasure cases pass
+again in `issue13-attract-v65` and `issue13-popup-v65`; five targeted session
+resource tests pass in `issue13-cast-unit-v65.log`.
+
+`issue13-cast-diff-v65` confines changed banks to the initial cast image and UI
+resources (114/115/126). Native gameplay, terrain, HUD, car and audio banks are
+byte-identical to v7. Credit-font and point-label pixel data are also unchanged.
+The UI-bank point code is relocated after 24 bytes of extra smoke padding and
+executed separately by the point-label proof. Prior gameplay timing results
+remain scoped to the unchanged runtime; no new timing claim is inferred from
+the cast screenshots. The silent variant is rebuilt with the same correction.
 
 ## Original credit font (v63 / private v7)
 

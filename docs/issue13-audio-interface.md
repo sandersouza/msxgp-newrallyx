@@ -97,7 +97,11 @@ are unchanged. PCM/spectral measurements remain proxies for listening quality.
 ## Arcade presentation and optional flag labels
 
 The first screen preserves the original orange cast artwork at 1:1 scale.
-Icons appear in sequence and labels type character by character. An idle screen
+Icons appear in sequence and labels type character by character.
+Object copy/clear rectangles cover every source pixel, including the cars' full
+vertical extent and the right edges of the rock and smoke. The smoke rectangle
+adds one background pixel on either side for byte alignment; its original
+24-pixel drawing is not rescaled. An idle screen
 starts the autonomous demo; demo death returns to the cast. A coin switches to
 a separate black player-selection screen. Insufficient credit rejects 2P without
 consuming credit or requesting Start. The red credit lines read

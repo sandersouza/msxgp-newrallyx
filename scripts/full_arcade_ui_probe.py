@@ -27,6 +27,11 @@ def main():
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),'set firmwareswitch off',f'cart {tcl(rom)} -romtype ASCII16','reset',
         f'set out {tcl(out)}',scanout_recording_tcl(out,s['startup_mode'])]
+    lines.extend([
+        'set nr_cast_steps [open [file join $out cast-steps.bin] wb];set nr_cast_hidden 0;set nr_cast_count 0',
+        f'debug set_bp {s["Full_UIDraw.show"]} {{[debug read memory 0xc7d0]==1 && !$::nr_cast_hidden}} {{set ::nr_cast_hidden 1;puts -nonewline $::nr_cast_steps [debug read_block VRAM 0x10000 27136];flush $::nr_cast_steps}}',
+        f'debug set_bp {s.get("Full_UIBlit.done",s["Full_UIPointer"]-1)} {{[debug read memory 0xc7d0]==1 && $::nr_cast_hidden && $::nr_cast_count<96}} {{incr ::nr_cast_count;puts -nonewline $::nr_cast_steps [debug read_block VRAM 0x10000 27136];flush $::nr_cast_steps}}',
+    ])
     script=r'''
 set nr_ui_phase boot;set nr_ui_age 0;set nr_ui_samples 0;set nr_ui_intro_parts 0
 set nr_ui_events [open [file join $out events.tsv] w]
@@ -158,6 +163,31 @@ after time 0.02 poll
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
     def bitmap(name):return (out/f'{name}.vram').read_bytes()[0x10000:0x16a00]
     final,background=cast(root,(rom.parent/'palette.bin').read_bytes())
+    # Independent broad body/row regions, deliberately not the producer's tight
+    # crop boxes: detect stray source pixels before and after every reveal unit.
+    expected=bytearray(final)
+    for y in range(48,184):expected[y*256+32:y*256+240]=bytes([background])*208
+    steps=(out/'cast-steps.bin').read_bytes();step_size=256*212//2;step=0
+    def check_step():
+        nonlocal step
+        actual=steps[step*step_size:(step+1)*step_size]
+        wanted=packed(expected)
+        if actual!=wanted:
+            at=next((i for i,(a,b) in enumerate(zip(actual,wanted)) if a!=b),0)
+            raise ValueError(f'Cast reveal step {step} contains missing/premature pixels near {at%128*2},{at//128}')
+        step+=1
+    check_step()
+    for y,h,label_y,text in ((51,16,56,'MY CAR'),(69,16,72,'RED CAR'),
+            (85,15,88,'CHECK POINT'),(100,16,104,'SPECIAL CHECK POINT'),
+            (116,16,120,'LUCKY CHECK POINT'),(136,24,144,'ROCK ( DANGER ! )'),
+            (160,24,168,'SMOKE SCREEN')):
+        for row in range(y,y+h):expected[row*256+32:row*256+72]=final[row*256+32:row*256+72]
+        check_step()
+        for i in range(len(text)):
+            x=76+i*8
+            for row in range(label_y,label_y+8):expected[row*256+x:row*256+x+8]=final[row*256+x:row*256+x+8]
+            check_step()
+    if expected!=final or len(steps)!=step*step_size:raise ValueError('Incomplete independent cast reveal sequence')
     if bitmap('cast-complete')!=packed(final):raise ValueError('Final cast differs from original 1:1 pixels')
     def count(data):return sum(v!=background for byte in data for v in (byte>>4,byte&15))
     if not count(bitmap('cast-initial'))<count(bitmap('cast-partial'))<count(bitmap('cast-complete')):
@@ -188,7 +218,7 @@ after time 0.02 poll
     expected_frames=len((rom.parent/'audio-challenge_intro-frames.bin').read_bytes())//9
     expected_seconds=expected_frames*2*read_json(rom.parent/'build.json')['timing']['frame_seconds']
     if abs(timing[2]-expected_seconds)>.35:raise ValueError(f'Challenge cue/hold differs from two original phrases: {timing[2]} / {expected_seconds}')
-    json_write(out/'report.json',dict(rom_sha256=digest(rom),passed=True,start_seconds=timing[0],start_parts=timing[1],
+    json_write(out/'report.json',dict(rom_sha256=digest(rom),passed=True,cast_reveal_states=step,start_seconds=timing[0],start_parts=timing[1],
         challenge_seconds=timing[2],challenge_expected_seconds=expected_seconds,
         scope='Actual keyboard cast/credit/denied-2P/accepted-2P/Start/pause/resume; original cast pixels, requested black-selection text, physical PSG mute and frozen music cursor. Settlement and impending challenge are explicitly seeded; lives/credit/active/inactive player preserved. Natural completion remains separate.'))
     seal(out);print(f'Arcade UI/audio transitions pass: {out}/report.json')
