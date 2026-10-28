@@ -10,6 +10,7 @@ Audio_NoisePhase EQU $e9c4
 Audio_QueueDrops EQU $e9c5
 Audio_DeathSeen EQU $e9c6
 Audio_SmokeSeen EQU $e9c7
+Audio_PauseSeen EQU $e9c8
 Audio_MusicRequest EQU $e9ca
 Audio_MusicDirty EQU $e9cb
 Audio_OutputDirty EQU $e9cd
@@ -50,6 +51,14 @@ Audio_RuntimeControl:
     ld hl,(Audio_Ticks)
     inc hl
     ld (Audio_Ticks),hl
+    ld a,(paused)
+    ld hl,Audio_PauseSeen
+    cp (hl)
+    jr z,.pause_ready
+    ld (hl),a
+    ld a,1
+    ld (Audio_OutputDirty),a
+.pause_ready:
     ld a,7
     call read_keys
     and 1
@@ -251,6 +260,9 @@ Audio_Enqueue:
 Audio_MusicTick:
     xor a
     ld (Audio_MusicDirty),a
+    ld a,(paused)
+    or a
+    ret nz                   ; Keep the musical cursor, with no elapsed-time catch-up.
     ld a,($e9f5)
     and $b4
     ld (Audio_MusicRequest),a
@@ -320,6 +332,8 @@ Audio_MusicTick:
     jr z,.complete_end
     cp 5
     jr z,.gameover_end
+    cp 6
+    jr z,.challenge_end
     call Audio_ScoreStart
     jr .load
 .intro_end:
@@ -333,13 +347,17 @@ Audio_MusicTick:
 .gameover_end:
     ld hl,$e9f5
     res 2,(hl)
+    jr .next_song
+.challenge_end:
+    ld hl,$e9f5
+    res 6,(hl)
 .next_song:
     call Audio_SelectMusic
     ld (Audio_MusicMode),a
     or a
     jr z,.silence
     call Audio_ScoreStart
-    jr .load
+    jp .load
 .silence:
     xor a
     ld (Audio_PlayDesired+8),a
@@ -362,6 +380,8 @@ Audio_SelectMusic:
     jr z,.gameplay
     cp 5
     jr z,.start
+    cp 7
+    jr z,.challenge_start
     cp 2
     jr nz,.silent           ; Insert-coin/player-select screens have no melody.
     ld a,($e9f5)
@@ -373,7 +393,16 @@ Audio_SelectMusic:
     bit 7,a
     jr nz,.intro
     jr .silent
+.challenge_start:
+    ld a,($e9f5)
+    bit 6,a
+    ld a,6
+    ret nz
+    jr .silent
 .gameplay:
+    ld a,(Round_State)
+    or a
+    jr nz,.silent            ; No driving/completion melody during level settlement.
     ld a,($e9f5)
     bit 5,a
     jr nz,.complete
@@ -411,7 +440,7 @@ Audio_ScoreStart:
     ld (Audio_MusicPointer),de
     ret
 Audio_Scores:
-    dw 0,Audio_NormalScore+$8000,Audio_ChallengeScore+$8000,Audio_IntroScore+$8000,Audio_CompleteScore+$8000,Audio_GameoverScore+$8000
+    dw 0,Audio_NormalScore+$8000,Audio_ChallengeScore+$8000,Audio_IntroScore+$8000,Audio_CompleteScore+$8000,Audio_GameoverScore+$8000,Audio_ChallengeIntroScore+$8000
 
 ; Three aligned dictionary planes avoid frequency arithmetic in gameplay.
 ; HL advances by one index; BC (elapsed carry) is preserved.
@@ -653,6 +682,9 @@ Audio_RenderMusic:
     ld a,(Audio_Mute)
     ld b,a
     ld a,(Full_Attract)
+    or b
+    ld b,a
+    ld a,(paused)
     or b
     jr z,Audio_WritePSG
     ld hl,(Audio_PlayDesired+8)

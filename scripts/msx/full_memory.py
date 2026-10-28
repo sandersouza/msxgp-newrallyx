@@ -74,6 +74,10 @@ def layout(symbols):
     add('dynamic flag records','Flag_Records',60)
     add('round bank metadata','Full_IDBank',20)
     add('round radar flags','Full_RadarFlags',20)
+    if 'Full_UIReveal' in symbols:
+        add('scene-local presentation scratch','Full_UIReveal',28)
+        add('debug interstitial bypass, UI keyboard edges and bitmap upload bank','Full_ChallengeBypass',
+            4 if symbols.get('FLAG_POPUPS') else 3)
     add('tile division table',0xe300,240)
     add('native input',0xe3f0,1)
     if 'Full_FrameOriginX' in symbols:

@@ -199,6 +199,7 @@ Flag_Stream:
     IF PLAYER_FAST_BLITTER
     call Bitmap_Restore     ; Saved terrain must precede collection publication.
     ELSE
+    IF !FULL_GAME
     ; Remove the optional car row before replacing its underlying terrain. Its
     ; saved bytes may still contain the flag and must not be restored afterwards.
     ld a,(player_patch_valid)
@@ -209,6 +210,7 @@ Flag_Stream:
     xor a
     ld (player_patch_valid),a
 .unpatched:
+    ENDIF
     ENDIF
     pop bc
     IF ENEMY_RENDER

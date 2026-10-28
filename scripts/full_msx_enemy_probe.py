@@ -108,19 +108,19 @@ def main():
             (0xc5d0,0),(s['Enemy_HitAddress'],255),(s['Enemy_HitAddress']+1,255)]
         writes.extend((0xe092+i*32,100) for i in range(7))
         at=0xe088+actor*32
-        writes.extend(((at,0),(at+8,15+cx),(at+10,25+cy),(at+5,fx&255),(at+7,fy&255)))
+        writes.extend(((at,0),(at+14,0),(at+8,15+cx),(at+10,25+cy),(at+5,fx&255),(at+7,fy&255)))
         hit=abs(dx)<=10 and abs(dy)<=10;pointer=at+14 if hit else 65535
         add(1,writes,bytes((int(hit),pointer&255,pointer>>8)));counts['contact']+=1
-    # Startup silhouettes can overlap at offsets 11..14. Normal waiting cars
-    # use the complete-body bound; active/stunned cars and challenge keep 10.
+    # The MSX adapter does not maintain arcade OAM attributes. Startup contact
+    # must include the first $88 pose, independently of stale arcade screen Y.
     for actor,round_,state,dx,dy in itertools.product(range(7),(2,3,4,8),(0,0x88,0x89,0x8a,0xff),
             (-15,-14,-11,-10,0,10,11,14,15),(-15,-14,-11,-10,0,10,11,14,15)):
         writes=[(0xe24e,7),(0xe1b0,round_),(0xe070,15),(0xe072,25),(0xe06d,0),(0xe06f,0),
                 (0xc5d0,0),(s['Enemy_HitAddress'],255),(s['Enemy_HitAddress']+1,255)]
         writes.extend((0xe092+i*32,100) for i in range(7))
         at=0xe088+actor*32
-        writes.extend(((at,state),(at+8,15),(at+10,25),(at+5,dx&255),(at+7,(-dy)&255)))
-        radius=14 if state>=0x89 and round_%4 else 10
+        writes.extend(((at,state),(at+14,1),(at+8,15),(at+10,25),(at+5,dx&255),(at+7,(-dy)&255)))
+        radius=14 if state>=0x88 and round_%4 else 10
         hit=abs(dx)<=radius and abs(dy)<=radius;pointer=at+14 if hit else 65535
         add(1,writes,bytes((int(hit),pointer&255,pointer>>8)));counts['parked_contact']+=1
     (out/'cases.tcl').write_text('set msx_cases {\n'+'\n'.join('{'+ ' '.join(map(str,c))+'}' for c in cases)+'\n}\n')

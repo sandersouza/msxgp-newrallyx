@@ -132,7 +132,8 @@ def build(program, out):
         raise ValueError('Original background playlist changed')
     pairs = dict(normal=tuple((value,value+1) for value in playlist[:-1]),
                  challenge=((14,13),(14,13),(23,13),(23,13)),
-                 intro=((18,19,20),), complete=((8,9,10),),gameover=((21,22),))
+                 intro=((18,19,20),), complete=((8,9,10),),gameover=((21,22),),
+                 challenge_intro=((15,),(15,)))
     image=bytearray(768); declarations=['Audio_ToneLow EQU $8000','Audio_ToneHigh EQU $8100','Audio_ToneVolume EQU $8200']; metadata={}
     engine_at=int.from_bytes(program[0x2b5c:0x2b5e],'little')
     engine_words=[]
@@ -142,7 +143,9 @@ def build(program, out):
         engine_words.append(word)
     # Tone gating plus a repeating envelope retains several pulse clusters and
     # sidebands, instead of replacing a complex engine wave by one harmonic.
-    for heading,(shape,envelope_harmonic,tone_harmonic) in enumerate(((10,3,3),(10,1,6),(10,3,3),(8,3,5))):
+    # Horizontal PROM waves have a ramped cluster, not the symmetric triangle
+    # that produced the rejected buzz. Keep both accepted vertical parameter sets.
+    for heading,(shape,envelope_harmonic,tone_harmonic) in enumerate(((8,3,3),(10,1,6),(8,3,3),(8,3,5))):
         for name,word in zip(('Idle','Cruise','Drive'),(engine_words[0],engine_words[0],engine_words[1])):
             pitch=period(word)
             envelope_pitch=period(word*envelope_harmonic)
@@ -162,10 +165,14 @@ def build(program, out):
                         -int(ch==1 and program[0x2b3c+i]!=5) for ch,i in enumerate(part))
             frames.extend(voice_frames(tuple(melody(program,i) for i in part),volumes=gains,articulate=True))
         code=dictionary_encode(frames,tones)
-        declarations.append(f'Audio_{name.title()}Score EQU ${len(image):04x}')
-        metadata[name]=dict(address=len(image),bytes=len(code),frames=len(frames),parts=parts)
+        address=0x3c00 if name=='challenge_intro' else len(image)
+        declarations.append(f'Audio_{name.title().replace("_","")}Score EQU ${address:04x}')
+        metadata[name]=dict(address=address,bytes=len(code),frames=len(frames),parts=parts)
         (out/f'audio-{name}-frames.bin').write_bytes(b''.join(frames))
-        image.extend(code)
+        if name=='challenge_intro':
+            if len(code)>1024:raise ValueError('Challenge introduction exceeds its separate 1 KB tail')
+            (out/'audio-challenge-intro-score.bin').write_bytes(code)
+        else:image.extend(code)
     for identifier in range(1,10):
         frames=effect_frames(program,identifier)
         code=rle(bytes((tone_index(tones,int.from_bytes(f[:2],'little'),f[2]),f[3],f[4])) for f in frames)

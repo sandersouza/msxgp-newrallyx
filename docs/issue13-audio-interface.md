@@ -25,7 +25,8 @@ effects their original note contours; the earlier channel policy is superseded.
   cannot slow the score. Its register latches sustain playback; the effect FIFO
   is software.
 - **F4** changes output amplitudes only. Music, queue and gameplay continue.
-  Music continues during pause. Attract gameplay is muted.
+  **P** mutes all three physical channels and freezes the music cursor until
+  resume; elapsed pause time never accelerates the score. Attract gameplay is muted.
 
 `make build` enables PSG. `make build AUDIO=0` reconstructs the accepted silent
 full-game build. Bounded stages remain silent. The lower-level builder requires
@@ -46,6 +47,10 @@ one-shot introduction while the session waits, before loading/releasing gameplay
 Normal scene loads request background music only; phase changes do not replay
 the start cue. UI/attract changes override stale native music requests, and a
 silent scene explicitly replaces the previous PSG output.
+The challenging-stage interstitial plays the original melody 15 twice before
+releasing gameplay. Its separate score occupies the private audio-bank tail at
+`$3c00..$3fff`, sharing the tone dictionary. Driving/completion music is silent
+through level settlement and remaining-fuel conversion; event effects remain available.
 
 Music and effects use 5,974 bytes of a private 6 KB ROM prefix. A 768-byte
 dictionary stores period-low, period-high and volume planes. Each music packet
@@ -85,6 +90,44 @@ ultrasonic gate. Up-heading fundamentals measure approximately 50 Hz normally
 and 66 Hz in the second state. A cached key avoids steady-state recomputation;
 both generators run in the chip without CPU sample synthesis. This remains
 a PSG approximation of the PROM; human listening acceptance is open.
+Horizontal headings now use the decay envelope, retaining the original
+three-times fundamental carrier/envelope ratio. Accepted vertical parameters
+are unchanged. PCM/spectral measurements remain proxies for listening quality.
+
+## Arcade presentation and optional flag labels
+
+The first screen preserves the original orange cast artwork at 1:1 scale.
+Icons appear in sequence and labels type character by character. An idle screen
+starts the autonomous demo; demo death returns to the cast. A coin switches to
+a separate black player-selection screen. Insufficient credit rejects 2P without
+consuming credit or requesting Start. The red credit lines read
+`@ namco 1981 2ST` and `@ retrowork 2026`. Only accepted 1P/2P selection starts
+the three-part introduction. Challenge entry shows its own original-size rock
+and car icons, counts and instructions, then restores video without resetting
+the native challenge velocities, player shadow, lives or credits. F5 bypasses
+the interstitial for immediate debugging.
+
+Score publication immediately refreshes the life count after the native 20,000
+and 80,000 awards. Normal parked contact includes the initial `$88` pose with
+the established 14-pixel startup bound; challenge and active contact retain 10.
+It does not depend on stale arcade virtual-OAM screen coordinates.
+
+Flag captures can show one authored 24x8 world-anchored point label, including
+the native multiplier (`200x2`). It consumes no sprites and replaces the previous
+label on another capture. Its nominal lifetime is 45 physical refreshes. Painting
+and erasure replace optional guard prefetch work after the critical car/camera
+packet; erasure regenerates current terrain only while the cell retains the
+same world owner. Smoke capture/publication stays in that path, preventing
+stale smoke scratch or saved pixels from resurrecting previous graphics.
+The background uses the unchanged original collected-road tile. Only the new
+small point font is authored. Compile out the feature with
+`make build FLAG_POPUPS=0` or `--no-flag-popups` on either Python builder.
+
+Full-game UI code uses its own ASCII16 bank and a stable entry table at `$b800`.
+The two original bitmap/font banks remain data sources. Page3 `$dfe4..$dfff`
+scratch is shared by mutually exclusive UI and flag-label code and reset on
+scene video initialization. The frequent car sprite uploader keeps its existing
+path; only interrupted bitmap-label streams select another VRAM bank on IRQ return.
 
 ## Hardware and memory
 

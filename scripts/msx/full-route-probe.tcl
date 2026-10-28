@@ -130,7 +130,7 @@ proc route_frame {} {
     set state [debug read memory 0xc7d0]
     set r [debug read memory 0xe1b0]
     set death [debug read memory 0xc490]
-    puts $::cadence "[machine_info time] $r $death [debug read memory 0xc724] [u16 0xc440] [u16 0xc71d] [debug read memory 0xe24e] [debug read memory 0xc472] @CLOCK_DUE@ @CAMERA_BLOCKED@ @CLOCK_DROPPED@ [debug read memory 0xc00a]"
+    puts $::cadence "[machine_info time] $r $death [debug read memory 0xc724] [u16 0xc440] [u16 0xc71d] [debug read memory 0xe24e] [debug read memory 0xc472] @CLOCK_DUE@ @CAMERA_BLOCKED@ @CLOCK_DROPPED@ [debug read memory 0xc00a] $state"
     puts $::events "$::frames $r [debug read memory 0xc50b] [debug read memory 0xe00f] $death [u16 0xe26a] [u16 0xc711] [u16 0xc71d] [u16 0xc440] [debug read memory 0xe28b] [debug read memory 0xe289] [debug read memory 0xe24e] [debug read memory 0xc472]"
     if {$::frames>40000 || $state==2} {
         snapshot

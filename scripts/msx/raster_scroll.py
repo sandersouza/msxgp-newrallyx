@@ -193,6 +193,7 @@ def build(root, args):
     stage = getattr(args, 'stage', 0)
     full_game=bool(getattr(args,'full_game',False))
     audio=bool(getattr(args,'audio',False))
+    flag_popups=full_game and not bool(getattr(args,'no_flag_popups',False))
     if audio and not full_game:
         raise ValueError('Audio integration currently requires full gameplay')
     if full_game and (stage!=12 or not hud_enabled):
@@ -696,12 +697,13 @@ def build(root, args):
         radar_projection_bank=len(banks)+1
         projection=(output/'stage-radar-x.bin').read_bytes()+(output/'stage-radar-y.bin').read_bytes()
         banks.append(projection+bytes(16384-len(projection)))
-    session_image_bank=session_bank=0
+    session_image_bank=session_bank=session_data_bank=0
     if stage>=12:
         from .session import resources
         session_image_bank=len(banks)+1;session_bank=session_image_bank+1
         first,second=resources(assets,black,white,full_game=full_game,root=root,palette=palette)
         banks.extend((first,second))
+        session_data_bank=session_bank
     if full_game:
         from .full_enemy import validate_extension_space
         validate_extension_space(banks[player_bank-1])
@@ -728,6 +730,14 @@ def build(root, args):
         json_write(output/'audio-relocation.json',dict(changes=changes,compiled_scores=score_info))
         for name in ('full-audio.inc','full-audio-state.inc','full-audio-mapper.inc','full-audio-runtime.inc'):
             shutil.copyfile(root/'src'/name,output/name)
+    if full_game:
+        from .full_ui import build as build_ui
+        ui_info=build_ui(root,output,assets,palette)
+        if flag_popups:
+            from .flag_popup import build as build_popups
+            build_popups(output,empty_tiles[0],white)
+        session_bank=len(banks)+1
+        banks.append(bytes(16384))
     for n, bank in enumerate(banks, 1):
         (output/f'bank-{n}.bin').write_bytes(bank)
     size = 16384*(1 << len(banks).bit_length())
@@ -744,6 +754,9 @@ def build(root, args):
         f'COMPLETION_COMPONENT EQU {int(completion_component)}\n'
         f'COMPLETION_RUNTIME EQU {int(stage>=11)}\n'
         f'SESSION_RUNTIME EQU {int(stage>=12)}\nSESSION_IMAGE_BANK EQU {session_image_bank}\nSESSION_BANK EQU {session_bank}\n'
+        f'SESSION_DATA_BANK EQU {session_data_bank}\n'
+        f'FLAG_POPUPS EQU {int(flag_popups)}\n'
+        f'UI_CAST_BACKGROUND EQU {ui_info["cast_background"] if full_game else 0}\n'
         f'VDP_R9 EQU {video_timing(args.hz)["vdp_r9"]}\nBLACK EQU {black}\n'
         f'HUD_BANK EQU {hud_bank}\nHUD_DATA_BANK EQU {hud_bank+1}\nBODY_TOP EQU {BODY_TOP}\nLIFE_Y EQU {LIFE_Y}\n'
         f'PLAYER_BANK EQU {player_bank}\nPLAYER_DATA_BANK EQU {player_bank+1}\n'
@@ -797,9 +810,10 @@ def build(root, args):
         from .enemy_navigation import original_maps
         (output/'full-navigation.bin').write_bytes(original_maps(program))
     (output/'payload.inc').write_text(''.join(
-        (f'    INCBIN "audio-score.bin"\n    DISP $1800\n    INCLUDE "full-audio.inc"\n    ASSERT $ <= $1b00\n    defs $1b00-$,$ff\n    ENT\n    DISP $9b00\n    INCLUDE "full-audio-runtime.inc"\n    ASSERT $ <= $a580\n    defs $a580-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2580,$1580\n    defs 32,0\n    defs 11,$ff\n    defs $4d5,0\n' if audio and n==audio_bank else
+        (f'    INCBIN "audio-score.bin"\n    DISP $1800\n    INCLUDE "full-audio.inc"\n    ASSERT $ <= $1b00\n    defs $1b00-$,$ff\n    ENT\n    DISP $9b00\n    INCLUDE "full-audio-runtime.inc"\n    ASSERT $ <= $a580\n    defs $a580-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2580,$1580\n    defs 32,0\n    defs 11,$ff\n    defs $d5,0\n    INCBIN "audio-challenge-intro-score.bin"\n    defs {1024-(output/"audio-challenge-intro-score.bin").stat().st_size},0\n' if audio and n==audio_bank else
          f'    INCBIN "bank-{n}.bin",0,$3600\n    DISP $b600\n    INCLUDE "full-hud-number.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==hud_bank else
-         f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n' if n==session_bank else
+         (f'    DISP $8000\n    INCLUDE "session.inc"\n    INCLUDE "full-ui.inc"\n    INCLUDE "full-ui-data.inc"\n    IF FLAG_POPUPS\n    INCLUDE "full-flag-popup.inc"\n    INCLUDE "flag-popup-data.inc"\n    ENDIF\n    ASSERT $ <= $b200\n    defs $b200-$,$ff\n    INCBIN "bank-{session_data_bank}.bin",$3200,$400\n    INCBIN "bank-{session_data_bank}.bin",$3600,$200\n    INCLUDE "session-entries.inc"\n    defs $c000-$,$ff\n    ENT\n' if full_game else
+          f'    INCBIN "bank-{n}.bin",0,$3800\n    DISP $b800\n    INCLUDE "session.inc"\n    ASSERT $ <= $c000\n    defs $c000-$,$ff\n    ENT\n') if n==session_bank else
          '    DISP $1000\nFull_CacheEngineStart:\n    INCLUDE "full-terrain-engine.inc"\nFull_CacheEngineEnd:\n    ENT\n    defs $1000-(Full_CacheEngineEnd-Full_CacheEngineStart),$ff\n    DISP $ea00\nFull_PresentStart:\n    INCLUDE "full-presentation.inc"\nFull_PresentEnd:\n    ASSERT $ <= $ec00\n    ENT\n    defs $1000-(Full_PresentEnd-Full_PresentStart),$ff\n    INCBIN "full-navigation.bin"\n' if full_game and n==terrain_bank else
          f'    INCBIN "bank-{n}.bin",0,$2800\n    INCLUDE "full-load.inc"\n    defs $400-(Full_LoadEnd-Full_LoadStart)-(Full_EnemyHotEnd-Full_EnemyHotStart)-(Full_RadarIRQEnd-Full_RadarIRQStart),$ff\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    DISP $ae00\n    INCLUDE "full-round-native.inc"\n    ASSERT $ <= $b000\n    defs $b000-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3000,$500\n    DISP $b500\n    INCLUDE "full-native-motion.inc"\n    ASSERT $ <= $b600\n    defs $b600-$,$ff\n    ENT\n    DISP $b600\n    INCLUDE "full-native-ai.inc"\n    ASSERT $ <= $bf00\n    defs $bf00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$3f00,$100\n' if full_game and n==player_bank else
          f'    INCBIN "bank-{n}.bin",0,$2c00\n    DISP $ac00\n    INCLUDE "round-objects.inc"\n    ASSERT $ <= $ae00\n    defs $ae00-$,$ff\n    ENT\n    INCBIN "bank-{n}.bin",$2e00,$1200\n' if round_preparation and n==player_bank else
@@ -813,6 +827,8 @@ def build(root, args):
     if round_preparation:
         shutil.copyfile(root/'src/round-objects.inc', output/'round-objects.inc')
     if full_game:
+        for name in ('full-ui.inc','session-entries.inc','full-flag-popup.inc'):
+            shutil.copyfile(root/'src'/name,output/name)
         for name in ('full-radar-motion.inc','full-hud-number.inc','full-round-native.inc','full-msx-enemies.inc','full-presentation.inc','full-sprite-cache.inc','full-main.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
             shutil.copyfile(root/'src'/name,output/name)
     shutil.copyfile(root/'src/player.inc',output/'player.inc')
@@ -887,6 +903,10 @@ def build(root, args):
                 player_sat='Complete pair published by the maze IRQ against its actual R23',
                 initialized=0xd2cd,ownership='Both planned and latched views, including mixed corner columns')) if full_game else None),
         full_game=full_game,full_memory=memory_layout,
+        arcade_presentation=(ui_info if full_game else None),
+        flag_popups=(dict(enabled=flag_popups,disable='make FLAG_POPUPS=0',
+            source_pixels=[24,8],lifetime_refreshes=45,maximum_concurrent=1,
+            sprites_used=0,erasure='Regenerate current owned terrain; smoke takes priority') if full_game else None),
         audio=(dict(backend='AY PSG',overlay_bank=audio_bank,period_bank=audio_period_bank,
             mapper='Production ROM bank with Page3 state; isolated Page3-XOR-2 RAM segment for reference-kernel probes only',mute_key='F4',
             sequencer='Three-voice dictionary scores and tonal effects compiled offline; original core retained for reference-kernel proofs',
@@ -959,7 +979,7 @@ def build(root, args):
                        radar_special_flag_blink_ticks=32 if stage>=12 else None,
                        radar_special_flag_slot=next((f['hud_slot'] for f in flag_records if f['kind']==2),None) if stage>=12 else None,
                        header_irq_reservation_line=0 if full_game else 1 if stage>=12 else 3 if stage>=9 else 7,
-                       score_digits=8 if full_game else 6,round_digits=3 if full_game else 0,
+                       score_digits=7 if full_game else 6,round_digits=2 if full_game else 0,
                        radar_bitmap_size=[48,80] if bitmap_radar else None,
                        radar_background_index=index_for(palette,(0,0,151)) if bitmap_radar else None,
                        radar_marker_state_address=0xcf60 if cells_only and hud_enabled else None,

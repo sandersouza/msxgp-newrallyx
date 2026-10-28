@@ -1,5 +1,77 @@
 ; Cold session hooks fit in the resident bank. UI code executes at B800.
-Session_State EQU $c7d0       ; 0 gameplay, 1 title, 2 game over, 3 round clear, 5 start music
+Session_State EQU $c7d0       ; 0 game, 1 cast, 2 game over, 5 start, 6 select, 7 challenge
+    IF FULL_GAME
+Full_ChallengeBypass EQU $c7f0
+Full_UIHeld EQU $c7f1
+Full_UIEdges EQU $c7f2
+Full_UIReveal EQU $dfe4
+Full_UITimer EQU $dfe6
+Full_UICastDone EQU $dfe7
+Full_UIWidth EQU $dfe8
+Full_UIRows EQU $dfe9
+Full_UIDestination EQU $dfea
+Full_UIRowDestination EQU $dfec
+Full_UIBackground EQU $dfee
+Full_UIForeground EQU $dfef
+Full_UIPairs EQU Score_Old ; UI and gameplay score scratch never execute together.
+    IF FLAG_POPUPS
+Popup_Active EQU $dfe4
+Popup_Pending EQU $dfe5
+Popup_X EQU $dfe6
+Popup_Y EQU $dfe7
+Popup_Tick EQU $dfe8
+Popup_Age EQU $dfe9
+Popup_Column EQU $dfea
+Popup_Source EQU $dfeb
+Popup_Destination EQU $dfed
+Popup_Bank EQU $dfef
+Popup_Rows EQU $dff0
+Popup_Width EQU $dff1
+Sprite_UploadBank EQU $c7f3
+Popup_Frame:
+    ld a,(paused)
+    or a
+    jr nz,.idle
+    ld a,(Popup_Active)
+    ld hl,Popup_Pending
+    or (hl)
+    jr z,.idle
+    ld a,(Popup_Active)
+    or a
+    jr z,.work
+    ld a,(ticks)
+    ld hl,Popup_Tick
+    sub (hl)
+    ld b,a
+    ld a,(ticks)
+    ld (hl),a
+    ld a,(Popup_Age)
+    add a,b
+    ld (Popup_Age),a
+    cp 45
+    jr nc,.work
+    ld a,(Popup_Pending)
+    ld hl,Death_State
+    or (hl)
+    jr z,.idle               ; Steady labels need no ROM/mapper/VDP work.
+.work:
+    ld a,SESSION_BANK
+    ld ($7000),a
+    call $b81e
+    ld a,PLAYER_BANK
+    ld ($7000),a
+    ld a,1
+    ret
+.idle:
+    xor a
+    ret
+Popup_RestoreTile:
+    call stage_tile.source   ; Forced owned cell, including smoke capture/publication.
+    ld a,SESSION_BANK
+    ld ($7000),a
+    ret
+    ENDIF
+    ENDIF
 Session_Drawn EQU $c7d1
 Session_Credits EQU $c7d2
 Session_Keys EQU $c7d3
@@ -30,6 +102,10 @@ Session_Main:
     call Audio_Work
     pop af
     ENDIF
+    IF FULL_GAME
+    cp 3
+    jp z,Full_UIResumeChallenge
+    ENDIF
     cp 2
     jp nz,main
     call show_scene
@@ -58,7 +134,7 @@ Session_Check:
     ld ($7000),a
     call $b81b
     or a
-    jp nz,Full_NextRound
+    jp nz,Full_DebugNextRound
 .debug_done:
     ld a,(Full_Attract)
     or a
@@ -79,12 +155,37 @@ Session_Check:
     ENDIF
 .finished:
     ld (Session_State),a
+    IF FULL_GAME
+    ld a,(Session_Keys)
+    ld (Full_UIHeld),a
+    xor a
+    ld (Full_UIEdges),a
+    ENDIF
     IF AUDIO_ENABLED
     ld a,4                  ; Original two-part game-over song request.
     ld ($e9f5),a
     ENDIF
     ret
 Session_VBlank:
+    IF FULL_GAME
+    push hl
+    in a,($aa)
+    push af
+    xor a
+    call read_keys
+    ld b,a
+    ld a,(Full_UIHeld)
+    cpl
+    and b
+    ld hl,Full_UIEdges
+    or (hl)
+    ld (hl),a
+    ld a,b
+    ld (Full_UIHeld),a
+    pop af
+    out ($aa),a              ; Preserve an interrupted foreground keyboard read.
+    pop hl
+    ENDIF
     ld a,(ticks)
     inc a
     ld (ticks),a
@@ -100,11 +201,42 @@ Session_CopyImage:
     ld de,$4000
     ei
     call upload
-    ld a,SESSION_BANK
+    ld a,SESSION_DATA_BANK
     ld ($7000),a
     ld hl,$8000
     ld de,$2a00
+    IF FULL_GAME
+    call upload
+    ld a,SESSION_BANK
+    ld ($7000),a
+    ret
+    ELSE
     jp upload
+    ENDIF
+    IF FULL_GAME
+Full_UIResumeChallenge:
+    ld a,3                   ; Restore video only; do not reset challenge velocities/placements.
+    ld (Full_Loading),a
+    ld a,255
+    ld (player_drawn),a
+    xor a
+    ld (Score_HighValid),a
+    call show_scene
+    xor a
+    ld (Full_Loading),a
+    IF AUDIO_ENABLED
+    inc a
+    ld (Audio_NewScene),a
+    ENDIF
+    ld a,(Full_UIHeld)
+    ld (Session_Keys),a
+    xor a
+    ld (Session_State),a
+    ld (Session_Drawn),a
+    ld a,(ticks)
+    ld (frame_tick),a
+    jp main
+    ENDIF
 
 ; Merge joystick1 with the keyboard; restore the original PSG output latch.
 Session_Joystick:

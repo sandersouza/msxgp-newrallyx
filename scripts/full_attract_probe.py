@@ -39,7 +39,7 @@ proc step {} {
     set state [debug read memory 0xc7d0];set attract [debug read memory 0xc7ee]
     switch $::phase {
         title {
-            if {$state==1 && [debug read memory 0xc7dd] && ![info exists ::high]} {snapshot title;set ::high [debug read_block memory 0xe060 8]}
+            if {$state==1 && [debug read memory 0xc7dd] && @CASTREADY@ && ![info exists ::high]} {snapshot title;set ::high [debug read_block memory 0xe060 8]}
             if {$state==0 && $attract} {
                 incr ::demo;snapshot demo-start
                 if {[debug read memory 0xe020]!=0 || [debug read memory 0xe021]!=0 || [debug read memory 0xe00f]!=1} {error "Original attract mode contract diverged"}
@@ -62,7 +62,7 @@ proc step {} {
         }}
         coin {
             if {$::age==4} {keymatrixup 0 32}
-            if {$state==1 && !$attract && [debug read memory 0xc7dd]} {
+            if {$state in {1 6} && !$attract && [debug read memory 0xc7dd]} {
                 if {[debug read memory 0xc7d2]!=1} {error "Attract credit interruption lost coin"}
                 keymatrixdown 0 2;set ::phase start;set ::age 0
             }
@@ -81,7 +81,7 @@ proc poll {} {if {[catch {step} p]} {puts stderr $p;exit 2}}
 set VDP.too_fast_vram_access_callback {puts stderr "Attract VRAM timing violation";exit 2}
 after time 150 {puts stderr "Attract cycle timeout";exit 2}
 after time 0.02 poll
-'''
+'''.replace('@CASTREADY@',f'[debug read memory {syms["Full_UICastDone"]}]' if 'Full_UICastDone' in syms else '1')
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n'+script+'\n} p]} {puts stderr $p;exit 2}\n')
     with (out/'emulator.log').open('w') as log:
         subprocess.run(['openmsx','-script',str(out/'session.tcl')],check=True,timeout=120,

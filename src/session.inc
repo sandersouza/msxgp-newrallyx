@@ -1,4 +1,5 @@
 ; Banked UI only. Gameplay remains resident; original glyphs stay 8x8.
+    IF !FULL_GAME
     jp Session_Frame
     jp Session_AfterStart
     jp Session_Reset
@@ -10,6 +11,7 @@
     jp Full_DrawRound
     jp Full_DemoFrame
     jp Full_DebugAdvance
+    ENDIF
     ENDIF
 
 ; Keep only movement/camera state. Fuel, score, enemy state and clocks still tick.
@@ -104,8 +106,17 @@ Session_Reset:
     ldir
     inc a
     ld (Session_State),a
+    IF FULL_GAME
+    xor a
+    ld (Full_ChallengeBypass),a
+    ld (Full_UIHeld),a
+    ld (Full_UIEdges),a
+    ENDIF
     ret
 Session_Frame:
+    IF FULL_GAME
+    jp Full_UIFrame
+    ENDIF
     IF FULL_GAME
     call Full_DebugRead       ; Latch held F5 on UI screens without advancing.
     ENDIF
@@ -243,6 +254,9 @@ Session_AfterStart:
     jp Score_Publish
 
 Session_Draw:
+    IF FULL_GAME
+    jp Full_UIDraw
+    ENDIF
     IF FULL_GAME
     ld hl,0
     ld (Full_AttractClock),hl

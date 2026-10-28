@@ -44,6 +44,18 @@ class CadenceTests(unittest.TestCase):
         self.assertEqual(r['loops_over_40_ms'],1)
         self.assertAlmostEqual(r['percentile_99_loop_ms'],500)
 
+    def test_challenge_interstitial_is_separate_from_active_gameplay(self):
+        rows=[[0,4,0,0,0,0,3,0,0,0,0,0,0],
+              [.02,4,0,0,1,0,3,1,0,0,0,1,0],
+              [.04,4,0,0,1,0,3,0,0,0,0,2,7],
+              [6.44,4,0,0,1,0,3,0,0,0,0,130,7],
+              [6.46,4,0,0,1,0,3,0,0,0,0,131,0],
+              [6.48,4,0,0,2,0,3,1,0,0,0,132,0]]
+        r=self.report(rows)
+        self.assertAlmostEqual(r['active_seconds'],.04)
+        self.assertAlmostEqual(r['native_hz'],50)
+        self.assertEqual(r['discarded_ticks'],0)
+
     def test_counter_wrap_and_death_time_are_handled_separately(self):
         rows=[[0,2,0,0,65535,65535,3,1,0,0],
               [.02,2,0,0,1,0,3,2,0,0],

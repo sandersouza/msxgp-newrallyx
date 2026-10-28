@@ -5,19 +5,88 @@ Updated: 2026-10-28. Implementation and channel policy:
 
 ## Delivered cartridge
 
-The current tested build is `references/build/issue13-camera-v44/`, privately
-delivered as `newrallyx-audio-v4 [ASCII16].rom`:
+The current tested build is `references/build/issue13-arcade-v58/`, privately
+delivered as `newrallyx-audio-v5 [ASCII16].rom`:
 
-`1e2820bd9659c3439e2e8c59e8d5b7302d3f6f7adf23f7fec26a79999738f767`.
+`8276b5758c78af11e105b4930c0df1d0d4871a8056581a9972231038c520ad1e`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
 original scenery/colors, complete cars and real sprite limits remain enabled.
 
-The silent full game includes the same camera correction, with SHA-256
-`4ef05638ac2dce771dddcc71bd98c50fb8d0adc93cb1148df1e93344dab59db4`.
+The silent full game includes the same presentation/mechanics, with SHA-256
+`0f628b264ca07bd8c5b032229b0dc5f39df9bbdc2ba60c8f7316cbf32e718924`.
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
+
+## Arcade presentation, lives, contact and optional points (v58)
+
+The orange original cast now reveals icons and types labels before the idle
+demo. Demo death returns to it. A coin opens a separate black selection screen
+with the requested `@ namco 1981 2ST` / `@ retrowork 2026` credits. Rejected 2P
+selection preserves a single credit; accepted 1P/2P selection starts the three
+original Start parts before gameplay. Challenge entry has its own screen and
+the original melody 15 repeated twice. Video-only resume preserves parked
+challenge velocities and both players' packets. Pause physically silences all
+channels and freezes the musical cursor; settlement stops driving music.
+
+Native bonus awards already changed the life count, but score publication did
+not immediately refresh its HUD value. Both now agree at 20,000 and 80,000.
+Normal startup contact includes the first `$88` pose, retaining the established
+14-pixel startup bound; active/challenge contact remains 10. This follows the
+earlier explicit request for solid normal startup cars. The later wording was
+ambiguous; a clarification was left pending, without blocking the other fixes.
+
+One authored 24x8 world-anchored point label uses the actual flag ordinal and
+native multiplier. It needs no car/radar sprites. Compile it out with
+`make build FLAG_POPUPS=0`. Painting/removal replaces optional guard prefetch
+after the critical presentation packet. Erasure regenerates current owned
+terrain with smoke capture/publication, rather than restoring saved pixels.
+The first implementation exceeded the controlled-seven timing budget at 5.13%;
+moving this work and retaining the common sprite-upload path brings the final
+candidate back inside the unchanged 4%/70 ms limits. Explicit EI points after
+command waits also remove an observed late footer interrupt during a capture.
+
+| Check | Result / private artifact |
+| --- | --- |
+| Current suite | 428 tests pass; `issue13-arcade-tests-v58.log` |
+| Cast/demo | Exact original final cast, staged reveal, autonomous demo/death and fresh coin/start; `issue13-attract-v58` |
+| UI/audio transitions | Actual keyboard credit/rejected 2P/accepted 2P/Start/P/resume; exact black selection text; physical PSG silence and frozen cursor; controlled settlement/challenge preservation. Start 4.020 s; challenge 6.417 s versus 6.408 s source duration. `issue13-ui-v58` |
+| Extra lives | Six actual Z80 exact/crossed 20k/80k and duplicate-award cases; native and immediate HUD agree; `issue13-bonus-v58` |
+| Parked/active contact | 48,878 executed steering/motion/smoke/contact contracts, including 11,340 startup/contact cases over all seven actors, first `$88` pose and phase types; `issue13-contact-v58` |
+| Production audio | 27,000 playback/effect/mute cases; `issue13-runtime-v58` |
+| Flag label / erasure | All 20 ordinary/multiplier bitmaps, all four bitmap banks, both torus seams, stale-smoke scratch and replaced-owner canary under real IRQs; `issue13-popup-v58` |
+| Interrupted uploads | 2,048 lengths/offsets, 284 actual IRQ overlaps across every armed full-game raster phase, exact bytes/canaries/return contract; `issue13-uploads-v58` |
+| Eight natural rounds | 29.905..29.961 packet FPS, maximum 0.3731% late slots, 59.903..59.943 native Hz, zero discarded ticks or audio queue drops. 80 labels checked byte-for-byte; 6,939,317 foreground terrain pixels and 19,939 bounded physical viewports. All player/radar/fuel/footer gates pass. `issue13-eight-v58` |
+| Controlled seven enemies | Completes at 29.4536 FPS, 3.3573% late slots, 67.746 ms maximum gap, 59.8613 native Hz, zero discarded ticks/drops. Ten labels and 913,251 terrain pixels checked; all sprite/bounds gates pass. `issue13-seven-v58` |
+| Feature-off comparison | Same controlled-seven gates pass at 29.4180 FPS / 3.6829%; `issue13-seven-popups-off-v55`. Its `f32f80b9...` ROM is byte-identical to the final feature-off v58 rebuild. Routes diverge, so this is a feasibility comparison, not an isolated CPU-saving claim. |
+| Session/debug | Actual two-player selection, six natural deaths, alternation/game over and original lives/round packets; `issue13-session-v58`. Four real F5 advances preserve the compact HUD; `issue13-debug-v58`. |
+| Compatibility | Silent full-game cast/demo pass in `issue13-attract-silent-v58`; bounded stage12 retains the accepted hash above. |
+
+The cadence trace now explicitly records UI state. Challenge interstitial time
+is excluded from active simulation averages; long stalls within actual gameplay
+remain included. Turn snapshots are observed at completed foreground boundaries,
+not during a partially swapped inactive-player packet. Terrain sampling accepts
+only exact active-label pixels inside the precise world rectangle; it still
+rejects wrong or expired pixels. These oracle changes have synthetic regression
+coverage and do not discard the failures that motivated the fixes.
+
+Horizontal engine headings switch from triangle to decay envelopes; accepted
+vertical carrier/envelope parameters are unchanged. Actual PSG PCM is retained
+in `issue13-audition-v58`, alongside pre-change `issue13-audition-v50` and the
+original MAME/PROM reference. The normalized sixth partial falls from 0.539/0.577
+to 0.430/0.429 for right/left, close to source targets 0.418/0.500; full spectral
+distance is approximately unchanged on the right and improves on the left.
+The 25.031-second fixture is audible and unclipped (peak 18,989/32,767). This is
+still an adaptation, not a claim of subjective arcade equivalence.
+
+The completed workloads run in openMSX on the 128 KB Panasonic FS-A1WSX reference,
+factory CPU switching, NTSC refresh, full HUD, unchanged original scenery/colors,
+complete car drawings and real sprite limits. Physical hardware/PAL/WebMSX
+gameplay and human listening acceptance remain unqualified. The older reported
+unlocalized visual defects remain open; these bounded source-pixel/scanline
+checks do not prove every displayed pixel correct. Keep issue #13 and PR #31 open
+for that review rather than merging on performance averages alone.
 
 ## Confirmed outside-maze flowers: bounded camera correction (v44)
 

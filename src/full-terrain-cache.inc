@@ -176,6 +176,11 @@ Full_CheckCount EQU $d2f9
 Full_CheckStep EQU $d2fa
 Full_CacheHeld EQU $d2ea
 Full_CacheClear:
+    IF FLAG_POPUPS
+    xor a
+    ld (Popup_Active),a
+    ld (Popup_Pending),a
+    ENDIF
     ld a,FULL_TERRAIN_BANK
     ld ($7000),a
     call Full_CacheEnter

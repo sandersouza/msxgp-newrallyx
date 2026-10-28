@@ -9,7 +9,7 @@ def analyze(path,frame_seconds,population_path=None):
     populations=defaultdict(lambda:dict(gaps=[],work=[]))
     samples=([list(map(float,line.split())) for line in population_path.read_text().splitlines()]
              if population_path is not None else [])
-    if any(len(row) not in (10,12) for row in samples):raise ValueError('Unexpected population sample')
+    if any(len(row) not in (10,12,13) for row in samples):raise ValueError('Unexpected population sample')
     times=[row[0] for row in samples]
     if any(b<=a for a,b in zip(times,times[1:])):raise ValueError('Population time did not advance')
     previous=start=None

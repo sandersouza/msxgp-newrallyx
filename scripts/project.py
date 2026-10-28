@@ -20,13 +20,13 @@ from scripts.msx.checkpoints import inventory, resolve, publish_latest, resolve_
 ROM = Path('references/build/newrallyx.rom')
 
 
-def build_renderer(root, output, *, no_hud=False, stage=0, player_blitter=False,radar_blitter=False,hz=50,sprite_flicker=False,flicker_stress=False,outline_flicker=False,enemies=None,full_game=False,audio=False):
+def build_renderer(root, output, *, no_hud=False, stage=0, player_blitter=False,radar_blitter=False,hz=50,sprite_flicker=False,flicker_stress=False,outline_flicker=False,enemies=None,full_game=False,audio=False,no_flag_popups=False):
     args = argparse.Namespace(
         output=output, hz=hz, no_hud=no_hud, stage=stage,
         player_blitter=player_blitter,radar_blitter=radar_blitter,
         sprite_flicker=sprite_flicker,flicker_stress=flicker_stress,
         outline_flicker=outline_flicker,
-        enemies=enemies,full_game=full_game,audio=audio,
+        enemies=enemies,full_game=full_game,audio=audio,no_flag_popups=no_flag_popups,
         cache_columns=48 if player_blitter else None,
         assets=root/'references/assets/nrallyx',
         captures=root/'references/scenes/review-fixed-v3',
@@ -37,7 +37,7 @@ def build_renderer(root, output, *, no_hud=False, stage=0, player_blitter=False,
     return build_rom(root, args)
 
 
-def build(root, *, no_hud=False, native=False, stage=12,player_blitter=False,radar_blitter=False,hz=None,sprite_flicker=False,flicker_stress=False,outline_flicker=False,enemies=None,full_game=False,audio=False):
+def build(root, *, no_hud=False, native=False, stage=12,player_blitter=False,radar_blitter=False,hz=None,sprite_flicker=False,flicker_stress=False,outline_flicker=False,enemies=None,full_game=False,audio=False,no_flag_popups=False):
     """Build a selected-routine cartridge, optionally with complete progression.
 
     The legacy native switch is a compatibility alias for this active baseline.
@@ -51,7 +51,7 @@ def build(root, *, no_hud=False, native=False, stage=12,player_blitter=False,rad
     require_ignored(root, [rom, pending])
     built_rom = build_renderer(root, output, no_hud=no_hud, stage=stage,
                               player_blitter=player_blitter,radar_blitter=radar_blitter,
-                              hz=hz,sprite_flicker=sprite_flicker,flicker_stress=flicker_stress,outline_flicker=outline_flicker,enemies=enemies,full_game=full_game,audio=audio)
+                              hz=hz,sprite_flicker=sprite_flicker,flicker_stress=flicker_stress,outline_flicker=outline_flicker,enemies=enemies,full_game=full_game,audio=audio,no_flag_popups=no_flag_popups)
     # Keep the sealed bundle unchanged; publish a separate, stable ROM path.
     try:
         shutil.copyfile(built_rom, pending)
@@ -96,6 +96,7 @@ def main(argv=None):
     parser.add_argument('--hz', type=int, choices=(50,60), help='VDP refresh; defaults to60 for full gameplay,50 for bounded stages; original tick remains16.5ms')
     parser.add_argument('--native', action='store_true', help='Compatibility alias: selected-player baseline, no full arcade loop')
     parser.add_argument('--full-game',action='store_true',help='Stage12 full gameplay, original round progression and two-player sessions')
+    parser.add_argument('--no-flag-popups',action='store_true',help='Compile out flag-local point inscriptions')
     parser.add_argument('--audio',action='store_true',help='Buffered three-voice PSG music, tonal effects and hardware-envelope engine; requires --full-game')
     parser.add_argument('--stage', type=int, choices=range(13), default=12, help='Incremental stage 0..12; default: approved single-player session')
     parser.add_argument('--enemies', type=int, choices=range(4), help='Explicit enemy population: stage08 supports one; stage09 supports up to three')
@@ -113,7 +114,7 @@ def main(argv=None):
         else:
             build(root, no_hud=args.no_hud, native=args.native, stage=args.stage,
                   player_blitter=args.player_blitter,radar_blitter=args.radar_blitter,
-                  hz=args.hz,sprite_flicker=args.sprite_flicker,flicker_stress=args.flicker_stress,outline_flicker=args.outline_flicker,enemies=args.enemies,full_game=args.full_game,audio=args.audio)
+                  hz=args.hz,sprite_flicker=args.sprite_flicker,flicker_stress=args.flicker_stress,outline_flicker=args.outline_flicker,enemies=args.enemies,full_game=args.full_game,audio=args.audio,no_flag_popups=args.no_flag_popups)
     except (ValueError, OSError, KeyError, TypeError, subprocess.SubprocessError) as error:
         print(f'Error: {error}', file=sys.stderr)
         return 2

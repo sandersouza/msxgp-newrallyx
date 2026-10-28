@@ -104,6 +104,11 @@ Full_MainFrame:
     or a
     jr z,.after_prefetch     ; A committed frame yields to the next snapshot.
 .copy_guards:
+    IF FLAG_POPUPS
+    call Popup_Frame
+    or a
+    jr nz,.after_prefetch     ; Visible award work replaces optional guard copies.
+    ENDIF
     call Full_CacheEnter
     ld a,1
     ld (Full_CacheHeld),a

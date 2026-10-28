@@ -93,6 +93,9 @@ def main(argv=None):
     if args.effects_trace:
         from scripts.msx.full_effects import trace
         lines.extend(trace(syms))
+    if syms.get('FLAG_POPUPS'):
+        from scripts.msx.flag_popup import trace as popup_trace
+        lines.extend(popup_trace(syms))
     if args.audio_worker_disabled:
         lines.append(f'debug set_bp {syms["Audio_Work"]} {{1}} {{debug write memory {syms["Audio_LastUI"]} [debug read memory {syms["ticks"]}]}}')
     if syms.get('AUDIO_ENABLED') and not args.audio_worker_disabled:
@@ -415,6 +418,10 @@ def main(argv=None):
         subprocess.run([args.openmsx,'-script',str(out/'session.tcl')],check=True,timeout=240,
             stdout=log,stderr=subprocess.STDOUT,
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
+    flag_popups=None
+    if syms.get('FLAG_POPUPS'):
+        from scripts.msx.flag_popup import analyze as analyze_popups
+        flag_popups=analyze_popups(bundle,out/'popups.tsv',required=not args.allow_game_over)
     terrain_live=None
     if args.terrain_trace:
         from scripts.msx.terrain_live import analyze
@@ -521,7 +528,7 @@ def main(argv=None):
         fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
         fixture_population_retained=args.fixture_enemies is not None,
         fixture_population_gate=dict(required=args.fixture_enemies is not None,passed=population_passed),
-        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,terrain_live=terrain_live,camera_bounds=bounds,
+        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,flag_popups=flag_popups,terrain_live=terrain_live,camera_bounds=bounds,
         input_stress=(dict(seed=args.stress_seed,frame_limit=args.stress_frames,stopped_at_limit=len(rows)>=args.stress_frames) if args.stress_seed is not None else None),
         retained_tick_gate=dict(required=args.require_retained_native_ticks,passed=retained_passed),
         packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,population_minimum_seconds=2,passed=packet_passed),

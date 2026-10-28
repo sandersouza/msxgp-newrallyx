@@ -57,6 +57,9 @@ def analyze(root, bundle, path):
     program, _ = acquire(root)
     assets = load_assets(root/'references/assets/nrallyx')
     palette = (bundle/'palette.bin').read_bytes()
+    from .hud_verify import symbols
+    syms=symbols(bundle/'raster-scroll.sym') if (bundle/'raster-scroll.sym').exists() else {}
+    popup_data=(bundle/'flag-popup-pixels.bin').read_bytes() if syms.get('FLAG_POPUPS') else b''
     images = {}; count = checked = ignored = failed = maximum = 0; failures = []
     with path.open('rb') as source:
         while row := source.read(STRIDE):
@@ -86,6 +89,16 @@ def analyze(root, bundle, path):
                 expected = image[(yy+256)*width+xx+256]
                 actual = actual & 15 if xx & 1 else actual >> 4
                 checked += 1
+                # A cached tile can be repainted before the label expires. Accept
+                # either exact original terrain or the exact authored label,
+                # only inside its world rectangle. Never exclude a whole region.
+                if popup_data and state[0x1fe4] and actual!=expected:
+                    lx=xx-state[0x1fe6]*8;ly=yy-state[0x1fe7]*8
+                    popup_source=int.from_bytes(state[0x1feb:0x1fed],'little')-syms['Popup_Pixels']
+                    if 0<=lx<24 and 0<=ly<8 and 0<=popup_source<=len(popup_data)-96:
+                        value=popup_data[popup_source+ly*12+lx//2]
+                        label=(value&15) if lx&1 else value>>4
+                        if actual==label:continue
                 if actual != expected:
                     mismatches.append((x, y, actual, expected))
             if mismatches:
@@ -99,5 +112,5 @@ def analyze(root, bundle, path):
                 failed_frames=failed, maximum_mismatches=maximum,
                 ignored_dynamic_pixels=ignored, first_failures=failures,
                 scope='Every eligible foreground packet: an 8-pixel grid over the full maze cache, '
-                      'independent original scenery oracle; published smoke/player patch pixels excluded. '
+                      'independent original scenery oracle; exact active flag-label pixels accepted; published smoke/player patch pixels excluded. '
                       'This samples terrain VRAM, not physical scanout or every pixel.')

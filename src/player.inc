@@ -28,6 +28,8 @@ player_steps EQU $c472
 Player_Init:
     IF FULL_GAME
     ld a,(Full_Loading)
+    cp 3
+    ret z                    ; UI resume reloads video only, retaining challenge kinematics.
     cp 2
     jr nz,.not_restoring
     ld a,PLAYER_BANK
@@ -760,6 +762,9 @@ Player_Draw:
 ; Restore the previous one-row patch, then complete the shifted full-height car.
 ; Runs just after the header split, before the car's fixed screen band (108..123).
 Player_Patch:
+    IF FULL_GAME
+    ret                      ; Full game has complete sprites, never this legacy row patch.
+    ELSE
     IF (INCREMENTAL_STAGE >= 9 || TILE_MODE) && !PLAYER_BLITTER
     ret
     ENDIF
@@ -951,6 +956,7 @@ Player_RowPointer:
     out ($99),a
     pop hl
     ret
+    ENDIF
 player_flags:
     INCBIN "player-flags.bin"
 player_radar_x:
