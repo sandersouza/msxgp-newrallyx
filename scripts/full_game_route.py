@@ -39,6 +39,7 @@ def main(argv=None):
     p.add_argument('--radar-trace',action='store_true',help='Compare live radar SAT against latched R23 before each visible band')
     p.add_argument('--effects-trace',action='store_true',help='Require bounded flag removal and visible smoke publication')
     p.add_argument('--terrain-trace',action='store_true',help='Check scenery pixels throughout the route, not only sparse snapshots')
+    p.add_argument('--require-map-bounds',action='store_true',help='Reject scenery exposure beyond the original maze border; requires terrain/radar traces')
     p.add_argument('--stress-seed',type=int,help='Deterministic abrupt keyboard turns/reversals/smoke, with no guest-memory writes')
     p.add_argument('--stress-frames',type=int,default=3600,help='Foreground-frame limit for the seeded input stress run')
     p.add_argument('--require-stable-radar',action='store_true')
@@ -58,6 +59,7 @@ def main(argv=None):
     p.add_argument('--bios',type=Path,default=Path('references/msxbios'))
     p.add_argument('--machine',default='Panasonic_FS-A1WSX');p.add_argument('--openmsx',default='openmsx')
     args=p.parse_args(argv);root=Path(__file__).resolve().parents[1]
+    if args.require_map_bounds and not (args.terrain_trace and args.radar_trace):raise ValueError('Map bounds require --terrain-trace --radar-trace')
     if args.stress_seed is not None:
         if not 300<=args.stress_frames<=12000:raise ValueError('Stress run requires 300..12000 foreground frames')
         args.allow_game_over=True
@@ -232,6 +234,9 @@ def main(argv=None):
             'set fuel_samples 0;set fuel_mismatches 0;set fuel_out [open [file join $out fuel.tsv] w]',
             'set footer_samples 0;set footer_mismatches 0',
             'set player_samples 0;set player_mismatches 0;set player_out [open [file join $out player.tsv] w]',
+            'set player_visible {124 107};set player_sealed {124 107}',
+            *([f'debug set_bp {syms["Full_PresentSealed"]} {{$::phase eq "game"}} {{set ::player_sealed [list [expr {{[u16 {syms["player_x"]}]-[u16 {syms["world_x"]}]}}] [expr {{[u16 {syms["player_y"]}]-[u16 {syms["world_y"]}]+2}}]]}}',
+               f'debug set_bp {syms["Full_CommitCamera"]} {{$::phase eq "game"}} {{set ::player_visible $::player_sealed}}'] if 'Full_PlayerPose' in syms else []),
             'set camera_out [open [file join $out camera.tsv] w]',
             'set motion_out [open [file join $out motion.tsv] w]',
             'set terrain_out [open [file join $out terrain.tsv] w]',
@@ -246,7 +251,7 @@ def main(argv=None):
             f' set wy [expr {{$wy+(($sy+{syms["BODY_TOP"]}-$wy+128)&255)-128}}]',
             *(['terrain_capture $wx $wy $::terrain_latch_out'] if args.terrain_trace else []),
             f' puts $::camera_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $sy [debug read memory {syms["scroll_y"]}] $wy [u16 0xc407] [u16 0xc452]"',
-            f' puts $::motion_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $wx $wy [u16 0xc450] [u16 0xc452] [debug read memory 0xe06b] [debug read memory 0xe048] [u16 0xe069] [debug read memory 0xe068] [u16 {syms["player_native_ticks"]}] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0] [debug read memory 0xc009] [debug read memory 0xc49a] [debug read memory 0xc5b0]"',
+            f' puts $::motion_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $wx $wy [u16 0xc450] [u16 0xc452] [debug read memory 0xe06b] [debug read memory 0xe048] [u16 0xe069] [debug read memory 0xe068] [u16 {syms["player_native_ticks"]}] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0] [debug read memory 0xc009] [debug read memory 0xc49a] [debug read memory 0xc5b0]'+(' [lindex $::player_visible 0] [expr {[lindex $::player_visible 1]-2}]' if 'Full_PlayerPose' in syms else '')+'"',
             ' set queue [list [machine_info time]]',
             ' foreach a {'+' '.join(str(syms[n]) for n in ('Full_CameraBlocked','row_left','row_x','row_y','Stage_RowLeft','Stage_RowEnd','column_left','column_x','column_y','Stage_ColumnTop','Stage_ColumnEnd','Full_DirX','Full_DirY','Full_QueueDirty','cache_left','cache_top','Full_ClockDue','Full_LoopTicks','raster_phase'))+'} {lappend queue [debug read memory $a]}',
             ' puts $::terrain_out $queue',
@@ -279,8 +284,8 @@ def main(argv=None):
             '}',
             'proc player_sample {} {',
             ' if {$::phase ne "game" || $::skip_headers || [debug read memory 0xc7d0]!=0 || [debug read memory 0xc49a]} {return}',
-            ' incr ::player_samples;set sy [expr {([debug read {VDP regs} 23]+107)&255}];if {$sy==216} {incr sy -1}',
-            f' set expected [binary format c* [list $sy {syms["PLAYER_X"]} 180 0 $sy {syms["PLAYER_X"]} 184 0]]',
+            ' incr ::player_samples;lassign $::player_visible px py;set sy [expr {([debug read {VDP regs} 23]+$py)&255}];if {$sy==216} {incr sy -1}',
+            ' set expected [binary format c* [list $sy $px 180 0 $sy $px 184 0]]',
             f' set actual [debug read_block VRAM {0x1f600+syms["PLAYER_SLOT"]*4} 8]',
             ' if {$actual ne $expected} {incr ::player_mismatches;puts $::player_out "$::frames [debug read {VDP regs} 23] [binary encode hex $actual] [binary encode hex $expected]"}',
             '}',
@@ -439,7 +444,7 @@ def main(argv=None):
             scope='Live SAT before each band fetch against actual latched R23; dot uses its IRQ point snapshot')
         if args.require_stable_radar and (mismatches or not samples):raise ValueError('Fixed radar missed its scanline-coherence gate')
         if args.require_stable_fuel and (fuel_mismatches or not fuel_samples or footer_mismatches or not footer_samples):raise ValueError('Fuel/footer sprites missed their scanline-coherence gate')
-        if args.require_stable_player and (player_mismatches or not player_samples):raise ValueError('Player sprites missed their fixed-centre scanline gate')
+        if args.require_stable_player and (player_mismatches or not player_samples):raise ValueError('Player sprites missed their sealed world-to-screen projection gate')
     verify_manifest(bundle)
     cadence=analyze_cadence(out/'cadence.tsv')
     population_passed=args.fixture_enemies is None or all(r['enemy_counts']==[args.fixture_enemies] for r in cadence['rounds'])
@@ -449,6 +454,12 @@ def main(argv=None):
         raise ValueError('Packet gate requires a deferred presentation build')
     if args.maximum_owed_repeat_ms is not None and physical_motion is None:raise ValueError('Owed motion gate requires --radar-trace')
     if args.record_round and not (out/'scanout.avi').is_file():raise ValueError('Requested scanout recording is missing')
+    bounds=None
+    if args.terrain_trace and args.radar_trace:
+        from scripts.msx.terrain_live import camera_bounds
+        bounds=camera_bounds(out/'terrain-latch.bin')
+        json_write(out/'camera-bounds.json',bounds)
+        if args.require_map_bounds and not bounds['passed']:raise ValueError('Physical viewport left the original maze bounds')
     camera_motion=analyze_scroll(out/'camera.tsv') if args.radar_trace else None
     scroll_passed=args.maximum_scroll_step is None or camera_motion['maximum_vertical_step']<=args.maximum_scroll_step
     cadence_passed=args.minimum_native_hz is None or all(r['native_hz']>=args.minimum_native_hz for r in cadence['rounds'] if r['active_seconds']>=5)
@@ -510,7 +521,7 @@ def main(argv=None):
         fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
         fixture_population_retained=args.fixture_enemies is not None,
         fixture_population_gate=dict(required=args.fixture_enemies is not None,passed=population_passed),
-        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,terrain_live=terrain_live,
+        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,terrain_live=terrain_live,camera_bounds=bounds,
         input_stress=(dict(seed=args.stress_seed,frame_limit=args.stress_frames,stopped_at_limit=len(rows)>=args.stress_frames) if args.stress_seed is not None else None),
         retained_tick_gate=dict(required=args.require_retained_native_ticks,passed=retained_passed),
         packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,population_minimum_seconds=2,passed=packet_passed),

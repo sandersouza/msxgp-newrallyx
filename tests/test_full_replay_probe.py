@@ -4,10 +4,20 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from scripts.full_replay_probe import verify_replay_rom
+from scripts.full_replay_probe import verify_replay_rom,replay_keyboard
 
 
 class ReplayCartridgeTests(unittest.TestCase):
+    def test_reapplication_extracts_only_valid_keyboard_timings(self):
+        with TemporaryDirectory() as directory:
+            replay=Path(directory)/'input.omr'
+            replay.write_bytes(gzip.compress(b'<serial><replay><events>'
+                b'<item type="KeyMatrixState"><StateChange><time><time>3436363200</time></time></StateChange>'
+                b'<row>0</row><press>32</press><release>0</release></item>'
+                b'<item type="MSXCommandEvent"><tokens><item>ignored</item></tokens></item>'
+                b'</events><currentTime><time>6872726400</time></currentTime></replay></serial>'))
+            self.assertEqual(replay_keyboard(replay),(2.0,[(1.0,0,32,0)]))
+
     def test_a_replay_cannot_qualify_a_different_cartridge(self):
         with TemporaryDirectory() as directory:
             root=Path(directory);rom=root/'game.rom';replay=root/'input.omr'

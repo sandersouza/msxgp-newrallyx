@@ -5,24 +5,72 @@ Updated: 2026-10-28. Implementation and channel policy:
 
 ## Delivered cartridge
 
-The current tested build is `references/build/issue13-engine-v43/`:
+The current tested build is `references/build/issue13-camera-v44/`, privately
+delivered as `newrallyx-audio-v4 [ASCII16].rom`:
 
-`98999baf46637736c55e3ef44c77a9c2fd2da1d1c51160aae6894f99021bea5a`.
+`1e2820bd9659c3439e2e8c59e8d5b7302d3f6f7adf23f7fec26a79999738f767`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
 original scenery/colors, complete cars and real sprite limits remain enabled.
 
-The reconstructed silent full game is byte-identical to the accepted baseline:
-`a31e3b43ae05fae4accac1e6fae58c81c600acd1253b13b6590749e23c6c6953`.
+The silent full game includes the same camera correction, with SHA-256
+`4ef05638ac2dce771dddcc71bd98c50fb8d0adc93cb1148df1e93344dab59db4`.
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
 
-## Engine revision and transient-maze investigation (v43)
+## Confirmed outside-maze flowers: bounded camera correction (v44)
+
+The user identified the repeated flower field around score 005750 in the
+retained 155-second v43 session as **one** reported defect. The camera always
+centred the car, exposing padded flower tiles outside the map: X -88..656 and
+Y -69..1155 in that replay. The scenery oracle legitimately reconstructed those
+tiles, so its passing result missed this failure. A new visible-rectangle check
+rejects 1,461 of the original 6,833 samples. Its valid origins are X 0..568 and
+Y 0..1191 for an 816x1392 world and 248x201 viewport, retaining the original
+24-pixel decorative border.
+
+Camera plans now stop at those limits. The car moves on screen at an edge;
+its real world pose remains available to radar and native collision logic.
+Enemies project relative to the separate camera centre. Candidate, sealed
+and displayed player projections travel with the complete VBlank packet, so
+a delayed camera transaction cannot publish a newer car position. Initialization
+and restart establish all three poses before terrain filling. Artwork, scale,
+colors, HUD and original gameplay coordinates remain unchanged. The overlay
+ends at 1FC1 (limit 2000); presentation code ends EBF6 (limit EC00). New camera
+workspace is disjoint from the audio controls and smoke buffers.
+
+| Check | Evidence under `references/build/` |
+| --- | --- |
+| Current suite | 424 tests pass; `issue13-camera-v44-tests-final.log` |
+| Bounded initialization and publication | 363 seeded Z80 cases across every edge/centre threshold and three scroll values; a different unsealed candidate cannot replace the displayed pose; native/VRAM/mapping/stack/index canaries; `issue13-camera-bounds-v44` |
+| Independent enemy projection | 13,496 full-car presentation cases with player world pose deliberately different from camera centre; `issue13-camera-enemies-separated-v44` |
+| Reapplied human inputs | 255 keyboard events from the affected session applied to a fresh v44 cartridge; 5,052 terrain/bounds samples, 3,915,300 checked pixels and 5,407 mode/scroll latches pass; actual scanout and the 90-second screenshot retained; `issue13-camera-human-v44` |
+| Eight natural rounds | 29.895..29.961 packet FPS, at most 0.437% late slots, native 59.901..59.928 Hz, zero discarded ticks/queue drops; 24,932 physical viewport samples inside bounds; 11,498 foreground samples / 8.89M pixels; player/radar/fuel/footer SAT gates pass; `issue13-camera-eight-v44` |
+| Controlled seven enemies | Completes with 29.442 packet FPS, 3.44% late slots, 67.870 ms maximum gap, native 59.833 Hz and zero discarded ticks/queue drops; existing 4%/70 ms gates pass; 2,676 bounded viewport samples; `issue13-camera-seven-v44` |
+| Session/restart/debug | Natural two-player deaths, alternation and game over pass in `issue13-camera-session-v44`; four real F5 advances and compact HUD pass in `issue13-camera-debug-v44` |
+| Compatibility builds | Silent full game includes the correction; bounded Issue 11 stage12 retains its accepted hash; `issue13-camera-{silent,bounded}-v44` |
+
+The fresh input run is **not** deterministic playback of a different cartridge:
+the original replay remains untouched and fingerprint-protected. Different
+camera/backpressure paths can change gameplay outcomes. These route measurements
+do not isolate a causal audio CPU saving or qualify all possible workloads.
+Physical motion checks now include the independently observed sealed car
+projection; a stationary bounded camera with a moving car is not labelled a
+frozen gameplay frame. Terrain remains an 8-pixel grid with dynamic exclusions,
+not an every-pixel visual proof.
+
+The repeated outside-map flower exposure is corrected in these workloads.
+Other user-reported scrambling remains unlocalized; do not mark the complete
+maze report resolved. Audio synthesis is unchanged from v43 and still awaits
+listening acceptance. Keep #13 and PR #31 open; no merge or hardware/PAL/WebMSX
+gameplay acceptance is claimed.
+
+## Historical engine revision and transient-maze investigation (v43)
 
 The user rejected the v41 engine and reported severe transient maze corruption
-in openMSX. **An affected live session is retained, but the visual fault is not
-yet localized or fixed.** Passing cadence or
+in openMSX. At v43, an affected live session was retained, but the visual fault
+had not yet been localized or fixed. Passing cadence or
 audio-register tests do not settle this report. No speculative renderer or
 memory-mapping change is included.
 
@@ -56,7 +104,7 @@ fractional boundary (`issue13-engine-runtime-final`), real keyboard UI/Start/F5
 audio queue drops (`issue13-engine-eight-v43`). Controlled six cars pass at
 29.463 FPS / 3.218% late slots (`issue13-engine-six-v43`). Seven cars still
 complete but **fail** the existing 4% gate at 4.3515%, 29.311 FPS / 67.864 ms
-maximum gap (`issue13-engine-seven-v43`); this gate remains open.
+maximum gap (`issue13-engine-seven-v43`); see the passing v44 workload above.
 
 The six-car audio ledger averages 2,039 CPU / 2,507 inclusive equivalent cycles
 per worker-containing loop, with 1.001 calls/presented packet; self mean 160,
@@ -123,9 +171,9 @@ frames / 149.743 seconds from cartridge startup (`issue13-human-replay-scanout-v
 The user confirmed that the visual defect occurred in this recorded live
 session. The passing native checks therefore do not detect or rule out the
 reported fault. The visual interval still needs localization; raw replay output
-and the original displayed window must be distinguished. A candidate interval
-around score 005750 contains extensive repeated border flowers, but it is not
-identified as the fault without confirmation. F6 now retains both raw and
+and the original displayed window must be distinguished. The user subsequently
+confirmed the repeated border flowers around score 005750 as one defect; the
+v44 section above documents its correction and remaining limits. F6 retains both raw and
 scaled/window screenshots, and its real emulator capture/restore self-test
 passes. Retaining the video is not an every-pixel validation claim. The full suite
 now passes 421 tests (`issue13-maze-replay-tests-final.log`).

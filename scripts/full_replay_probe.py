@@ -15,7 +15,7 @@ if __package__ in (None, ''):
 from scripts.msx.build import destination
 from scripts.msx.emulator import reference_machine,tcl,scanout_recording_tcl
 from scripts.msx.hud_verify import symbols
-from scripts.msx.terrain_live import observer,analyze
+from scripts.msx.terrain_live import observer,analyze,camera_bounds
 from scripts.scenes.bundle import digest,verify_manifest
 from scripts.scenes.storage import require_ignored,json_write,seal
 
@@ -27,15 +27,36 @@ def verify_replay_rom(replay,rom):
         raise ValueError('Replay does not contain the selected cartridge fingerprint')
 
 
+def replay_keyboard(replay):
+    """Extract keyboard timings for a fresh run, never edit replay snapshots."""
+    snapshot=ET.fromstring(gzip.decompress(replay.read_bytes()))
+    clock=3436363200
+    end=int(snapshot.findtext('replay/currentTime/time'))/clock
+    events=[]
+    for node in snapshot.findall('replay/events/item'):
+        if node.get('type')!='KeyMatrixState':continue
+        time=int(node.findtext('StateChange/time/time'))/clock
+        row,press,release=(int(node.findtext(n)) for n in ('row','press','release'))
+        if not (0<=time<=end and 0<=row<16 and 0<=press<=255 and 0<=release<=255):
+            raise ValueError('Invalid replay keyboard event')
+        if events and time<events[-1][0]:raise ValueError('Unordered replay keyboard events')
+        events.append((time,row,press,release))
+    if not events:raise ValueError('Replay has no keyboard inputs')
+    return end,events
+
+
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--rom',type=Path,required=True)
     parser.add_argument('--replay',type=Path,required=True)
     parser.add_argument('--output',type=Path,required=True)
     parser.add_argument('--record',action='store_true',help='Also retain every actual raw scanout frame in scanout.avi')
+    parser.add_argument('--require-map-bounds',action='store_true',help='Reject viewport exposure beyond the original maze border')
+    parser.add_argument('--reapply-inputs',action='store_true',help='Apply only the saved keyboard timings to a fresh selected ROM; this is not deterministic replay validation')
     args=parser.parse_args();root=Path(__file__).resolve().parents[1]
     rom=args.rom.resolve();replay=args.replay.resolve();verify_manifest(rom.parent)
-    verify_replay_rom(replay,rom)
+    if not args.reapply_inputs:verify_replay_rom(replay,rom)
+    end,events=replay_keyboard(replay) if args.reapply_inputs else (None,[])
     s=symbols(rom.parent/'raster-scroll.sym');out=destination(root,args.output)
     require_ignored(root,[out/'terrain-latch.bin']);out.mkdir(parents=True)
     lines=['set save_settings_on_exit false',f'set renderer {"SDLGL-PP" if args.record else "none"}','set sound_driver null',
@@ -43,7 +64,10 @@ def main():
         'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',
         f'filepool add -path {tcl(root/"references/msxbios")} -types system_rom -position 1',
         reference_machine(root,'Panasonic_FS-A1WSX'),
-        f'reverse loadreplay -goto begin -viewonly {tcl(replay)}','set throttle off',
+        *([f'cart {tcl(rom)} -romtype ASCII16','set firmwareswitch off','reset'] if args.reapply_inputs else
+          [f'reverse loadreplay -goto begin -viewonly {tcl(replay)}']),
+        'set throttle off',
+        *[f'after time {time:.10f} {{'+(';'.join(f'keymatrix{direction} {row} {mask}' for direction,mask in [('down',press),('up',release)] if mask))+'}' for time,row,press,release in events],
         f'set out {tcl(out)}',
         *(['set scanout_times [open [file join $out scanout-times.tsv] w]',
            'set sample_times [open [file join $out sample-times.tsv] w]',
@@ -70,7 +94,8 @@ def main():
         ' terrain_capture $wx $wy $::terrain_latch_out',
         *([' if {[tell $::terrain_latch_out]>$before} {puts $::sample_times "$before [machine_info time]"}'] if args.record else []),
         '}',
-        'set end [dict get [reverse status] end]',
+        f'set end {end:.10f}' if args.reapply_inputs else 'set end [dict get [reverse status] end]',
+        *([f'after time 90 {{screenshot -raw {tcl(out/"camera-90.png")}}}'] if args.record else []),
         'after time [expr {$end-[machine_info time]}] {',
         *([' record stop;close $::scanout_times;close $::sample_times'] if args.record else []),
         ' set pause on;close $::terrain_latch_out;close $::terrain_live_out;close $::modes',
@@ -83,10 +108,14 @@ def main():
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
     terrain=analyze(root,rom.parent,out/'terrain-latch.bin')
     latches,mode_failures=map(int,(out/'counts.txt').read_text().split())
+    bounds=camera_bounds(out/'terrain-latch.bin')
     report=dict(rom_sha256=digest(rom),replay_sha256=digest(replay),latches=latches,
         mode_failures=mode_failures,terrain=terrain,scanout_recorded=args.record,
-        passed=terrain['passed'] and mode_failures==0,
-        scope='Saved human-input replay, no new gameplay inputs or RAM writes; original scenery grid and actual maze-mode/scroll registers at the physical latch. Not every pixel or continuous scanout.')
+        reapplied_keyboard_events=len(events),
+        camera_bounds=bounds,
+        passed=terrain['passed'] and mode_failures==0 and (not args.require_map_bounds or bounds['passed']),
+        scope=('Fresh ROM with keyboard timings extracted from the saved session; execution can diverge from the original. No guest RAM writes. ' if args.reapply_inputs else 'Saved human-input replay, no new gameplay inputs or RAM writes. ')+
+              'Original scenery grid and actual maze-mode/scroll registers at the physical latch. Not every pixel or continuous scanout.')
     json_write(out/'report.json',report);seal(out)
     if not report['passed']:raise ValueError(f'Human replay exposed a video mismatch: {out}/report.json')
     print(f'Human replay terrain/mode checks pass: {out}/report.json')

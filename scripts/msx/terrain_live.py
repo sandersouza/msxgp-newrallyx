@@ -4,6 +4,26 @@ POINTS = tuple((x, y) for y in range(4, 201, 8) for x in range(4, 248, 8))
 STRIDE = STATE + len(POINTS)
 
 
+def camera_bounds(path):
+    """Check the visible rectangle, including the original 24-pixel border."""
+    from .stage_one import WIDTH, HEIGHT
+    from .display import VIEWPORT_WIDTH
+    count = violations = 0; first = []
+    with path.open('rb') as source:
+        while row := source.read(STRIDE):
+            if len(row) != STRIDE:
+                raise ValueError('Incomplete live terrain observation')
+            x = int.from_bytes(row[0xb0:0xb2], 'little', signed=True)
+            y = int.from_bytes(row[0xb2:0xb4], 'little', signed=True)
+            if not (0 <= x <= WIDTH-VIEWPORT_WIDTH and 0 <= y <= HEIGHT-201):
+                violations += 1
+                if len(first) < 10: first.append(dict(sample=count, camera=[x, y]))
+            count += 1
+    return dict(passed=count > 0 and violations == 0, samples=count,
+                violations=violations, first_failures=first,
+                limits=[0, WIDTH-VIEWPORT_WIDTH, 0, HEIGHT-201])
+
+
 def observer():
     return [
         'set terrain_live_out [open [file join $out terrain-live.bin] wb]',

@@ -3,10 +3,25 @@ from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from scripts.msx.terrain_live import analyze, STATE, POINTS
+from scripts.msx.terrain_live import analyze, camera_bounds, STATE, POINTS
 
 
 class LiveTerrainTests(unittest.TestCase):
+    def test_camera_rejects_outside_flowers_at_each_edge(self):
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/'samples'
+            records=[]
+            for x,y in [(0,0),(568,1191),(-1,0),(569,0),(0,-1),(0,1192)]:
+                row=bytearray(STATE+len(POINTS))
+                row[0xb0:0xb2]=x.to_bytes(2,'little',signed=True)
+                row[0xb2:0xb4]=y.to_bytes(2,'little',signed=True)
+                records.append(row)
+            path.write_bytes(b''.join(records))
+            result=camera_bounds(path)
+        self.assertFalse(result['passed'])
+        self.assertEqual(result['violations'],4)
+        self.assertEqual(result['first_failures'][0]['sample'],2)
+
     def observe(self, directory, *, corrupt=False, smoke=False):
         root=Path(directory);(root/'palette.bin').write_bytes(b'')
         state=bytearray(STATE)

@@ -685,7 +685,14 @@ Player_Draw:
     ENDIF
     ld a,(scroll_y)
 .sat_value:
+    IF FULL_GAME
+    ld hl,Full_PlayerActivePose+1
+    add a,(hl)
+    dec hl
+    ld c,(hl)
+    ELSE
     add a,107                ; Logical centre=(132,116); fixed R18 centres at128.
+    ENDIF
     ld b,180
     cp 216
     jr nz,.safe
@@ -695,7 +702,11 @@ Player_Draw:
     ld hl,player_sat
     ld (hl),a
     inc hl
+    IF FULL_GAME
+    ld (hl),c
+    ELSE
     ld (hl),PLAYER_X
+    ENDIF
     inc hl
     ld (hl),b
     inc hl
@@ -703,7 +714,11 @@ Player_Draw:
     inc hl
     ld (hl),a
     inc hl
+    IF FULL_GAME
+    ld (hl),c
+    ELSE
     ld (hl),PLAYER_X
+    ENDIF
     inc hl
     ld a,b
     add a,4

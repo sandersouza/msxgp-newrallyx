@@ -5,7 +5,7 @@ import math
 
 def analyze(path,frame_seconds):
     rows=[list(map(float,line.split())) for line in path.read_text().splitlines()]
-    if any(len(row)!=18 for row in rows):raise ValueError('Unexpected physical motion sample width')
+    if any(len(row) not in (18,20) for row in rows):raise ValueError('Unexpected physical motion sample width')
     result=[]
     for round_ in sorted({int(row[1]) for row in rows}):
         for axis,name,column,pending,centre,blocked in ((255,'horizontal',4,6,124,1),(0,'vertical',5,7,105,2)):
@@ -19,14 +19,19 @@ def analyze(path,frame_seconds):
                     and not(int(old[9])&blocked) and not(int(new[9])&blocked)
                     and 0<dt<frame_seconds*1.5)
                 if not eligible:run=owed_run=0;last_update=None;continue
-                frames+=1;seconds+=dt;step=abs(new[column]-old[column]);maximum_step=max(maximum_step,step)
+                # Bounded cameras let the car move on screen at an edge. Use
+                # the independently observed sealed projection when provided.
+                def displayed(row):
+                    offset=row[18+column-4] if len(row)==20 else centre
+                    return row[column]+offset
+                frames+=1;seconds+=dt;step=abs(displayed(new)-displayed(old));maximum_step=max(maximum_step,step)
                 if step:
                     updates+=1;run=owed_run=0
                     if last_update is not None:gaps.append(new[0]-last_update)
                     last_update=new[0]
                 else:
                     run+=1;longest=max(longest,run)
-                    if abs(new[pending]-(new[column]+centre))>1:
+                    if abs(new[pending]-displayed(new))>1:
                         owed_run+=1;longest_owed=max(longest_owed,owed_run)
                     else:owed_run=0
             if not frames:continue
@@ -39,4 +44,4 @@ def analyze(path,frame_seconds):
                 percentile_95_update_interval_ms=ordered[math.ceil(.95*len(ordered))-1]*1000 if ordered else None,
                 update_intervals_in_refreshes=dict(sorted(Counter(round(g/frame_seconds) for g in gaps).items()))))
     if not result:raise ValueError('Missing eligible physical camera samples')
-    return dict(rounds=result,scope='Actual X/Y maze latches during active unblocked native forward motion; excludes loading, pause, fuel conversion, death and round transitions. Owed repeats require more than one pixel between native pending centre and the actual displayed centre. Legitimate wall stops can remain in the broader repeat count.')
+    return dict(rounds=result,scope='Actual maze latch plus sealed car projection when available, during active unblocked native forward motion; excludes loading, pause, fuel conversion, death and round transitions. Owed repeats require more than one pixel between native pending centre and the displayed car world centre. Legitimate wall stops can remain in the broader repeat count.')

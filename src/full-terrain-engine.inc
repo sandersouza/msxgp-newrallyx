@@ -11,7 +11,8 @@ Full_InitializeColorDestinations:
     ld (hl),a
     inc hl
     djnz .clear
-    jp Full_PoolInit
+    call Full_PoolInit
+    jp Full_InitializeCamera
 
 Full_WorldAddress:
     ld a,d
@@ -1169,6 +1170,7 @@ Full_CameraValidate:
     jp Full_CameraExit
 Full_CameraValidateCore:
     call Full_TurboOn
+    call Full_BoundCameraPlan
     ld hl,(Full_CameraPlanX)
     ld de,(Full_FrameOriginX)
     call Full_CameraStep
@@ -1245,7 +1247,7 @@ Full_CameraValidateCore:
     ld a,32
     ld (row_left),a
 .row_blocked:
-    ld hl,(player_y)
+    ld hl,(Full_CameraCentreY)
     ld (Full_CameraPlanY),hl
     ld hl,(world_y)
     call stage_div8
@@ -1315,7 +1317,7 @@ Full_CameraValidateCore:
     ld a,26
     ld (column_left),a
 .column_blocked:
-    ld hl,(player_x)
+    ld hl,(Full_CameraCentreX)
     ld (Full_CameraPlanX),hl
     ld hl,(world_x)
     call stage_div8
@@ -1360,30 +1362,92 @@ Full_PlayerApplyNative:
     ld a,(Full_CacheReady)
     or a
     call nz,Full_CameraValidateCore
-    ld hl,(Full_CameraPlanX)
-    ld (player_x),hl
-    ld de,-VIEWPORT_HALF
-    add hl,de
-    ld (world_x),hl
-    ld hl,(Full_CameraPlanY)
-    ld (player_y),hl
-    ld de,-105
-    add hl,de
-    ld (world_y),hl
+    call Full_ProjectPlayer
     ld a,(frame_tick)
     ld (Full_CameraAppliedTick),a
     ld a,1
     ld (Full_CameraAppliedValid),a
     jp Full_CameraExit
 
+; Camera centres are independent of the real collision/radar world pose.
+Full_ProjectPlayer:
+    ld hl,(Full_CameraPlanX)
+    ld (Full_CameraCentreX),hl
+    ld de,-VIEWPORT_HALF
+    add hl,de
+    ld (world_x),hl
+    ld hl,(Full_CameraPlanY)
+    ld (Full_CameraCentreY),hl
+    ld de,-105
+    add hl,de
+    ld (world_y),hl
+    ld hl,(player_pending_x)
+    ld (player_x),hl
+    ld de,(world_x)
+    or a
+    sbc hl,de
+    ld a,l
+    ld (Full_PlayerPose),a
+    ld hl,(player_pending_y)
+    ld (player_y),hl
+    ld de,(world_y)
+    or a
+    sbc hl,de
+    inc hl
+    inc hl
+    ld a,l
+    ld (Full_PlayerPose+1),a
+    ret
+
+Full_BoundCameraPlan:
+    ld hl,(Full_CameraPlanX)
+    ld de,-VIEWPORT_HALF
+    add hl,de
+    ld bc,STAGE_WIDTH-VIEWPORT_WIDTH
+    call Full_ClampWorldAxis
+    ld de,VIEWPORT_HALF
+    add hl,de
+    ld (Full_CameraPlanX),hl
+    ld hl,(Full_CameraPlanY)
+    ld de,-105
+    add hl,de
+    ld bc,STAGE_HEIGHT-201
+    call Full_ClampWorldAxis
+    ld de,105
+    add hl,de
+    ld (Full_CameraPlanY),hl
+    ret
+
+Full_InitializeCamera:
+    ld hl,(player_pending_x)
+    ld (Full_CameraPlanX),hl
+    ld hl,(player_pending_y)
+    ld (Full_CameraPlanY),hl
+    call Full_BoundCameraPlan
+    call Full_ProjectPlayer
+    ld hl,(Full_PlayerPose)
+    ld (Full_PlayerNextPose),hl
+    ld (Full_PlayerActivePose),hl
+    ret
+
+; Called from the mapped VBlank transaction: camera and car change together.
+Full_CommitCamera:
+    ld hl,(Full_PresentNextX)
+    ld (Full_PresentActiveX),hl
+    ld a,(Full_PresentNextY)
+    ld (irq_scroll_y),a
+    ld hl,(Full_PlayerNextPose)
+    ld (Full_PlayerActivePose),hl
+    ret
+
 Full_CameraValidated:
     ld hl,(Full_CameraPlanX)
-    ld de,(player_x)
+    ld de,(Full_CameraCentreX)
     or a
     sbc hl,de
     jr nz,.changed
     ld hl,(Full_CameraPlanY)
-    ld de,(player_y)
+    ld de,(Full_CameraCentreY)
     or a
     sbc hl,de
     jr z,.done

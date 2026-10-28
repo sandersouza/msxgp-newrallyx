@@ -41,6 +41,10 @@ def layout(symbols):
     add('terrain mapper and native clock workspace',0xd2e1,31)
     add('eight-digit numeric state','hud_score_pending',64)
     add('conservative native smoke rows',0xd160,32)
+    if 'Full_PlayerPose' in symbols:
+        add('candidate, sealed and displayed player projection','Full_PlayerPose',6)
+        add('bounded camera X centre','Full_CameraCentreX',2)
+        add('bounded camera Y centre','Full_CameraCentreY',2)
     if symbols.get('AUDIO_ENABLED'):
         add('host audio controls and clock',0xd150,8)
         add('PSG packet, queue and music cursor in unused native gap',0xe9a0,80)
