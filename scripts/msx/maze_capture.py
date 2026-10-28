@@ -17,6 +17,7 @@ def setup(output):
         ' puts $stream "time=[machine_info time] PC=[reg PC] SP=[reg SP] primary=[debug read ioports 168] page0=[debug read ioports 252] page3=[debug read ioports 255]"',
         ' puts $stream [reverse status];close $stream',
         ' catch {screenshot -raw $base.png}',
+        ' catch {screenshot -with-osd $base-window.png}',
         ' puts stderr "Maze capture saved: $base"',
         '}',
         'proc maze_capture {} {',

@@ -21,7 +21,8 @@ The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 ## Engine revision and transient-maze investigation (v43)
 
 The user rejected the v41 engine and reported severe transient maze corruption
-in openMSX. **The maze defect is not reproduced or fixed.** Passing cadence or
+in openMSX. **An affected live session is retained, but the visual fault is not
+yet localized or fixed.** Passing cadence or
 audio-register tests do not settle this report. No speculative renderer or
 memory-mapping change is included.
 
@@ -119,9 +120,14 @@ adjacent active latch displacement over eight pixels in either circular axis.
 
 `--record` retains actual raw scanout frames as well; this replay has 8,973
 frames / 149.743 seconds from cartridge startup (`issue13-human-replay-scanout-v2`).
-Retaining the video is not an every-pixel validation claim. Whether this session
-contains the user-observed corruption still needs confirmation; none of the
-passing checks establishes that the reported defect is fixed. The full suite
+The user confirmed that the visual defect occurred in this recorded live
+session. The passing native checks therefore do not detect or rule out the
+reported fault. The visual interval still needs localization; raw replay output
+and the original displayed window must be distinguished. A candidate interval
+around score 005750 contains extensive repeated border flowers, but it is not
+identified as the fault without confirmation. F6 now retains both raw and
+scaled/window screenshots, and its real emulator capture/restore self-test
+passes. Retaining the video is not an every-pixel validation claim. The full suite
 now passes 421 tests (`issue13-maze-replay-tests-final.log`).
 
 ## Historical listening-feedback adaptation (v41)

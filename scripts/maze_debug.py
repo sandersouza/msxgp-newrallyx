@@ -70,6 +70,8 @@ def main():
             raise ValueError(f'Incomplete F6 capture: inspect {out}/emulator.log')
         if any(not (out/f'exit.{extension}').is_file() for extension in ('omr','oms','state','vram','vdp','txt')):
             raise ValueError(f'Incomplete automatic exit capture: inspect {out}/emulator.log')
+        if not (out/'capture-1-window.png').is_file():
+            raise ValueError('Capture test did not retain the displayed/scaled window')
         if (out/'capture-1.state').read_bytes()[0x7d0]!=0:
             raise ValueError('Capture test did not reach actual gameplay')
         from PIL import Image
