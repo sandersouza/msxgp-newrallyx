@@ -425,7 +425,10 @@ Full_MSXContact:
     ld a,($e1b0)
     and 3
     jr z,.bounds             ; Keep the already accepted challenge contact bound.
-    ld c,14                  ; Include the initial $88 parked pose, before animation advances.
+    ld a,(ix+21)
+    or a
+    jr z,.next               ; Normal startup wait is passable; smoke spin remains solid.
+    ld c,14                  ; Retain the existing normal smoke-spin contact bound.
     ld e,29
 .bounds:
     ld a,(ix+5)

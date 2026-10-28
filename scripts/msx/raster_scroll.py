@@ -1041,7 +1041,7 @@ def build(root, args):
             motion_divisor=2,player_motion_divisor=2,player_speed_cap_pixels=2,enemy_speed_cap_pixels=1.875,
             continuous='Player/enemy fractional movement and spatial queries every other native tick with doubled delta; original lower near/far speeds; smoke immunity in native tick units; timers and startup/spin recovery every native tick',
             navigation_mapper=[0x3000,0x3700],decision_cells=[0xd2a8,0xd2b6],
-            contact='Inclusive ten-pixel world rectangle; normal startup actors use fourteen pixels for the complete silhouette. Challenge remains ten; signed fine offsets may span two coarse cells; all seven actors, no virtual OAM dependency') if full_game else None),
+            contact='Normal startup wait is passable; active/challenge contact uses ten pixels and normal smoke spin retains fourteen. Signed fine offsets may span two coarse cells; all seven actors, no virtual OAM dependency') if full_game else None),
         full_presentation_timing=(dict(target_hz=1/(2*video_timing(args.hz)['frame_seconds']),
             publication_clock=dict(minimum_refreshes=2,last_tick_address=0xdfcc,
                 valid_address=0xdfcd,first_packet='Odd VBlank; late packets may shift phase'),

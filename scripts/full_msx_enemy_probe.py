@@ -111,17 +111,18 @@ def main():
         writes.extend(((at,0),(at+14,0),(at+8,15+cx),(at+10,25+cy),(at+5,fx&255),(at+7,fy&255)))
         hit=abs(dx)<=10 and abs(dy)<=10;pointer=at+14 if hit else 65535
         add(1,writes,bytes((int(hit),pointer&255,pointer>>8)));counts['contact']+=1
-    # The MSX adapter does not maintain arcade OAM attributes. Startup contact
-    # must include the first $88 pose, independently of stale arcade screen Y.
-    for actor,round_,state,dx,dy in itertools.product(range(7),(2,3,4,8),(0,0x88,0x89,0x8a,0xff),
+    # Startup wait is passable in normal rounds only. The smoke-spin marker
+    # distinguishes an already active stunned car from the same animation states.
+    for actor,round_,state,spin,dx,dy in itertools.product(range(7),(2,3,4,8),(0,0x88,0x89,0x8a,0xff),(0,1),
             (-15,-14,-11,-10,0,10,11,14,15),(-15,-14,-11,-10,0,10,11,14,15)):
         writes=[(0xe24e,7),(0xe1b0,round_),(0xe070,15),(0xe072,25),(0xe06d,0),(0xe06f,0),
                 (0xc5d0,0),(s['Enemy_HitAddress'],255),(s['Enemy_HitAddress']+1,255)]
         writes.extend((0xe092+i*32,100) for i in range(7))
         at=0xe088+actor*32
-        writes.extend(((at,state),(at+14,1),(at+8,15),(at+10,25),(at+5,dx&255),(at+7,(-dy)&255)))
+        writes.extend(((at,state),(at+14,1),(at+21,spin),(at+8,15),(at+10,25),(at+5,dx&255),(at+7,(-dy)&255)))
         radius=14 if state>=0x88 and round_%4 else 10
-        hit=abs(dx)<=radius and abs(dy)<=radius;pointer=at+14 if hit else 65535
+        waiting=state>=0x88 and round_%4 and not spin
+        hit=not waiting and abs(dx)<=radius and abs(dy)<=radius;pointer=at+14 if hit else 65535
         add(1,writes,bytes((int(hit),pointer&255,pointer>>8)));counts['parked_contact']+=1
     (out/'cases.tcl').write_text('set msx_cases {\n'+'\n'.join('{'+ ' '.join(map(str,c))+'}' for c in cases)+'\n}\n')
     enter=s['Full_CacheEnter'];leave=s['Full_CacheLeave']
@@ -160,7 +161,7 @@ def main():
         protected_native_state_unchanged=True,player_motion_steps_tested=True,
         enemy_motion_divisor=enemy_divisor,player_speed_cap=player_cap,enemy_speed_cap=enemy_cap,
         stack_unchanged=True,vram_unchanged=True,
-        scope='Synthetic executed Z80 contracts: legal centre decisions, cached/coasting headings, challenge activation/zero speed, smoke immunity in native tick units, signed speed caps, fractional player/enemy motion on both cadence phases, and all seven world-contact slots across two signed coarse cells. Normal startup states use radius 14; active/stunned and challenge retain radius 10.'))
+        scope='Synthetic executed Z80 contracts: legal centre decisions, cached/coasting headings, challenge activation/zero speed, smoke immunity in native tick units, signed speed caps, fractional player/enemy motion on both cadence phases, and all seven world-contact slots across two signed coarse cells. Normal startup wait is passable; active/challenge radius10 and normal smoke-spin radius14 are retained.'))
     require_ignored(root,[f for f in out.rglob('*') if f.is_file()]);seal(out)
     print(f'{sum(counts.values())} MSX enemy contracts pass: {out}/report.json')
 

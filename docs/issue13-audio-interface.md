@@ -108,9 +108,11 @@ the native challenge velocities, player shadow, lives or credits. F5 bypasses
 the interstitial for immediate debugging.
 
 Score publication immediately refreshes the life count after the native 20,000
-and 80,000 awards. Normal parked contact includes the initial `$88` pose with
-the established 14-pixel startup bound; challenge and active contact retain 10.
-It does not depend on stale arcade virtual-OAM screen coordinates.
+and 80,000 awards. Normal startup cars are passable until their waiting animation
+ends. Active/challenge contact retains its 10-pixel bound. The separate smoke-spin
+marker distinguishes a stunned active car from startup, preserving its existing
+normal-round contact bound. Contact does not depend on stale arcade virtual-OAM
+screen coordinates.
 
 Flag captures can show one authored 24x8 world-anchored point label, including
 the native multiplier (`200x2`). It consumes no sprites and replaces the previous

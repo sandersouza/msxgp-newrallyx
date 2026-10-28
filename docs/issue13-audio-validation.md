@@ -5,21 +5,58 @@ Updated: 2026-10-28. Implementation and channel policy:
 
 ## Delivered cartridge
 
-The current tested build is `references/build/issue13-arcade-v58/`, privately
-delivered as `newrallyx-audio-v5 [ASCII16].rom`:
+The current tested build is `references/build/issue13-startup-v62/`, privately
+delivered as `newrallyx-audio-v6 [ASCII16].rom`:
 
-`8276b5758c78af11e105b4930c0df1d0d4871a8056581a9972231038c520ad1e`.
+`2d17cd4c4bd88a8e5f021a77abe5d7419d2397cf8473bcd95319adc2f47866dd`.
 
 `references/build/newrallyx.rom` and `latest.rom` contain that cartridge.
 The default build enables PSG; F4 toggles physical output. The full HUD,
 original scenery/colors, complete cars and real sprite limits remain enabled.
 
 The silent full game includes the same presentation/mechanics, with SHA-256
-`0f628b264ca07bd8c5b032229b0dc5f39df9bbdc2ba60c8f7316cbf32e718924`.
+`511b8485461c075fad181854608a138788a06bb0804020ae63c44a6023cff6c9`.
 The bounded Issue 11 stage12 rebuild also retains its accepted hash:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.
 
 ## Arcade presentation, lives, contact and optional points (v58)
+
+### Startup-rule clarification (v61 / private v6)
+
+The user explicitly clarified that normal startup cars must remain passable.
+The v5 solid-startup assumption below is superseded. Normal waiting animation
+states (`$88` and later) now skip contact until activation, while challenge cars
+remain solid. The native smoke-spin marker keeps stunned active cars separate,
+preserving their prior contact behavior. No movement, audio or presentation rule
+is changed by this follow-up.
+
+`issue13-startup-keys-v61` exercises real credit/start/F5/down inputs on eight
+entries, without guest-state writes: six normal rounds each record ten actual
+overlap ticks and a complete crossing while the enemy stays parked; challenge
+rounds 3/7 collide before the car moves. `issue13-contact-v61` passes 60,218
+executed contracts, including 22,680 cases spanning startup versus smoke spin,
+normal versus challenge, activation and all seven actor slots.
+
+The startup check runs only after coarse proximity rejection and reuses the
+existing state test, keeping the ordinary active-car path unchanged. Final v61
+qualification passes the same timing/terrain/HUD gates:
+
+- Eight natural rounds: 29.904..29.961 packet FPS, at most 0.3731% late slots,
+  native 59.903..59.943 Hz and zero discarded ticks. Eighty labels and 6,939,317
+  terrain pixels checked; 19,938 physical viewports remain bounded; all player,
+  radar, fuel and footer checks pass. `issue13-eight-v61`.
+- Controlled seven enemies: 29.4188 FPS, 3.6829% late slots, 51.180 ms maximum gap,
+  native 59.8839 Hz and no discarded ticks. Ten labels and 910,950 terrain pixels
+  checked; all sprite/bounds gates pass. `issue13-seven-v61`.
+- Actual keyboard UI/audio transitions, all 20 label/erasure cases, 27,000
+  production audio cases and a natural two-player session pass again in
+  `issue13-{ui,popup,runtime,session}-v61`. Silent cast/demo passes in
+  `issue13-attract-silent-v61`; the 428-test suite is retained in
+  `issue13-final-tests-v61.log`.
+
+The v58 evidence and solid-startup assumption below remain historical.
+V62 rebuilds the same cartridge bytes with corrected contact-policy build
+metadata; its ROM matches all v61 qualification fingerprints exactly.
 
 The orange original cast now reveals icons and types labels before the idle
 demo. Demo death returns to it. A coin opens a separate black selection screen
@@ -32,10 +69,8 @@ channels and freezes the musical cursor; settlement stops driving music.
 
 Native bonus awards already changed the life count, but score publication did
 not immediately refresh its HUD value. Both now agree at 20,000 and 80,000.
-Normal startup contact includes the first `$88` pose, retaining the established
-14-pixel startup bound; active/challenge contact remains 10. This follows the
-earlier explicit request for solid normal startup cars. The later wording was
-ambiguous; a clarification was left pending, without blocking the other fixes.
+V58 treated the first `$88` startup pose as solid. That assumption is superseded
+by the explicitly clarified pass-through policy documented above.
 
 One authored 24x8 world-anchored point label uses the actual flag ordinal and
 native multiplier. It needs no car/radar sprites. Compile it out with
