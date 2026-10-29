@@ -1,7 +1,0 @@
-{
-  "rom_sha256": "8e38359a68fb8e17621f5e40229c91a0f919596526dcc1c12e5a2c96634e7c5b",
-  "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-puoh7wlj",
-  "failed_snapshot": "smoke-0047",
-  "failure": "Boundary0 row6 source18 tile178",
-  "overlap": "pattern_phases2800..2807 aliases GameSmoke_Rows2800..281F"
-}

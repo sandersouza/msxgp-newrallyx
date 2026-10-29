@@ -1,7 +1,0 @@
-{
-  "complete": true,
-  "transitions": 72,
-  "back_buffers": 2,
-  "banks_sha256": "cfbaa97764c0eee204ab2a2a43c40d2f7ccd3cafb5632717124437df0fd1ddb5",
-  "scope": "Independent actual packed pointers/payload decode with poisoned missing old tails; current live atlas bytes exact; no CPU/scanout claim"
-}

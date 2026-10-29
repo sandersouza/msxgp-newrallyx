@@ -1,9 +1,0 @@
-{
-  "complete": true,
-  "rom_sha256": "299b5380068760e244d15b53547e4da28522c8ea49fb28a54248b9a5067ea2d9",
-  "phases": 64,
-  "exact_logical_cells": 14336,
-  "exact_flag_variant_choices": 1280,
-  "exact_decoded_pixels": 999424,
-  "scope": "Independent original phase names and flag lookup tables versus actual linked phase banks. Exact original16-byte glyph keys; unchanged flag program instructions/addresses. Covers every logical cell and every individual flag lookup choice."
-}
