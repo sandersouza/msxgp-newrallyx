@@ -1,0 +1,1765 @@
+{
+  "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae",
+  "rom_bytes": 4030464,
+  "unit_tests": {
+    "run": 63,
+    "skipped": 1,
+    "successful": 62,
+    "passed": true,
+    "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae"
+  },
+  "scenarios": [
+    {
+      "scenario": "start",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-1ospyo0_",
+      "passed": true,
+      "active_snapshots": 2,
+      "silence_checks": 3
+    },
+    {
+      "scenario": "integration",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-y1xi2mm5",
+      "passed": true,
+      "active_snapshots": 14,
+      "silence_checks": 30
+    },
+    {
+      "scenario": "two-player",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-575sg0m3",
+      "passed": true,
+      "active_snapshots": 3,
+      "silence_checks": 7
+    },
+    {
+      "scenario": "flags",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-wy_ywdga",
+      "passed": true,
+      "active_snapshots": 12,
+      "silence_checks": 5
+    },
+    {
+      "scenario": "attract",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-9x9z5rwx",
+      "passed": true,
+      "active_snapshots": 3,
+      "silence_checks": 6
+    },
+    {
+      "scenario": "radar",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-8ujavvx1",
+      "passed": true,
+      "active_snapshots": 257,
+      "silence_checks": 3
+    },
+    {
+      "scenario": "smoke",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-ymb9umvw",
+      "passed": true,
+      "active_snapshots": 301,
+      "silence_checks": 9
+    }
+  ],
+  "stable_graphics_snapshots": 592,
+  "cold_silence_checks": 63,
+  "steering": {
+    "passed": true,
+    "requested_active_refreshes": 16000,
+    "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/steering-proof-dkgobgbh",
+    "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze",
+    "observed": [
+      16000,
+      7425,
+      6,
+      4465,
+      0
+    ],
+    "distinct_poses_after_refresh5000": 292
+  },
+  "audio": {
+    "passed": true,
+    "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-nyo_e6ko",
+    "seconds": 26.768798185941044,
+    "engine": [
+      {
+        "velocity": 0,
+        "expected_fundamental_hz": 49.93784877232143,
+        "measured_pcm_hz": 49.98778662109375,
+        "all_four_headings_identical": true,
+        "baseline_rms": 1859.5379802147925,
+        "rms": 1576.9655174244517,
+        "amplitude_ratio": 0.8480415749520205,
+        "reduction_percent": 15.195842504797952
+      },
+      {
+        "velocity": 1,
+        "expected_fundamental_hz": 49.80444401157614,
+        "measured_pcm_hz": 49.75463956756456,
+        "all_four_headings_identical": true,
+        "baseline_rms": 1864.2795080726773,
+        "rms": 1604.8939523616114,
+        "amplitude_ratio": 0.8608655222632238,
+        "reduction_percent": 13.913447773677623
+      },
+      {
+        "velocity": 2,
+        "expected_fundamental_hz": 49.80444401157614,
+        "measured_pcm_hz": 49.75463956756456,
+        "all_four_headings_identical": true,
+        "baseline_rms": 1848.802028607675,
+        "rms": 1550.0695881849767,
+        "amplitude_ratio": 0.8384183726541709,
+        "reduction_percent": 16.158162734582916
+      }
+    ],
+    "smoke": [
+      {
+        "cue": "smoke1",
+        "rms": 2222.437163571991,
+        "levels": [
+          16,
+          16
+        ],
+        "tone_periods": [
+          51,
+          45
+        ],
+        "envelope_shape": 8,
+        "leased_channels": [
+          "B",
+          "C"
+        ],
+        "sound_frames": 2,
+        "native_placement_trigger": true,
+        "baseline_rms": 467.3932640588231,
+        "amplitude_ratio": 4.754961901402775,
+        "gain_db": 13.542940831034041
+      },
+      {
+        "cue": "smoke2",
+        "rms": 2694.558485583837,
+        "levels": [
+          16,
+          16
+        ],
+        "tone_periods": [
+          51,
+          45
+        ],
+        "envelope_shape": 8,
+        "leased_channels": [
+          "B",
+          "C"
+        ],
+        "sound_frames": 2,
+        "native_placement_trigger": true,
+        "baseline_rms": 457.35800657544866,
+        "amplitude_ratio": 5.891573880513942,
+        "gain_db": 15.404626562346948
+      }
+    ],
+    "crash": [
+      {
+        "cue": "crash1",
+        "initial_rms": 5866.348850347899,
+        "tail_rms": 304.1176470466658,
+        "low_band_power": 869941747043789.4,
+        "band_hz": [
+          30,
+          200
+        ],
+        "window_seconds": [
+          0.02,
+          0.28
+        ],
+        "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps",
+        "baseline_low_band_power": 290915981639022.44,
+        "low_band_gain_db": 4.757225922836828,
+        "baseline_rom_sha256": "70d6335163a702045b4a6da5cc3ac4eba1dd5e5b48e1aeda3cb628a81887a3c4"
+      },
+      {
+        "cue": "crash2",
+        "initial_rms": 5912.687351367505,
+        "tail_rms": 310.6556138548537,
+        "low_band_power": 811357320344309.5,
+        "band_hz": [
+          30,
+          200
+        ],
+        "window_seconds": [
+          0.02,
+          0.28
+        ],
+        "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps",
+        "baseline_low_band_power": 325790397680385.7,
+        "low_band_gain_db": 3.9627387906836464,
+        "baseline_rom_sha256": "70d6335163a702045b4a6da5cc3ac4eba1dd5e5b48e1aeda3cb628a81887a3c4"
+      }
+    ],
+    "cue_ticks_30hz": {
+      "gameover": 249,
+      "challenge_intro": 193,
+      "challenge": 31,
+      "cold": 12
+    },
+    "audio_costs": [
+      {
+        "name": "GameAudio_Tick (engine)",
+        "calls": 180,
+        "inclusive": {
+          "mean": 2270.3111111106246,
+          "p95": 2989.0000000004893,
+          "max": 3904.9999999989586
+        }
+      },
+      {
+        "name": "GameAudio_Tick (smoke_active)",
+        "calls": 4,
+        "inclusive": {
+          "mean": 3781.4999999974366,
+          "p95": 4261.00000000103,
+          "max": 4261.00000000103
+        }
+      },
+      {
+        "name": "GameAudio_Tick (smoke_resume)",
+        "calls": 32,
+        "inclusive": {
+          "mean": 2267.437499999197,
+          "p95": 3744.00000000063,
+          "max": 3744.00000000063
+        }
+      },
+      {
+        "name": "GameAudio_Tick (crash)",
+        "calls": 72,
+        "inclusive": {
+          "mean": 2613.7916666667493,
+          "p95": 3413.99999999821,
+          "max": 4207.999999991469
+        }
+      },
+      {
+        "name": "GameAudio_Tick (fuel)",
+        "calls": 30,
+        "inclusive": {
+          "mean": 2508.199999999669,
+          "p95": 3785.999999999088,
+          "max": 3865.000000008299
+        }
+      },
+      {
+        "name": "GameSession_AudioStop",
+        "calls": 1,
+        "inclusive": {
+          "mean": 2655.9999999927295,
+          "p95": 2655.9999999927295,
+          "max": 2655.9999999927295
+        }
+      },
+      {
+        "name": "GameAudio_Tick (gameover)",
+        "calls": 249,
+        "inclusive": {
+          "mean": 2661.32931726913,
+          "p95": 3598.000000003567,
+          "max": 6524.999999991192
+        }
+      },
+      {
+        "name": "GameAudio_Tick (challenge_intro)",
+        "calls": 193,
+        "inclusive": {
+          "mean": 2182.1968911918766,
+          "p95": 3455.0000000118443,
+          "max": 6502.000000009599
+        }
+      },
+      {
+        "name": "GameAudio_Tick (challenge)",
+        "calls": 31,
+        "inclusive": {
+          "mean": 2810.967741934812,
+          "p95": 3864.999999995582,
+          "max": 7100.999999999115
+        }
+      }
+    ],
+    "audio_cost_method": "Sound-only fixtures; breakpoint at worker entry and exact caller return address before trailing instructions. Guest elapsed inclusive cycles including RET; no tracked child self costs, no active-game FPS claim.",
+    "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance.",
+    "engine_baseline": {
+      "rom_sha256": "5451bd8933b22f1fa334dbc538a905b5615cf1ea58623af23933e900cdf3ffa2",
+      "wav": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-2x6n5jfb/engine-and-cues.wav",
+      "wav_sha256": "f0115b312d340f2d66401252cef7ccde97f00a8f3f02b73c49152f21dd692fa1",
+      "window_seconds": [
+        0.15,
+        1.95
+      ],
+      "method": "DC-removed PCM RMS at each velocity across all four headings; matched machine/PSG settings"
+    }
+  },
+  "sprite_clip": {
+    "passed": true,
+    "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae",
+    "helper_sha256": "7e56fb8cd1185dc82a1e93313c88a518249233965aefee13ef3e805fdd8df43f",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/sprite-clip-proof-wxt9gi8_",
+    "scope": "Synthetic complete-pattern/SAT/color matrix, including vertical/horizontal clips and sentinel216. Component cycles are not integrated FPS."
+  },
+  "challenge_speed": {
+    "passed": true,
+    "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/speed-proof-0wyz2a87",
+    "costs": [
+      {
+        "name": "Full_MSXPlayerSpeed (ordinary)",
+        "calls": 24,
+        "inclusive": {
+          "mean": 281.08333333310776,
+          "p95": 339.99999999054654,
+          "max": 340.0000000032636
+        }
+      },
+      {
+        "name": "Full_MSXPlayerSpeed (parked)",
+        "calls": 40,
+        "inclusive": {
+          "mean": 70.99999999963423,
+          "p95": 71.00000000344936,
+          "max": 71.00000000344936
+        }
+      }
+    ],
+    "arcade": {
+      "inputs": {
+        "script_sha256": "f1328ff90cb4accdbc511a50e7afe584a425977c76397b39ea840645cfaa2680",
+        "emulator": "0.289 (unknown)",
+        "roms": [
+          {
+            "name": "nrx1-1.11n",
+            "size": 32,
+            "crc32": "a0a49017",
+            "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+          },
+          {
+            "name": "nrx1-7.8p",
+            "size": 256,
+            "crc32": "4e46f485",
+            "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+          },
+          {
+            "name": "nrx_chg1.8e",
+            "size": 2048,
+            "crc32": "1fff38a4",
+            "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+          },
+          {
+            "name": "nrx_chg2.8d",
+            "size": 2048,
+            "crc32": "85d9fffd",
+            "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+          },
+          {
+            "name": "nrx_prg1.1d",
+            "size": 4096,
+            "crc32": "ba7de9fc",
+            "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+          },
+          {
+            "name": "nrx_prg2.1e",
+            "size": 4096,
+            "crc32": "eedfccae",
+            "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+          },
+          {
+            "name": "nrx_prg3.1k",
+            "size": 4096,
+            "crc32": "b4d5d34a",
+            "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+          },
+          {
+            "name": "nrx_prg4.1l",
+            "size": 4096,
+            "crc32": "7da5496d",
+            "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+          },
+          {
+            "name": "rx1-2.4n",
+            "size": 32,
+            "crc32": "8f574815",
+            "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+          },
+          {
+            "name": "rx1-3.7k",
+            "size": 32,
+            "crc32": "b8861096",
+            "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+          },
+          {
+            "name": "rx1-4.2m",
+            "size": 256,
+            "crc32": "77245b66",
+            "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+          },
+          {
+            "name": "rx1-5.3p",
+            "size": 256,
+            "crc32": "4bad7017",
+            "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+          },
+          {
+            "name": "rx1-6.8m",
+            "size": 256,
+            "crc32": "3c16f62c",
+            "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+          }
+        ]
+      },
+      "cases": [
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true
+        }
+      ],
+      "trace_sha256": "02b624abb4d0602b2d87d6f90a94ea9efd3c635b287e2dad99f85ea5bdf840fa",
+      "hashes": {
+        "frames.tsv": "02b624abb4d0602b2d87d6f90a94ea9efd3c635b287e2dad99f85ea5bdf840fa",
+        "round-2.bin": "ecced5a2915955b5f21128e4ef71df7414aaec9d6270faeea13bf94afa4a6040",
+        "round-3.bin": "847fc2712fd723a7c9ff63510c98274e13c359e24e7f9b67c7a8ddc166230f1f",
+        "round-4.bin": "c7860924fd79cf954772d5d3e0d53004e1ad7d3bfa5cd7264a6b514f46c95d23",
+        "round-8.bin": "14bcdfdffc703defcedb8f57a5d4660e4bed509d8199e652357575d896f4a15a",
+        "round-12.bin": "b29bff33c5f33d4178ae0e98c3f5b10c724543031726a724e598c3c9ce81b0f8",
+        "round-16.bin": "6ec9e3c6b2d41de8b97938de076c968613ccff59828cd05504205dbea1dcf3f8"
+      },
+      "scope": "Real original first credit/start; explicit seed for subsequent original08BF initialization.32 physical frames observed per round. No original ROM patches or speed-table edits; not naturally completed rounds."
+    },
+    "vectors": [
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 258.9999999989702
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": -96,
+        "expected": -96,
+        "actual": -96,
+        "bc": 4660,
+        "cycles": 284.00000000108037
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": -511,
+        "expected": -511,
+        "actual": -511,
+        "bc": 4660,
+        "cycles": 284.00000000108037
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": -512,
+        "expected": -512,
+        "actual": -512,
+        "bc": 4660,
+        "cycles": 291.99999999412535
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": -544,
+        "expected": -512,
+        "actual": -512,
+        "bc": 4660,
+        "cycles": 339.99999999054654
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 258.9999999989702
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": 96,
+        "expected": 96,
+        "actual": 96,
+        "bc": 4660,
+        "cycles": 258.9999999989702
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": 511,
+        "expected": 511,
+        "actual": 511,
+        "bc": 4660,
+        "cycles": 258.9999999989702
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": 512,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 267.00000000473227
+      },
+      {
+        "native_round": 2,
+        "display_round": 1,
+        "enemy0": 544,
+        "player": 544,
+        "enemy1": 592,
+        "parked": false,
+        "velocity": 544,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 289.9999999990434
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 258.9999999989702
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": -96,
+        "expected": -96,
+        "actual": -96,
+        "bc": 4660,
+        "cycles": 284.00000000108037
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": -511,
+        "expected": -511,
+        "actual": -511,
+        "bc": 4660,
+        "cycles": 284.00000000108037
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": -512,
+        "expected": -512,
+        "actual": -512,
+        "bc": 4660,
+        "cycles": 292.0000000068424
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": -576,
+        "expected": -512,
+        "actual": -512,
+        "bc": 4660,
+        "cycles": 340.0000000032636
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 258.9999999989702
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": 96,
+        "expected": 96,
+        "actual": 96,
+        "bc": 4660,
+        "cycles": 258.9999999989702
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": 511,
+        "expected": 511,
+        "actual": 511,
+        "bc": 4660,
+        "cycles": 258.9999999989702
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": 512,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 267.00000000473227
+      },
+      {
+        "native_round": 3,
+        "display_round": 2,
+        "enemy0": 608,
+        "player": 576,
+        "enemy1": 656,
+        "parked": false,
+        "velocity": 576,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 289.9999999990434
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -96,
+        "expected": -96,
+        "actual": -96,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -511,
+        "expected": -511,
+        "actual": -511,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -512,
+        "expected": -512,
+        "actual": -512,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -672,
+        "expected": -672,
+        "actual": -672,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 96,
+        "expected": 96,
+        "actual": 96,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 511,
+        "expected": 511,
+        "actual": 511,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 512,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 0,
+        "player": 672,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 672,
+        "expected": 672,
+        "actual": 672,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 4,
+        "display_round": 3,
+        "enemy0": 544,
+        "player": 672,
+        "enemy1": 576,
+        "parked": false,
+        "velocity": 672,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 289.9999999990434
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -96,
+        "expected": -96,
+        "actual": -96,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -511,
+        "expected": -511,
+        "actual": -511,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -512,
+        "expected": -512,
+        "actual": -512,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -688,
+        "expected": -688,
+        "actual": -688,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 96,
+        "expected": 96,
+        "actual": 96,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 511,
+        "expected": 511,
+        "actual": 511,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 512,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 0,
+        "player": 688,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 688,
+        "expected": 688,
+        "actual": 688,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 8,
+        "display_round": 7,
+        "enemy0": 544,
+        "player": 688,
+        "enemy1": 576,
+        "parked": false,
+        "velocity": 688,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 289.9999999990434
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -96,
+        "expected": -96,
+        "actual": -96,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -511,
+        "expected": -511,
+        "actual": -511,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -512,
+        "expected": -512,
+        "actual": -512,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -704,
+        "expected": -704,
+        "actual": -704,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 96,
+        "expected": 96,
+        "actual": 96,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 511,
+        "expected": 511,
+        "actual": 511,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 512,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 704,
+        "expected": 704,
+        "actual": 704,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 12,
+        "display_round": 11,
+        "enemy0": 544,
+        "player": 704,
+        "enemy1": 576,
+        "parked": false,
+        "velocity": 704,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 289.9999999990434
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -96,
+        "expected": -96,
+        "actual": -96,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -511,
+        "expected": -511,
+        "actual": -511,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -512,
+        "expected": -512,
+        "actual": -512,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": -704,
+        "expected": -704,
+        "actual": -704,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 0,
+        "expected": 0,
+        "actual": 0,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 96,
+        "expected": 96,
+        "actual": 96,
+        "bc": 4660,
+        "cycles": 70.99999999073226
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 511,
+        "expected": 511,
+        "actual": 511,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 512,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 0,
+        "player": 704,
+        "enemy1": 0,
+        "parked": true,
+        "velocity": 704,
+        "expected": 704,
+        "actual": 704,
+        "bc": 4660,
+        "cycles": 71.00000000344936
+      },
+      {
+        "native_round": 16,
+        "display_round": 15,
+        "enemy0": 544,
+        "player": 704,
+        "enemy1": 576,
+        "parked": false,
+        "velocity": 704,
+        "expected": 512,
+        "actual": 512,
+        "bc": 4660,
+        "cycles": 289.9999999990434
+      }
+    ],
+    "failures": [],
+    "scope": "Actual cartridgeB60C limiter, both velocity signs, normal and parked challenge parameters and fuel-exhaustion exit. Guest entry-through-RET cycles; no full-course or scanout claim."
+  },
+  "enemy_rocks": {
+    "navigation_tag_pairs": 64,
+    "navigation_failures": [],
+    "passed": true,
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/rocks-proof-jnbgsvru",
+    "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae",
+    "cases": 404,
+    "failures": [],
+    "costs": [
+      {
+        "name": "GameSession_EnemyRockProbe",
+        "calls": 404,
+        "inclusive": {
+          "mean": 740.470297029656,
+          "p95": 5397.000000005351,
+          "max": 5699.999999997861
+        }
+      }
+    ],
+    "cost_groups": [
+      {
+        "name": "Enemy stone recoil",
+        "calls": 36,
+        "inclusive": {
+          "mean": 5472.499999999854,
+          "p95": 5699.999999997861,
+          "max": 5699.999999997861
+        }
+      },
+      {
+        "name": "Enemy stone clear",
+        "calls": 356,
+        "inclusive": {
+          "mean": 285.6292134831494,
+          "p95": 325.00000000199753,
+          "max": 325.00000000199753
+        }
+      },
+      {
+        "name": "Enemy stone immune",
+        "calls": 12,
+        "inclusive": {
+          "mean": 37.999999998756415,
+          "p95": 38.00000000829424,
+          "max": 38.00000000829424
+        }
+      }
+    ],
+    "scope": "All32 descriptor bytes compared with original181B/1885 collision/rebound, both axes/signs, fine-boundary hits/misses and immunity. Controlled fixtures, not a natural-course proof. Entry-through-RET inclusive cycles; no self-cost sum."
+  },
+  "boot": {
+    "passed": true,
+    "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/boot-proof-68ay5xft",
+    "boot_frames": 10,
+    "seconds": 8.427620828904232,
+    "target_seconds": 8.444206177042053,
+    "speed_multiplier": 1.5,
+    "footer": true,
+    "source": "Untouched original cold boot recorded from the first video frame. No Lua delay, guest writes or injected test flags. Matrix endpoint is sampled within12 original refreshes.",
+    "title": {
+      "caption": "[5] insert coin - [1/2] start player(s)",
+      "caption_y": 186,
+      "caption_x": 11,
+      "brand": "namco - retrowork",
+      "brand_y": 202,
+      "brand_x": 56,
+      "brand_width": 144,
+      "brand_height": 10,
+      "shift_y": -8,
+      "brand_source": "User-supplied finished artwork; no generated letter shapes",
+      "blink_pixels": [
+        47633,
+        47634,
+        47635,
+        47636,
+        47637,
+        47889,
+        48145,
+        48146,
+        48147,
+        48404,
+        48661,
+        48916,
+        49169,
+        49170,
+        49171,
+        47743,
+        47998,
+        47999,
+        48253,
+        48255,
+        48511,
+        48767,
+        49023,
+        49277,
+        49278,
+        49279,
+        49280,
+        49281,
+        48263,
+        48518,
+        48773,
+        49028,
+        49283,
+        47754,
+        47755,
+        47756,
+        48009,
+        48013,
+        48269,
+        48524,
+        48778,
+        48779,
+        49033,
+        49289,
+        49290,
+        49291,
+        49292,
+        49293
+      ],
+      "blink_keys": [
+        "5",
+        "1/2"
+      ],
+      "blink_half_period_refreshes": 32,
+      "inverted_keys": [],
+      "brand_artwork": {
+        "width": 144,
+        "height": 10,
+        "source_crop": [
+          392,
+          908,
+          994,
+          943
+        ],
+        "reference_viewport": [
+          153,
+          179,
+          1223,
+          956
+        ],
+        "source_sha256": "becd24f672517867a85162b1fdbf136df2736b835cb380bb9d4be3c9d8d5aa8f",
+        "method": "Whole supplied red wordmark sampled at logical MSX pixel centers; screenshot display aspect undone; no replacement glyphs"
+      },
+      "blink_rects": [
+        [
+          16,
+          186,
+          8,
+          8
+        ],
+        [
+          124,
+          186,
+          20,
+          8
+        ]
+      ],
+      "logo": {
+        "enabled": true,
+        "include": "session-msx-logo.inc",
+        "source_crop": [
+          20,
+          70,
+          182,
+          130
+        ],
+        "scale_divisor": 3,
+        "rect": [
+          194,
+          8,
+          54,
+          20
+        ],
+        "colors": "Black label and white MSX only; blue surround excluded",
+        "source_sha256": "8cbeb5c7c09559878420f732e48a3fbe4faca9b338a66035c6ad40b04ae161b0"
+      }
+    },
+    "title_costs": [
+      {
+        "name": "UI_MSXLogo_Draw",
+        "calls": 1,
+        "inclusive": {
+          "mean": 23007.000000003827,
+          "p95": 23007.000000003827,
+          "max": 23007.000000003827
+        }
+      },
+      {
+        "name": "UI_CastFooter_Tick",
+        "calls": 571,
+        "inclusive": {
+          "mean": 403.60770577913627,
+          "p95": 53.000000009560324,
+          "max": 10596.000000001619
+        }
+      }
+    ],
+    "title_cost_method": "Guest elapsed inclusive entry to matched PC/SP return, including RET/IRQ. No tracked self costs; cold UI only, never add to active-frame work.",
+    "scope": "Sampled boot bitmaps/timing/silence, all96 original reveal units shifted8px, full title on/off pixels, optional logo, fixed brackets and blinking numeric masks. Recorded scanout retained; no live gameplay-cycle claim.",
+    "elapsed_inclusive_cycles": 30167047.999999996,
+    "cycle_scope": "One startup call only. Elapsed cycles include IRQs, decode/upload and synchronization waits; self/CPU-only/wait costs are not separated. Never add to active-frame work."
+  },
+  "build_variants": [
+    {
+      "rom_sha256": "e6b4420f85217a380f4c20923965fc7da3d53c8c3a83837846ed8f3e4b112dae",
+      "scenario": "controls",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-jdhlix8r",
+      "snapshots": [
+        "select",
+        "controls-complete",
+        "cast",
+        "first-stage"
+      ],
+      "input": "Actual keyboard: international/Japanese equals, Return held/released; controlled real Death_Begin car/rock contacts with state restoration. Walls remain on the unchanged movement path.",
+      "test_mode": false,
+      "cold_silence_checks": 3,
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    {
+      "rom_sha256": "546b389c4ebba18c25fcb9e2447b1ca0c9ceb0c2a376a1f8a1101cac5a8888d5",
+      "scenario": "controls",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-test/session-start-87q0bu6y",
+      "snapshots": [
+        "select",
+        "controls-complete",
+        "cast",
+        "first-stage"
+      ],
+      "input": "Actual keyboard: international/Japanese equals, Return held/released; controlled real Death_Begin car/rock contacts with state restoration. Walls remain on the unchanged movement path.",
+      "test_mode": true,
+      "cold_silence_checks": 7,
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    {
+      "rom_sha256": "9e9bc6f66477d0a8bbfcbd77c1ee556e8e5293c1f2fe69527d912539063a4993",
+      "scenario": "start",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-hud-classic/session-start-ozshxzud",
+      "snapshots": [
+        "select",
+        "cast",
+        "moving",
+        "intro",
+        "gameplay"
+      ],
+      "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+      "cold_silence_checks": 3,
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    }
+  ],
+  "no_logo": {
+    "passed": true,
+    "rom_sha256": "6396294a4e4f847d60fcf0f087c6b82ae23af2f98be795e139b07cc75828ede4",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-no-logo/boot-proof-t86qe6ww",
+    "boot_frames": 10,
+    "seconds": 8.427620828904232,
+    "target_seconds": 8.444206177042053,
+    "speed_multiplier": 1.5,
+    "footer": true,
+    "source": "Untouched original cold boot recorded from the first video frame. No Lua delay, guest writes or injected test flags. Matrix endpoint is sampled within12 original refreshes.",
+    "title": {
+      "caption": "[5] insert coin - [1/2] start player(s)",
+      "caption_y": 186,
+      "caption_x": 11,
+      "brand": "namco - retrowork",
+      "brand_y": 202,
+      "brand_x": 56,
+      "brand_width": 144,
+      "brand_height": 10,
+      "shift_y": -8,
+      "brand_source": "User-supplied finished artwork; no generated letter shapes",
+      "blink_pixels": [
+        47633,
+        47634,
+        47635,
+        47636,
+        47637,
+        47889,
+        48145,
+        48146,
+        48147,
+        48404,
+        48661,
+        48916,
+        49169,
+        49170,
+        49171,
+        47743,
+        47998,
+        47999,
+        48253,
+        48255,
+        48511,
+        48767,
+        49023,
+        49277,
+        49278,
+        49279,
+        49280,
+        49281,
+        48263,
+        48518,
+        48773,
+        49028,
+        49283,
+        47754,
+        47755,
+        47756,
+        48009,
+        48013,
+        48269,
+        48524,
+        48778,
+        48779,
+        49033,
+        49289,
+        49290,
+        49291,
+        49292,
+        49293
+      ],
+      "blink_keys": [
+        "5",
+        "1/2"
+      ],
+      "blink_half_period_refreshes": 32,
+      "inverted_keys": [],
+      "brand_artwork": {
+        "width": 144,
+        "height": 10,
+        "source_crop": [
+          392,
+          908,
+          994,
+          943
+        ],
+        "reference_viewport": [
+          153,
+          179,
+          1223,
+          956
+        ],
+        "source_sha256": "becd24f672517867a85162b1fdbf136df2736b835cb380bb9d4be3c9d8d5aa8f",
+        "method": "Whole supplied red wordmark sampled at logical MSX pixel centers; screenshot display aspect undone; no replacement glyphs"
+      },
+      "blink_rects": [
+        [
+          16,
+          186,
+          8,
+          8
+        ],
+        [
+          124,
+          186,
+          20,
+          8
+        ]
+      ],
+      "logo": {
+        "enabled": false,
+        "include": "session-msx-logo.inc"
+      }
+    },
+    "title_costs": [
+      {
+        "name": "UI_CastFooter_Tick",
+        "calls": 571,
+        "inclusive": {
+          "mean": 404.49562171628867,
+          "p95": 53.000000009560324,
+          "max": 11090.99999999889
+        }
+      }
+    ],
+    "title_cost_method": "Guest elapsed inclusive entry to matched PC/SP return, including RET/IRQ. No tracked self costs; cold UI only, never add to active-frame work.",
+    "scope": "Sampled boot bitmaps/timing/silence, all96 original reveal units shifted8px, full title on/off pixels, optional logo, fixed brackets and blinking numeric masks. Recorded scanout retained; no live gameplay-cycle claim."
+  },
+  "smoke_regression": {
+    "committed_frames": 300,
+    "native_placements": 5,
+    "counter_resets": 0,
+    "fine_phases": {
+      "horizontal": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "vertical": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "smoke_rows": [
+      10240,
+      10271
+    ],
+    "phase_cache": [
+      10272,
+      10279
+    ],
+    "scope": "Each committed frame checks full HUD/radar and both boundary columns with an independent pixel oracle. Real keyboard only; three native enemies; no native RAM fixtures."
+  },
+  "challenge_motion": {
+    "native_round": 4,
+    "target_per_tick": 2.625,
+    "observed_per_tick": 2.625,
+    "parked": true,
+    "scope": "Committed real-session challenge snapshot after native acceleration; no speed fixtures or native RAM edits."
+  },
+  "profile": {
+    "profile_path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/profile-nbq6gdcg",
+    "active_frames": 238,
+    "active_seconds": 7.9590288709877886,
+    "presented_fps": 29.903145705069168,
+    "late_frames": 1,
+    "workload": "Full session, keyboard coin/start and F5 to native round5 (RND4), layout1, three native enemies; frames5..360, fixed directional input",
+    "enemy_distinct_positions": [
+      12,
+      11,
+      14
+    ],
+    "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=5 cycles"
+  },
+  "suite": "Current cartridge: unit, seven independent graphics scenarios, both title blink states, optional-logo exclusion, test controls, original differential stone reactions, native speed, long steering, audio and sprite matrix.",
+  "overall_passed": true,
+  "limitations": [
+    "Short three-moving-enemy profile, not a full-phase29.97FPS or physical-hardware qualification.",
+    "The active profile contains stone checks but no full recoil; controlled recoil costs are listed separately.",
+    "Original404 stone cases are controlled RAM fixtures, not natural arcade playthroughs.",
+    "Historical b3d4a5 corner stall has no confirmed root-cause fix; current steering route passes.",
+    "Final visual, audio and timing acceptance remains with the user."
+  ]
+}

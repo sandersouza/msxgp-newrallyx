@@ -41,6 +41,13 @@ def layout(symbols):
     add('terrain mapper and native clock workspace',0xd2e1,31)
     add('eight-digit numeric state','hud_score_pending',64)
     add('conservative native smoke rows',0xd160,32)
+    if 'Full_PlayerPose' in symbols:
+        add('candidate, sealed and displayed player projection','Full_PlayerPose',6)
+        add('bounded camera X centre','Full_CameraCentreX',2)
+        add('bounded camera Y centre','Full_CameraCentreY',2)
+    if symbols.get('AUDIO_ENABLED'):
+        add('host audio controls and clock',0xd150,8)
+        add('PSG packet, queue and music cursor in unused native gap',0xe9a0,80)
     add('fuel publication','hud_fuel_payload',128)
     add('wall snapshot',0xd200,44)
     add('inactive player','Full_Shadow',120)
@@ -67,6 +74,10 @@ def layout(symbols):
     add('dynamic flag records','Flag_Records',60)
     add('round bank metadata','Full_IDBank',20)
     add('round radar flags','Full_RadarFlags',20)
+    if 'Full_UIReveal' in symbols:
+        add('scene-local presentation scratch','Full_UIReveal',28)
+        add('debug interstitial bypass, UI keyboard edges and bitmap upload bank','Full_ChallengeBypass',
+            4 if symbols.get('FLAG_POPUPS') else 3)
     add('tile division table',0xe300,240)
     add('native input',0xe3f0,1)
     if 'Full_FrameOriginX' in symbols:

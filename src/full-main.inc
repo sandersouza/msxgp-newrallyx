@@ -10,9 +10,9 @@ Full_MainFrame:
     call Full_TurboOn
     call keys
     call Full_TurboOff
-    ld hl,(player_x)
+    ld hl,(Full_CameraCentreX)
     ld (Full_FrameOriginX),hl
-    ld hl,(player_y)
+    ld hl,(Full_CameraCentreY)
     ld (Full_FrameOriginY),hl
     call Player_AdvanceEarly
     ei
@@ -74,6 +74,9 @@ Full_MainFrame:
     call Full_PresentSeal
     ld a,1
     ld (Full_SealedFrame),a
+    IF AUDIO_ENABLED
+    call Audio_Work
+    ENDIF
 .maze_wait:
     di
     ld a,(raster_phase)
@@ -101,6 +104,11 @@ Full_MainFrame:
     or a
     jr z,.after_prefetch     ; A committed frame yields to the next snapshot.
 .copy_guards:
+    IF FLAG_POPUPS
+    call Popup_Frame
+    or a
+    jr nz,.after_prefetch     ; Visible award work replaces optional guard copies.
+    ENDIF
     call Full_CacheEnter
     ld a,1
     ld (Full_CacheHeld),a

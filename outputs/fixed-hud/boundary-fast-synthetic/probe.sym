@@ -1,0 +1,14 @@
+GameBoundary_Upload: EQU 0x0000405D
+GameBoundary_Upload.previous: EQU 0x0000406B
+GameBoundary_Upload_End: EQU 0x00004087
+Probe_End: EQU 0x000040C9
+back: EQU 0x0000C006
+boot: EQU 0x00004010
+hud_page: EQU 0x0000C024
+hud_upload: EQU 0x00004087
+hud_upload.done: EQU 0x000040C0
+hud_upload.packet: EQU 0x00004087
+hud_upload.target: EQU 0x000040B0
+main: EQU 0x0000405A
+phase: EQU 0x0000C01D
+prior_phase: EQU 0x0000C020

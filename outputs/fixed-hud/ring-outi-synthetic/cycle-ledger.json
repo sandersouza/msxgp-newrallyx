@@ -1,0 +1,202 @@
+{
+  "cases": 8960,
+  "cpu_hz": 3579545,
+  "machine": "Panasonic_FS-A1WSX_NR128",
+  "video_hz_nominal": 60,
+  "scope": "Synthetic bytes; DI/CALL Prepare then CALL Upload/DI/JP wrapper. Inclusive elapsed emulator cycles include memory/IO waits; excludes IRQ, synchronization, native logic and other rendering.",
+  "exact_comparison": "1024 cached IDs,112 pointer bytes,84 boundary IDs,old camera,both seen records,2048 VRAM name bytes per case",
+  "limitations": "No continuous scanout or physical-hardware validation; full-stage acceptance belongs to the integrated cartridge.",
+  "results": {
+    "baseline": {
+      "rom_sha256": "c332cdb15bb4fec36e785ed573fb915210cb19a17a63f6cc7652e18e6d84343f",
+      "resident_used": 1450,
+      "prepare": {
+        "calls": 8960,
+        "mean": 24377.020089285714,
+        "p95": 41262,
+        "maximum": 41319
+      },
+      "upload": {
+        "calls": 8960,
+        "mean": 22353.03828125,
+        "p95": 39422,
+        "maximum": 39555
+      },
+      "workloads": {
+        "stationary": {
+          "prepare": {
+            "calls": 768,
+            "mean": 253,
+            "p95": 253,
+            "maximum": 253
+          },
+          "upload": {
+            "calls": 768,
+            "mean": 12720.625,
+            "p95": 14626,
+            "maximum": 14626
+          }
+        },
+        "one-tile-scroll": {
+          "prepare": {
+            "calls": 4864,
+            "mean": 16715.033717105263,
+            "p95": 19986,
+            "maximum": 21577
+          },
+          "upload": {
+            "calls": 4864,
+            "mean": 16329.909128289473,
+            "p95": 19981,
+            "maximum": 36972
+          }
+        },
+        "horizontal-one-tile": {
+          "prepare": {
+            "calls": 1536,
+            "mean": 18208.734375,
+            "p95": 18540,
+            "maximum": 20131
+          },
+          "upload": {
+            "calls": 1536,
+            "mean": 16869.0546875,
+            "p95": 18699,
+            "maximum": 36972
+          }
+        },
+        "vertical-one-tile": {
+          "prepare": {
+            "calls": 1664,
+            "mean": 12423.009615384615,
+            "p95": 12436,
+            "maximum": 12436
+          },
+          "upload": {
+            "calls": 1664,
+            "mean": 14012.509615384615,
+            "p95": 15922,
+            "maximum": 15922
+          }
+        },
+        "full-initial": {
+          "prepare": {
+            "calls": 896,
+            "mean": 41094.049107142855,
+            "p95": 41187,
+            "maximum": 41187
+          },
+          "upload": {
+            "calls": 896,
+            "mean": 37514.125,
+            "p95": 39422,
+            "maximum": 39422
+          }
+        }
+      }
+    },
+    "candidate": {
+      "rom_sha256": "4f4494f2c597b8e450fec91f5cbd660d864b46b9bef98c7d2beda4863abc96c8",
+      "resident_used": 1548,
+      "prepare": {
+        "calls": 8960,
+        "mean": 24377.020089285714,
+        "p95": 41262,
+        "maximum": 41319
+      },
+      "upload": {
+        "calls": 8960,
+        "mean": 21403.66328125,
+        "p95": 38582,
+        "maximum": 38715
+      },
+      "workloads": {
+        "stationary": {
+          "prepare": {
+            "calls": 768,
+            "mean": 253,
+            "p95": 253,
+            "maximum": 253
+          },
+          "upload": {
+            "calls": 768,
+            "mean": 11771.25,
+            "p95": 13786,
+            "maximum": 13786
+          }
+        },
+        "one-tile-scroll": {
+          "prepare": {
+            "calls": 4864,
+            "mean": 16715.033717105263,
+            "p95": 19986,
+            "maximum": 21577
+          },
+          "upload": {
+            "calls": 4864,
+            "mean": 15380.534128289473,
+            "p95": 19141,
+            "maximum": 35992
+          }
+        },
+        "horizontal-one-tile": {
+          "prepare": {
+            "calls": 1536,
+            "mean": 18208.734375,
+            "p95": 18540,
+            "maximum": 20131
+          },
+          "upload": {
+            "calls": 1536,
+            "mean": 15919.6796875,
+            "p95": 17859,
+            "maximum": 35992
+          }
+        },
+        "vertical-one-tile": {
+          "prepare": {
+            "calls": 1664,
+            "mean": 12423.009615384615,
+            "p95": 12436,
+            "maximum": 12436
+          },
+          "upload": {
+            "calls": 1664,
+            "mean": 13063.134615384615,
+            "p95": 15082,
+            "maximum": 15082
+          }
+        },
+        "full-initial": {
+          "prepare": {
+            "calls": 896,
+            "mean": 41094.049107142855,
+            "p95": 41187,
+            "maximum": 41187
+          },
+          "upload": {
+            "calls": 896,
+            "mean": 36564.75,
+            "p95": 38582,
+            "maximum": 38582
+          }
+        }
+      }
+    }
+  },
+  "strict_vram_callback": true,
+  "display_enabled": true,
+  "source_sha256": {
+    "references/experiments/fixed-hud/ring-outi-before.inc": "0b1472142b98b52d4182680aef6871a741151467442527ce3041324b2e0b0503",
+    "experiments/fixed-hud/game-ring.inc": "fcd2ce5f91b8e469bffcab3ca8a2087cc8171f8b0f7aa5ecde540ccad720b61d"
+  },
+  "note": "Before/after only fixed OTIR-to-OUTI unrolling; display enabled and strict VDP callback.",
+  "upload_cycle_savings": {
+    "calls": 8960,
+    "mean": 949.375,
+    "minimum": 840,
+    "maximum": 980,
+    "total": 8506400
+  },
+  "resident_growth_bytes": 98
+}

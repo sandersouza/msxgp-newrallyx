@@ -1,0 +1,1 @@
+Previous full-session ROM d6c508, before corner/radar/audio corrections. Its measurements remain scoped to the original directional sample.

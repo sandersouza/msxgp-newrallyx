@@ -41,13 +41,13 @@ def main():
     if packet:
         code=bytearray((243,62,1,50,syms['Full_PresentEnabled']&255,syms['Full_PresentEnabled']>>8))
         def call(address):code.extend((205,address&255,address>>8))
-        call(entry);code.append(243);front_after=0xd150+len(code);code.append(0)
+        call(entry);code.append(243);front_after=0xd100+len(code);code.append(0)
         call(syms['Full_PresentSeal'])
         code.extend((175,50,syms['ticks']&255,syms['ticks']>>8))
-        call(syms['Full_PresentCommit']);even_after=0xd150+len(code);code.append(0)
+        call(syms['Full_PresentCommit']);even_after=0xd100+len(code);code.append(0)
         code.extend((62,1,50,syms['ticks']&255,syms['ticks']>>8))
-        odd_call=0xd150+len(code)
-        call(syms['Full_PresentCommit']);code.extend((195,127,209))
+        odd_call=0xd100+len(code)
+        call(syms['Full_PresentCommit']);code.extend((195,47,209))
         if len(code)>47:raise ValueError('Presentation fixture code exceeds isolated scratch')
         code=bytes(code)
     (out/'code.bin').write_bytes(code)
@@ -69,7 +69,7 @@ def main():
             *([f'debug set_bp {entry} {{$::started}} {{debug write memory {syms["Full_PresentClockValid"]} 0}}'] if 'Full_PresentClockValid' in syms else []),
             f'debug set_bp {entry} {{$::started}} {{set ::prepare_begin [machine_info time]}}',
             f'debug set_bp {front_after} {{$::started && [info exists ::prepare_begin]}} {{puts $::prepare_times "$::index $::sentinel [expr {{([machine_info time]-$::prepare_begin)*1000}}]";unset ::prepare_begin}}',
-            f'debug set_bp {odd_call} {{$::started && $::sentinel>=5 && !$::seven_waited}} {{set ::seven_waited 1;reg PC 0xd100}}',
+            f'debug set_bp {odd_call} {{$::started && $::sentinel>=5 && !$::seven_waited}} {{set ::seven_waited 1;reg PC 0xd0e0}}',
             f'debug set_bp {syms["Full_PresentCommit.clock_ready"]} {{$::started}} {{set ::commit_begin [machine_info time];set ::commit_clock [machine_info z80_freq];set ::commit_enable [debug read memory {syms["Full_TurboEnabled"]}];set ::commit_size [debug read memory {syms["Full_PresentLength"]}]}}',
             f'debug set_bp {syms["Full_PresentCommit.restore"]} {{$::started && [info exists ::commit_begin]}} {{set ms [expr {{([machine_info time]-$::commit_begin)*1000}}];if {{$::sentinel>=5}} {{set ::seven_ms [expr {{max($::seven_ms,$ms)}}]}};if {{$ms>$::commit_max_ms}} {{set ::commit_max_ms $ms;set ::commit_peak [list $ms $::commit_clock $::commit_enable $::commit_size [reg IFF]]}};unset ::commit_begin}}',
             'proc actor_front {} {set front "[debug read_block VRAM 0x1f520 224][debug read_block VRAM 0x1f648 56]";for {set s 18} {$s<32} {incr s} {set at [expr {0x1f600+$s*4}];if {[debug read VRAM $at]==216} {break};set p [debug read VRAM [expr {$at+2}]];append front [debug read_block VRAM [expr {0x1f800+($p&252)*8}] 32]};return $front}',
@@ -211,6 +211,16 @@ after time 600 {puts stderr "Full enemy presentation timeout";exit 2}
     script=script.replace('@SHARED@',str(int('Full_PoolKeys' in syms)))
     if packet:
         script=script.replace('debug set_bp 0xd160','debug set_bp 0xd17f')
+        # Keep fixture code out of the live camera/car projection workspace.
+        script=script.replace('debug write_block memory 0xd100 $::data(wait)',
+                              'debug write_block memory 0xd0e0 $::data(wait)')
+        script=script.replace('0xd150','0xd100').replace('0xd17f','0xd12f')
+        if 'Full_CameraCentreX' in syms:
+            camera=';'.join(f'debug write memory {syms[n]+i} {value}'
+                for n,values in [('Full_CameraCentreX',(128,1)),('Full_CameraCentreY',(212,4)),
+                                 ('player_x',(160,1)),('player_y',(180,4))]
+                for i,value in enumerate(values))
+            script=script.replace('reg SP 0xf380;reg PC 0xd100',camera+';reg SP 0xf380;reg PC 0xd100')
         script=script.replace('set ::started 1;set ::scene',
             'set ::started 1;debug write {VDP regs} 0 [expr {[debug read {VDP regs} 0]&239}];debug write {VDP regs} 1 [expr {[debug read {VDP regs} 1]&223}];set ::scene')
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n'+script+'\n} p]} {puts stderr $p;exit 2}\n')

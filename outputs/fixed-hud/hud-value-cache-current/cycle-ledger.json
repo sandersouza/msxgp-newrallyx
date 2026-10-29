@@ -1,0 +1,89 @@
+{
+  "cpu_hz": 3579545,
+  "machine": "Panasonic_FS-A1WSX_NR128",
+  "cases": 3333,
+  "scope": "inclusive DI/CALL Prepare/CALL Commit/JP wrapper; emulated elapsed time times CPU clock including wait states; excludes synchronization/render/core/audio",
+  "rom_sha256": "a051fc5d66982e565619470ca4d064e79427b46feab83d9694e1609e86b47ae5",
+  "timings": {
+    "unchanged-all-fields": {
+      "calls": 31,
+      "prepare_mean": 985,
+      "prepare_maximum": 985,
+      "commit_mean": 82,
+      "commit_maximum": 82,
+      "inclusive_maximum": 1067
+    },
+    "one-score-pair-change": {
+      "calls": 31,
+      "prepare_mean": 5147.903225806452,
+      "prepare_maximum": 5151,
+      "commit_mean": 4455,
+      "commit_maximum": 4455,
+      "inclusive_maximum": 9606
+    },
+    "normal-scroll-only": {
+      "calls": 31,
+      "prepare_mean": 2064,
+      "prepare_maximum": 2064,
+      "commit_mean": 1634,
+      "commit_maximum": 1634,
+      "inclusive_maximum": 3698
+    },
+    "scroll-all-phases": {
+      "calls": 255,
+      "prepare_mean": 2305.7098039215684,
+      "prepare_maximum": 10612,
+      "commit_mean": 1775.113725490196,
+      "commit_maximum": 6691,
+      "inclusive_maximum": 17303
+    },
+    "fuel-only-all-native-values": {
+      "calls": 511,
+      "prepare_mean": 2544.307240704501,
+      "prepare_maximum": 4332,
+      "commit_mean": 903.5420743639921,
+      "commit_maximum": 4455,
+      "inclusive_maximum": 8787
+    },
+    "fuel-scroll-and-sentinels": {
+      "calls": 511,
+      "prepare_mean": 6435.115459882583,
+      "prepare_maximum": 18287,
+      "commit_mean": 4949.651663405088,
+      "commit_maximum": 10045,
+      "inclusive_maximum": 28332
+    },
+    "score-carry-and-hi-threshold": {
+      "calls": 18,
+      "prepare_mean": 9882.166666666666,
+      "prepare_maximum": 19686,
+      "commit_mean": 5894.555555555556,
+      "commit_maximum": 10045,
+      "inclusive_maximum": 29731
+    },
+    "round-saturation-and-lifecycle": {
+      "calls": 265,
+      "prepare_mean": 2802.166037735849,
+      "prepare_maximum": 4525,
+      "commit_mean": 1732.188679245283,
+      "commit_maximum": 4455,
+      "inclusive_maximum": 8980
+    },
+    "lives-saturation-and-lifecycle": {
+      "calls": 263,
+      "prepare_mean": 2430.7376425855514,
+      "prepare_maximum": 5767,
+      "commit_mean": 135.1102661596958,
+      "commit_maximum": 1634,
+      "inclusive_maximum": 7401
+    },
+    "sentinel-lifecycle": {
+      "calls": 99,
+      "prepare_mean": 21418.555555555555,
+      "prepare_maximum": 26673,
+      "commit_mean": 9322.252525252525,
+      "commit_maximum": 11163,
+      "inclusive_maximum": 37836
+    }
+  }
+}

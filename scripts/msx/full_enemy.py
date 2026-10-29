@@ -183,6 +183,7 @@ def assembly(source):
         body=replace_once(body,old,new)
     first=body.index('FullEnemy_PrepareOne:\n');last=body.index('FullEnemy_DrawPrepared:\n')
     native=indexed_records(body[first:last]).replace('FullEnemy_PrepareOne:','FullEnemyPrepareNative:').replace('FullEnemy_RadarOne:','FullEnemyRadarNative:')
+    native=native.replace('(player_x)','(Full_CameraCentreX)').replace('(player_y)','(Full_CameraCentreY)')
     native=native.replace('FullEnemyPrepareNative:\n','FullEnemyPrepareNative:\n    call FullEnemyWorldNative\n    call FullEnemyFastPose\n    ret c\n',1)
     native=native.replace('FullEnemyRadarNative:\n','FullEnemyRadarNative:\n    ld a,(Full_EnemyWorldChanged)\n    or a\n    ret z\n',1)
     native=replace_once(native,'''    bit 7,h

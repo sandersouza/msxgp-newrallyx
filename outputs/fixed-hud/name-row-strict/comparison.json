@@ -1,0 +1,48 @@
+{
+  "complete": true,
+  "cases": 8960,
+  "cpu_hz": 3579545,
+  "before_sha256": "fcd2ce5f91b8e469bffcab3ca8a2087cc8171f8b0f7aa5ecde540ccad720b61d",
+  "after_sha256": "f3275106069a76ace2aed8f5a873f58a8c49fa55218dfe5bac5afa50af2620fa",
+  "code_bytes_before": 1548,
+  "code_bytes_after": 2058,
+  "code_bytes_added": 510,
+  "upload_cycles_before": {
+    "calls": 8960,
+    "mean": 21403.66328125,
+    "p95": 38582,
+    "maximum": 38715
+  },
+  "upload_cycles_after": {
+    "calls": 8960,
+    "mean": 20834.66328125,
+    "p95": 38013,
+    "maximum": 38146
+  },
+  "upload_cycles_saved_every_call": 569,
+  "stationary_upload_before": {
+    "calls": 768,
+    "mean": 11771.25,
+    "p95": 13786,
+    "maximum": 13786
+  },
+  "stationary_upload_after": {
+    "calls": 768,
+    "mean": 11202.25,
+    "p95": 13217,
+    "maximum": 13217
+  },
+  "strict_display_on": {
+    "video_hz_nominal": 60,
+    "vdp_r1": 66,
+    "vdp_r9": 128,
+    "before_callbacks": {
+      "fast_vram_callbacks": 0
+    },
+    "after_callbacks": {
+      "fast_vram_callbacks": 0
+    },
+    "all_output_bytes_and_returned_registers_equal": true
+  },
+  "scope": "Synthetic native name-ring differential probe. Existing 8960-case Prepare+Upload contracts and strict 60Hz display-on variant. Exact 3274 bytes/case include cache/pointers/boundaries/seen records/both VRAM name tables. Returned AF/BC/DE/HL/IX/IY/SP also compared. No integrated gameplay/cadence/hardware claim; integrated resident-space guard remains the parent build responsibility."
+}

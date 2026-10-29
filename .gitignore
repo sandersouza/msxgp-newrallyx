@@ -20,3 +20,7 @@ __pycache__/
 
 # Pinned local tools and synthetic toolchain build artifacts
 .tools/
+
+# Native game imagery belongs with ignored contributor references, not Git.
+/outputs/**/title*.png
+/outputs/**/hardware-check.png

@@ -1,0 +1,25 @@
+{
+  "recordCount": 2,
+  "truncated": false,
+  "metadata": {
+    "revision": "ote7to",
+    "target": {
+      "id": "wb/6f7417",
+      "beforeLines": 0,
+      "afterLines": 0
+    },
+    "kind": {
+      "requested": "region",
+      "tokens": [
+        "region"
+      ]
+    },
+    "include": {
+      "tokens": []
+    },
+    "exclude": {
+      "tokens": []
+    },
+    "notices": []
+  }
+}

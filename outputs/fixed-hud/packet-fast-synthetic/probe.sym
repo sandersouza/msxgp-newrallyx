@@ -1,0 +1,7 @@
+Baseline_Transfer: EQU 0x0000405D
+GamePacketFast_End: EQU 0x00004090
+GamePacketFast_Transfer: EQU 0x00004061
+GamePacketFast_Transfer.burst: EQU 0x00004066
+GamePacketFast_Transfer.tail: EQU 0x0000408D
+boot: EQU 0x00004010
+main: EQU 0x0000405A

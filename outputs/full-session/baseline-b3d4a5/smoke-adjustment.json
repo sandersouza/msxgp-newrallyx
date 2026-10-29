@@ -1,0 +1,78 @@
+{
+  "rom_sha256": "b3d4a58207c75b5beb2484c7f7f6e409aa7a20ce6b4dc8c57871ee1325948a98",
+  "baseline_rom_sha256": "8e38359a68fb8e17621f5e40229c91a0f919596526dcc1c12e5a2c96634e7c5b",
+  "bytes_changed": 2980,
+  "graphics_reduction": false,
+  "smoke_regression": {
+    "committed_frames": 300,
+    "native_placements": 14,
+    "counter_resets": 1,
+    "fine_phases": {
+      "horizontal": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "vertical": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "smoke_rows": [
+      10240,
+      10271
+    ],
+    "phase_cache": [
+      10272,
+      10279
+    ],
+    "scope": "Each committed frame checks full HUD/radar and both boundary columns with an independent pixel oracle. Real keyboard only; three native enemies; no native RAM fixtures."
+  },
+  "baseline_failure": {
+    "rom_sha256": "8e38359a68fb8e17621f5e40229c91a0f919596526dcc1c12e5a2c96634e7c5b",
+    "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-puoh7wlj",
+    "failed_snapshot": "smoke-0047",
+    "failure": "Boundary0 row6 source18 tile178",
+    "overlap": "pattern_phases2800..2807 aliases GameSmoke_Rows2800..281F"
+  },
+  "audio": {
+    "reference": "references/experiments/arcade-motion-audio/reference.json",
+    "original_smoke_bursts": 37,
+    "psg_frames": 2,
+    "leased_music_channel": "B",
+    "engine_channel": "C",
+    "rms_vs_immediate_baseline": [
+      {
+        "cue": "smoke1",
+        "previous": 2636.087525226938,
+        "current": 2721.004543816311,
+        "ratio": 1.0322132773577246
+      },
+      {
+        "cue": "smoke2",
+        "previous": 2619.5150440771986,
+        "current": 2363.0625952269816,
+        "ratio": 0.9020992647360191
+      }
+    ]
+  },
+  "active_profile": {
+    "fps": 29.906615025450236,
+    "active_frames": 246,
+    "late_frames": 1,
+    "scope": "Short directional workload, not a complete phase. Active endpoints require native round5, three enemies, no death/bonus and active session. Excludes110 stopped/death intervals. UI/cold and capture costs use separate controlled event ledgers; never mix their samples with active FPS. Inclusive parents overlap children; never sum them. IRQ spans exclude hardware entry/vector. No physical hardware measurement."
+  },
+  "overall_passed": false,
+  "known_issue": "Long steering test fails: persistent corner stall, five poses after refresh5000."
+}

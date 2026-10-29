@@ -36,6 +36,9 @@ Full_CopyPresentation:
     ldir
     ret
 
+Full_DebugNextRound:
+    ld a,1
+    ld (Full_ChallengeBypass),a
 Full_NextRound:
     ld a,4
     ld (Session_State),a
@@ -44,6 +47,21 @@ Full_NextRound:
     ld hl,Full_Transitions
     inc (hl)
     call show_scene
+    ld a,(Full_ChallengeBypass)
+    ld b,a
+    xor a
+    ld (Full_ChallengeBypass),a
+    ld (Session_Drawn),a
+    ld a,($e1b0)
+    and 3
+    jr nz,.game
+    ld a,b
+    or a
+    jr nz,.game
+    ld a,7
+    ld (Session_State),a
+    ret
+.game:
     xor a
     ld (Session_State),a
     ld (Session_Drawn),a

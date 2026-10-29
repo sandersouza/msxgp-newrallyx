@@ -1,4 +1,5 @@
 ; Banked UI only. Gameplay remains resident; original glyphs stay 8x8.
+    IF !FULL_GAME
     jp Session_Frame
     jp Session_AfterStart
     jp Session_Reset
@@ -10,6 +11,7 @@
     jp Full_DrawRound
     jp Full_DemoFrame
     jp Full_DebugAdvance
+    ENDIF
     ENDIF
 
 ; Keep only movement/camera state. Fuel, score, enemy state and clocks still tick.
@@ -104,15 +106,29 @@ Session_Reset:
     ldir
     inc a
     ld (Session_State),a
+    IF FULL_GAME
+    xor a
+    ld (Full_ChallengeBypass),a
+    ld (Full_UIHeld),a
+    ld (Full_UIEdges),a
+    ENDIF
     ret
 Session_Frame:
+    IF FULL_GAME
+    jp Full_UIFrame
+    ENDIF
     IF FULL_GAME
     call Full_DebugRead       ; Latch held F5 on UI screens without advancing.
     ENDIF
     ld a,(Session_State)
+    IF AUDIO_ENABLED
+    cp 5
+    jr z,.input             ; Keep the selected-player screen during the start cue.
+    ENDIF
     ld hl,Session_Drawn
     cp (hl)
     call nz,Session_Draw
+.input:
     in a,($aa)
     and $f0
     out ($aa),a
@@ -133,10 +149,19 @@ Session_Frame:
     jr nz,.credit
     dec (hl)                 ; Original credit counter saturates at255.
 .credit:
+    IF AUDIO_ENABLED
+    ld a,$80
+    ld ($e9f6),a
+    ENDIF
     ld a,(Session_Credits)
     ld ($e024),a
     call Session_DrawCredits
 .start:
+    IF AUDIO_ENABLED
+    ld a,(Session_State)
+    cp 5
+    jp z,.intro_wait
+    ENDIF
     IF FULL_GAME
     ld a,(Session_Edges)
     and 6
@@ -167,10 +192,29 @@ Session_Frame:
     ld de,Session_High
     ld bc,8
     ldir
+    IF AUDIO_ENABLED
+    ld a,5
+    ld (Session_State),a
+    ld a,1
+    ld (Audio_NewScene),a
+    ld a,$80
+    ld ($e9f5),a
+    ld a,1
+    ret
+.intro_wait:
+    ld a,($e9f5)
+    bit 7,a
+    jr nz,.intro_playing
+    ENDIF
     xor a
     ld (Session_Ready),a
     ld a,2                   ; Resident caller reloads the original initial state.
     ret
+    IF AUDIO_ENABLED
+.intro_playing:
+    ld a,1
+    ret
+    ENDIF
 .waiting:
     IF FULL_GAME
     call Full_AttractWait
@@ -210,6 +254,9 @@ Session_AfterStart:
     jp Score_Publish
 
 Session_Draw:
+    IF FULL_GAME
+    jp Full_UIDraw
+    ENDIF
     IF FULL_GAME
     ld hl,0
     ld (Full_AttractClock),hl

@@ -1,0 +1,22 @@
+{
+  "complete": true,
+  "cases": 144,
+  "transitions": 72,
+  "back_buffers": 2,
+  "exact_vram_bytes_per_case": 131072,
+  "strict_vram_callbacks": 0,
+  "cpu_hz": 3579545,
+  "video_hz_nominal": 60,
+  "machine": "Panasonic_FS-A1WSX_NR128",
+  "hardware_sprite_limits": true,
+  "helper_bytes": 42,
+  "helper_sha256": "ba0a654f5307ff17de0fdcd25846c8db875d7371fb84755ba5e194661e9621d3",
+  "rom_sha256": "d218de53acee5c35b0193afeab0a7630796c3d0b3e36918e3a07160569911c6e",
+  "cycles": {
+    "mean": 11309.277777777777,
+    "minimum": 330,
+    "maximum": 20821
+  },
+  "bundle": null,
+  "scope": "Synthetic four-atlas payloads and existing packet worker verbatim.  Inclusive helper entry-to-return elapsed cycles including wait states. Full128KiB VRAM plus exact restored phase mapper checked. SCREEN4 display-on60Hz strict callback. No integrated gameplay/presentation/physical-hardware claim."
+}

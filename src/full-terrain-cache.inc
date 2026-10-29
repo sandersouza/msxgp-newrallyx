@@ -33,7 +33,26 @@ Full_RenderRestart EQU $e3f1
 Full_PoolFault EQU $e3f8
 Full_FrameOriginX EQU $e3f2
 Full_FrameOriginY EQU $e3f4
+Full_PlayerPose EQU $d158
+Full_PlayerNextPose EQU $d15a
+Full_PlayerActivePose EQU $d15c
+Full_CameraCentreX EQU $d15e
+Full_CameraCentreY EQU $e3f6
 Full_SealedFrame EQU $c678
+; Signed origin HL, unsigned maximum BC. Preserve BC for both axes.
+Full_ClampWorldAxis:
+    bit 7,h
+    jr nz,.zero
+    or a
+    sbc hl,bc
+    jr c,.restore
+    ld hl,0
+.restore:
+    add hl,bc
+    ret
+.zero:
+    ld hl,0
+    ret
 ; Initialization publishes immediately. Gameplay scroll changes only with the
 ; complete deferred packet, so both axes share the same physical frame.
 Full_LatchScrollY:
@@ -157,6 +176,11 @@ Full_CheckCount EQU $d2f9
 Full_CheckStep EQU $d2fa
 Full_CacheHeld EQU $d2ea
 Full_CacheClear:
+    IF FLAG_POPUPS
+    xor a
+    ld (Popup_Active),a
+    ld (Popup_Pending),a
+    ENDIF
     ld a,FULL_TERRAIN_BANK
     ld ($7000),a
     call Full_CacheEnter

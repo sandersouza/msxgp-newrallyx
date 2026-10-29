@@ -20,10 +20,8 @@ def resources(assets,black,white,*,full_game=False,root=None,palette=None):
     if full_game:
         from .attract import cast
         image,background=cast(root,palette)
-        text(image,'HIGH SCORE',16,0)
-        text(image,'5 COIN  1 START  2 TWO PLAYERS',8,184)
-        from .full_hud import CREDIT_LABEL_X
-        text(image,'CREDIT',CREDIT_LABEL_X,192)
+        from .full_ui import cast_reveal
+        image,_=cast_reveal(image,background)
     else:
         image=bytearray([black])*(256*212)
     for value,y in (() if full_game else (('NEW RALLY-X',32),('5: CREDIT   1: START',128))):

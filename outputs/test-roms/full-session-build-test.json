@@ -1,0 +1,136 @@
+{
+  "rom": "outputs/test-roms/newrallyx-screen4-full-game-test.rom",
+  "rom_sha256": "c3e74a1d452e5beed05f7b8e98b41f71caf236d40de1b6b54c1c23eedf2115d1",
+  "mapper": "ASCII16",
+  "webmsx_rom": "outputs/test-roms/newrallyx-screen4-full-game-test [ASCII16].rom",
+  "bytes": 4177920,
+  "source_revision": "6d562a791b0cc242119a31dd686ff8e93eb94fe0",
+  "presenter": "Optimized SCREEN4 gameplay; shared SCREEN5 UI",
+  "enemy_policy": "Native full-session progression",
+  "minimum_mapper_ram_kib": 128,
+  "status": "Experimental test cartridge; final visual/audio/timing acceptance remains with user",
+  "source_bundle": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-test",
+  "test_mode": true,
+  "hardware_check": true,
+  "title": {
+    "caption": "[5] insert coin - [1/2] start player(s)",
+    "caption_y": 186,
+    "caption_x": 11,
+    "brand": "namco - retrowork",
+    "brand_y": 198,
+    "brand_x": 47,
+    "brand_width": 162,
+    "brand_height": 10,
+    "shift_y": -8,
+    "brand_source": "User-supplied finished artwork; no generated letter shapes",
+    "blink_pixels": [
+      47633,
+      47634,
+      47635,
+      47636,
+      47637,
+      47889,
+      48145,
+      48146,
+      48147,
+      48404,
+      48661,
+      48916,
+      49169,
+      49170,
+      49171,
+      47743,
+      47998,
+      47999,
+      48253,
+      48255,
+      48511,
+      48767,
+      49023,
+      49277,
+      49278,
+      49279,
+      49280,
+      49281,
+      48263,
+      48518,
+      48773,
+      49028,
+      49283,
+      47754,
+      47755,
+      47756,
+      48009,
+      48013,
+      48269,
+      48524,
+      48778,
+      48779,
+      49033,
+      49289,
+      49290,
+      49291,
+      49292,
+      49293
+    ],
+    "blink_keys": [
+      "5",
+      "1/2"
+    ],
+    "blink_half_period_refreshes": 32,
+    "inverted_keys": [],
+    "brand_artwork": {
+      "x": 47,
+      "y": 198,
+      "width": 162,
+      "height": 10,
+      "source_size": [
+        162,
+        10
+      ],
+      "uniform_scale": 1,
+      "bottom_margin": 4,
+      "method": "Exact approved PNG alpha at1:1; horizontal centering and4px bottom margin; foreground mapped to the existing red palette entry",
+      "source_sha256": "3765cea60fe5b747338019e9e0b7612fef7328f6167ce35a4a28c48808c096f2"
+    },
+    "blink_rects": [
+      [
+        16,
+        186,
+        8,
+        8
+      ],
+      [
+        124,
+        186,
+        20,
+        8
+      ]
+    ],
+    "logo": {
+      "enabled": true,
+      "include": "session-msx-logo.inc",
+      "source_crop": [
+        20,
+        70,
+        182,
+        130
+      ],
+      "scale_divisor": 3,
+      "rect": [
+        194,
+        8,
+        54,
+        20
+      ],
+      "colors": "Black label and white MSX only; blue surround excluded",
+      "source_sha256": "8cbeb5c7c09559878420f732e48a3fbe4faca9b338a66035c6ad40b04ae161b0"
+    }
+  },
+  "hud_module": {
+    "name": "compact",
+    "include": "hud/compact.inc",
+    "small_round": true,
+    "symmetric_gauge": true
+  }
+}

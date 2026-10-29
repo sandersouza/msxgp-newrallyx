@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ProjectTests(unittest.TestCase):
-    def test_make_run_builds_only_when_missing_and_stops_on_build_failure(self):
+    def test_make_legacy_run_rebuilds_and_stops_on_build_failure(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             (root/'scripts').mkdir()
@@ -36,19 +36,19 @@ class ProjectTests(unittest.TestCase):
             )
 
             def make_run():
-                return subprocess.run(['make', 'run', f'PYTHON={sys.executable}'],
+                return subprocess.run(['make', 'run', 'LEGACY=1', f'PYTHON={sys.executable}'],
                                       cwd=root, capture_output=True, text=True)
 
             self.assertEqual(make_run().returncode, 0)
             rom = root/project.ROM
             rom.write_bytes(b'AB existing ROM')
             self.assertEqual(make_run().returncode, 0)
-            self.assertEqual(rom.read_bytes(), b'AB existing ROM')
-            self.assertEqual((root/'calls').read_text().splitlines(), ['build', 'run', 'run'])
+            self.assertEqual(rom.read_bytes(), b'AB synthetic ROM')
+            self.assertEqual((root/'calls').read_text().splitlines(), ['build', 'run', 'build', 'run'])
             rom.unlink()
             (root/'fail-build').touch()
             self.assertNotEqual(make_run().returncode, 0)
-            self.assertEqual((root/'calls').read_text().splitlines(), ['build', 'run', 'run', 'build'])
+            self.assertEqual((root/'calls').read_text().splitlines(), ['build', 'run', 'build', 'run', 'build'])
 
     def test_rebuild_publishes_successful_rom_and_preserves_previous_on_failure(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -145,8 +145,8 @@ class ProjectTests(unittest.TestCase):
             (root/'scripts/project.py').write_text(
                 "import json,sys\nfrom pathlib import Path\n"
                 "with Path('calls').open('a') as log: log.write(json.dumps(sys.argv[1:])+'\\n')\n")
-            for args in [('build', 'NO_HUD=1'), ('build', 'NATIVE=1'), ('run', 'LATEST=1'), ('build','STAGE=1'),('build','STAGE=0','PLAYER_BLITTER=1','RADAR_BLITTER=1'),('build','STAGE=9','HZ=60','SPRITE_FLICKER=1','FLICKER_STRESS=1'),('build','STAGE=9','ENEMIES=3'),('build',),('build','FULL_GAME=0'),('build','HZ=50')]:
-                result = subprocess.run(['make', *args, f'PYTHON={sys.executable}'],
+            for args in [('build', 'NO_HUD=1'), ('build', 'NATIVE=1'), ('run', 'LATEST=1'), ('build','STAGE=1'),('build','STAGE=0','PLAYER_BLITTER=1','RADAR_BLITTER=1'),('build','STAGE=9','HZ=60','SPRITE_FLICKER=1','FLICKER_STRESS=1'),('build','STAGE=9','ENEMIES=3'),('build',),('build','FULL_GAME=0'),('build','HZ=50'),('build','AUDIO=0')]:
+                result = subprocess.run(['make', *args, 'LEGACY=1', f'PYTHON={sys.executable}'],
                                         cwd=root, capture_output=True, text=True)
                 self.assertEqual(result.returncode, 0, result.stderr)
             calls = [json.loads(line) for line in (root/'calls').read_text().splitlines()]
@@ -155,8 +155,9 @@ class ProjectTests(unittest.TestCase):
                                     ['build','--stage','1'],['build','--player-blitter','--radar-blitter','--stage','0'],
                                     ['build','--sprite-flicker','--flicker-stress','--hz','60','--stage','9'],
                                     ['build','--stage','9','--enemies','3'],
-                                    ['build','--full-game','--stage','12'],['build','--stage','12'],
-                                    ['build','--full-game','--hz','50','--stage','12']])
+                                    ['build','--full-game','--audio','--stage','12'],['build','--stage','12'],
+                                    ['build','--full-game','--audio','--hz','50','--stage','12'],
+                                    ['build','--full-game','--stage','12']])
 
 
 if __name__ == '__main__':

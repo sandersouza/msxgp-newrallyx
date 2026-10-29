@@ -272,10 +272,7 @@ Full_PresentCommit:
 .end_marker:
     ld a,216
     out ($98),a
-    ld hl,(Full_PresentNextX)
-    ld (Full_PresentActiveX),hl
-    ld a,(Full_PresentNextY)
-    ld (irq_scroll_y),a
+    call Full_CommitCamera
     xor a
     ld (Full_PresentReady),a
     ld a,(ticks)
