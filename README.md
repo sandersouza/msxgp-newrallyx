@@ -11,6 +11,9 @@ SCREEN 5 presenter with sprite HUD remains available as an independent build.
 
 The port targets **at least 128 KB of RAM mapper and 128 KB VRAM**. The openMSX
 launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
+See the [current architecture](docs/architecture.md) for source ownership and
+[maintenance guide](docs/maintenance.md) for dependency/retention decisions,
+baseline ROM hashes and cycle-ledger reproduction.
 
 ## Port direction
 
@@ -53,7 +56,7 @@ The following historical renderer details and diagnostic flags describe
 `LEGACY=1`. For the optimized presenter and measured limits see
 [the full-session laboratory](experiments/fixed-hud/README.md).
 
-The default `make build` cartridge provides PSG music/effects, normal/challenge rounds,
+The `LEGACY=1` cartridge provides PSG music/effects, normal/challenge rounds,
 original flag/rock placement on four maps, MSX-adapted enemies and native smoke, fuel bonuses,
 death/restart, alternating two-player sessions, game over and an autonomous
 attract demonstration. It retains original-size graphics, the complete car
@@ -75,8 +78,8 @@ missed publication slots and camera waits remain measured separately from
 average FPS. See [current measurements and limits](docs/issue12-performance-analysis.md).
 
 ```sh
-make build
-make run
+make build LEGACY=1
+make run LEGACY=1
 ```
 
 Press **5** for a credit, **1** for one player or **2** for two players (two
@@ -104,8 +107,8 @@ publish `references/build/newrallyx.rom` only after success in legacy mode.
 cartridges remain available through `make checkpoints` and
 `make run CHECKPOINT=<name>`. An explicit `ROM=<path>` selects another cartridge.
 
-`make build FULL_GAME=0` reconstructs the bounded Issue 11 stage12 reference.
-Earlier diagnostic stages remain available with `STAGE=0..11`; their controls,
+`make build LEGACY=1 FULL_GAME=0` reconstructs the bounded Issue 11 stage12 reference.
+Earlier diagnostic stages remain available with `LEGACY=1 STAGE=0..11`; their controls,
 contracts and historical limitations are in the [checkpoint guide](docs/checkpoints.md).
 They do not provide complete-game progression. `NATIVE=1` remains a compatibility
 alias for the bounded selected-routine reference.
@@ -116,7 +119,7 @@ VDP access and raster IRQs use 3.58 MHz. Other machines retain their base clock;
 the reported cadence depends on the factory mode. The launcher uses an isolated FS-A1WSX
 configuration and contributor-supplied BIOS under `references/msxbios/`.
 See [setup](docs/setup.md#machine-and-contributor-supplied-bios).
-Bounded stages retain 50 Hz; `make build HZ=50` explicitly selects that refresh
+Bounded stages retain 50 Hz; `make build LEGACY=1 HZ=50` explicitly selects that refresh
 for a full-game diagnostic.
 Validation distinguishes real scanout recordings, source-pixel/VRAM proofs,
 natural routes and controlled population fixtures. Physical hardware and full
@@ -228,9 +231,14 @@ make run
 | `make capture-scenes` | Capture the arcade reference frames with MAME |
 | `make analyze-scenes` | Analyze normal and overlap captures into build input bundles |
 | `make prepare-scenes` | Capture scenes, then analyze both input bundles in order |
-| `make build` | Rebuild and publish `references/build/newrallyx.rom` |
-| `make run` | Build if the default ROM is missing, then start openMSX |
-| `make test` | Run the automated test suite |
+| `make build` | Rebuild optimized SCREEN 4 and export the normal/ASCII16 cartridge copies |
+| `make build TEST_MODE=1` | Rebuild a separate optimized test-mode cartridge |
+| `make build LEGACY=1` | Rebuild SCREEN 5 and publish `references/build/newrallyx.rom` |
+| `make run` | Rebuild the selected presenter, then start isolated openMSX |
+| `make run ROM=<path>` | Launch an existing cartridge without rebuilding |
+| `make run CHECKPOINT=<name>` / `make run LATEST=1` | Launch a named checkpoint / latest sealed legacy artifact |
+| `make test` | Run general unit tests |
+| `make test-experiments` | Rebuild and verify the full optimized session |
 | `make clean` | Remove generated builds and emulator sessions |
 
 Plain `make` is equivalent to `make build`. Renderer verification uses its
@@ -240,6 +248,10 @@ script CLIs.
 
 | Path | Contents |
 | --- | --- |
+| `docs/architecture.md` | Current SCREEN 4/5 source, memory, mapper and IRQ ownership |
+| `docs/maintenance.md` | Inventory, generated-output retention and cycle-ledger reproduction |
+| `experiments/fixed-hud/` | Default SCREEN 4 presenter, integration adapters and maintained laboratory workloads |
+| `src/` | Shared Z80 helpers and independent SCREEN 5 legacy sources |
 | `docs/setup.md` | Environment prerequisites, toolchain, troubleshooting and validation evidence |
 | `docs/graphics-extraction.md` | ROM requirements, extraction schema, provenance and reference checks |
 | `docs/full-gameplay-inventory.md` | Complete-game integration, evidence and remaining limits |
@@ -251,12 +263,15 @@ script CLIs.
 | `scripts/graphics/` | ROM inventory, graphics decoding/export and MAME reference harness |
 | `scripts/extract_graphics.py` | Graphics-extraction CLI |
 | `tests/` | Automated tests and synthetic fixtures |
+| `outputs/` | Local generated cartridges, reports, workbooks and emulator evidence; ignored by Git |
+| `docs/measurements/audio/` | Retained historical metadata used by audio regression checks |
 | `references/roms/` | Local contributor-supplied ROMs; ignored by Git |
 | `references/assets/` | Local extracted graphics; ignored by Git |
 | `references/disassembly/` | Local disassembly material; ignored by Git |
 | `.venv/`, `.tools/` | Generated environment, managed tools and smoke-test cache; ignored by Git |
 
-Use the setup, extraction, map and renderer guides for the supported workflow.
+Start with setup and the current architecture; bounded-stage renderer/map guides
+and old checkpoint measurements retain their explicitly historical scopes.
 
 ## Validation and contributions
 

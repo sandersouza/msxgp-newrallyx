@@ -202,7 +202,7 @@ after time 90 {{puts stderr "Audio fixture timeout";exit 3}}
         assert amplitude>10,'Smoke was silent'
         smoke.append(dict(cue=name,rms=amplitude,levels=smoke_levels,tone_periods=smoke_meta['tone_periods'],
                           envelope_shape=8,leased_channels=['B','C'],sound_frames=smoke_frames,native_placement_trigger=True))
-    smoke_baseline=ROOT/'outputs/full-session/baseline-15c931/audio-smoke-baseline.json'
+    smoke_baseline=ROOT/'docs/measurements/audio/smoke-15c931.json'
     if smoke_baseline.exists():
         prior=json.loads(smoke_baseline.read_text())
         if prior['rom_sha256']!=hashlib.sha256(rom).hexdigest():
@@ -212,7 +212,7 @@ after time 90 {{puts stderr "Audio fixture timeout";exit 3}}
                 current.update(baseline_rms=previous_smoke['rms'],amplitude_ratio=ratio,gain_db=20*math.log10(ratio))
     # Measure the added low-frequency body separately from overall noise RMS.
     # The baseline is immutable evidence from the pre-cosmetics cartridge.
-    crash_baseline=ROOT/'outputs/full-session/baseline-70d633/verification.json'
+    crash_baseline=ROOT/'docs/measurements/audio/crash-70d633.json'
     bass_before=None
     if crash_baseline.exists():
         prior=json.loads(crash_baseline.read_text())
@@ -260,7 +260,7 @@ after time 90 {{puts stderr "Audio fixture timeout";exit 3}}
         crash.append(case)
     assert .6<crash[1]['initial_rms']/crash[0]['initial_rms']<1.5,'Second crash envelope did not retrigger'
     engine=[]
-    baseline_index=ROOT/'outputs/full-session/baseline-5451bd/verification.json'
+    baseline_index=ROOT/'docs/measurements/audio/engine-5451bd.json'
     baseline=None
     if baseline_index.exists():
         info=json.loads(baseline_index.read_text())

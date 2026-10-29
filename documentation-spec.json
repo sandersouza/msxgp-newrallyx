@@ -1,0 +1,52 @@
+{
+  "project": {
+    "name": "newrallyx",
+    "repositorySlug": "sandersouza/msxgp-newrallyx",
+    "defaultBranch": "main",
+    "language": "English",
+    "description": "Contributor-built MSX2+ port with an optimized SCREEN 4 gameplay presenter and an independently maintained SCREEN 5 legacy presenter."
+  },
+  "scope": {
+    "issue": "https://github.com/sandersouza/msxgp-newrallyx/issues/34",
+    "branch": "chore/34-organize-stabilized-port",
+    "baseline": "1695c5a461c9714aa98c17dbcd032d68d7746d60",
+    "policy": "Use the established repository documentation layout. Document current contracts and retain dated measurements; module extraction belongs to issue 32. No new Backstage service model, graphical changes, shared-history rewrite, commits or publication are requested."
+  },
+  "inventory": {
+    "buildAndRuntime": {
+      "buildTool": "GNU Make, Python 3.14/Pillow, sjasmplus 1.24.0",
+      "evidence": ["Makefile:1", "requirements.txt:3", "scripts/project.py:37"],
+      "entrypoints": ["Makefile", "experiments/fixed-hud/targets.mk", "scripts/project.py"],
+      "integrationReference": "6d562a791b0cc242119a31dd686ff8e93eb94fe0"
+    },
+    "runtimeSources": ["src/", "experiments/fixed-hud/"],
+    "requiredInputs": ["references/roms/", "references/assets/", "references/scenes/", "references/msxbios/"],
+    "maintainedRegression": ["tests/", "experiments/fixed-hud/test_*.py", "experiments/fixed-hud/session_*verify.py", "docs/measurements/audio/"],
+    "historicalEvidence": ["docs/", "outputs/ (local, ignored; exact hashes retained in docs/retired-artifacts.json)"],
+    "persistence": {"hasDatabase": false},
+    "exposedInterfaces": [],
+    "deletionPolicy": "A missing static reference is a review candidate, never proof of dead code. Keep contributor evidence locally. Confirm retention before untracking generated artifacts."
+  },
+  "outputs": {
+    "files": [
+      {"path": "README.md", "purpose": "Current entry points and navigation"},
+      {"path": "docs/setup.md", "purpose": "Contributor setup and current build selection"},
+      {"path": "docs/checkpoints.md", "purpose": "Dated legacy reference history"},
+      {"path": "docs/architecture.md", "purpose": "Current source, build and runtime ownership"},
+      {"path": "docs/maintenance.md", "purpose": "Dependency inventory, retention decisions and reproducible validation"},
+      {"path": "docs/repository-inventory.json", "purpose": "Generated file classifications and conservative static callers"},
+      {"path": "docs/retired-artifacts.json", "purpose": "Per-file retention decision, generator and original hashes"},
+      {"path": "experiments/fixed-hud/README.md", "purpose": "Maintained presenter and historical laboratory navigation"},
+      {"path": "experiments/fixed-hud/BUILD-PROFILES.md", "purpose": "Current presenter selection and pinned source boundary"},
+      {"path": "experiments/fixed-hud/FULL-SESSION.md", "purpose": "Current integration contracts and dated caveats"},
+      {"path": "experiments/fixed-hud/TITLE.md", "purpose": "Correct current wordmark placement"}
+    ]
+  },
+  "generation": {
+    "pipeline": ["Record baseline ROMs", "Inventory callers and generated outputs", "Document evidence-backed contracts", "Review retention before cleanup", "Rebuild and compare ROMs", "Run scoped regressions and matched three-enemy profile"],
+    "rules": ["No invented runtime components", "No timestamps in generated inventory", "No original ROM, extracted imagery, BIOS or emulator RAM published", "Keep historical ROM hashes and performance limitations explicit"]
+  },
+  "validation": {
+    "checks": ["All listed documentation outputs exist", "Local Markdown links resolve", "Builds succeed for default, TEST_MODE=1 and LEGACY=1", "ROM hashes are compared with baseline", "Relevant unit and emulator regressions pass or failures remain explicit", "Three-moving-enemy measurements identify ROM, workload, CPU/video and tail costs", "Unrelated contributor files remain byte-identical"]
+  }
+}

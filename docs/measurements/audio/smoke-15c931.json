@@ -1,0 +1,105 @@
+{
+  "passed": true,
+  "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58",
+  "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-gwkrtvef",
+  "seconds": 26.76875283446712,
+  "engine": [
+    {
+      "velocity": 0,
+      "expected_fundamental_hz": 49.93784877232143,
+      "measured_pcm_hz": 49.98778662109375,
+      "all_four_headings_identical": true,
+      "baseline_rms": 1859.5379802147925,
+      "rms": 1598.8593306489959,
+      "amplitude_ratio": 0.8598153668602746,
+      "reduction_percent": 14.01846331397254
+    },
+    {
+      "velocity": 1,
+      "expected_fundamental_hz": 49.93784877232143,
+      "measured_pcm_hz": 49.98778662109375,
+      "all_four_headings_identical": true,
+      "baseline_rms": 1864.2795080726773,
+      "rms": 1594.4644019840707,
+      "amplitude_ratio": 0.8552711088008762,
+      "reduction_percent": 14.47288911991238
+    },
+    {
+      "velocity": 2,
+      "expected_fundamental_hz": 65.95564932193396,
+      "measured_pcm_hz": 65.95564932193396,
+      "all_four_headings_identical": true,
+      "baseline_rms": 1848.802028607675,
+      "rms": 1560.6949821774717,
+      "amplitude_ratio": 0.8441655504634125,
+      "reduction_percent": 15.583444953658754
+    }
+  ],
+  "smoke": [
+    {
+      "cue": "smoke1",
+      "rms": 467.3932640588231,
+      "levels": [
+        10,
+        9,
+        7,
+        4
+      ],
+      "noise_periods": [
+        4,
+        8,
+        12,
+        18
+      ],
+      "sound_frames": 4,
+      "native_placement_trigger": true
+    },
+    {
+      "cue": "smoke2",
+      "rms": 457.35800657544866,
+      "levels": [
+        10,
+        9,
+        7,
+        4
+      ],
+      "noise_periods": [
+        4,
+        8,
+        12,
+        18
+      ],
+      "sound_frames": 4,
+      "native_placement_trigger": true
+    }
+  ],
+  "crash": [
+    {
+      "cue": "crash1",
+      "initial_rms": 8243.055646298975,
+      "tail_rms": 434.08653527008494
+    },
+    {
+      "cue": "crash2",
+      "initial_rms": 8240.129586890278,
+      "tail_rms": 435.7606169801442
+    }
+  ],
+  "cue_ticks_30hz": {
+    "gameover": 249,
+    "challenge_intro": 193,
+    "challenge": 31,
+    "cold": 12
+  },
+  "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance.",
+  "engine_baseline": {
+    "rom_sha256": "5451bd8933b22f1fa334dbc538a905b5615cf1ea58623af23933e900cdf3ffa2",
+    "wav": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-2x6n5jfb/engine-and-cues.wav",
+    "wav_sha256": "f0115b312d340f2d66401252cef7ccde97f00a8f3f02b73c49152f21dd692fa1",
+    "window_seconds": [
+      0.15,
+      1.95
+    ],
+    "method": "DC-removed PCM RMS at each velocity across all four headings; matched machine/PSG settings"
+  }
+}

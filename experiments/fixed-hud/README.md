@@ -1,9 +1,14 @@
 # Fixed side HUD hardware-scroll laboratory
 
-The default `make run-experiments` now opens the complete integrated game. Use
-`make -C /Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx run-experiments`
-from another checkout or directory. Arrow keys steer; Space releases smoke.
+`make run` and its compatibility alias `make run-experiments` open the complete
+integrated SCREEN 4 game from this checkout. From another directory use
+`make -C <checkout> run`; select the intended checkout explicitly. Arrow keys
+steer; Space releases smoke. `make run LEGACY=1` selects the maintained SCREEN 5
+build from current sources. The historical laboratory directory name is retained
+because its modules, tests and compatibility commands are still used.
 See [FULL-SESSION.md](FULL-SESSION.md) for current scope, tests and timing.
+See [the architecture](../../docs/architecture.md) and
+[maintenance procedure](../../docs/maintenance.md) for ownership and retention.
 The previous benchmark is retained as `make run-first-stage` and documented in
 [FIRST-STAGE.md](FIRST-STAGE.md).
 The free-camera renderer documented below is retained as `run-hud-lab`.

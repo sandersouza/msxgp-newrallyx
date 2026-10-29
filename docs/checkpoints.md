@@ -1,8 +1,23 @@
 # Local test checkpoints
 
-## Approved session delivery
+## Current selection versus historical checkpoints
 
-`make run LATEST=1` selects `11-r12-smoke-irq-v260`. Press **5** for credit and **1**
+The current default is the integrated SCREEN 4 presenter. `make run` rebuilds
+that cartridge; `make run LEGACY=1` rebuilds the maintained SCREEN 5 baseline.
+See [build profiles](../experiments/fixed-hud/BUILD-PROFILES.md).
+`LATEST=1` selects the most recently published sealed legacy build, not a fixed
+checkpoint and not the optimized export. Use `make checkpoints` to inspect local
+availability and an explicit `CHECKPOINT=...` for a named historical artifact.
+
+The entries below are historical delivery records. Their unqualified build
+commands describe the checkout at the time, before SCREEN 4 became the default
+on 2026-10-29. Current bounded-stage rebuilds require `LEGACY=1`; reproducing an
+old ROM also requires its original revision/options and contributor inputs.
+Historical test counts, controls, hashes and timing apply only to those builds.
+
+## Approved session delivery — 2026-10-24 legacy history
+
+The named `11-r12-smoke-irq-v260` delivery used the following controls. Press **5** for credit and **1**
 to start. Arrows/joystick1 steer; **Space**, Ctrl or triggerA releases smoke;
 **P** pauses; Home resets. The full HUD stays enabled. Fuel below six of sixty
 native units turns red; exactly10% remains yellow. The S radar marker alternates
@@ -31,8 +46,8 @@ All observed header reservations stay in their refresh; standard clocks and
 hardware sprite limits remain enabled. See [the delivery notes](completion-integration-plan.md).
 
 The approved reference alias is `make run CHECKPOINT=11-r12-approved-v260`.
-Plain `make build`/`make run` also select this session. The final delivery suite
-passes all 337 authored unit tests; the fresh default ROM is byte-identical to
+At that revision, plain `make build`/`make run` also selected this session. Its delivery suite
+passed all 337 authored unit tests; that revision's default ROM was byte-identical to
 the approved v260 cartridge.
 
 ## Previous session candidate
@@ -63,8 +78,8 @@ controller validation are outside this candidate. Twenty sprite entries leave
 twelve free; real scanline culling remains enabled. See the
 [full validation and reproduction record](completion-integration-plan.md).
 
-The user approved v260 on 2026-10-24. Plain `make build` now selects Stage12;
-`newrallyx.rom` and LATEST reproduce that approved ROM. Stage8/9 references and
+The user approved v260 on 2026-10-24. At that revision, plain `make build` selected Stage12;
+`newrallyx.rom` and LATEST reproduced that approved ROM. Stage8/9 references and
 all named historical checkpoints remain available. Entries below retain their
 historical controls, timing results and default-build decisions.
 

@@ -3,7 +3,7 @@
 The original static header and all96 reveal units move up8px. Original glyph
 bitmaps, item dimensions and reveal delays are unchanged. The final smoke
 drawing ends at row175. The terminal caption occupies rows186..193, centered
-between that drawing and the supplied wordmark at x8, rows195..209:
+between that drawing and the original wordmark at x100, rows200..207:
 
 ```text
 [5] insert coin - [1/2] start player(s)

@@ -1,6 +1,6 @@
 # Shared gameplay with the optimized SCREEN4 presenter
 
-The default experiment now runs complete sessions using revision
+The default `make build` and its `build-experiments` alias run complete sessions using revision
 `6d562a791b0cc242119a31dd686ff8e93eb94fe0` of the audio branch. Active gameplay
 keeps the accepted 200/56 framing, original-size cars, six-digit capped scores,
 ROUND capped99, up to four life icons and the larger radar/fuel panel.
@@ -19,8 +19,8 @@ make run-audio-reference     # Independent production SCREEN5 comparison
 make run-first-stage ENEMIES=3 # Earlier three-enemy benchmark, unchanged
 ```
 
-From another checkout, use
-`make -C /Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx run-experiments`.
+From another directory, use `make -C <intended-checkout> run` so the source/ROM
+selection is explicit.
 The full cartridge is `references/experiments/full-session/fixed-hud.rom`; the
 delivered copy is `outputs/test-roms/newrallyx-screen4-full-game.rom`.
 Each export also creates a byte-identical copy ending in ` [ASCII16].rom`.
@@ -91,12 +91,17 @@ keys through the real key matrix. This is emulator evidence; final visual
 acceptance remains with the user. Boot elapsed cycles include waits and IRQs,
 and must never be added to active-frame CPU costs.
 
-Current long-route caveat: the16000-refresh keyboard stress reaches only four
+Historical pre-stabilization long-route caveat: the16000-refresh keyboard stress reached only four
 distinct poses after refresh5000 and fails its movement-diversity gate. Repeating
 the same probe on the preceding e6b442 ROM passes with292 later poses. The boot
 changes startup timing; the cause of the newly exposed corner stall is not
-isolated. Preserve both reports and do not infer full-course stability from
-the unchanged short three-enemy profile or passing graphics contracts.
+isolated in that report. PR #33 subsequently fixed the reproduced corner
+deadlock with bounded primary-step revalidation and complete rollback. Its
+16,000-refresh route recorded 3,465 later poses, 6,461 contact checks and 12 games.
+These are PR #33's scoped measurements, not the earlier failed ROM's results;
+see [the stabilization record](https://github.com/sandersouza/msxgp-newrallyx/pull/33)
+and [current baseline/verification](../../docs/maintenance.md). Preserve both old
+reports and do not infer full-course stability from a short three-enemy profile.
 
 ## Optional hardware-check module
 
