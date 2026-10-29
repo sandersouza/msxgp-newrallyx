@@ -17,14 +17,14 @@ not in active gameplay or the IRQ. `session-title.inc` uses one UI-only byte
 at DFE3 and the existing blit scratch. Its inclusive timing is recorded in the
 ROM-bound ledger; CPU-only/self costs are not inferred from overlapping rows.
 
-The approved finished wordmark is the native162x10 transparent PNG at
-`references/exports/namco-retrowork/namco-retrowork-162x10.png`. Copy its alpha
+The wordmark is the original arcade56x8 tile block (tiles0x19..0x1f), extracted to
+`references/exports/namco-original/namco-title-56x8.png`. Copy its alpha
 mask one-to-one, including transparent margins and letter counters. Only the
 foreground color maps to the existing RED palette entry. No resizing, filtering,
 thresholding, glyph reconstruction, crop or kerning changes are allowed.
 
-On the256x212 active screen, place the complete PNG at47,198. Both horizontal
-margins are47 pixels; rows208..211 provide exactly four pixels below the PNG.
+On the256x212 active screen, place the complete PNG at100,200. Both horizontal
+margins are100 pixels; rows208..211 provide exactly four pixels below the PNG.
 Oversized inputs or non-binary alpha fail explicitly instead of being resampled.
 Metadata records the exact source SHA256, dimensions, scale1 and bottom margin4.
 

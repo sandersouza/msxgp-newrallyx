@@ -45,8 +45,8 @@ an explicit `ROM=...`, `CHECKPOINT=...` or `LATEST=1` selects an existing artifa
 `make run-experiments` remains an alias for the optimized build.
 
 Original game ROMs and MSX BIOS must be supplied locally as described in
-[setup](docs/setup.md). The approved 162x10 title artwork is reconstructed from
-those ROMs plus the authored wordmark rules and checked against its pixel digest.
+[setup](docs/setup.md). The original 56x8 `namco` title artwork is extracted from
+those ROMs and checked against its native pixel digest.
 The optional MSX logo source is contributor-supplied artwork in `assets/`.
 
 The following historical renderer details and diagnostic flags describe

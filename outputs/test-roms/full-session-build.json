@@ -1,6 +1,6 @@
 {
   "rom": "outputs/test-roms/newrallyx-screen4-full-game.rom",
-  "rom_sha256": "41de7830d5f9a52e1c4e7349b5c33fae2602f344aedf212b6e1a79dd4cbdd6dd",
+  "rom_sha256": "98ce0135b628a1837a3d6df2910f572e466b4bffe465344238f4c44a9015346a",
   "mapper": "ASCII16",
   "webmsx_rom": "outputs/test-roms/newrallyx-screen4-full-game [ASCII16].rom",
   "bytes": 4177920,
@@ -16,13 +16,13 @@
     "caption": "[5] insert coin - [1/2] start player(s)",
     "caption_y": 186,
     "caption_x": 11,
-    "brand": "namco - retrowork",
-    "brand_y": 198,
-    "brand_x": 47,
-    "brand_width": 162,
-    "brand_height": 10,
+    "brand": "namco",
+    "brand_y": 200,
+    "brand_x": 100,
+    "brand_width": 56,
+    "brand_height": 8,
     "shift_y": -8,
-    "brand_source": "User-supplied finished artwork; no generated letter shapes",
+    "brand_source": "Original arcade tiles 0x19..0x1f; native pixels without resampling",
     "blink_pixels": [
       47633,
       47634,
@@ -80,18 +80,18 @@
     "blink_half_period_refreshes": 32,
     "inverted_keys": [],
     "brand_artwork": {
-      "x": 47,
-      "y": 198,
-      "width": 162,
-      "height": 10,
+      "x": 100,
+      "y": 200,
+      "width": 56,
+      "height": 8,
       "source_size": [
-        162,
-        10
+        56,
+        8
       ],
       "uniform_scale": 1,
       "bottom_margin": 4,
       "method": "Exact approved PNG alpha at1:1; horizontal centering and4px bottom margin; foreground mapped to the existing red palette entry",
-      "source_sha256": "3765cea60fe5b747338019e9e0b7612fef7328f6167ce35a4a28c48808c096f2"
+      "source_sha256": "0412e0324d4c4652d28e200e5d7fc7295f219cc1228e927a86d9996171a3f5d2"
     },
     "blink_rects": [
       [
