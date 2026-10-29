@@ -139,7 +139,7 @@ def cases():
 def probe_source(cache_source=None):
     # Only authored adapter routines are copied; all native calls are excluded.
     from game_core import selected
-    smoke = selected((ROOT/'src/smoke.inc').read_text())
+    smoke = selected((ROOT/'src/screen5/smoke.inc').read_text())
     declarations = smoke[:smoke.index('Smoke_CachePressure:')]
     rings = smoke[smoke.index('Smoke_ClearRings:'):smoke.index('Smoke_PreTick:')]
     rings = rings.replace('Smoke_ClearRings:\n',

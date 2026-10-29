@@ -1,6 +1,6 @@
 """Exact synthetic baseline/candidate actor-radar RAM and elapsed-cycle probe.
 
-python experiments/fixed-hud/test_game_radar_fast.py --bios references/msxbios
+python src/screen4/test_game_radar_fast.py --bios references/msxbios
 """
 import argparse
 import hashlib

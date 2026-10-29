@@ -1,6 +1,6 @@
 """Inline exact smoke retirement only in the optimized experiment host.
 
-The original helper and shared src/smoke.inc remain unchanged. Inlining removes
+The original helper and shared src/screen5/smoke.inc remain unchanged. Inlining removes
 only the CALL/RET around each cell; its comparisons, notifications and zero write
 are identical, including the slow dirty-tile path and register preservation.
 """

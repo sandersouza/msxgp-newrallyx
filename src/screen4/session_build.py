@@ -714,7 +714,7 @@ def assemble_existing(out):
     import subprocess,tempfile
     import game_build,game_core
     out=Path(out).resolve();root=Path(__file__).resolve().parents[2]
-    view,_=reference();game_core.prepare(view,out,full_session=True)
+    view,_=reference();game_core.prepare(view,out,full_session=True,source_directory=view/'src')
     text=renderer_source(game_build.renderer_source(Path(__file__).with_name('lab.asm').read_text()),out)
     (out/'lab.asm').write_text(text)
     with tempfile.TemporaryDirectory(prefix='.link-',dir=out) as temporary:

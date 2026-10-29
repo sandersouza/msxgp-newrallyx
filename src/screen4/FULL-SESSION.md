@@ -445,7 +445,7 @@ plays. Pausing freezes the score cursor and timer; silent attract mode bypasses
 an unplayed request so it cannot deadlock. Conversion effects and cold-transition
 silence retain their existing handlers.
 
-This adapter is experimental only; src/completion.inc and the functional13 build
+This adapter is experimental only; src/screen5/completion.inc and the functional13 build
 are unchanged. Settlement runs in the foreground from the already loaded cold
 worker:33 additional code bytes use its existing RAM reservation. There is
 no spin/HALT, new bank switch, RAM variable or VRAM transfer. The

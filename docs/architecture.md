@@ -6,21 +6,38 @@ extraction and reusable zero-overhead APIs belong to [issue #32](https://github.
 See [maintenance](maintenance.md) for the file inventory, baseline hashes and
 verification scope. The remaining visual/audio acceptance stays with issue #13.
 
+The former `experiments/fixed-hud/` component is consolidated in `src/screen4/`.
+All 155 authored files moved together: assembly/includes, generators, verification
+tools, co-located tests and component documentation. The old/new path and hash
+ledger is [screen4-migration.json](screen4-migration.json). Top-level
+`experiments/` is removed; ignored `references/experiments/` artifact paths and
+public Make aliases remain stable. Keeping the same directory depth preserves
+root discovery and sibling imports without changing assembly/module boundaries.
+
+The legacy/shared assembly sources now live in `src/screen5/`, alongside the
+optimized component. All 73 former top-level `src/` files retain their original
+bytes and include basenames. Shared Python generators remain in `scripts/msx/`.
+[screen5-migration.json](screen5-migration.json) records this subsequent move;
+the SCREEN 4 ledger above describes the preceding migration snapshot.
+
 ## Build ownership
 
 | Layer | Authored owners | Contract |
 | --- | --- | --- |
-| Public selection | `Makefile`, `experiments/fixed-hud/targets.mk` | Default SCREEN 4; `LEGACY=1`/`legacy=1` selects SCREEN 5; test mode belongs to SCREEN 4. |
-| Optimized cartridge | `experiments/fixed-hud/build.py`, `prepare.py`, `game_build.py`, `game_core.py`, `session_build.py` | Prepare resources, transform selected source adapters in an ignored assembly directory, assemble and export ASCII16. |
-| Pinned shared session/UI source | `experiments/fixed-hud/build_profiles.py` | Verify/export local Git revision `6d562a791b0cc242119a31dd686ff8e93eb94fe0`; link contributor inputs locally and build a separate reference. |
-| Maintained legacy cartridge | `scripts/project.py`, `scripts/msx/raster_scroll.py`, `src/raster-scroll.asm` | Build the current `src/` tree in a fresh sealed directory; publish `references/build/newrallyx.rom` only on success. |
+| Public selection | `Makefile`, `src/screen4/targets.mk` | Default SCREEN 4; `LEGACY=1`/`legacy=1` selects SCREEN 5; test mode belongs to SCREEN 4. |
+| Optimized cartridge | `src/screen4/build.py`, `prepare.py`, `game_build.py`, `game_core.py`, `session_build.py` | Prepare resources, transform selected source adapters in an ignored assembly directory, assemble and export ASCII16. |
+| Pinned shared session/UI source | `src/screen4/build_profiles.py` | Verify/export local Git revision `6d562a791b0cc242119a31dd686ff8e93eb94fe0`; link contributor inputs locally and build a separate reference. |
+| Maintained legacy cartridge | `scripts/project.py`, `scripts/msx/raster_scroll.py`, `src/screen5/raster-scroll.asm` | Build `src/screen5/` in a fresh sealed directory; publish `references/build/newrallyx.rom` only on success. |
 | Launch and reference validation | `scripts/msx/emulator.py`, `scripts/scenes/`, `scripts/graphics/` | Verify manifests/inputs, use isolated openMSX state and contributor BIOS; never download game data. |
 
 The optimized build is not simply `src/` assembled in SCREEN 4. It combines
 current shared helpers, a verified pinned session source view, generated adapters
 and authored `game-*.inc`/`session-*.inc` files. Both trees are required. In
-particular, `game_core.py` reads current `src/` motion/enemy/helper sources, while
-`session_build.py` obtains pinned session resources through `reference()`.
+particular, `game_core.py` defaults to current `src/screen5/` motion/enemy/helper
+sources for maintained local builds. Complete-session integration deliberately
+passes `source_directory=view/'src'` from the verified historical export;
+`session_build.py` obtains its pinned session resources through `reference()`.
+There is no implicit fallback from missing current sources to historical files.
 Changing only `AUDIO_REFERENCE_REVISION` changes the independent comparison;
 the integration pin also lives in `session_build.py`. Update both deliberately,
 with adapter and gameplay validation, when changing that contract.
@@ -50,7 +67,7 @@ include can otherwise disappear silently on the next build.
 world/object changes for rendering. `session-resident.inc` owns mapper-safe
 session entry points; `session-cold.inc` prepares rounds outside active rendering;
 `session-input.inc` publishes four-way keyboard/joystick input and the safe corner
-fallback. `src/full-native-motion.inc` and `src/full-msx-enemies.inc` are shared
+fallback. `src/screen5/full-native-motion.inc` and `src/screen5/full-msx-enemies.inc` are shared
 movement/enemy sources. Graphics publication consumes a coherent prepared state,
 including both camera axes and complete car drawings.
 
@@ -72,7 +89,7 @@ register change alone cannot replace that work.
 SAT data and dirty state. The default compact HUD uses six displayed score
 digits, the compact ROUND/FUEL style and the established larger fuel/radar
 panels. `HUD_VARIANT=classic` retains the preceding styling in a separate bundle.
-The [HUD contract](../experiments/fixed-hud/hud/README.md) specifies initialization,
+The [HUD contract](../src/screen4/hud/README.md) specifies initialization,
 clobbers, dirty preparation, publication and exact resource ranges.
 
 Radar actor updates use `game-radar-fast.inc`; session flag/name/color hooks and
@@ -115,7 +132,7 @@ generated IRQ and symbols whenever changing source transformations.
 ## Audio, menus and startup
 
 `game-audio.inc` and the session audio adapters reuse compiled original score
-parts with PSG music/effect adaptation. `src/full-audio*.inc` and
+parts with PSG music/effect adaptation. `src/screen5/full-audio*.inc` and
 `scripts/msx/audio*.py` remain shared/legacy dependencies. Deferred publication
 keeps audio work separate from the car/camera commit. Start/completion and
 driving use different channel allocation; emulated waveform/event contracts do
@@ -130,7 +147,7 @@ active-frame dispatch cost; padding can keep total cartridge size unchanged.
 
 The current wordmark is the original 56x8 arcade tile block at (100,200), with
 four blank rows below it. The contributor-supplied MSX logo is a separate optional
-source. [TITLE.md](../experiments/fixed-hud/TITLE.md) and
-[FULL-SESSION.md](../experiments/fixed-hud/FULL-SESSION.md) describe the exact pixel,
+source. [TITLE.md](../src/screen4/TITLE.md) and
+[FULL-SESSION.md](../src/screen4/FULL-SESSION.md) describe the exact pixel,
 skip/input, startup and cleanup contracts. Older 162x10 artwork and corner-stall
 reports are historical and must remain bound to their own ROMs.

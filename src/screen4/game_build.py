@@ -127,7 +127,8 @@ def append_resources(root,out,banks,*,enemies=1,legacy_render=False,full_session
     if full_session:
         from session_build import reference
         source_root,_=reference()
-    game_core.prepare(source_root,out,full_session=full_session)
+    game_core.prepare(source_root,out,full_session=full_session,
+                      source_directory=source_root/'src' if full_session else None)
     import game_multi
     multi=game_multi.prepare(root,out,program,enemies=0 if full_session or enemies==1 else enemies)
     if full_session:

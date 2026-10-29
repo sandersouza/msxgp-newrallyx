@@ -1,7 +1,7 @@
 """Synthetic source-pixel, clipping, sentinel and assembled Z80 contracts.
 
-python3 experiments/fixed-hud/test_game_sprites.py
-python3 experiments/fixed-hud/test_game_sprites.py --emulator --bios PATH
+python3 src/screen4/test_game_sprites.py
+python3 src/screen4/test_game_sprites.py --emulator --bios PATH
 """
 import argparse
 import json

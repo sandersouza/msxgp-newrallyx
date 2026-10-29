@@ -171,11 +171,11 @@ def build_probe(root: Path, output: Path, assembler: Path, hz: int = 50,
     config['NATIVE_ORIGINAL_RESET_PROBE'] = int(probe in ('reset','logic'))
     (output / 'native-layout.inc').write_text(''.join(f'{key} EQU ${value:04x}\n' for key, value in config.items()))
     for name in ('native.asm', 'native-loader.inc', 'native-state.inc'):
-        shutil.copyfile(PROJECT / 'src' / name, output / name)
+        shutil.copyfile(PROJECT / 'src/screen5' / name, output / name)
     if probe in ('runtime', 'irq', 'reset', 'logic'):
-        shutil.copyfile(PROJECT / 'src/native-runtime.inc', output / 'native-runtime.inc')
+        shutil.copyfile(PROJECT / 'src/screen5/native-runtime.inc', output / 'native-runtime.inc')
     if probe in ('irq','logic'):
-        shutil.copyfile(PROJECT / 'src/native-scheduler.inc', output / 'native-scheduler.inc')
+        shutil.copyfile(PROJECT / 'src/screen5/native-scheduler.inc', output / 'native-scheduler.inc')
     if probe == 'irq':
         shutil.copyfile(PROJECT / 'tests/fixtures/native-irq.inc', output / 'native-irq.inc')
     if function_probe:
@@ -259,9 +259,9 @@ def _video_sources(output, renderer, meta):
     config = re.sub(r'^HUD_DATA_BANK EQU .*$', 'HUD_DATA_BANK EQU 3', config, flags=re.M)
     (output / 'native-video-config.inc').write_text(config)
     for name in ('native-video.inc', 'native-input.inc', 'native-actors.inc', 'native-presentation.inc', 'native-solid.inc', 'native-radar.inc', 'native-hud-io.inc', 'native-strips.inc', 'native-hardware-actors.inc'):
-        shutil.copyfile(PROJECT / 'src' / name, output / name)
+        shutil.copyfile(PROJECT / 'src/screen5' / name, output / name)
     for name in ('hud.inc', 'hud-api.inc', 'hud-native.inc', 'hud-assets.inc', 'hud-state.inc', 'hud-raster.inc'):
-        source = (PROJECT / 'src' / name).read_text()
+        source = (PROJECT / 'src/screen5' / name).read_text()
         source = source.replace('ld ($7000),a', 'call Native_HUDMapAssets')
         source = source.replace('vdp_write 14,4', 'vdp_write 14,6')
         source = source.replace('ld a,4\n    call register', 'ld a,6\n    call register')

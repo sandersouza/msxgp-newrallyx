@@ -47,7 +47,7 @@ class SmokeCacheTests(unittest.TestCase):
         self.assertNotIn('ld ix,Game_SmokeList', markers)
 
     def test_native_mutation_paths_reach_the_marked_hooks(self):
-        smoke = game_core.selected((ROOT/'src/smoke.inc').read_text())
+        smoke = game_core.selected((ROOT/'src/screen5/smoke.inc').read_text())
         placement = smoke[smoke.index('Smoke_AfterNative:'):
                           smoke.index('Smoke_PreparePlacement:')]
         retirement = smoke[smoke.index('Smoke_RetireCode:'):

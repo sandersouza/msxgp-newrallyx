@@ -17,7 +17,7 @@ def verify(bundle):
     assert meta['compressed_bytes']==meta['frame_count']==0
     # Real keyboard start verifies shared workers survive module omission; full
     # graphics contracts include the supplied footer and HUD/sprite state.
-    subprocess.run([sys.executable,'-B',str(ROOT/'experiments/fixed-hud/session_verify.py'),
+    subprocess.run([sys.executable,'-B',str(ROOT/'src/screen4/session_verify.py'),
         '--bundle',str(bundle),'--scenario','start','--contracts'],check=True)
     report=dict(passed=True,hardware_check=False,rom_sha256=hashlib.sha256((bundle/'fixed-hud.rom').read_bytes()).hexdigest(),
         replay_resources_bytes=0,scope='No replay/scan-key/data symbols; zero replay resources; real-keyboard start and graphics contracts pass with shared HUD/test workers retained.')

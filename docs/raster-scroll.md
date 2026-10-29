@@ -256,8 +256,8 @@ remain issue #11 work after the branch merge.
 
 Shared input/palette preparation lives in [`inputs.py`](../scripts/msx/inputs.py);
 packing and color conversion live in [`screen5.py`](../scripts/msx/screen5.py).
-The executable entry is [`raster-scroll.asm`](../src/raster-scroll.asm).
-[`stage-one-stream.inc`](../src/stage-one-stream.inc) supplies the full-map camera,
+The executable entry is [`raster-scroll.asm`](../src/screen5/raster-scroll.asm).
+[`stage-one-stream.inc`](../src/screen5/stage-one-stream.inc) supplies the full-map camera,
 ROM tile lookup, guard-cache jobs and radar projection. Camera-center projection
 uses 569-byte X and 1192-byte Y tables in fixed ROM, avoiding variable division
 work before the header split. The builder enables this

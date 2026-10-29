@@ -1,6 +1,6 @@
 """Exact synthetic horizontal-mask optimization probe; no canonical build.
 
-python experiments/fixed-hud/test_game_sprite_mask_fast.py --bios references/msxbios
+python src/screen4/test_game_sprite_mask_fast.py --bios references/msxbios
 """
 import argparse
 import hashlib

@@ -1,7 +1,7 @@
 """Synthetic all-phase/all-flag-mask radar variant and generated Z80 contracts.
 
-python experiments/fixed-hud/test_game_radar.py
-python experiments/fixed-hud/test_game_radar.py --emulator --bios references/msxbios
+python src/screen4/test_game_radar.py
+python src/screen4/test_game_radar.py --emulator --bios references/msxbios
 """
 import argparse
 import hashlib

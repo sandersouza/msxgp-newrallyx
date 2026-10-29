@@ -45,7 +45,8 @@ def main():
     parser.add_argument('--group', help='Only this outputs/fixed-hud subdirectory, e.g. radar-synthetic')
     args = parser.parse_args()
     manifest = json.loads((ROOT/'docs/retired-artifacts.json').read_text())
-    entries = [f for f in manifest['files'] if not args.group or Path(f['path']).parts[2] == args.group]
+    entries = [f for f in manifest['files'] if not args.group or
+               (len(Path(f['path']).parts) > 2 and Path(f['path']).parts[2] == args.group)]
     if not entries:
         parser.error('No matching probe group')
     result = restore(ROOT, entries, check=args.check)

@@ -3,7 +3,7 @@
 Uses synthetic descriptors, animation flags and car masks only. Optional old
 source paths produce a differential cost ledger without rebuilding gameplay.
 
-python experiments/fixed-hud/test_game_actors.py --bios references/msxbios
+python src/screen4/test_game_actors.py --bios references/msxbios
 """
 import argparse
 import hashlib

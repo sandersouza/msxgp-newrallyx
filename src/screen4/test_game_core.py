@@ -2,6 +2,7 @@
 import importlib.util
 from pathlib import Path
 import subprocess
+import shutil
 import tempfile
 import unittest
 
@@ -13,6 +14,23 @@ spec.loader.exec_module(core)
 
 
 class GameCoreTests(unittest.TestCase):
+    def test_historical_flat_sources_require_explicit_selection(self):
+        with tempfile.TemporaryDirectory() as directory:
+            base = Path(directory)
+            view = base/'historical-view'
+            flat = view/'src'
+            flat.mkdir(parents=True)
+            for source in (ROOT/'src/screen5').iterdir():
+                if source.is_file() and source.suffix in ('.inc', '.asm'):
+                    shutil.copyfile(source, flat/source.name)
+            core.prepare(view, base/'historical-output', source_directory=flat)
+            core.prepare(ROOT, base/'current-output')
+            for name in ('game-host.inc', 'game-native-motion.inc', 'game-native-ai.inc'):
+                self.assertEqual((base/'historical-output'/name).read_bytes(),
+                                 (base/'current-output'/name).read_bytes())
+            with self.assertRaises(FileNotFoundError):
+                core.prepare(view, base/'unselected-flat-output')
+
     def test_conditional_selection(self):
         self.assertEqual(core.selected('IF HUD_ENABLED\nbad\nELSE\ngood\nENDIF\n'), 'good\n')
         self.assertEqual(core.selected('IF HUD_ENABLED\nIF UNKNOWN\nbad\nENDIF\nENDIF\ngood'), 'good\n')

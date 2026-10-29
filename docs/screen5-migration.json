@@ -1,0 +1,485 @@
+{
+  "schema_version": 1,
+  "before_commit": "fa0f63006da6edec79fc0b868372940cc8439326",
+  "predecessor_migration": "docs/screen4-migration.json",
+  "scope": "Move 73 authored legacy/shared Z80 sources to src/screen5; keep original bytes and assembly include names. SCREEN4 retains shared-helper use and explicit pinned historical source selection.",
+  "files": [
+    {
+      "old_path": "src/bitmap-player.inc",
+      "new_path": "src/screen5/bitmap-player.inc",
+      "sha256": "72af859deee04d501813df7458dfb25030b7276a1bbe8f2bcdb48a579092b05a"
+    },
+    {
+      "old_path": "src/bitmap-radar.inc",
+      "new_path": "src/screen5/bitmap-radar.inc",
+      "sha256": "5501ba61d6be4dae16d98f1f03dd2b2ffd0e9d82e6ac478adb9206544420b180"
+    },
+    {
+      "old_path": "src/completion.inc",
+      "new_path": "src/screen5/completion.inc",
+      "sha256": "e3bf46be2b1ace0ce73de12fb69ea540b83a7447ef666ae16c22ee3c3a08ef8d"
+    },
+    {
+      "old_path": "src/death.inc",
+      "new_path": "src/screen5/death.inc",
+      "sha256": "2ceab3d1b4fd34998a2a57a9bd901358f22b75a433cbd739624266e1b92be524"
+    },
+    {
+      "old_path": "src/enemy-radar-pair.inc",
+      "new_path": "src/screen5/enemy-radar-pair.inc",
+      "sha256": "3d445f75f7adec90898e969d65d8ff1b2a695ab257922eb81ffb299d63590d48"
+    },
+    {
+      "old_path": "src/enemy.inc",
+      "new_path": "src/screen5/enemy.inc",
+      "sha256": "fb6b3094428fb031429fc3498495e96e5e265a879c1f50bb47375be1b89ffe8b"
+    },
+    {
+      "old_path": "src/flags.inc",
+      "new_path": "src/screen5/flags.inc",
+      "sha256": "1b31aeed7e0b5610775aadfa6962c3f13cbd864d6afc36892ff9ba6a713a65ec"
+    },
+    {
+      "old_path": "src/fuel.inc",
+      "new_path": "src/screen5/fuel.inc",
+      "sha256": "c8e5d769772c62d2e70ede1ddd7a1540f9315123bc132fd310b4be7445218aa2"
+    },
+    {
+      "old_path": "src/full-audio-mapper.inc",
+      "new_path": "src/screen5/full-audio-mapper.inc",
+      "sha256": "ca6c9569ec7692973e80a4b243c5d021617c2aae03cdcab8e72d7978b9cf4794"
+    },
+    {
+      "old_path": "src/full-audio-runtime.inc",
+      "new_path": "src/screen5/full-audio-runtime.inc",
+      "sha256": "3cae01ab7648842b0c653ee4b3f6b273cef02a6c7aa2540cf2ca9823227658a8"
+    },
+    {
+      "old_path": "src/full-audio-state.inc",
+      "new_path": "src/screen5/full-audio-state.inc",
+      "sha256": "350f2911ad7f6c9f8923bdd5c0684180eb88e02d9d7d9da953a66214a6ead4ba"
+    },
+    {
+      "old_path": "src/full-audio.inc",
+      "new_path": "src/screen5/full-audio.inc",
+      "sha256": "fca4b930b58b5237dda1dae6fd2c50622ba382dd27b106c94998d4e7690b3161"
+    },
+    {
+      "old_path": "src/full-enemy-far-native.inc",
+      "new_path": "src/screen5/full-enemy-far-native.inc",
+      "sha256": "2371d623ff67125dfa030a9f972a6163130633625fb8e6f14a9d9daf39c4bb49"
+    },
+    {
+      "old_path": "src/full-enemy-hot.inc",
+      "new_path": "src/screen5/full-enemy-hot.inc",
+      "sha256": "11b7ce6ab9b7f43731d3a60c3bd86224d114319a0d82a67cbf06ff794f34fce7"
+    },
+    {
+      "old_path": "src/full-enemy-loop.inc",
+      "new_path": "src/screen5/full-enemy-loop.inc",
+      "sha256": "38c89a720c68351a0c69ae33a18bd77fa63fb68eca59aad2e88aaff3dc70e305"
+    },
+    {
+      "old_path": "src/full-enemy-records.inc",
+      "new_path": "src/screen5/full-enemy-records.inc",
+      "sha256": "349d041c7f525afb54251682c7a8e20674adcfc0dc8d5a5775a3e945737e5e94"
+    },
+    {
+      "old_path": "src/full-flag-popup.inc",
+      "new_path": "src/screen5/full-flag-popup.inc",
+      "sha256": "1e10f69f5e681a20990b80958d47a90ec9635dd2c0b482d3efbddb5d723f185e"
+    },
+    {
+      "old_path": "src/full-hud-number.inc",
+      "new_path": "src/screen5/full-hud-number.inc",
+      "sha256": "d6bc680b598fba5acae313daca92d68d0cebba58f6eeac880caab95cf9f8c267"
+    },
+    {
+      "old_path": "src/full-main.inc",
+      "new_path": "src/screen5/full-main.inc",
+      "sha256": "6e5e3df05857ad1b43324279aea3a68d92b34995a1269446000ddb41b8bec9e8"
+    },
+    {
+      "old_path": "src/full-msx-enemies.inc",
+      "new_path": "src/screen5/full-msx-enemies.inc",
+      "sha256": "8b311f6faa930ae7cd195d9cce7c20f2a3981142221eccdd11b801c6865b8da0"
+    },
+    {
+      "old_path": "src/full-native-ai.inc",
+      "new_path": "src/screen5/full-native-ai.inc",
+      "sha256": "3f3d4a999b2f26ea229bf7014bb4b729c125b3093ccabcd968a9c9863115fb87"
+    },
+    {
+      "old_path": "src/full-native-motion.inc",
+      "new_path": "src/screen5/full-native-motion.inc",
+      "sha256": "5978ae1efb885b166f8407118e44e0345f899e91eaae3d8f3efaae87a7dce5a8"
+    },
+    {
+      "old_path": "src/full-presentation.inc",
+      "new_path": "src/screen5/full-presentation.inc",
+      "sha256": "21cfda4813cb345fe2a7220b0ee5a54dae7fa359b9448cbb5b118049c7df9ce5"
+    },
+    {
+      "old_path": "src/full-radar-irq.inc",
+      "new_path": "src/screen5/full-radar-irq.inc",
+      "sha256": "bb732c2c063162f4fff9f0087bdad06bd983dbcc4836716afd8605f89a41e405"
+    },
+    {
+      "old_path": "src/full-radar-motion.inc",
+      "new_path": "src/screen5/full-radar-motion.inc",
+      "sha256": "1f19dd55ae09793f70ce6acc628794531a5ace0e81e171394ca8b37bde59ddad"
+    },
+    {
+      "old_path": "src/full-round-native.inc",
+      "new_path": "src/screen5/full-round-native.inc",
+      "sha256": "07aae673870542b20b2662195f822be0883eddcf4957eddbf4fe0f8a8b483e6d"
+    },
+    {
+      "old_path": "src/full-round-runtime.inc",
+      "new_path": "src/screen5/full-round-runtime.inc",
+      "sha256": "bb86331c8d598d831ba8937a1c36676197086de3d1a68a1e436bd8672db85aea"
+    },
+    {
+      "old_path": "src/full-session.inc",
+      "new_path": "src/screen5/full-session.inc",
+      "sha256": "6c23e854e441624cc46f5924e74ac946d29bef47e020acd85d171d50cb2eb978"
+    },
+    {
+      "old_path": "src/full-sprite-cache.inc",
+      "new_path": "src/screen5/full-sprite-cache.inc",
+      "sha256": "76d03de9d04c821c5c281bfd750b52c04403abea2e5e75e4ce7d459b2b6e23d5"
+    },
+    {
+      "old_path": "src/full-strip-load.inc",
+      "new_path": "src/screen5/full-strip-load.inc",
+      "sha256": "72be259c00919eb4097ca14432ad88a7064dbf5b2f4c8ee81323f0b423f76de9"
+    },
+    {
+      "old_path": "src/full-terrain-cache.inc",
+      "new_path": "src/screen5/full-terrain-cache.inc",
+      "sha256": "3977fff9f932ba27a3a61f3d4803139cb8711c04a358f447c2f202f04f93fa6c"
+    },
+    {
+      "old_path": "src/full-terrain-engine.inc",
+      "new_path": "src/screen5/full-terrain-engine.inc",
+      "sha256": "a95d5ca9d39f65cafc61d0fe7b146a613c0474bc353f7e010d23ef733bb69ce1"
+    },
+    {
+      "old_path": "src/full-ui.inc",
+      "new_path": "src/screen5/full-ui.inc",
+      "sha256": "cacd60696bdfb911117e838786df963092a400b9e72debb74a9d1a7b552dbcb7"
+    },
+    {
+      "old_path": "src/full-wide-native.inc",
+      "new_path": "src/screen5/full-wide-native.inc",
+      "sha256": "eca64f6470a359e557d40b1acb1930b3e6d1393af4b16bc0f12ae99d86248ac9"
+    },
+    {
+      "old_path": "src/full-wide-strips.inc",
+      "new_path": "src/screen5/full-wide-strips.inc",
+      "sha256": "09b38d7e7527dd7988fe57b8be6447150846afefaacb56c5eb47cf39bcce41f8"
+    },
+    {
+      "old_path": "src/hud-api.inc",
+      "new_path": "src/screen5/hud-api.inc",
+      "sha256": "607a7eb84f7a1cdc158f40822e0a8602155db51fcd13355d6e812a5a5bc179fc"
+    },
+    {
+      "old_path": "src/hud-assets.inc",
+      "new_path": "src/screen5/hud-assets.inc",
+      "sha256": "980add1d015e60a81e476efa76c81f8f49fe1f997d0509682078aee107a4c9d3"
+    },
+    {
+      "old_path": "src/hud-demo.inc",
+      "new_path": "src/screen5/hud-demo.inc",
+      "sha256": "515542e50a9b809537db165a72832edaab2073ab881f785b7e9a60dba69d17ff"
+    },
+    {
+      "old_path": "src/hud-native.inc",
+      "new_path": "src/screen5/hud-native.inc",
+      "sha256": "d8c89fae209ce0d9d102354c9c2ea928e3b7badedcdbe655ca5d4e5828645054"
+    },
+    {
+      "old_path": "src/hud-raster.inc",
+      "new_path": "src/screen5/hud-raster.inc",
+      "sha256": "08fc90ec3e91e5c73cbf24e15fd7ea9b2d0470aa05029951495288f1a5de990c"
+    },
+    {
+      "old_path": "src/hud-state.inc",
+      "new_path": "src/screen5/hud-state.inc",
+      "sha256": "634d4b6a2608024e790456b8e191fc860c6b65f3d888493599802a27e857e620"
+    },
+    {
+      "old_path": "src/hud.inc",
+      "new_path": "src/screen5/hud.inc",
+      "sha256": "6b53aceaa72cc761d7bcaf2778cbd7b46cc8057be6cef0f7df2d2091dd9e9848"
+    },
+    {
+      "old_path": "src/lives.inc",
+      "new_path": "src/screen5/lives.inc",
+      "sha256": "e83809aa065e2fa6e53939aebadc5ff55b2d81c5076c75b8d10c5070344a9dae"
+    },
+    {
+      "old_path": "src/native-actors.inc",
+      "new_path": "src/screen5/native-actors.inc",
+      "sha256": "a6c49b004c4ec372dff789092c1041cedeca28ad83e4603289272acbad4f2a75"
+    },
+    {
+      "old_path": "src/native-hardware-actors.inc",
+      "new_path": "src/screen5/native-hardware-actors.inc",
+      "sha256": "23fc32566d067d5bd403fd53b9245985189b1e21fdd8b2c35593220e2d4a56dc"
+    },
+    {
+      "old_path": "src/native-hud-io.inc",
+      "new_path": "src/screen5/native-hud-io.inc",
+      "sha256": "0ba7a019fc0651abe25c5e27ff320ad97d3ec0441e2d957c85dce5701e1a0616"
+    },
+    {
+      "old_path": "src/native-input.inc",
+      "new_path": "src/screen5/native-input.inc",
+      "sha256": "9b50e92de5a0de3bfb570f2e6642eb5ffffde042ebfd6f8c5cdff9c57b4604dd"
+    },
+    {
+      "old_path": "src/native-loader.inc",
+      "new_path": "src/screen5/native-loader.inc",
+      "sha256": "b26e103e30874bf3d5086e98574fd4840042e2640a2a3c62f430afeab9c22df6"
+    },
+    {
+      "old_path": "src/native-presentation.inc",
+      "new_path": "src/screen5/native-presentation.inc",
+      "sha256": "d1a984383b82dbde127e2489f328bd560518020792927dc4c5b9e54b6f9b1861"
+    },
+    {
+      "old_path": "src/native-radar.inc",
+      "new_path": "src/screen5/native-radar.inc",
+      "sha256": "070f481dd333009093718794d4a763aa0a9d93676ce6eed082c23f749767b2c5"
+    },
+    {
+      "old_path": "src/native-runtime.inc",
+      "new_path": "src/screen5/native-runtime.inc",
+      "sha256": "70c8ad077cea75e5aae3141026ba1248112e1a62d4d7e18bc86b4f5b5ef6ea06"
+    },
+    {
+      "old_path": "src/native-scheduler.inc",
+      "new_path": "src/screen5/native-scheduler.inc",
+      "sha256": "b0f8a7457599bd131ef849f9e5211c7c9801ec728bbe108ce318575aca5786c0"
+    },
+    {
+      "old_path": "src/native-solid.inc",
+      "new_path": "src/screen5/native-solid.inc",
+      "sha256": "a3db55d0b22e182ae90da59d2933b90a63c783fc6db294ca1590e718aec09659"
+    },
+    {
+      "old_path": "src/native-state.inc",
+      "new_path": "src/screen5/native-state.inc",
+      "sha256": "979d6f8913522067e1488b824f4767cdf4731cbdbe888122ad2e45001a182228"
+    },
+    {
+      "old_path": "src/native-strips.inc",
+      "new_path": "src/screen5/native-strips.inc",
+      "sha256": "aa043fe563d0c78dc62c2497d0c835c9e1a6990c32f8dcff64e09bf634905848"
+    },
+    {
+      "old_path": "src/native-video.inc",
+      "new_path": "src/screen5/native-video.inc",
+      "sha256": "e0a5e0086672e189262b1b364acafffa5753d9018cb5ca0a305db6b3feb1444b"
+    },
+    {
+      "old_path": "src/native.asm",
+      "new_path": "src/screen5/native.asm",
+      "sha256": "0b7f709fa027c47dfbc7ebcb9d71f6c348808a8706b3ece226ee77e9eacaf204"
+    },
+    {
+      "old_path": "src/outline-flicker.inc",
+      "new_path": "src/screen5/outline-flicker.inc",
+      "sha256": "90ea0c36d09280c3e3a0da17f93197ae9a5db4b070834d9e9146a8b50883bc10"
+    },
+    {
+      "old_path": "src/player.inc",
+      "new_path": "src/screen5/player.inc",
+      "sha256": "440d15e361723afdecddb36d7c12fbebf03d791a882035b89a509214384ad5da"
+    },
+    {
+      "old_path": "src/radar-cells.inc",
+      "new_path": "src/screen5/radar-cells.inc",
+      "sha256": "355eafecd7ed793f061bbb72dc1743ed3008cb78963d797ee517792c65b0aa74"
+    },
+    {
+      "old_path": "src/raster-scroll.asm",
+      "new_path": "src/screen5/raster-scroll.asm",
+      "sha256": "bbe605d6fd7c3b612b76b5898dc1e4070db0921a5c5384e5a7676ecdd86b4dec"
+    },
+    {
+      "old_path": "src/rock-collision.inc",
+      "new_path": "src/screen5/rock-collision.inc",
+      "sha256": "a3b2cb9c69149c6a37f752744b64197c3c296c9330e4f36c24a5b7b5f96219fc"
+    },
+    {
+      "old_path": "src/round-objects.inc",
+      "new_path": "src/screen5/round-objects.inc",
+      "sha256": "a09f954570c88244916c6aa324d1da1f1e2e1439cb83b48396f27b1936f476b1"
+    },
+    {
+      "old_path": "src/score.inc",
+      "new_path": "src/screen5/score.inc",
+      "sha256": "0385d74101ee7d7c8ba68975dc14a93dbf87bdc74071a679ab309fb6a90e5f57"
+    },
+    {
+      "old_path": "src/session-entries.inc",
+      "new_path": "src/screen5/session-entries.inc",
+      "sha256": "4ef5dd15c006c2b5a6c52be5e6dd3f16135de8602cfff994e504681476d9b413"
+    },
+    {
+      "old_path": "src/session-loader.inc",
+      "new_path": "src/screen5/session-loader.inc",
+      "sha256": "40bec6fb363d3c94a3d8961e44e67f7e66f32069e0323d37fa3b421e3d155af0"
+    },
+    {
+      "old_path": "src/session.inc",
+      "new_path": "src/screen5/session.inc",
+      "sha256": "16d87bbb99a8b217d9e33c3235a4959647b15e3aec1800b0ddf9ff73f08c8d5e"
+    },
+    {
+      "old_path": "src/smoke.inc",
+      "new_path": "src/screen5/smoke.inc",
+      "sha256": "9c14a4a4134b0f55432407ed9112f41657917cb3f40f1f2fbbe21e55b81e9c0f"
+    },
+    {
+      "old_path": "src/sprite-flicker.inc",
+      "new_path": "src/screen5/sprite-flicker.inc",
+      "sha256": "dfcc55c995eb3e5ad045a4a97359364c7f77e070a493be40e042d33c223cac66"
+    },
+    {
+      "old_path": "src/sprite-upload.inc",
+      "new_path": "src/screen5/sprite-upload.inc",
+      "sha256": "bf262b3e0f267165d13057802726f56bf9ecb77cdbc47869e9dca0317541dec5"
+    },
+    {
+      "old_path": "src/stage-one-stream.inc",
+      "new_path": "src/screen5/stage-one-stream.inc",
+      "sha256": "d1f3206914f1e80432587a5ec60bc801ea3909a79162cb487977e56dd062178a"
+    },
+    {
+      "old_path": "src/tile-strips.inc",
+      "new_path": "src/screen5/tile-strips.inc",
+      "sha256": "3f0838faea2ec9fe1cac4968bd7cc4204fc4f72599cfea69b1b2caf573716494"
+    },
+    {
+      "old_path": "src/tilemap.inc",
+      "new_path": "src/screen5/tilemap.inc",
+      "sha256": "2851d6b41904a5e14d9e9991669b8a7667d43ffe4c7a227607195af161dc6d33"
+    }
+  ],
+  "source_path_consumers_updated": [
+    "docs/architecture.md",
+    "docs/hud.md",
+    "docs/player.md",
+    "docs/raster-scroll.md",
+    "scripts/msx/full_round_build.py",
+    "scripts/msx/native_build.py",
+    "scripts/msx/raster_scroll.py",
+    "src/screen4/FULL-SESSION.md",
+    "src/screen4/game_smoke_cache.py",
+    "src/screen4/game_smoke_fast.py",
+    "src/screen4/test_game_smoke_cache.py",
+    "tests/test_repository_inventory.py"
+  ],
+  "before_working_tree_patch": "references/issue34/screen5-migration/before.patch",
+  "validation": {
+    "unchanged_legacy_z80_sources": 73,
+    "unchanged_screen4_assembly_include_tcl": 41,
+    "roms": [
+      {
+        "command": "make build",
+        "path": "references/experiments/full-session/fixed-hud.rom",
+        "sha256": "98ce0135b628a1837a3d6df2910f572e466b4bffe465344238f4c44a9015346a",
+        "bytes": 4177920,
+        "before_after_identical": true
+      },
+      {
+        "command": "make build TEST_MODE=1",
+        "path": "references/experiments/full-session-test/fixed-hud.rom",
+        "sha256": "9f61724047bb444a6ea7fe9e87a53f0138436f8f1a84ee3b18a3d55bc713e53b",
+        "bytes": 4177920,
+        "before_after_identical": true
+      },
+      {
+        "command": "make build LEGACY=1",
+        "path": "references/build/newrallyx.rom",
+        "sha256": "e95a4a803c0ac3d0096b7021c877a56086d09d6ba8ed307dde7a8d039198537c",
+        "bytes": 2097152,
+        "before_after_identical": true
+      },
+      {
+        "command": "make build-first-stage ENEMIES=3",
+        "path": "references/experiments/stage-one-3-enemies/fixed-hud.rom",
+        "sha256": "ae106e6a3d22e295c0e5eac1eaf74f1c1626485c889268d15149f5fdb53dae5c",
+        "bytes": 3604480,
+        "before_after_identical": true
+      },
+      {
+        "command": "make build-hud-lab",
+        "path": "references/experiments/fixed-hud/fixed-hud.rom",
+        "sha256": "e1d5a44c743b62241351c44959fd047a65f0fbe230f1b49a4f1006c6c40c64cc",
+        "bytes": 3489792,
+        "before_after_identical": true
+      }
+    ],
+    "general_tests": {
+      "run": 439,
+      "passed": true
+    },
+    "component_tests": {
+      "run": 70,
+      "skipped": 1,
+      "passed": true
+    },
+    "integrated_suite": {
+      "command": "make test-experiments",
+      "passed": true,
+      "steering_refreshes": 16000
+    },
+    "test_mode_controls_passed": true,
+    "explicit_historical_source_selection_test_passed": true,
+    "profile": {
+      "before_after_active_statistics_identical": true,
+      "measured": {
+        "rom_sha256": "98ce0135b628a1837a3d6df2910f572e466b4bffe465344238f4c44a9015346a",
+        "cpu_hz": 3579545,
+        "machine": "Panasonic_FS-A1WSX_NR128",
+        "emulator": "openMSX 21.0\nflavour: opt\ncomponents: CORE GL LASERDISC",
+        "workload": "Full session, keyboard coin/start and F5 to native round5 (RND4), layout1, three native enemies; frames5..360, fixed directional input",
+        "hud": true,
+        "audio": true,
+        "limitsprites": true,
+        "active_frames": 238,
+        "active_seconds": 7.959028032892453,
+        "presented_fps": 29.903148853906796,
+        "cadence": {
+          "2": 237,
+          "3": 1
+        },
+        "late_frames": 1,
+        "enemy_distinct_positions": [
+          12,
+          11,
+          14
+        ],
+        "work": {
+          "min": 64632.9999999851,
+          "mean": 81013.56302521084,
+          "p95": 109983.0,
+          "max": 127374.9999999851
+        },
+        "interval": {
+          "min": 115099.0000000149,
+          "mean": 119704.61764705888,
+          "p95": 121028.0,
+          "max": 176387.0
+        }
+      },
+      "scope": "Bounded native-round-5 directional emulator workload with three moving enemies; not whole-course or physical-hardware acceptance"
+    },
+    "raw_evidence": "references/issue34/screen5-migration/"
+  }
+}

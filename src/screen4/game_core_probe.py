@@ -1,6 +1,6 @@
 """Execute contributor-native gameplay and PSG independently of SCREEN4 effects.
 
-Run: .venv/bin/python experiments/fixed-hud/game_core_probe.py
+Run: .venv/bin/python src/screen4/game_core_probe.py
 All generated native bytes, ROMs and observations stay under references/.
 This uses explicit elapsed ticks, with interrupts disabled: it does not validate
 VRAM, presented graphics, perceptual audio, or physical gameplay cadence.

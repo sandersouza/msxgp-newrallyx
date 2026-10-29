@@ -43,13 +43,16 @@ def selected(text, **changes):
     return '\n'.join(result)+'\n'
 
 
-def prepare(root, out,*,full_session=False):
+def prepare(root, out,*,full_session=False,source_directory=None):
     root, out = Path(root), Path(out)
+    # Current authored helpers live in screen5. A verified historical source
+    # view must opt in to its original flat layout; never choose it implicitly.
+    sources = Path(source_directory) if source_directory is not None else root/'src/screen5'
     out.mkdir(parents=True, exist_ok=True)
     def source(name, **changes):
         if full_session:
             changes=dict(FULL_GAME=1,AUDIO_ENABLED=1,FLAG_POPUPS=1)|changes
-        return selected((root/'src'/name).read_text(), **changes)
+        return selected((sources/name).read_text(), **changes)
     # Use the seed's immutable rock address list, as in the full-game adapter.
     rock = source('rock-collision.inc', FULL_GAME=1)
     rock = rock[:rock.index('Rock_Cells:')]
@@ -82,9 +85,9 @@ def prepare(root, out,*,full_session=False):
         from session_completion import round_runtime
         completion=round_runtime(completion)
     (out/'game-host.inc').write_text('\n'.join((rock, death, flags, score, fuel, lives, enemy, smoke, completion)))
-    motion = (root/'src/full-native-motion.inc').read_text().split('Full_CacheInitNative:')[0]
+    motion = (sources/'full-native-motion.inc').read_text().split('Full_CacheInitNative:')[0]
     (out/'game-native-motion.inc').write_text(motion)
-    ai = (root/'src/full-msx-enemies.inc').read_text()
+    ai = (sources/'full-msx-enemies.inc').read_text()
     (out/'game-native-ai.inc').write_text('''; Place at $b600 in the native bank.
     jp Full_MSXAI
     jp Full_MSXContact

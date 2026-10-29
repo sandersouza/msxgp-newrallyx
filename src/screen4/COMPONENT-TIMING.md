@@ -29,11 +29,11 @@ counts for every active interval. It does not sum unrelated per-call P95 costs.
 Run from this experiment worktree, with its existing Python environment:
 
 ```sh
-.venv/bin/python experiments/fixed-hud/component_profile.py --bundle references/experiments/stage-one-3-enemies --route
-.venv/bin/python experiments/fixed-hud/component_actor_profile.py --bundle references/experiments/stage-one-3-enemies --population 1 --route
-.venv/bin/python experiments/fixed-hud/component_actor_profile.py --bundle references/experiments/stage-one-3-enemies --population 2 --route
-.venv/bin/python experiments/fixed-hud/component_actor_profile.py --bundle references/experiments/stage-one-3-enemies --route
-.venv/bin/python experiments/fixed-hud/raster_phase_profile.py
+.venv/bin/python src/screen4/component_profile.py --bundle references/experiments/stage-one-3-enemies --route
+.venv/bin/python src/screen4/component_actor_profile.py --bundle references/experiments/stage-one-3-enemies --population 1 --route
+.venv/bin/python src/screen4/component_actor_profile.py --bundle references/experiments/stage-one-3-enemies --population 2 --route
+.venv/bin/python src/screen4/component_actor_profile.py --bundle references/experiments/stage-one-3-enemies --route
+.venv/bin/python src/screen4/raster_phase_profile.py
 ```
 
 Each command prints its evidence directory. Pass those directories to

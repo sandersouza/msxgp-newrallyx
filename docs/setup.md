@@ -30,7 +30,7 @@ with `LEGACY=1`. `STAGE`, `FULL_GAME`, `AUDIO` and `HZ` select legacy diagnostic
 use `LEGACY=1` with those flags. The optimized complete session uses native enemy
 progression; `ENEMIES=3` selects the earlier first-stage benchmark, not a complete
 session population override. `make run-experiments` remains a default-presenter
-alias; see [all build profiles](../experiments/fixed-hud/BUILD-PROFILES.md).
+alias; see [all build profiles](../src/screen4/BUILD-PROFILES.md).
 
 The optimized artifact is `references/experiments/full-session/fixed-hud.rom`
 (or `full-session-test/` for test mode). Exports in `outputs/test-roms/` include

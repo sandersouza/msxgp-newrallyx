@@ -8,19 +8,19 @@ from scripts.repository_inventory import static_references
 class InventoryReferencesTest(unittest.TestCase):
     def test_package_and_sibling_imports(self):
         paths = list(map(Path, ['scripts/project.py', 'scripts/msx/build.py',
-                               'experiments/fixed-hud/session_build.py',
-                               'experiments/fixed-hud/build_profiles.py']))
+                               'src/screen4/session_build.py',
+                               'src/screen4/build_profiles.py']))
         refs = static_references(paths, {
             'scripts/project.py': 'from scripts.msx.build import destination\n',
-            'experiments/fixed-hud/session_build.py': 'from build_profiles import source_view\n'})
+            'src/screen4/session_build.py': 'from build_profiles import source_view\n'})
         self.assertIn(('scripts/project.py', 'python-import'), refs['scripts/msx/build.py'])
-        self.assertIn(('experiments/fixed-hud/session_build.py', 'python-import'),
-                      refs['experiments/fixed-hud/build_profiles.py'])
+        self.assertIn(('src/screen4/session_build.py', 'python-import'),
+                      refs['src/screen4/build_profiles.py'])
 
     def test_ambiguous_include_retains_both_and_marks_uncertainty(self):
-        paths = list(map(Path, ['src/main.asm', 'src/hud.inc', 'experiments/hud.inc']))
+        paths = list(map(Path, ['src/main.asm', 'src/screen5/hud.inc', 'src/screen4/hud.inc']))
         refs = static_references(paths, {'src/main.asm': '    INCLUDE "hud.inc"\n'})
-        for target in ('src/hud.inc', 'experiments/hud.inc'):
+        for target in ('src/screen5/hud.inc', 'src/screen4/hud.inc'):
             self.assertIn(('src/main.asm', 'assembly-include-candidate'), refs[target])
 
     def test_staging_and_documentation_remain_distinct_from_imports(self):

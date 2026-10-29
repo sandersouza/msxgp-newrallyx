@@ -114,7 +114,7 @@ def main(enemies=3):
     if boundary_runtime.exists() and read(boundary_runtime)['rom_sha256']==current_hash:
         d['boundary_runtime']=read(boundary_runtime)
     d['evidence_scope']='Same controller policy; cadence changes input feedback and samples. Three-enemy navigation ends at native game over; seven-enemy smoke is a separate prior-ROM stress test. Multi-car overrides only population/spawns. No physical hardware validation.'
-    d['sources_sha256']={p.name:sha(p) for p in sorted((ROOT/'experiments/fixed-hud').glob('game-*.inc'))}
+    d['sources_sha256']={p.name:sha(p) for p in sorted((ROOT/'src/screen4').glob('game-*.inc'))}
     OUT.mkdir(parents=True,exist_ok=True)
     target=OUT/'summary.json'
     target.write_text(json.dumps(d,indent=2)+'\n')

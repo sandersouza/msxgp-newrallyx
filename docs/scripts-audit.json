@@ -1,0 +1,3885 @@
+{
+  "schema_version": 1,
+  "baseline_commit": "fa0f63006da6edec79fc0b868372940cc8439326",
+  "decision": "Explicitly retire four unreferenced one-off study CLIs. This is a maintenance decision, not a claim that their algorithms or symbols are invalid.",
+  "method": "Python AST imports including from-package module imports, script/module filename mentions, source/test command inspection and maintained documentation. Static absence alone does not authorize general deletion.",
+  "protection": "Keep both presenters, bounded-stage build switches, contributor-input generators, reference adapters, unique gameplay/audio/replay probes and documented historical reproductions.",
+  "local_archive": "references/issue34/retired-scripts.tar.gz",
+  "retired": [
+    {
+      "path": "scripts/full_cache_forecast_probe.py",
+      "decision": "retire-unused-study-cli",
+      "reason": "Unpublished standalone cache-forecast array study; no importer, command consumer or maintained documentation uses this CLI.",
+      "bytes": 7439,
+      "sha256": "a72da6b9f2817188e66d323b480294820664b1976ae98058cae25c8db19d7cbe",
+      "git_blob": "cf3cfe3e93050cba5bbc1502ba9afdcc2c3bafa6",
+      "evidence": {
+        "path": "scripts/full_cache_forecast_probe.py",
+        "importers": [],
+        "code_mentions": [],
+        "documentation": [],
+        "legacy_symbols_missing": []
+      }
+    },
+    {
+      "path": "scripts/full_cache_metadata_probe.py",
+      "decision": "retire-unused-study-cli",
+      "reason": "Unpublished standalone ownership/smoke-tag writer study; no importer, command consumer or maintained documentation uses this CLI.",
+      "bytes": 6179,
+      "sha256": "9fce1cfdc361ab8b61a250eb554d70092b2333e52fffb00360141a55d17803d3",
+      "git_blob": "0f72d6c082f945d90215c02c36821f7ebc2668f6",
+      "evidence": {
+        "path": "scripts/full_cache_metadata_probe.py",
+        "importers": [],
+        "code_mentions": [],
+        "documentation": [],
+        "legacy_symbols_missing": []
+      }
+    },
+    {
+      "path": "scripts/full_camera_bounds_probe.py",
+      "decision": "retire-unused-study-cli",
+      "reason": "Unpublished seeded-camera initialization study; no importer, command consumer or maintained documentation uses this CLI.",
+      "bytes": 6429,
+      "sha256": "430e914a8f23a6018754e9b81ba39e95a255ffea7a16729e6da718d59e2137dc",
+      "git_blob": "bf80791c9c652f44cdf9450701eea3b717d44adf",
+      "evidence": {
+        "path": "scripts/full_camera_bounds_probe.py",
+        "importers": [],
+        "code_mentions": [],
+        "documentation": [],
+        "legacy_symbols_missing": []
+      }
+    },
+    {
+      "path": "scripts/full_enemy_cost.py",
+      "decision": "retire-unused-study-cli",
+      "reason": "Unpublished one-to-seven-actor renderer scaling study; no importer, command consumer or maintained documentation uses this CLI. Other timing tools measure different workloads, not an equivalent replacement.",
+      "bytes": 6967,
+      "sha256": "8ec007dc0699e359a732b9a9dcefeedea91e1b9c74959ef50cc1181a5e4fe4d6",
+      "git_blob": "ee0656209333dc60f7b1aaee2a513082900fdd32",
+      "evidence": {
+        "path": "scripts/full_enemy_cost.py",
+        "importers": [],
+        "code_mentions": [],
+        "documentation": [],
+        "legacy_symbols_missing": []
+      }
+    }
+  ],
+  "retained_python_audit": [
+    {
+      "path": "scripts/arcade_scene.py",
+      "importers": [
+        "tests/test_arcade_scene.py"
+      ],
+      "code_mentions": [
+        "tests/test_arcade_scene.py"
+      ],
+      "documentation": [
+        "README.md",
+        "docs/arcade-scenes.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/audio_audition_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/audio_gameplay_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue13-audio-interface.md",
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/audio_inventory.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue13-audio-interface.md",
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/audio_psg_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "retained-unique-regression-entrypoint"
+    },
+    {
+      "path": "scripts/audio_runtime_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue13-audio-interface.md",
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/audio_score_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/audio_sequencer_probe.py",
+      "importers": [
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_score_probe.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_score_probe.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/audio_session_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/clean.py",
+      "importers": [
+        "tests/test_clean.py"
+      ],
+      "code_mentions": [
+        "tests/test_clean.py"
+      ],
+      "documentation": [
+        "README.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/environment/toolchain.py",
+      "importers": [],
+      "code_mentions": [
+        "scripts/environment/macos.sh",
+        "tests/test_macos_environment.py",
+        "tests/test_toolchain.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "referenced-script-or-helper"
+    },
+    {
+      "path": "scripts/environment/verify_python.py",
+      "importers": [],
+      "code_mentions": [
+        "scripts/environment/macos.sh",
+        "tests/test_verify_python.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "referenced-script-or-helper"
+    },
+    {
+      "path": "scripts/extract_graphics.py",
+      "importers": [
+        "scripts/audio_inventory.py",
+        "scripts/msx/stage_one.py",
+        "src/screen4/title_reference.py",
+        "tests/test_extract_graphics.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_inventory.py",
+        "scripts/msx/stage_one.py",
+        "src/screen4/title_reference.py",
+        "tests/test_extract_graphics.py"
+      ],
+      "documentation": [
+        "README.md",
+        "docs/arcade-scenes.md",
+        "docs/graphics-extraction.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/full_ai_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "retained-unique-regression-entrypoint"
+    },
+    {
+      "path": "scripts/full_arcade_ui_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_attract_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_bonus_lives_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "retained-unique-regression-entrypoint"
+    },
+    {
+      "path": "scripts/full_clock_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue12-performance-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_debug_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue12-parked-controls.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_enemy_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md",
+        "docs/issue12-performance-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_flag_popup_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "retained-unique-regression-entrypoint"
+    },
+    {
+      "path": "scripts/full_game_evidence.py",
+      "importers": [
+        "scripts/full_enemy_probe.py"
+      ],
+      "code_mentions": [
+        "scripts/full_enemy_probe.py"
+      ],
+      "documentation": [
+        "docs/enemy-rendering-performance.md",
+        "docs/full-gameplay-inventory.md",
+        "docs/issue12-effects-publication.md",
+        "docs/issue12-performance-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/full_game_probe.py",
+      "importers": [
+        "scripts/full_debug_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/terrain_live.py"
+      ],
+      "code_mentions": [
+        "scripts/full_debug_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/terrain_live.py",
+        "tests/test_terrain_live.py"
+      ],
+      "documentation": [
+        "docs/full-gameplay-inventory.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/full_game_route.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/enemy-rendering-performance.md",
+        "docs/full-gameplay-inventory.md",
+        "docs/issue12-effects-publication.md",
+        "docs/issue12-parked-controls.md",
+        "docs/issue12-performance-analysis.md",
+        "docs/issue12-radar-motion.md",
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_msx_enemy_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md",
+        "docs/issue12-parked-controls.md",
+        "docs/issue12-performance-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_radar_irq_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue12-performance-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_replay_probe.py",
+      "importers": [
+        "tests/test_full_replay_probe.py"
+      ],
+      "code_mentions": [
+        "tests/test_full_replay_probe.py"
+      ],
+      "documentation": [
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/full_rules_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_scroll_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/enemy-rendering-performance.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_session_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_startup_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue12-performance-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_state_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md",
+        "docs/issue12-parked-controls.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_terrain_probe.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/enemy-rendering-performance.md",
+        "docs/issue12-performance-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/full_tick_cost.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue12-performance-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/gameplay_inventory.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/graphics/__init__.py",
+      "importers": [],
+      "code_mentions": [
+        "scripts/repository_inventory.py",
+        "tests/test_verify_python.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "referenced-script-or-helper"
+    },
+    {
+      "path": "scripts/graphics/decode.py",
+      "importers": [
+        "scripts/extract_graphics.py",
+        "src/screen4/title_reference.py",
+        "tests/graphics_fixtures.py",
+        "tests/test_graphics_decode.py"
+      ],
+      "code_mentions": [
+        "src/screen4/title_reference.py",
+        "tests/graphics_fixtures.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/graphics/export.py",
+      "importers": [
+        "scripts/extract_graphics.py",
+        "tests/scene_fixtures.py",
+        "tests/test_graphics_export.py"
+      ],
+      "code_mentions": [
+        "tests/scene_fixtures.py",
+        "tests/test_graphics_export.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/graphics/roms.py",
+      "importers": [
+        "scripts/audio_inventory.py",
+        "scripts/extract_graphics.py",
+        "scripts/full_session_probe.py",
+        "scripts/msx/attract.py",
+        "scripts/msx/death.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/rocks.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/stage_one.py",
+        "scripts/scenes/bundle.py",
+        "scripts/scenes/record.py",
+        "scripts/session_inventory.py",
+        "scripts/z80_analysis.py",
+        "src/screen4/arcade_clear_reference.py",
+        "src/screen4/arcade_motion_reference.py",
+        "src/screen4/session_boot.py",
+        "src/screen4/session_rocks_verify.py",
+        "src/screen4/session_speed_verify.py",
+        "src/screen4/title_reference.py",
+        "tests/scene_fixtures.py",
+        "tests/test_extract_graphics.py",
+        "tests/test_graphics_roms.py",
+        "tests/test_native_build.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_inventory.py",
+        "scripts/full_session_probe.py",
+        "scripts/msx/attract.py",
+        "scripts/msx/death.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/rocks.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/stage_one.py",
+        "scripts/scenes/bundle.py",
+        "scripts/scenes/record.py",
+        "scripts/session_inventory.py",
+        "scripts/z80_analysis.py",
+        "src/screen4/arcade_clear_reference.py",
+        "src/screen4/arcade_motion_reference.py",
+        "src/screen4/session_boot.py",
+        "src/screen4/session_rocks_verify.py",
+        "src/screen4/session_speed_verify.py",
+        "src/screen4/title_reference.py",
+        "tests/scene_fixtures.py",
+        "tests/test_extract_graphics.py",
+        "tests/test_native_build.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/maze_debug.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue13-audio-interface.md",
+        "docs/issue13-audio-validation.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/msx/__init__.py",
+      "importers": [],
+      "code_mentions": [
+        "scripts/repository_inventory.py",
+        "tests/test_verify_python.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "referenced-script-or-helper"
+    },
+    {
+      "path": "scripts/msx/attract.py",
+      "importers": [
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/full_ui.py",
+        "scripts/msx/session.py"
+      ],
+      "code_mentions": [
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_state_probe.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/audio_cycles.py",
+      "importers": [
+        "scripts/full_game_route.py",
+        "tests/test_audio_cycles.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_route.py",
+        "tests/test_audio_cycles.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/audio_native.py",
+      "importers": [
+        "scripts/audio_sequencer_probe.py",
+        "scripts/msx/raster_scroll.py",
+        "tests/test_audio_native.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_sequencer_probe.py",
+        "tests/test_audio_native.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/audio_psg.py",
+      "importers": [
+        "scripts/audio_psg_probe.py",
+        "scripts/msx/audio_score.py",
+        "scripts/msx/raster_scroll.py",
+        "tests/test_audio_psg.py",
+        "tests/test_audio_score.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_psg_probe.py",
+        "tests/test_audio_psg.py",
+        "tests/test_audio_score.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/audio_reference.py",
+      "importers": [
+        "scripts/audio_inventory.py",
+        "scripts/audio_psg_probe.py",
+        "tests/test_audio_reference.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_inventory.py",
+        "scripts/audio_psg_probe.py",
+        "tests/test_audio_reference.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/audio_score.py",
+      "importers": [
+        "scripts/audio_runtime_probe.py",
+        "scripts/msx/raster_scroll.py",
+        "tests/test_audio_score.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_runtime_probe.py",
+        "tests/test_audio_score.py"
+      ],
+      "documentation": [
+        "docs/issue13-audio-interface.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/axis_timing.py",
+      "importers": [
+        "scripts/full_game_route.py",
+        "tests/test_axis_timing.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_route.py",
+        "tests/test_axis_timing.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/bitmap_blitter_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [
+        "BitmapRadar_Player",
+        "Blit_Fast",
+        "Blit_ForceSlow"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/build.py",
+      "importers": [
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_inventory.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_score_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/msx/bitmap_blitter_verify.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/emulator.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/msx/enemy_presentation_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/fuel_verify.py",
+        "scripts/msx/hud_alerts_verify.py",
+        "scripts/msx/hud_coordinates_verify.py",
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_inputs.py",
+        "scripts/msx/native_probe.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/outline_flicker_verify.py",
+        "scripts/msx/parameters_verify.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/radar_cells_verify.py",
+        "scripts/msx/radar_motion_verify.py",
+        "scripts/msx/radar_pair_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/score_verify.py",
+        "scripts/msx/session_inputs_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/solid_run_verify.py",
+        "scripts/msx/sprite_flicker_verify.py",
+        "scripts/msx/sprite_upload_verify.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/msx/tile_strip_verify.py",
+        "scripts/project.py",
+        "scripts/session_inventory.py",
+        "tests/test_msx_build.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_inventory.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_score_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/project.py",
+        "scripts/session_inventory.py",
+        "src/screen4/targets.mk",
+        "tests/test_make_modes.py",
+        "tests/test_msx_build.py",
+        "tests/test_repository_inventory.py"
+      ],
+      "documentation": [
+        "docs/architecture.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md",
+        "src/screen4/README.md",
+        "src/screen5/README.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/cadence.py",
+      "importers": [
+        "scripts/full_game_route.py",
+        "tests/test_cadence.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_route.py",
+        "tests/test_cadence.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [
+        "debt",
+        "dropped",
+        "end",
+        "enemies",
+        "held",
+        "start"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/checkpoints.py",
+      "importers": [
+        "scripts/native_runtime.py",
+        "scripts/project.py",
+        "src/screen4/build_profiles.py",
+        "tests/test_checkpoints.py",
+        "tests/test_project.py"
+      ],
+      "code_mentions": [
+        "scripts/native_runtime.py",
+        "scripts/project.py",
+        "src/screen4/build_profiles.py",
+        "tests/test_checkpoints.py",
+        "tests/test_project.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/completion_route_verify.py",
+      "importers": [
+        "scripts/full_game_route.py",
+        "scripts/full_session_probe.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/game_route.py",
+        "tests/test_session.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_route.py",
+        "scripts/full_session_probe.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/game_route.py",
+        "tests/test_session.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/death.py",
+      "importers": [
+        "scripts/msx/raster_scroll.py",
+        "src/screen4/effect_proposal.py",
+        "src/screen4/game_build.py",
+        "tests/test_death.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py",
+        "scripts/raster_scroll.py",
+        "tests/test_death.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/death_copy_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/death_verify.py",
+      "importers": [
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/hud_alerts_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/lives_route_verify.py",
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/display.py",
+      "importers": [
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/full_hud.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/native_scanout.py",
+        "scripts/msx/player.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/sprite_flicker.py",
+        "scripts/msx/stage_one.py",
+        "scripts/msx/terrain_live.py"
+      ],
+      "code_mentions": [
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/msx/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/emulator.py",
+      "importers": [
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/maze_debug.py",
+        "scripts/msx/bitmap_blitter_verify.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/msx/enemy_presentation_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/fuel_verify.py",
+        "scripts/msx/hud_alerts_verify.py",
+        "scripts/msx/hud_coordinates_verify.py",
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/maze_capture.py",
+        "scripts/msx/native_inputs.py",
+        "scripts/msx/native_probe.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/outline_flicker_verify.py",
+        "scripts/msx/parameters_verify.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/presentation_clock_verify.py",
+        "scripts/msx/radar_cells_verify.py",
+        "scripts/msx/radar_motion_verify.py",
+        "scripts/msx/radar_pair_verify.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/score_verify.py",
+        "scripts/msx/session_inputs_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_queue_verify.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/solid_run_verify.py",
+        "scripts/msx/sprite_flicker_verify.py",
+        "scripts/msx/sprite_upload_verify.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/msx/tile_strip_verify.py",
+        "scripts/native_runtime.py",
+        "scripts/project.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/game_core_probe.py",
+        "src/screen4/game_dirty_probe.py",
+        "src/screen4/game_multi_verify.py",
+        "src/screen4/game_position_proof.py",
+        "src/screen4/game_smoke_cache.py",
+        "src/screen4/game_verify.py",
+        "src/screen4/patch_square_probe.py",
+        "src/screen4/profile.py",
+        "src/screen4/raster_phase_profile.py",
+        "src/screen4/session_audio_verify.py",
+        "src/screen4/session_boot_skip_verify.py",
+        "src/screen4/session_boot_verify.py",
+        "src/screen4/session_cosmetics.py",
+        "src/screen4/session_rocks_verify.py",
+        "src/screen4/session_speed_verify.py",
+        "src/screen4/session_steering_verify.py",
+        "src/screen4/session_verify.py",
+        "src/screen4/test_game_actors.py",
+        "src/screen4/test_game_boundary_fast.py",
+        "src/screen4/test_game_hud.py",
+        "src/screen4/test_game_multi.py",
+        "src/screen4/test_game_name_stream.py",
+        "src/screen4/test_game_packet_fast.py",
+        "src/screen4/test_game_radar.py",
+        "src/screen4/test_game_radar_fast.py",
+        "src/screen4/test_game_ring.py",
+        "src/screen4/test_game_smoke_fast.py",
+        "src/screen4/test_game_sprite_mask_fast.py",
+        "src/screen4/test_game_sprites.py",
+        "src/screen4/test_hud_programs.py",
+        "src/screen4/verify.py",
+        "tests/test_full_replay_probe.py",
+        "tests/test_msx_screen5.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/maze_debug.py",
+        "scripts/native_runtime.py",
+        "scripts/project.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/game_core_probe.py",
+        "src/screen4/game_dirty_probe.py",
+        "src/screen4/game_multi_verify.py",
+        "src/screen4/game_position_proof.py",
+        "src/screen4/game_smoke_cache.py",
+        "src/screen4/game_verify.py",
+        "src/screen4/patch_square_probe.py",
+        "src/screen4/profile.py",
+        "src/screen4/raster_phase_profile.py",
+        "src/screen4/session_audio_verify.py",
+        "src/screen4/session_boot_skip_verify.py",
+        "src/screen4/session_boot_verify.py",
+        "src/screen4/session_cosmetics.py",
+        "src/screen4/session_rocks_verify.py",
+        "src/screen4/session_speed_verify.py",
+        "src/screen4/session_steering_verify.py",
+        "src/screen4/session_verify.py",
+        "src/screen4/test_game_actors.py",
+        "src/screen4/test_game_boundary_fast.py",
+        "src/screen4/test_game_hud.py",
+        "src/screen4/test_game_multi.py",
+        "src/screen4/test_game_name_stream.py",
+        "src/screen4/test_game_packet_fast.py",
+        "src/screen4/test_game_radar.py",
+        "src/screen4/test_game_radar_fast.py",
+        "src/screen4/test_game_ring.py",
+        "src/screen4/test_game_smoke_fast.py",
+        "src/screen4/test_game_sprite_mask_fast.py",
+        "src/screen4/test_game_sprites.py",
+        "src/screen4/test_hud_programs.py",
+        "src/screen4/verify.py",
+        "tests/test_full_replay_probe.py",
+        "tests/test_msx_screen5.py"
+      ],
+      "documentation": [
+        "docs/architecture.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/enemy_navigation.py",
+      "importers": [
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/msx/raster_scroll.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_multi.py",
+        "tests/test_enemy_navigation.py"
+      ],
+      "code_mentions": [
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_tick_cost.py",
+        "src/screen4/game_multi.py",
+        "tests/test_enemy_navigation.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/enemy_population.py",
+      "importers": [
+        "scripts/msx/death_verify.py",
+        "scripts/msx/full_enemy.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py",
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/enemy_population_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/enemy_presentation_verify.py",
+      "importers": [
+        "scripts/full_enemy_probe.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/raster_scroll.py",
+        "tests/test_enemy.py"
+      ],
+      "code_mentions": [
+        "scripts/full_enemy_probe.py",
+        "scripts/raster_scroll.py",
+        "tests/test_enemy.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/enemy_route_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/enemy_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py",
+        "tests/test_enemy.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_enemy.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/flag_popup.py",
+      "importers": [
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/msx/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_route.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/flag_route_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/flags.py",
+      "importers": [
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/round_inventory.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_route.py",
+        "tests/test_flags.py",
+        "tests/test_player_blitter.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/game_route.py",
+        "tests/test_flags.py",
+        "tests/test_player_blitter.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/flags_verify.py",
+      "importers": [
+        "scripts/msx/flag_route_verify.py",
+        "scripts/raster_scroll.py",
+        "tests/test_flags.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_flags.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/flicker_stress_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/fuel_verify.py",
+      "importers": [
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/parameters_verify.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/raster_scroll.py",
+        "tests/test_fuel.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_fuel.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/full_effects.py",
+      "importers": [
+        "scripts/full_game_route.py",
+        "scripts/msx/radar_motion.py",
+        "tests/test_full_effects.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_route.py",
+        "tests/test_full_effects.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/full_enemy.py",
+      "importers": [
+        "scripts/msx/full_memory.py",
+        "scripts/msx/raster_scroll.py",
+        "tests/test_full_enemy.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py",
+        "tests/test_full_enemy.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/full_hud.py",
+      "importers": [
+        "scripts/full_state_probe.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/session.py",
+        "tests/test_full_hud.py"
+      ],
+      "code_mentions": [
+        "scripts/full_state_probe.py",
+        "scripts/msx/raster_scroll.py",
+        "tests/test_full_hud.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/full_memory.py",
+      "importers": [
+        "scripts/full_enemy_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/msx/raster_scroll.py",
+        "tests/test_full_memory.py"
+      ],
+      "code_mentions": [
+        "scripts/full_enemy_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "tests/test_full_memory.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/full_round_build.py",
+      "importers": [
+        "scripts/msx/raster_scroll.py"
+      ],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/full_ui.py",
+      "importers": [
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/session.py"
+      ],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/hud_alerts_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py",
+        "tests/test_session.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_session.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/hud_contract.py",
+      "importers": [
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/native_scene.py",
+        "tests/test_hud_contract.py"
+      ],
+      "code_mentions": [
+        "tests/test_hud_contract.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/hud_coordinates_verify.py",
+      "importers": [
+        "scripts/msx/hud_verify.py"
+      ],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [
+        "Enemy2_PointX",
+        "Enemy2_PointY"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/hud_verify.py",
+      "importers": [
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/msx/bitmap_blitter_verify.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/msx/enemy_presentation_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/fuel_verify.py",
+        "scripts/msx/hud_alerts_verify.py",
+        "scripts/msx/hud_coordinates_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/outline_flicker_verify.py",
+        "scripts/msx/parameters_verify.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/radar_cells_verify.py",
+        "scripts/msx/radar_motion_verify.py",
+        "scripts/msx/radar_pair_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/score_verify.py",
+        "scripts/msx/session_inputs_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/solid_run_verify.py",
+        "scripts/msx/sprite_flicker_verify.py",
+        "scripts/msx/sprite_upload_verify.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/msx/terrain_live.py",
+        "scripts/msx/tile_strip_verify.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/game_core_probe.py",
+        "src/screen4/game_multi_verify.py",
+        "src/screen4/test_game_multi.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/game_core_probe.py",
+        "src/screen4/game_multi_verify.py",
+        "src/screen4/test_game_multi.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/inputs.py",
+      "importers": [
+        "scripts/msx/native_build.py",
+        "scripts/msx/raster_scroll.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_core_probe.py",
+        "src/screen4/game_hud.py",
+        "src/screen4/prepare.py",
+        "tests/test_raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_core_probe.py",
+        "src/screen4/game_hud.py",
+        "src/screen4/prepare.py",
+        "src/screen4/workbook.mjs",
+        "tests/test_raster_scroll.py"
+      ],
+      "documentation": [
+        "docs/raster-scroll.md",
+        "src/screen4/PERFORMANCE.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/lives_route_verify.py",
+      "importers": [
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/raster_scroll.py",
+        "tests/test_lives.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_lives.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/lives_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py",
+        "tests/test_lives.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_lives.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/maze_capture.py",
+      "importers": [
+        "scripts/maze_debug.py",
+        "scripts/msx/emulator.py"
+      ],
+      "code_mentions": [
+        "scripts/maze_debug.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/motion_cadence.py",
+      "importers": [
+        "scripts/full_game_route.py",
+        "tests/test_motion_cadence.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_route.py",
+        "tests/test_motion_cadence.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_build.py",
+      "importers": [
+        "scripts/native_runtime.py",
+        "tests/test_native_build.py"
+      ],
+      "code_mentions": [
+        "scripts/native_runtime.py",
+        "tests/test_native_build.py"
+      ],
+      "documentation": [
+        "docs/native-loader.md",
+        "docs/native-runtime.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md",
+        "src/screen5/README.md"
+      ],
+      "legacy_symbols_missing": [
+        "Native_ResetFinalize"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_compare.py",
+      "importers": [
+        "scripts/msx/native_verify.py",
+        "scripts/native_runtime.py",
+        "tests/test_native_compare.py"
+      ],
+      "code_mentions": [
+        "scripts/native_runtime.py",
+        "tests/test_native_compare.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_contract.py",
+      "importers": [
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_probe.py",
+        "scripts/msx/native_scene.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/native_video_verify.py",
+        "tests/test_native_compare.py",
+        "tests/test_native_contract.py",
+        "tests/test_native_probe.py",
+        "tests/test_native_runtime.py",
+        "tests/test_native_scene.py",
+        "tests/test_native_sprites.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_compare.py",
+        "tests/test_native_contract.py",
+        "tests/test_native_probe.py",
+        "tests/test_native_runtime.py",
+        "tests/test_native_scene.py",
+        "tests/test_native_sprites.py"
+      ],
+      "documentation": [
+        "docs/native-runtime-contracts.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_deadline.py",
+      "importers": [
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_verify.py",
+        "tests/test_native_fine.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_fine.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_inputs.py",
+      "importers": [
+        "scripts/msx/native_verify.py",
+        "scripts/msx/session_inputs_verify.py",
+        "scripts/native_runtime.py",
+        "tests/test_native_inputs.py"
+      ],
+      "code_mentions": [
+        "scripts/native_runtime.py",
+        "tests/test_native_inputs.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [
+        "Native_InputCache",
+        "Native_InputReturn",
+        "Native_ReadInputs"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_layout.py",
+      "importers": [
+        "scripts/msx/native_build.py",
+        "tests/test_native_layout.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_layout.py"
+      ],
+      "documentation": [
+        "docs/native-patching.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_logic.py",
+      "importers": [
+        "scripts/msx/native_build.py",
+        "tests/test_native_runtime.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_runtime.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_patch.py",
+      "importers": [
+        "scripts/msx/native_logic.py",
+        "scripts/msx/native_reset.py",
+        "scripts/msx/native_video_hooks.py",
+        "tests/test_native_patch.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_patch.py"
+      ],
+      "documentation": [
+        "docs/native-patching.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_probe.py",
+      "importers": [
+        "scripts/msx/native_inputs.py",
+        "scripts/msx/native_scanout.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/native_video_verify.py",
+        "scripts/native_runtime.py",
+        "tests/test_native_probe.py"
+      ],
+      "code_mentions": [
+        "scripts/native_runtime.py",
+        "tests/test_native_probe.py"
+      ],
+      "documentation": [
+        "docs/native-loader.md",
+        "docs/native-runtime.md"
+      ],
+      "legacy_symbols_missing": [
+        "NATIVE_STATE",
+        "NATIVE_TAG",
+        "Native_After",
+        "Native_Before",
+        "Native_Boot",
+        "Native_IRQs",
+        "Native_LoaderStart",
+        "Native_Primary",
+        "Native_ProbeAfter",
+        "Native_ProbeBefore",
+        "Native_RAMSlot",
+        "Native_Reset",
+        "Native_Restored",
+        "Native_Status"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_reset.py",
+      "importers": [
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_logic.py",
+        "scripts/msx/round_prepare_verify.py",
+        "tests/test_native_compare.py",
+        "tests/test_native_runtime.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_compare.py",
+        "tests/test_native_runtime.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_scanout.py",
+      "importers": [
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_video_verify.py",
+        "tests/test_native_scanout.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_scanout.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_scene.py",
+      "importers": [
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_sprites.py",
+        "scripts/msx/native_video.py",
+        "scripts/msx/native_video_verify.py",
+        "tests/test_native_scene.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_scene.py"
+      ],
+      "documentation": [
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_sprite_probe.py",
+      "importers": [
+        "scripts/native_runtime.py"
+      ],
+      "code_mentions": [
+        "scripts/native_runtime.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_sprites.py",
+      "importers": [
+        "scripts/msx/native_scanout.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_video_verify.py",
+        "tests/test_native_sprites.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_sprites.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_verify.py",
+      "importers": [
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_inputs.py",
+        "scripts/native_runtime.py",
+        "tests/test_native_fine.py",
+        "tests/test_native_runtime.py",
+        "tests/test_native_video_verify.py"
+      ],
+      "code_mentions": [
+        "scripts/native_runtime.py",
+        "tests/test_native_fine.py",
+        "tests/test_native_runtime.py",
+        "tests/test_native_video_verify.py"
+      ],
+      "documentation": [
+        "docs/native-runtime.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md"
+      ],
+      "legacy_symbols_missing": [
+        "Native_PrepareFrame"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_video.py",
+      "importers": [
+        "scripts/msx/native_build.py",
+        "tests/test_native_scene.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_scene.py",
+        "tests/test_native_video_verify.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_video_hooks.py",
+      "importers": [
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_logic.py"
+      ],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/native_video_verify.py",
+      "importers": [
+        "scripts/msx/native_sprite_probe.py",
+        "tests/test_native_video_verify.py"
+      ],
+      "code_mentions": [
+        "tests/test_native_video_verify.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/outline_flicker.py",
+      "importers": [
+        "scripts/msx/outline_flicker_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/sprite_flicker.py",
+        "tests/test_outline_flicker.py"
+      ],
+      "code_mentions": [
+        "tests/test_outline_flicker.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/outline_flicker_verify.py",
+      "importers": [
+        "scripts/msx/sprite_flicker_verify.py"
+      ],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [
+        "Enemy1_Index",
+        "Enemy1_LastEC",
+        "Enemy2_Index",
+        "Enemy2_LastEC",
+        "Flicker_Phase",
+        "Flicker_Publish",
+        "Outline_Commit",
+        "Outline_DisplayPhase",
+        "Outline_Front",
+        "Outline_Ready"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/parameters_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/player.py",
+      "importers": [
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/terrain_live.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_sprites.py",
+        "tests/test_enemy.py",
+        "tests/test_fuel.py",
+        "tests/test_lives.py",
+        "tests/test_player.py",
+        "tests/test_rock_collision.py",
+        "tests/test_round_preparation.py",
+        "tests/test_shared_sprite_cache.py",
+        "tests/test_smoke.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/terrain_live.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/game_sprites.py",
+        "tests/test_enemy.py",
+        "tests/test_fuel.py",
+        "tests/test_lives.py",
+        "tests/test_player.py",
+        "tests/test_player_blitter.py",
+        "tests/test_rock_collision.py",
+        "tests/test_round_preparation.py",
+        "tests/test_shared_sprite_cache.py",
+        "tests/test_smoke.py",
+        "tests/test_terrain_live.py"
+      ],
+      "documentation": [
+        "docs/player.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/player_blitter.py",
+      "importers": [
+        "scripts/msx/raster_scroll.py",
+        "tests/test_player_blitter.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_player_blitter.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/player_blitter_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [
+        "after_count",
+        "before_count",
+        "blit_submit",
+        "blit_submitted",
+        "probe_stop",
+        "sprite_mode"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/player_verify.py",
+      "importers": [
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/presentation_cadence.py",
+      "importers": [
+        "scripts/full_game_route.py",
+        "tests/test_presentation_cadence.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_route.py",
+        "tests/test_presentation_cadence.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/presentation_clock_verify.py",
+      "importers": [
+        "scripts/full_clock_probe.py"
+      ],
+      "code_mentions": [
+        "scripts/full_clock_probe.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/radar_cells.py",
+      "importers": [
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/smoke_route_verify.py",
+        "tests/test_radar_cells.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_radar_cells.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/radar_cells_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [
+        "Radar_EnsureCellShift"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/radar_motion.py",
+      "importers": [
+        "scripts/msx/full_effects.py",
+        "tests/test_radar_motion.py"
+      ],
+      "code_mentions": [
+        "tests/test_radar_motion.py"
+      ],
+      "documentation": [
+        "docs/issue12-radar-motion.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/radar_motion_verify.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/issue12-radar-motion.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/msx/radar_pair_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/raster_scroll.py",
+      "importers": [
+        "scripts/full_enemy_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/death.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/native_scanout.py",
+        "scripts/msx/outline_flicker.py",
+        "scripts/msx/player.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/radar_cells_verify.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/round_scenery.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/sprite_flicker.py",
+        "scripts/msx/stage_one.py",
+        "scripts/msx/tilemap.py",
+        "scripts/project.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/analyze.py",
+        "src/screen4/build.py",
+        "src/screen4/effect_codec.py",
+        "src/screen4/effect_proposal.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_hud.py",
+        "src/screen4/prepare.py",
+        "tests/test_full_hud.py",
+        "tests/test_native_scanout.py",
+        "tests/test_player.py",
+        "tests/test_raster_scroll.py",
+        "tests/test_sprite_fuel.py",
+        "tests/test_sprite_lives.py",
+        "tests/test_sprite_radar.py"
+      ],
+      "code_mentions": [
+        "scripts/full_enemy_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/player_verify.py",
+        "scripts/project.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/analyze.py",
+        "src/screen4/build.py",
+        "src/screen4/effect_codec.py",
+        "src/screen4/effect_proposal.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_hud.py",
+        "src/screen4/prepare.py",
+        "tests/test_full_hud.py",
+        "tests/test_native_scanout.py",
+        "tests/test_player.py",
+        "tests/test_raster_scroll.py",
+        "tests/test_sprite_fuel.py",
+        "tests/test_sprite_lives.py",
+        "tests/test_sprite_radar.py"
+      ],
+      "documentation": [
+        "docs/architecture.md",
+        "docs/completion-integration-plan.md",
+        "docs/enemy-rendering-performance.md",
+        "docs/full-gameplay-inventory.md",
+        "docs/hud.md",
+        "docs/issue12-performance-analysis.md",
+        "docs/player.md",
+        "docs/raster-scroll.md",
+        "src/screen5/README.md"
+      ],
+      "legacy_symbols_missing": [
+        "number",
+        "path"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/raster_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/rock_collision_verify.py",
+      "importers": [
+        "scripts/msx/rock_route_verify.py",
+        "scripts/raster_scroll.py",
+        "tests/test_rock_collision.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_rock_collision.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/rock_route_verify.py",
+      "importers": [
+        "scripts/msx/death_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/raster_scroll.py",
+        "tests/test_rock_collision.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_rock_collision.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/rocks.py",
+      "importers": [
+        "scripts/msx/raster_scroll.py",
+        "tests/test_rocks.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py",
+        "tests/test_rocks.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/round_inventory.py",
+      "importers": [
+        "scripts/gameplay_inventory.py",
+        "tests/test_round_inventory.py"
+      ],
+      "code_mentions": [
+        "scripts/gameplay_inventory.py",
+        "tests/test_round_inventory.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/round_objects.py",
+      "importers": [
+        "scripts/msx/round_prepare_verify.py",
+        "tests/test_round_objects.py"
+      ],
+      "code_mentions": [
+        "tests/test_round_objects.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/round_prepare_verify.py",
+      "importers": [
+        "scripts/full_ai_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/player.py",
+        "scripts/round_preparation.py",
+        "src/screen4/game_build.py",
+        "tests/test_round_preparation.py"
+      ],
+      "code_mentions": [
+        "scripts/full_ai_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/round_preparation.py",
+        "src/screen4/game_build.py",
+        "tests/test_round_preparation.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/round_scenery.py",
+      "importers": [
+        "scripts/msx/full_round_build.py",
+        "scripts/msx/raster_scroll.py",
+        "src/screen4/session_build.py"
+      ],
+      "code_mentions": [
+        "src/screen4/session_build.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/score_verify.py",
+      "importers": [
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/fuel_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/raster_scroll.py",
+        "tests/test_score.py"
+      ],
+      "code_mentions": [
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/raster_scroll.py",
+        "tests/test_score.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/screen5.py",
+      "importers": [
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/attract.py",
+        "scripts/msx/bitmap_blitter_verify.py",
+        "scripts/msx/flag_popup.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/full_ui.py",
+        "scripts/msx/inputs.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_video.py",
+        "scripts/msx/player.py",
+        "scripts/msx/player_blitter.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/round_scenery.py",
+        "scripts/msx/session.py",
+        "scripts/msx/stage_one.py",
+        "scripts/msx/tile_strips.py",
+        "src/screen4/session_boot.py",
+        "src/screen4/session_boot_verify.py",
+        "tests/test_msx_screen5.py",
+        "tests/test_native_scene.py",
+        "tests/test_player.py",
+        "tests/test_raster_scroll.py",
+        "tests/test_session.py"
+      ],
+      "code_mentions": [
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_state_probe.py",
+        "src/screen4/session_boot.py",
+        "src/screen4/session_boot_verify.py",
+        "tests/test_msx_screen5.py",
+        "tests/test_native_scene.py",
+        "tests/test_player.py",
+        "tests/test_raster_scroll.py",
+        "tests/test_session.py"
+      ],
+      "documentation": [
+        "docs/raster-scroll.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/session.py",
+      "importers": [
+        "scripts/msx/raster_scroll.py",
+        "tests/test_session.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py",
+        "scripts/raster_scroll.py",
+        "tests/test_session.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/session_inputs_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/session_verify.py",
+      "importers": [
+        "scripts/msx/completion_route_verify.py",
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "src/screen4/session_boot_module_verify.py",
+        "src/screen4/targets.mk"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/shared_sprite_cache.py",
+      "importers": [
+        "tests/test_shared_sprite_cache.py"
+      ],
+      "code_mentions": [
+        "tests/test_shared_sprite_cache.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/smoke.py",
+      "importers": [
+        "scripts/full_game_evidence.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/full_effects.py",
+        "scripts/msx/full_round_build.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/smoke_route_verify.py",
+        "src/screen4/game_build.py",
+        "src/screen4/session_build.py",
+        "tests/test_full_effects.py",
+        "tests/test_smoke.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_evidence.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/raster_scroll.py",
+        "src/screen4/session_build.py",
+        "tests/test_full_effects.py",
+        "tests/test_smoke.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/smoke_flag_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/smoke_queue_verify.py",
+      "importers": [
+        "scripts/msx/smoke_flag_verify.py"
+      ],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/smoke_replay.py",
+      "importers": [
+        "scripts/msx/smoke_route_verify.py"
+      ],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/smoke_route_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/smoke_verify.py",
+      "importers": [
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/raster_scroll.py",
+        "tests/test_smoke.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_smoke.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/solid_run_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/sprite_flicker.py",
+      "importers": [
+        "scripts/msx/death_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/sprite_flicker_verify.py",
+        "tests/test_outline_flicker.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "tests/test_outline_flicker.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/sprite_flicker_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [
+        "Enemy1_LastEC",
+        "Enemy2_LastEC",
+        "Flicker_Phase",
+        "Flicker_Publish"
+      ],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/sprite_fuel.py",
+      "importers": [
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "tests/test_sprite_fuel.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/sprite_lives.py",
+      "importers": [
+        "scripts/full_state_probe.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "tests/test_raster_scroll.py",
+        "tests/test_sprite_lives.py"
+      ],
+      "code_mentions": [
+        "scripts/full_state_probe.py",
+        "scripts/msx/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/sprite_radar.py",
+      "importers": [
+        "scripts/msx/death_verify.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/msx/full_effects.py",
+        "scripts/msx/native_scene.py",
+        "scripts/msx/radar_cells.py",
+        "scripts/msx/radar_pair_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/sprite_fuel.py",
+        "tests/test_full_effects.py",
+        "tests/test_radar_motion.py",
+        "tests/test_sprite_fuel.py",
+        "tests/test_sprite_radar.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py",
+        "tests/test_full_effects.py",
+        "tests/test_radar_motion.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/sprite_upload_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/stage_one.py",
+      "importers": [
+        "scripts/audio_sequencer_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/full_round_build.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/native_video.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/rocks.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_scenery.py",
+        "scripts/msx/score_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/msx/terrain_live.py",
+        "src/screen4/game_build.py",
+        "src/screen4/prepare.py",
+        "src/screen4/session_build.py",
+        "src/screen4/session_steering_verify.py",
+        "tests/test_stage_one.py"
+      ],
+      "code_mentions": [
+        "scripts/audio_sequencer_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_state_probe.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/terrain_live.py",
+        "src/screen4/session_steering_verify.py",
+        "tests/test_terrain_live.py"
+      ],
+      "documentation": [
+        "docs/stage-one-map.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/steering_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py",
+        "src/screen4/targets.mk"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/terrain_live.py",
+      "importers": [
+        "scripts/full_game_route.py",
+        "scripts/full_replay_probe.py",
+        "tests/test_terrain_live.py"
+      ],
+      "code_mentions": [
+        "scripts/full_game_route.py",
+        "scripts/full_replay_probe.py",
+        "tests/test_terrain_live.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/tile_strip_verify.py",
+      "importers": [
+        "scripts/raster_scroll.py"
+      ],
+      "code_mentions": [
+        "scripts/raster_scroll.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/tile_strips.py",
+      "importers": [
+        "scripts/msx/full_round_build.py",
+        "scripts/msx/raster_scroll.py",
+        "tests/test_tile_strips.py"
+      ],
+      "code_mentions": [
+        "tests/test_tile_strips.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/msx/tilemap.py",
+      "importers": [
+        "scripts/msx/player_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "src/screen4/prepare.py",
+        "src/screen4/session_build.py",
+        "tests/test_tilemap.py"
+      ],
+      "code_mentions": [
+        "tests/test_tilemap.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/native_runtime.py",
+      "importers": [
+        "tests/test_checkpoints.py"
+      ],
+      "code_mentions": [],
+      "documentation": [
+        "docs/checkpoints.md",
+        "docs/native-runtime.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/project.py",
+      "importers": [
+        "tests/test_checkpoints.py",
+        "tests/test_project.py"
+      ],
+      "code_mentions": [
+        "src/screen4/build_profiles.py",
+        "src/screen4/targets.mk",
+        "tests/test_make_modes.py",
+        "tests/test_project.py",
+        "tests/test_repository_inventory.py"
+      ],
+      "documentation": [
+        "docs/architecture.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md",
+        "src/screen4/README.md",
+        "src/screen5/README.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/raster_scroll.py",
+      "importers": [],
+      "code_mentions": [
+        "scripts/msx/raster_scroll.py"
+      ],
+      "documentation": [
+        "docs/architecture.md",
+        "docs/completion-integration-plan.md",
+        "docs/enemy-rendering-performance.md",
+        "docs/full-gameplay-inventory.md",
+        "docs/hud.md",
+        "docs/issue12-performance-analysis.md",
+        "docs/player.md",
+        "docs/raster-scroll.md",
+        "src/screen5/README.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "referenced-script-or-helper"
+    },
+    {
+      "path": "scripts/repository_inventory.py",
+      "importers": [
+        "tests/test_repository_inventory.py"
+      ],
+      "code_mentions": [
+        "tests/test_repository_inventory.py"
+      ],
+      "documentation": [
+        "docs/maintenance.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/restore_probe_artifacts.py",
+      "importers": [
+        "tests/test_restore_probe_artifacts.py"
+      ],
+      "code_mentions": [
+        "tests/test_restore_probe_artifacts.py"
+      ],
+      "documentation": [
+        "docs/maintenance.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/round_preparation.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/scenes/__init__.py",
+      "importers": [],
+      "code_mentions": [
+        "scripts/repository_inventory.py",
+        "tests/test_verify_python.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "referenced-script-or-helper"
+    },
+    {
+      "path": "scripts/scenes/analyze.py",
+      "importers": [
+        "scripts/arcade_scene.py",
+        "tests/test_scene_analyze.py",
+        "tests/test_scene_compact.py"
+      ],
+      "code_mentions": [
+        "scripts/arcade_scene.py",
+        "src/screen4/edge_contract.py",
+        "src/screen4/scanout.py",
+        "src/screen4/targets.mk",
+        "tests/test_scene_analyze.py",
+        "tests/test_scene_compact.py"
+      ],
+      "documentation": [
+        "src/screen4/README.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/scenes/bundle.py",
+      "importers": [
+        "scripts/arcade_scene.py",
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_inventory.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_score_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/maze_debug.py",
+        "scripts/msx/attract.py",
+        "scripts/msx/bitmap_blitter_verify.py",
+        "scripts/msx/checkpoints.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/emulator.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/msx/enemy_presentation_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/fuel_verify.py",
+        "scripts/msx/hud_alerts_verify.py",
+        "scripts/msx/hud_coordinates_verify.py",
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/inputs.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_inputs.py",
+        "scripts/msx/native_probe.py",
+        "scripts/msx/native_scanout.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/native_video.py",
+        "scripts/msx/outline_flicker_verify.py",
+        "scripts/msx/parameters_verify.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/radar_cells_verify.py",
+        "scripts/msx/radar_motion_verify.py",
+        "scripts/msx/radar_pair_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/rocks.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/score_verify.py",
+        "scripts/msx/session_inputs_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/solid_run_verify.py",
+        "scripts/msx/sprite_flicker_verify.py",
+        "scripts/msx/sprite_radar.py",
+        "scripts/msx/sprite_upload_verify.py",
+        "scripts/msx/stage_one.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/msx/terrain_live.py",
+        "scripts/msx/tile_strip_verify.py",
+        "scripts/native_runtime.py",
+        "scripts/raster_scroll.py",
+        "scripts/scenes/record.py",
+        "scripts/scenes/render.py",
+        "scripts/scenes/storage.py",
+        "scripts/session_inventory.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_hud.py",
+        "src/screen4/prepare.py",
+        "src/screen4/session_build.py",
+        "src/screen4/session_contracts.py",
+        "tests/test_arcade_scene.py",
+        "tests/test_native_build.py",
+        "tests/test_native_compare.py",
+        "tests/test_native_runtime.py",
+        "tests/test_scene_bundle.py",
+        "tests/test_scene_record.py",
+        "tests/test_scene_render.py",
+        "tests/test_scene_storage.py"
+      ],
+      "code_mentions": [
+        "scripts/arcade_scene.py",
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_inventory.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_score_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/maze_debug.py",
+        "scripts/msx/attract.py",
+        "scripts/msx/bitmap_blitter_verify.py",
+        "scripts/msx/checkpoints.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/emulator.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/msx/enemy_presentation_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/fuel_verify.py",
+        "scripts/msx/hud_alerts_verify.py",
+        "scripts/msx/hud_coordinates_verify.py",
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/inputs.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_inputs.py",
+        "scripts/msx/native_probe.py",
+        "scripts/msx/native_scanout.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/native_video.py",
+        "scripts/msx/outline_flicker_verify.py",
+        "scripts/msx/parameters_verify.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/radar_cells_verify.py",
+        "scripts/msx/radar_motion_verify.py",
+        "scripts/msx/radar_pair_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/rocks.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/score_verify.py",
+        "scripts/msx/session_inputs_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/solid_run_verify.py",
+        "scripts/msx/sprite_flicker_verify.py",
+        "scripts/msx/sprite_radar.py",
+        "scripts/msx/sprite_upload_verify.py",
+        "scripts/msx/stage_one.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/msx/terrain_live.py",
+        "scripts/msx/tile_strip_verify.py",
+        "scripts/native_runtime.py",
+        "scripts/raster_scroll.py",
+        "scripts/session_inventory.py",
+        "src/screen4/game_build.py",
+        "src/screen4/game_hud.py",
+        "src/screen4/prepare.py",
+        "src/screen4/session_build.py",
+        "src/screen4/session_contracts.py",
+        "tests/test_arcade_scene.py",
+        "tests/test_native_build.py",
+        "tests/test_native_compare.py",
+        "tests/test_native_runtime.py",
+        "tests/test_scene_bundle.py",
+        "tests/test_scene_record.py",
+        "tests/test_scene_render.py",
+        "tests/test_scene_storage.py",
+        "tests/test_terrain_live.py"
+      ],
+      "documentation": [
+        "docs/arcade-scenes.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/scenes/compact.py",
+      "importers": [
+        "scripts/scenes/layout.py"
+      ],
+      "code_mentions": [],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/scenes/compare.py",
+      "importers": [
+        "scripts/arcade_scene.py",
+        "tests/test_scene_compare.py"
+      ],
+      "code_mentions": [
+        "scripts/arcade_scene.py",
+        "tests/test_scene_compare.py"
+      ],
+      "documentation": [
+        "docs/arcade-scenes.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/scenes/layout.py",
+      "importers": [
+        "scripts/arcade_scene.py",
+        "scripts/scenes/compact.py",
+        "tests/test_scene_analyze.py",
+        "tests/test_scene_compact.py"
+      ],
+      "code_mentions": [
+        "scripts/arcade_scene.py",
+        "tests/test_scene_analyze.py",
+        "tests/test_scene_compact.py"
+      ],
+      "documentation": [
+        "docs/native-patching.md",
+        "docs/superpowers/plans/2026-10-21-native-z80-playable-slice.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/scenes/record.py",
+      "importers": [
+        "scripts/arcade_scene.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/z80_analysis.py",
+        "tests/test_scene_record.py"
+      ],
+      "code_mentions": [
+        "scripts/arcade_scene.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/z80_analysis.py",
+        "tests/test_scene_record.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/scenes/render.py",
+      "importers": [
+        "scripts/arcade_scene.py",
+        "scripts/msx/sprite_radar.py",
+        "scripts/scenes/compact.py",
+        "scripts/scenes/layout.py",
+        "tests/test_arcade_scene.py",
+        "tests/test_scene_analyze.py",
+        "tests/test_scene_compact.py",
+        "tests/test_scene_render.py"
+      ],
+      "code_mentions": [
+        "scripts/arcade_scene.py",
+        "scripts/msx/sprite_radar.py",
+        "tests/test_arcade_scene.py",
+        "tests/test_scene_analyze.py",
+        "tests/test_scene_compact.py",
+        "tests/test_scene_render.py"
+      ],
+      "documentation": [
+        "docs/arcade-scenes.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/scenes/storage.py",
+      "importers": [
+        "scripts/arcade_scene.py",
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_inventory.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_score_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/maze_debug.py",
+        "scripts/msx/attract.py",
+        "scripts/msx/bitmap_blitter_verify.py",
+        "scripts/msx/checkpoints.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/emulator.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/msx/enemy_presentation_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/fuel_verify.py",
+        "scripts/msx/full_round_build.py",
+        "scripts/msx/hud_alerts_verify.py",
+        "scripts/msx/hud_coordinates_verify.py",
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_inputs.py",
+        "scripts/msx/native_probe.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/outline_flicker_verify.py",
+        "scripts/msx/parameters_verify.py",
+        "scripts/msx/player.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/radar_cells_verify.py",
+        "scripts/msx/radar_motion_verify.py",
+        "scripts/msx/radar_pair_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/rocks.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/score_verify.py",
+        "scripts/msx/session_inputs_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/solid_run_verify.py",
+        "scripts/msx/sprite_flicker_verify.py",
+        "scripts/msx/sprite_upload_verify.py",
+        "scripts/msx/stage_one.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/msx/tile_strip_verify.py",
+        "scripts/project.py",
+        "scripts/scenes/record.py",
+        "scripts/session_inventory.py",
+        "scripts/z80_analysis.py",
+        "src/screen4/game_core_probe.py",
+        "tests/test_checkpoints.py",
+        "tests/test_native_compare.py",
+        "tests/test_native_probe.py",
+        "tests/test_native_runtime.py",
+        "tests/test_project.py",
+        "tests/test_scene_storage.py"
+      ],
+      "code_mentions": [
+        "scripts/arcade_scene.py",
+        "scripts/audio_audition_probe.py",
+        "scripts/audio_gameplay_probe.py",
+        "scripts/audio_inventory.py",
+        "scripts/audio_psg_probe.py",
+        "scripts/audio_runtime_probe.py",
+        "scripts/audio_score_probe.py",
+        "scripts/audio_sequencer_probe.py",
+        "scripts/audio_session_probe.py",
+        "scripts/full_ai_probe.py",
+        "scripts/full_arcade_ui_probe.py",
+        "scripts/full_attract_probe.py",
+        "scripts/full_bonus_lives_probe.py",
+        "scripts/full_cache_forecast_probe.py",
+        "scripts/full_cache_metadata_probe.py",
+        "scripts/full_camera_bounds_probe.py",
+        "scripts/full_clock_probe.py",
+        "scripts/full_debug_probe.py",
+        "scripts/full_enemy_cost.py",
+        "scripts/full_enemy_probe.py",
+        "scripts/full_flag_popup_probe.py",
+        "scripts/full_game_evidence.py",
+        "scripts/full_game_probe.py",
+        "scripts/full_game_route.py",
+        "scripts/full_msx_enemy_probe.py",
+        "scripts/full_radar_irq_probe.py",
+        "scripts/full_replay_probe.py",
+        "scripts/full_rules_probe.py",
+        "scripts/full_scroll_probe.py",
+        "scripts/full_session_probe.py",
+        "scripts/full_startup_probe.py",
+        "scripts/full_state_probe.py",
+        "scripts/full_terrain_probe.py",
+        "scripts/full_tick_cost.py",
+        "scripts/maze_debug.py",
+        "scripts/msx/attract.py",
+        "scripts/msx/bitmap_blitter_verify.py",
+        "scripts/msx/checkpoints.py",
+        "scripts/msx/completion_route_verify.py",
+        "scripts/msx/death.py",
+        "scripts/msx/death_copy_verify.py",
+        "scripts/msx/death_verify.py",
+        "scripts/msx/emulator.py",
+        "scripts/msx/enemy_population_verify.py",
+        "scripts/msx/enemy_presentation_verify.py",
+        "scripts/msx/enemy_route_verify.py",
+        "scripts/msx/enemy_verify.py",
+        "scripts/msx/flag_route_verify.py",
+        "scripts/msx/flags_verify.py",
+        "scripts/msx/flicker_stress_verify.py",
+        "scripts/msx/fuel_verify.py",
+        "scripts/msx/full_round_build.py",
+        "scripts/msx/hud_alerts_verify.py",
+        "scripts/msx/hud_coordinates_verify.py",
+        "scripts/msx/hud_verify.py",
+        "scripts/msx/lives_route_verify.py",
+        "scripts/msx/lives_verify.py",
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_inputs.py",
+        "scripts/msx/native_probe.py",
+        "scripts/msx/native_sprite_probe.py",
+        "scripts/msx/native_verify.py",
+        "scripts/msx/outline_flicker_verify.py",
+        "scripts/msx/parameters_verify.py",
+        "scripts/msx/player.py",
+        "scripts/msx/player_blitter_verify.py",
+        "scripts/msx/player_verify.py",
+        "scripts/msx/radar_cells_verify.py",
+        "scripts/msx/radar_motion_verify.py",
+        "scripts/msx/radar_pair_verify.py",
+        "scripts/msx/raster_scroll.py",
+        "scripts/msx/raster_verify.py",
+        "scripts/msx/rock_collision_verify.py",
+        "scripts/msx/rock_route_verify.py",
+        "scripts/msx/rocks.py",
+        "scripts/msx/round_inventory.py",
+        "scripts/msx/round_prepare_verify.py",
+        "scripts/msx/score_verify.py",
+        "scripts/msx/session_inputs_verify.py",
+        "scripts/msx/session_verify.py",
+        "scripts/msx/smoke_flag_verify.py",
+        "scripts/msx/smoke_replay.py",
+        "scripts/msx/smoke_route_verify.py",
+        "scripts/msx/smoke_verify.py",
+        "scripts/msx/solid_run_verify.py",
+        "scripts/msx/sprite_flicker_verify.py",
+        "scripts/msx/sprite_upload_verify.py",
+        "scripts/msx/stage_one.py",
+        "scripts/msx/steering_verify.py",
+        "scripts/msx/tile_strip_verify.py",
+        "scripts/project.py",
+        "scripts/session_inventory.py",
+        "scripts/z80_analysis.py",
+        "src/screen4/game_core_probe.py",
+        "tests/test_checkpoints.py",
+        "tests/test_native_compare.py",
+        "tests/test_native_probe.py",
+        "tests/test_native_runtime.py",
+        "tests/test_project.py",
+        "tests/test_scene_storage.py"
+      ],
+      "documentation": [],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    },
+    {
+      "path": "scripts/session_inventory.py",
+      "importers": [],
+      "code_mentions": [],
+      "documentation": [
+        "docs/full-gameplay-inventory.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "documented-cli-or-reproduction"
+    },
+    {
+      "path": "scripts/z80_analysis.py",
+      "importers": [
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_patch.py",
+        "scripts/msx/native_verify.py",
+        "tests/test_z80_analysis.py"
+      ],
+      "code_mentions": [
+        "scripts/msx/native_build.py",
+        "scripts/msx/native_compare.py",
+        "scripts/msx/native_patch.py",
+        "scripts/msx/native_verify.py",
+        "tests/test_z80_analysis.py"
+      ],
+      "documentation": [
+        "docs/z80-native-analysis.md"
+      ],
+      "legacy_symbols_missing": [],
+      "retention_category": "imported-build-or-verification-support"
+    }
+  ],
+  "retained_support_files": [
+    {
+      "path": "scripts/environment/macos.sh",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/environment/toolchain-lock.json",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/graphics/mame_reference.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/graphics/nrallyx.json",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/attract_inventory.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/audio_inventory.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/death_capture.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/enemy_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/flags_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/fuel_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/full-route-probe.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/full_ai_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/full_rules_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/lives_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/mapper_reference.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/native_acquire.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/native_input_probe.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/native_irq_probe.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/native_logic_hooks.json",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/native_profile.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/native_reference.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/native_sprite_probe.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/native_verify.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/parameters_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/player_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/rock_collision_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/rocks_capture.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/round_inventory.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/round_prepare_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/score_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/session_inventory.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/smoke_native.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/stage_one_capture.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/msx/steering_probe.tcl",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/scenes/capture.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/scenes/gameplay-inputs.json",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/scenes/native-collision-inputs.json",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/setup.sh",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/z80_hooks.json",
+      "decision": "retain-build-reference-or-environment-resource"
+    },
+    {
+      "path": "scripts/z80_reference.lua",
+      "decision": "retain-build-reference-or-environment-resource"
+    }
+  ],
+  "counts": {
+    "before": 212,
+    "retired": 4,
+    "retained_python": 168,
+    "retained_support": 40
+  },
+  "validation": {
+    "general_tests": 439,
+    "component_tests": 70,
+    "component_skips": 1,
+    "maintained_python_sources_parse": true,
+    "no_retired_script_consumers": true,
+    "public_make_source_paths_checked": true,
+    "roms": [
+      {
+        "name": "default",
+        "path": "references/experiments/full-session/fixed-hud.rom",
+        "sha256": "98ce0135b628a1837a3d6df2910f572e466b4bffe465344238f4c44a9015346a",
+        "unchanged": true
+      },
+      {
+        "name": "test",
+        "path": "references/experiments/full-session-test/fixed-hud.rom",
+        "sha256": "9f61724047bb444a6ea7fe9e87a53f0138436f8f1a84ee3b18a3d55bc713e53b",
+        "unchanged": true
+      },
+      {
+        "name": "legacy",
+        "path": "references/build/newrallyx.rom",
+        "sha256": "e95a4a803c0ac3d0096b7021c877a56086d09d6ba8ed307dde7a8d039198537c",
+        "unchanged": true
+      },
+      {
+        "name": "first-stage",
+        "path": "references/experiments/stage-one-3-enemies/fixed-hud.rom",
+        "sha256": "ae106e6a3d22e295c0e5eac1eaf74f1c1626485c889268d15149f5fdb53dae5c",
+        "unchanged": true
+      },
+      {
+        "name": "hud-lab",
+        "path": "references/experiments/fixed-hud/fixed-hud.rom",
+        "sha256": "e1d5a44c743b62241351c44959fd047a65f0fbe230f1b49a4f1006c6c40c64cc",
+        "unchanged": true
+      }
+    ],
+    "raw_evidence": "references/issue34/scripts-cleanup/"
+  }
+}

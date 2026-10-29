@@ -54,7 +54,7 @@ The optional MSX logo source is contributor-supplied artwork in `assets/`.
 
 The following historical renderer details and diagnostic flags describe
 `LEGACY=1`. For the optimized presenter and measured limits see
-[the full-session laboratory](experiments/fixed-hud/README.md).
+[the full-session laboratory](src/screen4/README.md).
 
 The `LEGACY=1` cartridge provides PSG music/effects, normal/challenge rounds,
 original flag/rock placement on four maps, MSX-adapted enemies and native smoke, fuel bonuses,
@@ -250,8 +250,8 @@ script CLIs.
 | --- | --- |
 | `docs/architecture.md` | Current SCREEN 4/5 source, memory, mapper and IRQ ownership |
 | `docs/maintenance.md` | Inventory, generated-output retention and cycle-ledger reproduction |
-| `experiments/fixed-hud/` | Default SCREEN 4 presenter, integration adapters and maintained laboratory workloads |
-| `src/` | Shared Z80 helpers and independent SCREEN 5 legacy sources |
+| `src/screen4/` | Default SCREEN 4 presenter, integration adapters and maintained laboratory workloads |
+| `src/screen5/` | Maintained SCREEN 5 legacy sources and shared Z80 helpers |
 | `docs/setup.md` | Environment prerequisites, toolchain, troubleshooting and validation evidence |
 | `docs/graphics-extraction.md` | ROM requirements, extraction schema, provenance and reference checks |
 | `docs/full-gameplay-inventory.md` | Complete-game integration, evidence and remaining limits |

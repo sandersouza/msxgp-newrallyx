@@ -2,8 +2,9 @@
 
 Issue: [#34](https://github.com/sandersouza/msxgp-newrallyx/issues/34).
 The current architecture is mapped in [architecture.md](architecture.md).
-This pass organizes navigation and generated-output retention without moving or
-rewriting runtime code. Zero-overhead module extraction remains issue #32.
+This pass organizes navigation/output retention and relocates the complete
+SCREEN 4 component to `src/screen4/` without rewriting runtime logic.
+Zero-overhead module extraction remains issue #32.
 
 ## Baseline before cleanup
 
@@ -40,18 +41,30 @@ manual review; a missing reference never proves a file is dead.
 
 | Family | Classification and owner | Decision |
 | --- | --- | --- |
-| `src/` | Shared/legacy runtime and maintained bounded-stage sources; legacy assembler plus `game_core.py`/`session_build.py` consumers | Keep; a SCREEN 4 default does not make SCREEN 5 sources obsolete. |
+| `src/screen5/` | Shared/legacy runtime and maintained bounded-stage sources; legacy assembler plus selected SCREEN 4 consumers | Keep; a SCREEN 4 default does not make SCREEN 5 sources obsolete. |
 | `scripts/msx/`, `scripts/scenes/`, `scripts/graphics/`, environment/bootstrap | Build dependencies and input/reference adapters | Keep; includes source generators and pinned-source dependencies. |
-| `experiments/fixed-hud/` build helpers and includes | Default runtime/generators plus maintained first-stage/free-camera paths | Keep authored paths; clarify ownership and compatibility aliases. |
+| `src/screen4/` build helpers and includes | Default runtime/generators plus maintained first-stage/free-camera paths | Keep authored paths; clarify ownership and compatibility aliases. |
 | `tests/`, `test_*.py`, verifiers and probe CLIs | Maintained regressions and bounded reproductions | Keep; a CLI need not have an import caller. |
 | `docs/`, laboratory reports and workbooks | Current contracts plus dated historical evidence | Keep; mark obsolete status claims as historical instead of deleting measurements. |
 | `outputs/` | Generated payloads, reports, workbooks and private emulator state | Untrack all 854 formerly versioned files (723,138,273 bytes); keep local originals, a private archive and exact-hash provenance. |
 | `docs/measurements/audio/` | Three historical JSON inputs used by the maintained audio verifier | Retain outside generated output so a fresh checkout keeps the same comparisons. |
 | Original ROMs/BIOS/extracted imagery/disassembly | Protected contributor inputs | Keep ignored under `references/`; never download, publish or remove local evidence during cleanup. |
 
-No authored runtime/tool file is removed based only on filename searches. The
+No authored runtime/tool file is discarded based only on filename searches. The
 inventory is also the starting map for issue #32. Further obsolete-code removal
 requires identifying conditional/generated callers and retained reproductions.
+
+The complete 155-file SCREEN 4 component moved from `experiments/fixed-hud/` to
+`src/screen4/`. Its generators, assembly/includes, sibling imports, tests and
+documentation remain together at the same path depth. Root discovery, the
+pinned source revision, artifact paths and Make aliases are preserved. Only
+source-path consumers and documentation are adapted; no runtime assembly logic
+or bank layout is intentionally changed. The root Makefile imports the
+component's `targets.mk` at its new path, retaining the optional-include behavior
+used by isolated legacy, setup and clean test fixtures.
+[screen4-migration.json](screen4-migration.json) records every old/new path and
+before/after digest; the pre-migration checkout is archived locally under
+`references/issue34/migration/`. Top-level `experiments/` is removed.
 
 ## Generated-output retention
 
@@ -70,10 +83,12 @@ bytes. The driver writes its programs, expected data and synthetic cartridge
 before openMSX consumes them. It does not require a committed binary fixture:
 
 ```sh
-.venv/bin/python -B experiments/fixed-hud/test_game_radar.py --emulator --bios references/msxbios
+.venv/bin/python -B src/screen4/test_game_radar.py --emulator --bios references/msxbios
 ```
 
-Known probe generators are listed per artifact in the manifest. Use their help and
+Known probe generators are listed per artifact in the manifest using their
+historical source paths. Resolve those paths through `screen4-migration.json`
+to the maintained `src/screen4/` location. Use their help and
 retained result JSON/Tcl/assembly to select the original options and revision.
 The current generator may produce a different optimized worker than a historical
 before/after measurement. Keep the existing cycle/results records and workbooks;
@@ -110,8 +125,8 @@ Run the full-session profiler on the exact selected cartridge:
 
 ```sh
 make build
-.venv/bin/python -B experiments/fixed-hud/session_profile.py --bundle references/experiments/full-session
-.venv/bin/python -B experiments/fixed-hud/session_report.py --bundle references/experiments/full-session --out references/issue34/current-ledger
+.venv/bin/python -B src/screen4/session_profile.py --bundle references/experiments/full-session
+.venv/bin/python -B src/screen4/session_report.py --bundle references/experiments/full-session --out references/issue34/current-ledger
 ```
 
 `session_profile.py` wraps the established PC/SP profiler through
@@ -142,7 +157,7 @@ after validating the intended raw capture, then use the existing Node workbook
 generator in an environment where `@oai/artifact-tool` resolves:
 
 ```sh
-node experiments/fixed-hud/session_workbook.mjs outputs/full-session/cycle-ledger.json references/issue34/cycle-budget.xlsx
+node src/screen4/session_workbook.mjs outputs/full-session/cycle-ledger.json references/issue34/cycle-budget.xlsx
 ```
 
 The two positional arguments are the input ledger and output workbook; choose a
@@ -190,6 +205,102 @@ with the contributor and must not be inferred from a build or test launch.
 
 The before/after raw captures, JSON/CSV ledgers and logs remain under ignored
 `references/issue34/`. Retired payload existence/hashes were checked against the
-retirement manifest. No cartridge runtime source changed. The issue remains open for review;
-this evidence does not close issue #13 or approve human graphics/audio/hardware
+retirement manifest. No cartridge runtime source changed. The cleanup delivery
+does not close issue #13 or approve human graphics/audio/hardware
 acceptance.
+
+### SCREEN 4 source migration — 2026-10-29
+
+Baseline checkout: `fa0f63006da6edec79fc0b868372940cc8439326`. All 155 component
+files moved to `src/screen4/`; all 41 assembly/include/Tcl files remained
+byte-identical. The path/hash ledger and compact verification results are in
+[screen4-migration.json](screen4-migration.json).
+
+- Rebuilt normal, TEST_MODE=1, legacy, three-enemy first-stage and free-camera HUD
+  cartridges. All five are byte-identical to their pre-migration references.
+- 439 general unit tests passed. The existing optional Make include was retained
+  after isolated legacy/setup/clean fixtures exposed that compatibility need.
+- `make test-experiments` passed through the new source paths: 69 laboratory unit
+  cases with the same one explicit-emulator skip, all integrated scenarios,
+  16,000-refresh steering, audio, stone/speed and clipping checks. TEST_MODE=1
+  keyboard/graphics contracts also passed separately.
+- Checked 17 public Make target command plans and the legacy/test/HUD/logo/boot,
+  explicit ROM, checkpoint and latest selections. Every referenced Python source
+  resolves under its maintained path. Direct Python CLIs now use `src/screen4/`;
+  historical Make aliases and ignored artifact paths remain unchanged.
+- Repeated the matched three-moving-enemy profile after migration. The active
+  statistics match the baseline above exactly, including 238 active intervals,
+  29.903149 presented FPS, one three-refresh interval and the same work-cost
+  distribution. This remains the same bounded fixed-clock emulator workload.
+
+The old top-level `experiments/` directory is gone. Local ROMs, raw evidence and
+the pre-migration source archive remain under ignored `references/issue34/`.
+No new graphical, timing, gameplay or sound concession is introduced by the move.
+
+### SCREEN 5 source layout
+
+The 73 former top-level `src/` assembly/include files now live in `src/screen5/`.
+Their bytes and staged assembly basenames are unchanged. Legacy/native builders
+in `scripts/msx/` and direct SCREEN 4 helper consumers use the nested path.
+Shared Python tools remain in `scripts/`, with their existing public commands.
+
+`game_core.prepare()` defaults to `src/screen5/`. Its explicit `source_directory`
+argument allows complete-session integration to select the original flat `src/`
+in the manifest-verified pinned source view. `session_build.reference()` still
+verifies that historical source and resource bundle. The cached export is not
+edited or silently upgraded, and a missing current folder does not fall back to
+historical files. A source-only regression compares generated adapters from both
+explicit layouts and verifies that an unselected flat tree fails.
+
+[screen5-migration.json](screen5-migration.json) records the source hashes and
+validation for this subsequent step. The SCREEN 4 migration ledger remains a
+record of its earlier snapshot. Pre-step working changes and legacy source
+bytes are backed up under `references/issue34/screen5-migration/`.
+
+Validation passed: all 73 legacy and 41 SCREEN 4 assembly/include/Tcl files keep
+their prior bytes; normal, test-mode, legacy, three-enemy first-stage and HUD-lab
+ROMs are byte-identical to the pre-step artifacts. The 439 general tests and
+integrated emulator suite passed, including 70 component unit cases with the
+same one explicit-emulator skip, the 16,000-refresh steering route, audio and
+sprites. Test-mode keyboard/graphics contracts passed separately. The matched
+fixed-clock three-moving-enemy profile has exactly the same active statistics:
+238 intervals over 7.959028 seconds, 29.903149 presented FPS, one three-refresh
+interval and unchanged work/tail costs. Its scope remains a short directional
+emulator workload; whole-course and physical-hardware acceptance are separate.
+
+### Script audit and retirement
+
+`scripts/` is still needed by both presenters. It contains environment setup,
+contributor-input extraction/capture, shared build generators, legacy/native
+builders, launch/checkpoint/replay support, and bounded verification entry points.
+An unimported CLI can still be a maintained tool: documented `python -m` commands,
+source-oracle comparisons and standalone audio/game-rule probes remain valid.
+
+The current dependency audit checks Python imports (including modules imported
+from packages), filename/module mentions, Make/source/test command consumers and
+maintained documentation. [scripts-audit.json](scripts-audit.json) records the
+inspection and explicit retention decision. Audit/migration ledgers are not
+treated as operational callers by the repository inventory.
+
+Four unpublished study CLIs were retired: `full_cache_forecast_probe.py`,
+`full_cache_metadata_probe.py`, `full_camera_bounds_probe.py` and
+`full_enemy_cost.py`. None had an importer, build/test/command consumer or
+maintained reproduction procedure. Their current legacy symbols still exist;
+this retirement does not claim that the old probes are broken or that a different
+workload is an equivalent replacement. Their complete source is archived locally
+in `references/issue34/retired-scripts.tar.gz`, with size, SHA-256 and original Git
+blob recorded in the audit ledger. Existing raw measurement evidence is retained.
+
+Unique AI, bonus-life, popup and original-sound comparisons were kept even where
+they have no import caller. `maze_debug.py` was also kept: its explicit capture/
+replay round-trip self-test is distinct from normal launching. No regression
+suite or build mode was deleted merely because SCREEN 4 is now the default.
+
+After retirement, 208 of the original 212 files under `scripts/` remain (including
+Python modules, Lua/Tcl adapters, shell provisioning and metadata). The 439 general
+unit tests and 70 component cases passed with the same one documented skip.
+Normal, test-mode, legacy, three-enemy first-stage and HUD-lab builds were repeated;
+all five ROMs are byte-identical to the pre-cleanup artifacts. Maintained source
+files parse, public Make command plans resolve, and no remaining code/command
+consumer references the retired filenames or modules. Raw checks are retained
+under `references/issue34/scripts-cleanup/`.

@@ -137,9 +137,9 @@ The earlier optimizations below remain in place:
 The additional native boundary proofs use the preserved local baseline:
 
 ```sh
-.venv/bin/python -B experiments/fixed-hud/game_position_proof.py --bundle references/experiments/stage-one-3-enemies/baseline-ca9e6ae6
-.venv/bin/python -B experiments/fixed-hud/test_game_smoke_fast.py --bundle references/experiments/stage-one-3-enemies/baseline-ca9e6ae6
-.venv/bin/python -B experiments/fixed-hud/test_game_boundary_fast.py --emulator --bios references/msxbios --bundle references/experiments/stage-one-3-enemies
+.venv/bin/python -B src/screen4/game_position_proof.py --bundle references/experiments/stage-one-3-enemies/baseline-ca9e6ae6
+.venv/bin/python -B src/screen4/test_game_smoke_fast.py --bundle references/experiments/stage-one-3-enemies/baseline-ca9e6ae6
+.venv/bin/python -B src/screen4/test_game_boundary_fast.py --emulator --bios references/msxbios --bundle references/experiments/stage-one-3-enemies
 ```
 
 - Candidate smoke rows replace a full 1,024-byte native-code scan. The exact

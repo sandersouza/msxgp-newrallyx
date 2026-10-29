@@ -10,18 +10,18 @@
     "issue": "https://github.com/sandersouza/msxgp-newrallyx/issues/34",
     "branch": "chore/34-organize-stabilized-port",
     "baseline": "1695c5a461c9714aa98c17dbcd032d68d7746d60",
-    "policy": "Use the established repository documentation layout. Document current contracts and retain dated measurements; module extraction belongs to issue 32. No new Backstage service model, graphical changes, shared-history rewrite, commits or publication are requested."
+    "policy": "Use the established repository documentation layout. Document current contracts and retain dated measurements; module extraction belongs to issue 32. Deliver issue 34 through its dedicated PR. No new Backstage service model, graphical concession or shared-history rewrite."
   },
   "inventory": {
     "buildAndRuntime": {
       "buildTool": "GNU Make, Python 3.14/Pillow, sjasmplus 1.24.0",
       "evidence": ["Makefile:1", "requirements.txt:3", "scripts/project.py:37"],
-      "entrypoints": ["Makefile", "experiments/fixed-hud/targets.mk", "scripts/project.py"],
+      "entrypoints": ["Makefile", "src/screen4/targets.mk", "scripts/project.py"],
       "integrationReference": "6d562a791b0cc242119a31dd686ff8e93eb94fe0"
     },
-    "runtimeSources": ["src/", "experiments/fixed-hud/"],
+    "runtimeSources": ["src/screen5/ (legacy and shared Z80 helpers)", "src/screen4/ (consolidated SCREEN 4 component)"],
     "requiredInputs": ["references/roms/", "references/assets/", "references/scenes/", "references/msxbios/"],
-    "maintainedRegression": ["tests/", "experiments/fixed-hud/test_*.py", "experiments/fixed-hud/session_*verify.py", "docs/measurements/audio/"],
+    "maintainedRegression": ["tests/", "src/screen4/test_*.py", "src/screen4/session_*verify.py", "docs/measurements/audio/"],
     "historicalEvidence": ["docs/", "outputs/ (local, ignored; exact hashes retained in docs/retired-artifacts.json)"],
     "persistence": {"hasDatabase": false},
     "exposedInterfaces": [],
@@ -36,10 +36,14 @@
       {"path": "docs/maintenance.md", "purpose": "Dependency inventory, retention decisions and reproducible validation"},
       {"path": "docs/repository-inventory.json", "purpose": "Generated file classifications and conservative static callers"},
       {"path": "docs/retired-artifacts.json", "purpose": "Per-file retention decision, generator and original hashes"},
-      {"path": "experiments/fixed-hud/README.md", "purpose": "Maintained presenter and historical laboratory navigation"},
-      {"path": "experiments/fixed-hud/BUILD-PROFILES.md", "purpose": "Current presenter selection and pinned source boundary"},
-      {"path": "experiments/fixed-hud/FULL-SESSION.md", "purpose": "Current integration contracts and dated caveats"},
-      {"path": "experiments/fixed-hud/TITLE.md", "purpose": "Correct current wordmark placement"}
+      {"path": "docs/screen4-migration.json", "purpose": "Old/new source paths and before/after hashes"},
+      {"path": "docs/screen5-migration.json", "purpose": "Subsequent legacy/shared source relocation and validation"},
+      {"path": "docs/scripts-audit.json", "purpose": "Script retention decisions and hashes of retired one-off probes"},
+      {"path": "src/screen5/README.md", "purpose": "Legacy build selection and shared-source ownership"},
+      {"path": "src/screen4/README.md", "purpose": "Maintained presenter and historical laboratory navigation"},
+      {"path": "src/screen4/BUILD-PROFILES.md", "purpose": "Current presenter selection and pinned source boundary"},
+      {"path": "src/screen4/FULL-SESSION.md", "purpose": "Current integration contracts and dated caveats"},
+      {"path": "src/screen4/TITLE.md", "purpose": "Correct current wordmark placement"}
     ]
   },
   "generation": {

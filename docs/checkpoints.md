@@ -4,7 +4,7 @@
 
 The current default is the integrated SCREEN 4 presenter. `make run` rebuilds
 that cartridge; `make run LEGACY=1` rebuilds the maintained SCREEN 5 baseline.
-See [build profiles](../experiments/fixed-hud/BUILD-PROFILES.md).
+See [build profiles](../src/screen4/BUILD-PROFILES.md).
 `LATEST=1` selects the most recently published sealed legacy build, not a fixed
 checkpoint and not the optimized export. Use `make checkpoints` to inspect local
 availability and an explicit `CHECKPOINT=...` for a named historical artifact.

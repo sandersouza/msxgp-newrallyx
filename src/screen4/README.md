@@ -1,11 +1,15 @@
-# Fixed side HUD hardware-scroll laboratory
+# SCREEN 4 presenter and toolchain
 
 `make run` and its compatibility alias `make run-experiments` open the complete
 integrated SCREEN 4 game from this checkout. From another directory use
 `make -C <checkout> run`; select the intended checkout explicitly. Arrow keys
 steer; Space releases smoke. `make run LEGACY=1` selects the maintained SCREEN 5
-build from current sources. The historical laboratory directory name is retained
-because its modules, tests and compatibility commands are still used.
+build from current sources. The complete component now lives under `src/screen4/`:
+assembly/includes, Python generators, verification tools, tests and component
+documentation remain co-located to preserve sibling imports and source transforms.
+The former top-level `experiments/` directory has been removed. Historical
+benchmark/free-camera commands and their ignored `references/experiments/`
+artifact paths remain supported. This is a path migration, not module extraction.
 See [FULL-SESSION.md](FULL-SESSION.md) for current scope, tests and timing.
 See [the architecture](../../docs/architecture.md) and
 [maintenance procedure](../../docs/maintenance.md) for ownership and retention.
@@ -51,15 +55,15 @@ Verification requires the existing openMSX/BIOS setup and FFmpeg for video decod
 Individual commands used by these targets:
 
 ```sh
-.venv/bin/python experiments/fixed-hud/build.py
-.venv/bin/python experiments/fixed-hud/verify.py
-.venv/bin/python experiments/fixed-hud/analyze.py
-.venv/bin/python experiments/fixed-hud/verify.py --matrix
-.venv/bin/python experiments/fixed-hud/analyze.py
-.venv/bin/python experiments/fixed-hud/edge_contract.py
-.venv/bin/python experiments/fixed-hud/verify.py --continuous
-.venv/bin/python experiments/fixed-hud/analyze.py
-.venv/bin/python experiments/fixed-hud/scanout.py
+.venv/bin/python src/screen4/build.py
+.venv/bin/python src/screen4/verify.py
+.venv/bin/python src/screen4/analyze.py
+.venv/bin/python src/screen4/verify.py --matrix
+.venv/bin/python src/screen4/analyze.py
+.venv/bin/python src/screen4/edge_contract.py
+.venv/bin/python src/screen4/verify.py --continuous
+.venv/bin/python src/screen4/analyze.py
+.venv/bin/python src/screen4/scanout.py
 .venv/bin/python scripts/project.py run --rom references/experiments/fixed-hud/fixed-hud.rom
 ```
 

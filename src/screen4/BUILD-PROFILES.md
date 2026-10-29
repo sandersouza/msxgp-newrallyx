@@ -8,7 +8,7 @@ historical evidence; those branch names are not build prerequisites.
 | --- | --- | --- |
 | `make build` / `make run` | `references/experiments/full-session/fixed-hud.rom` | Current default, optimized SCREEN 4 gameplay with shared SCREEN 5 UI |
 | `make build TEST_MODE=1` / `make run TEST_MODE=1` | `references/experiments/full-session-test/fixed-hud.rom` | Separate Enter/equals developer controls; solid walls |
-| `make build LEGACY=1` / `make run LEGACY=1` | `references/build/newrallyx.rom` | Maintained SCREEN 5 presenter built from current `src/`; lowercase `legacy=1` is accepted |
+| `make build LEGACY=1` / `make run LEGACY=1` | `references/build/newrallyx.rom` | Maintained SCREEN 5 presenter built from `src/screen5/`; lowercase `legacy=1` is accepted |
 | `make build-experiments` / `make run-experiments` | `references/experiments/full-session/fixed-hud.rom` | Shared sessions and native round progression with the optimized SCREEN4 presenter |
 | `make build-audio-reference` / `make run-audio-reference` | `references/experiments/audio-reference/newrallyx-audio.rom` | Independent production SCREEN5 presenter, audio and point inscriptions enabled |
 | `make build-first-stage` / `make run-first-stage` | `references/experiments/stage-one-3-enemies/fixed-hud.rom` | Preserved isolated first-stage performance workload |
@@ -35,9 +35,9 @@ active gameplay; returning to SCREEN4 rebuilds the four pattern sets, independen
 name tables, flag caches, sprites and HUD state. Native difficulty and enemy
 counts progress normally; `ENEMIES=3` is a first-stage diagnostic option only.
 
-Authored optimized sources and targets remain under `experiments/fixed-hud/`.
+Authored optimized sources and targets remain under `src/screen4/`.
 The root Makefile selects the default or legacy path and includes `targets.mk`.
-Current `src/` helpers also feed generated optimized adapters; do not remove
+Current `src/screen5/` helpers also feed generated optimized adapters; do not remove
 them merely because their legacy presenter is optional. The earlier read-only
 three-way Makefile probe and changed-path inventory are recorded in
 `outputs/full-session/merge-boundary-proof.json` records the pre-merge layout,

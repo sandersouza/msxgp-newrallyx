@@ -29,10 +29,10 @@ def role(path):
     if parts[0] == 'tests' or (path.suffix == '.py' and
             (path.name.startswith('test_') or 'verify' in path.stem or 'probe' in path.stem)):
         return 'maintained-regression'
-    if parts[0] == 'src' or path.suffix in ('.asm', '.inc'):
-        return 'active-runtime-source'
-    if parts[0] == 'experiments' and path.suffix == '.md':
+    if path.suffix == '.md':
         return 'historical-evidence'
+    if path.suffix in ('.asm', '.inc'):
+        return 'active-runtime-source'
     return 'required-build-dependency'
 
 
@@ -75,9 +75,11 @@ def inventory(root, output):
     excluded = {output.as_posix(), 'docs/retired-artifacts.json'}
     paths = sorted({Path(p) for p in raw.decode().split('\0') if p and p not in excluded})
     texts = {}
+    provenance = {'docs/scripts-audit.json', 'docs/screen4-migration.json', 'docs/screen5-migration.json'}
     for path in paths:
         if ((path.suffix in TEXT_SUFFIXES or path.name == 'Makefile') and
-                path.parts[0] not in ('outputs', 'references') and (root/path).is_file()):
+                path.parts[0] not in ('outputs', 'references') and path.as_posix() not in provenance and
+                (root/path).is_file()):
             texts[path.as_posix()] = (root/path).read_text()
     incoming = static_references(paths, texts)
     files = []

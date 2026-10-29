@@ -16,6 +16,12 @@ class MakeModes(unittest.TestCase):
         self.assertIn('full-session/fixed-hud.rom', commands)
         self.assertLess(commands.index('build.py'), commands.index('project.py run'))
 
+    def test_default_uses_consolidated_screen4_sources(self):
+        commands = self.commands()
+        self.assertIn('src/screen4/build.py --full-session', commands)
+        self.assertIn('src/screen4/session_build.py --export', commands)
+        self.assertNotIn('experiments/fixed-hud/', commands)
+
     def test_test_mode_has_distinct_artifact(self):
         commands = self.commands('TEST_MODE=1')
         self.assertIn('NRX_TEST_MODE="1"', commands)

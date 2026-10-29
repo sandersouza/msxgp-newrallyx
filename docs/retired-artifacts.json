@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "source_path_migration": "docs/screen4-migration.json",
   "baseline_commit": "1695c5a461c9714aa98c17dbcd032d68d7746d60",
   "authorization": "Issue 34: contributor approved untracking generated files and then explicitly requested ignoring the entire outputs directory. Keep local copies and historical evidence. Three audio regression JSONs are retained under docs/measurements/audio.",
   "scope": "All formerly versioned outputs paths. Local files remain in place; exact historical payloads are archived privately. No shared-history rewrite. Probe generator paths, where recorded, identify families, not byte-identical reproduction of every historic variant.",
