@@ -40,7 +40,7 @@ def analyze(path):
     rows=[]
     for line in path.read_text().splitlines():
         values=line.split()
-        if len(values) not in (10,12):
+        if len(values) not in (10,12,13):
             raise ValueError('Unexpected cadence sample width')
         row=[float(values[0]),*map(int,values[1:])]
         if not math.isfinite(row[0]):raise ValueError('Invalid cadence time')
@@ -52,12 +52,13 @@ def analyze(path):
         # Loading, death and completion are reported by their own state gates.
         # Long active stalls remain in the denominator; never discard them.
         if old[1]!=new[1] or old[2:4]!=[0,0] or new[2:4]!=[0,0]:continue
+        if len(old)==13 and (old[12] or new[12]):continue
         ticks=(new[4]-old[4])&65535
         holds=(new[5]-old[5])&65535
         if ticks>7 or holds>1:raise ValueError('Native cadence counter discontinuity')
-        dropped=((new[10]-old[10])&65535) if len(new)==12 else None
+        dropped=((new[10]-old[10])&65535) if len(new)>=12 else None
         rounds[old[1]].append(dict(start=old[0],end=new[0],ticks=ticks,held=holds,
-            dropped=dropped,enemies=old[6],debt=old[8] if len(old)==12 else None))
+            dropped=dropped,enemies=old[6],debt=old[8] if len(old)>=12 else None))
     result=[]
     for internal,samples in sorted(rounds.items()):
         seconds=sum(s['end']-s['start'] for s in samples)
@@ -94,4 +95,4 @@ def analyze(path):
             maximum_clock_debt=max(s['debt'] for s in samples) if samples[0]['debt'] is not None else None))
     if not result:raise ValueError('Missing active native cadence samples')
     return dict(rounds=result,original_native_hz=1/.0165,
-        scope='Emulated elapsed time and native tick counters during consecutive active samples; foreground loops are not physical refreshes. Active stalls remain included.')
+        scope='Emulated elapsed time and native tick counters during consecutive active samples; explicit UI/interstitial states excluded. Foreground loops are not physical refreshes. Active stalls remain included.')

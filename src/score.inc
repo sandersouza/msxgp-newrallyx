@@ -58,6 +58,10 @@ Score_Update:
     inc (hl)                 ; original special-flag multiplier toggle
 .points:
     call Score_FastPoints     ; exact hundred-point groups and source boundary checks
+    IF FLAG_POPUPS
+    ld a,1
+    ld (Popup_Pending),a
+    ENDIF
     jp Score_Publish
 
 ; Run after dirty terrain, with raster interrupts enabled. A collection frame
@@ -440,6 +444,9 @@ Score_Compare:
 
 Score_Publish:
     IF HUD_ENABLED
+    IF FULL_GAME
+    call Life_Publish        ; Native bonus accounting can change lives without a death/reload.
+    ENDIF
     IF SESSION_RUNTIME
     call Radar_AllowIRQ      ; Numeric RAM producers are never consumed by the ISR.
     ENDIF

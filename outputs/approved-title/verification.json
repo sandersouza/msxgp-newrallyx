@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "approved_png": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/exports/namco-retrowork/namco-retrowork-162x10.png",
+  "source_sha256": "3765cea60fe5b747338019e9e0b7612fef7328f6167ce35a4a28c48808c096f2",
+  "size": [
+    162,
+    10
+  ],
+  "position": [
+    47,
+    198
+  ],
+  "horizontal_margins": [
+    47,
+    47
+  ],
+  "bottom_margin": 4,
+  "resampling": false,
+  "color": "Existing RED palette entry only",
+  "builds": {
+    "normal": {
+      "rom_sha256": "f8a4e613f66214a861770ab23a34913dff0b8b0e654aa802ae0d1bd957c60f47",
+      "emulator_proof": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/full-session/boot-proof-manxdb6q/report.json"
+    },
+    "-test": {
+      "rom_sha256": "83d58dacf8e3bbd89c2a5f4b24d1db19041d594e51f4b7157f2cfda6219f46e9",
+      "emulator_proof": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/full-session-test/boot-proof-sc0n9ucv/report.json"
+    }
+  },
+  "extra_vram_bytes": 0,
+  "extra_runtime_cycles": 0,
+  "method": "Direct per-pixel approved alpha vs ROM bitmap and captured complete title VRAM; executable bytes unchanged, static title bank238 only."
+}

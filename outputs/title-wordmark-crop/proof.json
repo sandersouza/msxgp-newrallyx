@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "rom_sha256": "2566df2631c7ba67f5b21b412ac2d821edda76536d614f498cdd854aa4af25a0",
+  "previous_rom_sha256": "3d1013a319bef6ac855389a0eaa7b7e6322dea5201369325f657980e09fc2aae",
+  "source_sha256": "1ddfdeb1c8920778d43f80c4a000efeb06ecb610f3fc4fa8ab96f10b638645d1",
+  "source_size": [
+    1218,
+    76
+  ],
+  "native_rect": [
+    8,
+    195,
+    240,
+    15
+  ],
+  "method": "Complete supplied wordmark, common scale on both axes, Lanczos reduction then nearest red/orange; no generated glyphs or viewport reconstruction",
+  "changed_bytes": 846,
+  "changed_banks": [
+    238
+  ],
+  "all_executable_gameplay_bytes_identical": true,
+  "active_extra_cycles": 0,
+  "extra_vram_transfer_bytes": 0,
+  "emulator_proof": "references/experiments/full-session/boot-proof-uyl36_r5/report.json"
+}

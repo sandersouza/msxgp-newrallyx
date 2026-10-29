@@ -1,0 +1,1065 @@
+{
+  "complete": true,
+  "cases": 6144,
+  "independent_visible_names_per_case": 896,
+  "unchanged_narrow_full_byte_cases": 384,
+  "cpu_hz": 3579545,
+  "video_hz_nominal": 60,
+  "machine": "Panasonic_FS-A1WSX_NR128",
+  "hardware_sprite_limits": true,
+  "display_enabled": true,
+  "calls_per_case": 1,
+  "synchronization_waits": 0,
+  "method": "Inclusive uploader entry-to-immediate-return guest elapsed time times CPU Hz, including MSX memory/IO wait states. VDP interrupts disabled in this callable-boundary probe.",
+  "helper_bytes": 142,
+  "rom_sha256": "e97cfe69dbad90e71431c0e0f9fdaf161ba6319211ab6f23abf65685a759dea7",
+  "helper_sha256": "13fa1e457f5b60276d8d1f6e5844404501fb1a17163290776a1208c2e5e3b6e0",
+  "scope": "Display-on SCREEN4 strict callback; exact current 32x28 visible terrain/HUD/left names compared to independent FULL view over unit deltas and continuous two-buffer routes, reversals, diagonal movement, dirty hidden changes, reveals and restarts. Both raw terrain cache/HUD/pointers/seen/dirty metadata exact, other buffer untouched. Hidden VRAM and private ring scratch may differ. Positive narrow row changes from 31 to 27 repair entering visible rows at identical instruction cost.",
+  "limitations": "Synthetic CPU cache bytes and original upload helpers. Ring_Prepare, native gameplay, IRQ/synchronization, physical hardware and complete presentation cadence are not measured here; integration acceptance requires the canonical cartridge route.",
+  "results": {
+    "baseline": {
+      "strict_vram_callbacks": 0,
+      "visible_mismatch_cases": [],
+      "workloads": {
+        "diagonal": {
+          "calls": 192,
+          "mean": 36188.322916666664,
+          "p95": 38056,
+          "maximum": 38116
+        },
+        "hidden-reveal": {
+          "calls": 192,
+          "mean": 30094.453125,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "horizontal-reversal": {
+          "calls": 192,
+          "mean": 35539.260416666664,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "mixed": {
+          "calls": 192,
+          "mean": 31475.104166666668,
+          "p95": 38116,
+          "maximum": 38130
+        },
+        "unit-dx-1-dy-1": {
+          "calls": 64,
+          "mean": 16538.75,
+          "p95": 18556,
+          "maximum": 18556
+        },
+        "unit-dx-1-dy-2": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx-1-dy-3": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx-1-dy-4": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx-1-dy0": {
+          "calls": 64,
+          "mean": 15248.25,
+          "p95": 17263,
+          "maximum": 17263
+        },
+        "unit-dx-1-dy1": {
+          "calls": 64,
+          "mean": 16541.75,
+          "p95": 18559,
+          "maximum": 18559
+        },
+        "unit-dx-1-dy2": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx-1-dy3": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx-1-dy4": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx-2-dy-1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-2-dy-2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-2-dy-3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-2-dy-4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-2-dy0": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-2-dy1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-2-dy2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-2-dy3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-2-dy4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy-1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy-2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy-3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy-4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy0": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-3-dy4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy-1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy-2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy-3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy-4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy0": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx-4-dy4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx0-dy-1": {
+          "calls": 64,
+          "mean": 12476.75,
+          "p95": 14494,
+          "maximum": 14494
+        },
+        "unit-dx0-dy-2": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx0-dy-3": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx0-dy-4": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx0-dy0": {
+          "calls": 64,
+          "mean": 11186.25,
+          "p95": 13201,
+          "maximum": 13201
+        },
+        "unit-dx0-dy1": {
+          "calls": 64,
+          "mean": 12479.75,
+          "p95": 14497,
+          "maximum": 14497
+        },
+        "unit-dx0-dy2": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx0-dy3": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx0-dy4": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx1-dy-1": {
+          "calls": 64,
+          "mean": 16549.75,
+          "p95": 18567,
+          "maximum": 18567
+        },
+        "unit-dx1-dy-2": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx1-dy-3": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx1-dy-4": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx1-dy0": {
+          "calls": 64,
+          "mean": 15259.25,
+          "p95": 17274,
+          "maximum": 17274
+        },
+        "unit-dx1-dy1": {
+          "calls": 64,
+          "mean": 16552.75,
+          "p95": 18570,
+          "maximum": 18570
+        },
+        "unit-dx1-dy2": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx1-dy3": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx1-dy4": {
+          "calls": 64,
+          "mean": 36112.75,
+          "p95": 38130,
+          "maximum": 38130
+        },
+        "unit-dx2-dy-1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx2-dy-2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx2-dy-3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx2-dy-4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx2-dy0": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx2-dy1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx2-dy2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx2-dy3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx2-dy4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy-1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy-2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy-3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy-4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy0": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx3-dy4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy-1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy-2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy-3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy-4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy0": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy1": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy2": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy3": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "unit-dx4-dy4": {
+          "calls": 64,
+          "mean": 36038.75,
+          "p95": 38056,
+          "maximum": 38056
+        },
+        "vertical-reversal": {
+          "calls": 192,
+          "mean": 34888.239583333336,
+          "p95": 35554,
+          "maximum": 35554
+        }
+      }
+    },
+    "candidate": {
+      "strict_vram_callbacks": 0,
+      "visible_mismatch_cases": [],
+      "workloads": {
+        "diagonal": {
+          "calls": 192,
+          "mean": 23264.161458333332,
+          "p95": 35421,
+          "maximum": 37997
+        },
+        "hidden-reveal": {
+          "calls": 192,
+          "mean": 20076.375,
+          "p95": 35421,
+          "maximum": 37997
+        },
+        "horizontal-reversal": {
+          "calls": 192,
+          "mean": 20796.192708333332,
+          "p95": 35421,
+          "maximum": 37997
+        },
+        "mixed": {
+          "calls": 192,
+          "mean": 23207.578125,
+          "p95": 37983,
+          "maximum": 38306
+        },
+        "unit-dx-1-dy-1": {
+          "calls": 64,
+          "mean": 16544.75,
+          "p95": 18562,
+          "maximum": 18562
+        },
+        "unit-dx-1-dy-2": {
+          "calls": 64,
+          "mean": 18285.25,
+          "p95": 20305,
+          "maximum": 20305
+        },
+        "unit-dx-1-dy-3": {
+          "calls": 64,
+          "mean": 19603.75,
+          "p95": 21626,
+          "maximum": 21626
+        },
+        "unit-dx-1-dy-4": {
+          "calls": 64,
+          "mean": 36302.75,
+          "p95": 38320,
+          "maximum": 38320
+        },
+        "unit-dx-1-dy0": {
+          "calls": 64,
+          "mean": 15254.25,
+          "p95": 17269,
+          "maximum": 17269
+        },
+        "unit-dx-1-dy1": {
+          "calls": 64,
+          "mean": 16547.75,
+          "p95": 18565,
+          "maximum": 18565
+        },
+        "unit-dx-1-dy2": {
+          "calls": 64,
+          "mean": 18296.25,
+          "p95": 20316,
+          "maximum": 20316
+        },
+        "unit-dx-1-dy3": {
+          "calls": 64,
+          "mean": 19614.75,
+          "p95": 21637,
+          "maximum": 21637
+        },
+        "unit-dx-1-dy4": {
+          "calls": 64,
+          "mean": 36302.75,
+          "p95": 38320,
+          "maximum": 38320
+        },
+        "unit-dx-2-dy-1": {
+          "calls": 64,
+          "mean": 20987.75,
+          "p95": 23005,
+          "maximum": 23005
+        },
+        "unit-dx-2-dy-2": {
+          "calls": 64,
+          "mean": 22306.25,
+          "p95": 24326,
+          "maximum": 24326
+        },
+        "unit-dx-2-dy-3": {
+          "calls": 64,
+          "mean": 23624.75,
+          "p95": 25647,
+          "maximum": 25647
+        },
+        "unit-dx-2-dy-4": {
+          "calls": 64,
+          "mean": 36225.75,
+          "p95": 38243,
+          "maximum": 38243
+        },
+        "unit-dx-2-dy0": {
+          "calls": 64,
+          "mean": 19578.25,
+          "p95": 21593,
+          "maximum": 21593
+        },
+        "unit-dx-2-dy1": {
+          "calls": 64,
+          "mean": 20998.75,
+          "p95": 23016,
+          "maximum": 23016
+        },
+        "unit-dx-2-dy2": {
+          "calls": 64,
+          "mean": 22317.25,
+          "p95": 24337,
+          "maximum": 24337
+        },
+        "unit-dx-2-dy3": {
+          "calls": 64,
+          "mean": 23635.75,
+          "p95": 25658,
+          "maximum": 25658
+        },
+        "unit-dx-2-dy4": {
+          "calls": 64,
+          "mean": 36225.75,
+          "p95": 38243,
+          "maximum": 38243
+        },
+        "unit-dx-3-dy-1": {
+          "calls": 64,
+          "mean": 25085.75,
+          "p95": 27103,
+          "maximum": 27103
+        },
+        "unit-dx-3-dy-2": {
+          "calls": 64,
+          "mean": 26404.25,
+          "p95": 28424,
+          "maximum": 28424
+        },
+        "unit-dx-3-dy-3": {
+          "calls": 64,
+          "mean": 27722.75,
+          "p95": 29745,
+          "maximum": 29745
+        },
+        "unit-dx-3-dy-4": {
+          "calls": 64,
+          "mean": 36225.75,
+          "p95": 38243,
+          "maximum": 38243
+        },
+        "unit-dx-3-dy0": {
+          "calls": 64,
+          "mean": 23676.25,
+          "p95": 25691,
+          "maximum": 25691
+        },
+        "unit-dx-3-dy1": {
+          "calls": 64,
+          "mean": 25096.75,
+          "p95": 27114,
+          "maximum": 27114
+        },
+        "unit-dx-3-dy2": {
+          "calls": 64,
+          "mean": 26415.25,
+          "p95": 28435,
+          "maximum": 28435
+        },
+        "unit-dx-3-dy3": {
+          "calls": 64,
+          "mean": 27733.75,
+          "p95": 29756,
+          "maximum": 29756
+        },
+        "unit-dx-3-dy4": {
+          "calls": 64,
+          "mean": 36225.75,
+          "p95": 38243,
+          "maximum": 38243
+        },
+        "unit-dx-4-dy-1": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx-4-dy-2": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx-4-dy-3": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx-4-dy-4": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx-4-dy0": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx-4-dy1": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx-4-dy2": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx-4-dy3": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx-4-dy4": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx0-dy-1": {
+          "calls": 64,
+          "mean": 12482.75,
+          "p95": 14500,
+          "maximum": 14500
+        },
+        "unit-dx0-dy-2": {
+          "calls": 64,
+          "mean": 14107.25,
+          "p95": 16127,
+          "maximum": 16127
+        },
+        "unit-dx0-dy-3": {
+          "calls": 64,
+          "mean": 15425.75,
+          "p95": 17448,
+          "maximum": 17448
+        },
+        "unit-dx0-dy-4": {
+          "calls": 64,
+          "mean": 36302.75,
+          "p95": 38320,
+          "maximum": 38320
+        },
+        "unit-dx0-dy0": {
+          "calls": 64,
+          "mean": 11192.25,
+          "p95": 13207,
+          "maximum": 13207
+        },
+        "unit-dx0-dy1": {
+          "calls": 64,
+          "mean": 12485.75,
+          "p95": 14503,
+          "maximum": 14503
+        },
+        "unit-dx0-dy2": {
+          "calls": 64,
+          "mean": 14118.25,
+          "p95": 16138,
+          "maximum": 16138
+        },
+        "unit-dx0-dy3": {
+          "calls": 64,
+          "mean": 15436.75,
+          "p95": 17459,
+          "maximum": 17459
+        },
+        "unit-dx0-dy4": {
+          "calls": 64,
+          "mean": 36302.75,
+          "p95": 38320,
+          "maximum": 38320
+        },
+        "unit-dx1-dy-1": {
+          "calls": 64,
+          "mean": 16555.75,
+          "p95": 18573,
+          "maximum": 18573
+        },
+        "unit-dx1-dy-2": {
+          "calls": 64,
+          "mean": 18291.25,
+          "p95": 20311,
+          "maximum": 20311
+        },
+        "unit-dx1-dy-3": {
+          "calls": 64,
+          "mean": 19609.75,
+          "p95": 21632,
+          "maximum": 21632
+        },
+        "unit-dx1-dy-4": {
+          "calls": 64,
+          "mean": 36302.75,
+          "p95": 38320,
+          "maximum": 38320
+        },
+        "unit-dx1-dy0": {
+          "calls": 64,
+          "mean": 15265.25,
+          "p95": 17280,
+          "maximum": 17280
+        },
+        "unit-dx1-dy1": {
+          "calls": 64,
+          "mean": 16558.75,
+          "p95": 18576,
+          "maximum": 18576
+        },
+        "unit-dx1-dy2": {
+          "calls": 64,
+          "mean": 18302.25,
+          "p95": 20322,
+          "maximum": 20322
+        },
+        "unit-dx1-dy3": {
+          "calls": 64,
+          "mean": 19620.75,
+          "p95": 21643,
+          "maximum": 21643
+        },
+        "unit-dx1-dy4": {
+          "calls": 64,
+          "mean": 36302.75,
+          "p95": 38320,
+          "maximum": 38320
+        },
+        "unit-dx2-dy-1": {
+          "calls": 64,
+          "mean": 20993.75,
+          "p95": 23011,
+          "maximum": 23011
+        },
+        "unit-dx2-dy-2": {
+          "calls": 64,
+          "mean": 22312.25,
+          "p95": 24332,
+          "maximum": 24332
+        },
+        "unit-dx2-dy-3": {
+          "calls": 64,
+          "mean": 23630.75,
+          "p95": 25653,
+          "maximum": 25653
+        },
+        "unit-dx2-dy-4": {
+          "calls": 64,
+          "mean": 36225.75,
+          "p95": 38243,
+          "maximum": 38243
+        },
+        "unit-dx2-dy0": {
+          "calls": 64,
+          "mean": 19584.25,
+          "p95": 21599,
+          "maximum": 21599
+        },
+        "unit-dx2-dy1": {
+          "calls": 64,
+          "mean": 21004.75,
+          "p95": 23022,
+          "maximum": 23022
+        },
+        "unit-dx2-dy2": {
+          "calls": 64,
+          "mean": 22323.25,
+          "p95": 24343,
+          "maximum": 24343
+        },
+        "unit-dx2-dy3": {
+          "calls": 64,
+          "mean": 23641.75,
+          "p95": 25664,
+          "maximum": 25664
+        },
+        "unit-dx2-dy4": {
+          "calls": 64,
+          "mean": 36225.75,
+          "p95": 38243,
+          "maximum": 38243
+        },
+        "unit-dx3-dy-1": {
+          "calls": 64,
+          "mean": 25091.75,
+          "p95": 27109,
+          "maximum": 27109
+        },
+        "unit-dx3-dy-2": {
+          "calls": 64,
+          "mean": 26410.25,
+          "p95": 28430,
+          "maximum": 28430
+        },
+        "unit-dx3-dy-3": {
+          "calls": 64,
+          "mean": 27728.75,
+          "p95": 29751,
+          "maximum": 29751
+        },
+        "unit-dx3-dy-4": {
+          "calls": 64,
+          "mean": 36225.75,
+          "p95": 38243,
+          "maximum": 38243
+        },
+        "unit-dx3-dy0": {
+          "calls": 64,
+          "mean": 23682.25,
+          "p95": 25697,
+          "maximum": 25697
+        },
+        "unit-dx3-dy1": {
+          "calls": 64,
+          "mean": 25102.75,
+          "p95": 27120,
+          "maximum": 27120
+        },
+        "unit-dx3-dy2": {
+          "calls": 64,
+          "mean": 26421.25,
+          "p95": 28441,
+          "maximum": 28441
+        },
+        "unit-dx3-dy3": {
+          "calls": 64,
+          "mean": 27739.75,
+          "p95": 29762,
+          "maximum": 29762
+        },
+        "unit-dx3-dy4": {
+          "calls": 64,
+          "mean": 36225.75,
+          "p95": 38243,
+          "maximum": 38243
+        },
+        "unit-dx4-dy-1": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx4-dy-2": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx4-dy-3": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx4-dy-4": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx4-dy0": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx4-dy1": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx4-dy2": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx4-dy3": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "unit-dx4-dy4": {
+          "calls": 64,
+          "mean": 36145.75,
+          "p95": 38163,
+          "maximum": 38163
+        },
+        "vertical-reversal": {
+          "calls": 192,
+          "mean": 15065.515625,
+          "p95": 35407,
+          "maximum": 35421
+        }
+      }
+    }
+  }
+}

@@ -5,8 +5,9 @@ A work-in-progress port of the New Rally-X arcade game to MSX2+, focused on
 preserving the original graphics and core game rules within a measured MSX timing budget.
 
 The repository provides environment setup, original-graphics tools and a
-SCREEN 5 renderer integrating the original Z80 gameplay routines with dynamic
-rounds, enemies, smoke and one/two-player sessions. Sound synthesis remains pending.
+default SCREEN 4 presenter integrating the original Z80 gameplay routines with
+dynamic rounds, enemies, smoke, PSG audio and one/two-player sessions. The earlier
+SCREEN 5 presenter with sprite HUD remains available as an independent build.
 
 The port targets **at least 128 KB of RAM mapper and 128 KB VRAM**. The openMSX
 launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
@@ -25,7 +26,34 @@ launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
 
 ## Current status
 
-The default `make build` cartridge provides silent normal/challenge rounds,
+### Build and launch modes
+
+```sh
+make run                     # optimized SCREEN 4, HUD enabled
+make run TEST_MODE=1         # Enter: next round; =: toggle invulnerability
+make run LEGACY=1            # original SCREEN 5 / sprite HUD / PSG baseline
+```
+
+The lowercase spelling `legacy=1` is also accepted. Test mode keeps walls solid;
+it prevents collision deaths and advances rounds without the fuel bonus. It is
+an optimized-presenter option; it is not added to the preserved legacy build.
+`make build` uses the same selection without opening the emulator.
+The optimized ROM is `references/experiments/full-session/fixed-hud.rom`, or
+`full-session-test/fixed-hud.rom` with test mode. The legacy ROM remains
+`references/build/newrallyx.rom`. Unqualified `make run` rebuilds before launch;
+an explicit `ROM=...`, `CHECKPOINT=...` or `LATEST=1` selects an existing artifact.
+`make run-experiments` remains an alias for the optimized build.
+
+Original game ROMs and MSX BIOS must be supplied locally as described in
+[setup](docs/setup.md). The approved 162x10 title artwork is reconstructed from
+those ROMs plus the authored wordmark rules and checked against its pixel digest.
+The optional MSX logo source is contributor-supplied artwork in `assets/`.
+
+The following historical renderer details and diagnostic flags describe
+`LEGACY=1`. For the optimized presenter and measured limits see
+[the full-session laboratory](experiments/fixed-hud/README.md).
+
+The default `make build` cartridge provides PSG music/effects, normal/challenge rounds,
 original flag/rock placement on four maps, MSX-adapted enemies and native smoke, fuel bonuses,
 death/restart, alternating two-player sessions, game over and an autonomous
 attract demonstration. It retains original-size graphics, the complete car
@@ -56,11 +84,22 @@ credits). Both players use arrows or joystick1 on alternating turns. **Space**,
 Ctrl or triggerA releases smoke; **P** pauses; Home resets the development run.
 **F5** advances one round per press for debugging, preserving score and lives
 without awarding the completion bonus. It also resumes a paused game.
+**F4** toggles audio without stopping the music clock or changing gameplay.
+Development openMSX launches bind **F6** to save the screen, complete state and
+preceding replay. Closing the emulator also saves the replay automatically in
+the printed session directory under ignored `references/build/`.
 With no credits, the original cast screen periodically enters an automatic demo.
 
+Start/completion music plays all three original parts together. During driving,
+two music parts leave channel C for a hardware-envelope engine and pitched
+effects; smoke/crash also use noise. Credit, flags and fuel retain their original
+note contours. Scores are compiled locally, and short deferred publication keeps
+audio off the car/camera snapshot path. PSG timbres remain an adaptation of the
+arcade sound. See the [audio contract and validation](docs/issue13-audio-interface.md).
+`make build LEGACY=1 AUDIO=0` reconstructs the accepted silent full-game baseline.
+
 Builds use fresh sealed directories under `references/build/default-*/` and
-publish `references/build/newrallyx.rom` only after success. `make run` reuses
-that file, building it only when missing. Rebuild after changing sources.
+publish `references/build/newrallyx.rom` only after success in legacy mode.
 `make run LATEST=1` launches the most recent sealed build; named historical
 cartridges remain available through `make checkpoints` and
 `make run CHECKPOINT=<name>`. An explicit `ROM=<path>` selects another cartridge.

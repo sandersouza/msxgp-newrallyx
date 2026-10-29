@@ -162,6 +162,12 @@ Fuel_Finish:
     ld (Fuel_Active),a
     ld a,(Fuel_Mode)
     ld ($e020),a
+    IF AUDIO_ENABLED
+    push hl
+    ld hl,$e9f6
+    set 6,(hl)              ; Original refill cue after restoring the saved gauge.
+    pop hl
+    ENDIF
     ld a,3
     ld (Fuel_Work),a
     ret

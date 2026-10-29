@@ -1,0 +1,54 @@
+{
+  "rom_sha256": "d6c508cd025343b60c7d1775dc306eaa1de31ca8fe6aa83996a52fa3f89457ea",
+  "unit_tests": {
+    "run": 56,
+    "skipped": 1,
+    "passed": true,
+    "successful": 55
+  },
+  "scenarios": [
+    {
+      "scenario": "start",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-20u6ubvp",
+      "rom_sha256": "d6c508cd025343b60c7d1775dc306eaa1de31ca8fe6aa83996a52fa3f89457ea",
+      "passed": true,
+      "active_snapshots": 2
+    },
+    {
+      "scenario": "integration",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-rvewtlfa",
+      "rom_sha256": "d6c508cd025343b60c7d1775dc306eaa1de31ca8fe6aa83996a52fa3f89457ea",
+      "passed": true,
+      "active_snapshots": 14
+    },
+    {
+      "scenario": "two-player",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-iuh7crn5",
+      "rom_sha256": "d6c508cd025343b60c7d1775dc306eaa1de31ca8fe6aa83996a52fa3f89457ea",
+      "passed": true,
+      "active_snapshots": 3
+    },
+    {
+      "scenario": "flags",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-ne5hz763",
+      "rom_sha256": "d6c508cd025343b60c7d1775dc306eaa1de31ca8fe6aa83996a52fa3f89457ea",
+      "passed": true,
+      "active_snapshots": 12
+    },
+    {
+      "scenario": "attract",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-5kbgd43m",
+      "rom_sha256": "d6c508cd025343b60c7d1775dc306eaa1de31ca8fe6aa83996a52fa3f89457ea",
+      "passed": true,
+      "active_snapshots": 3
+    }
+  ],
+  "stable_graphics_snapshots": 34,
+  "limitations": "Controlled contact/death/round fixtures are marked in scenario source. Continuous scanout and exact VRAM oracles do not replace final user acceptance. Joystick protocol inspected; no physical controller or hardware verification.",
+  "launcher": {
+    "target": "make run-experiments",
+    "rom_sha256": "d6c508cd025343b60c7d1775dc306eaa1de31ca8fe6aa83996a52fa3f89457ea",
+    "script": "references/build/run-d74c75ac47ed43a78ae30c8521206541/session.tcl",
+    "scope": "Target rebuilt/exported the expected cartridge and launched its own openMSX process; feature assertions are recorded in the separate scenarios."
+  }
+}

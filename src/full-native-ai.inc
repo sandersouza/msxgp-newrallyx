@@ -65,6 +65,8 @@ Full_PresentSealNative:
     or a
     ret nz
     call Full_PoolPreloadNative
+    ld hl,(Full_PlayerPose)
+    ld (Full_PlayerNextPose),hl
     ld hl,(scroll_high)
     ld (Full_PresentNextX),hl
     ld a,(scroll_y)
@@ -329,7 +331,7 @@ FullEnemyFastPose:
     jp nz,.none
     ld l,(ix+2)
     ld h,(ix+3)
-    ld de,(player_x)
+    ld de,(Full_CameraCentreX)
     or a
     sbc hl,de
     ld de,PLAYER_X
@@ -344,7 +346,7 @@ FullEnemyFastPose:
     ld (ix+7),h
     ld l,(ix+4)
     ld h,(ix+5)
-    ld de,(player_y)
+    ld de,(Full_CameraCentreY)
     or a
     sbc hl,de
     ld de,108
@@ -417,3 +419,6 @@ Full_CopyColdNative:
     ld (Full_PresentEnabled),a
     ld (Full_PresentReady),a
     jp Full_CacheInitNative
+    IF AUDIO_ENABLED
+    INCLUDE "full-audio-mapper.inc"
+    ENDIF

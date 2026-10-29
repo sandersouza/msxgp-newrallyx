@@ -32,6 +32,7 @@ def verify(root,args):
         ' debug write_block VRAM 122880 [string repeat [binary format c 165] 256]',
         ' set ::begin [machine_info time];reg HL 0xc900;reg DE [expr {0x6000+$offset}];reg B $count;reg SP 0xc7f0;reg PC 0xc700','}',
         f'debug set_bp {syms["main"]} {{!$::started}} {{set ::started 1;set ::scene [debug read_block VRAM 0 65536];set ::native [debug read_block memory 0xe000 4096]',
+        *([f' debug write memory {syms["Session_State"]} 0;debug write memory {syms["Full_PresentReady"]} 0'] if syms.get('FULL_GAME') else []),
         *[f' debug write memory {0xc700+i} {v}' for i,v in enumerate(code)],'issue','}',
         f'debug set_bp {syms["Sprite_ResumeUpload"]} {{$::started}} {{puts $::irq "$::index [debug read memory 0xc03c] [debug read memory 0xc0a0] [expr {{[reg HL]-0xc900}}]"}}',
         'debug set_bp 0xc740 {$::started} {',
@@ -53,9 +54,12 @@ def verify(root,args):
     irqs=[list(map(int,r.split())) for r in (out/'irq.tsv').read_text().splitlines()]
     phases={r[2] for r in irqs}
     expected_phases={0,1,2}
-    if 'radar_interrupt' in syms:expected_phases.add(3)
-    if 'radar_close_interrupt' in syms:expected_phases.add(4)
-    if 'prefetch_guard_interrupt' in syms:expected_phases.add(5)
+    # Full-game radar publication shares the maze IRQ; the old three radar
+    # windows remain assembled but are never armed by that runtime.
+    if not syms.get('FULL_GAME'):
+        if 'radar_interrupt' in syms:expected_phases.add(3)
+        if 'radar_close_interrupt' in syms:expected_phases.add(4)
+        if 'prefetch_guard_interrupt' in syms:expected_phases.add(5)
     if phases!=expected_phases or len(irqs)<50:raise ValueError(f'Insufficient actual interrupt overlap: {len(irqs)}, phases {phases}')
     if any(not 0<=r[3]<=cases[r[0]][0] for r in irqs):raise ValueError('IRQ resumed from an invalid source offset')
     costs=[int(v) for v in (out/'cycles.tsv').read_text().splitlines()]

@@ -28,6 +28,8 @@ player_steps EQU $c472
 Player_Init:
     IF FULL_GAME
     ld a,(Full_Loading)
+    cp 3
+    ret z                    ; UI resume reloads video only, retaining challenge kinematics.
     cp 2
     jr nz,.not_restoring
     ld a,PLAYER_BANK
@@ -110,6 +112,9 @@ Player_Init:
     ld (player_native_ticks+1),a
     inc a
     ld (player_steps),a
+    IF AUDIO_ENABLED
+    ld (Audio_NewScene),a
+    ENDIF
     ld a,255
     ld (player_drawn),a
     ld (player_phase),a
@@ -682,7 +687,14 @@ Player_Draw:
     ENDIF
     ld a,(scroll_y)
 .sat_value:
+    IF FULL_GAME
+    ld hl,Full_PlayerActivePose+1
+    add a,(hl)
+    dec hl
+    ld c,(hl)
+    ELSE
     add a,107                ; Logical centre=(132,116); fixed R18 centres at128.
+    ENDIF
     ld b,180
     cp 216
     jr nz,.safe
@@ -692,7 +704,11 @@ Player_Draw:
     ld hl,player_sat
     ld (hl),a
     inc hl
+    IF FULL_GAME
+    ld (hl),c
+    ELSE
     ld (hl),PLAYER_X
+    ENDIF
     inc hl
     ld (hl),b
     inc hl
@@ -700,7 +716,11 @@ Player_Draw:
     inc hl
     ld (hl),a
     inc hl
+    IF FULL_GAME
+    ld (hl),c
+    ELSE
     ld (hl),PLAYER_X
+    ENDIF
     inc hl
     ld a,b
     add a,4
@@ -742,6 +762,9 @@ Player_Draw:
 ; Restore the previous one-row patch, then complete the shifted full-height car.
 ; Runs just after the header split, before the car's fixed screen band (108..123).
 Player_Patch:
+    IF FULL_GAME
+    ret                      ; Full game has complete sprites, never this legacy row patch.
+    ELSE
     IF (INCREMENTAL_STAGE >= 9 || TILE_MODE) && !PLAYER_BLITTER
     ret
     ENDIF
@@ -933,6 +956,7 @@ Player_RowPointer:
     out ($99),a
     pop hl
     ret
+    ENDIF
 player_flags:
     INCBIN "player-flags.bin"
 player_radar_x:

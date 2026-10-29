@@ -1,0 +1,11 @@
+{
+  "reference_revision": "9aca80a0c9f92527f19a0a5efb49b62101c6680e",
+  "merge_base": "6b4044958150fe722fad8c0a8f7143c3703f230a",
+  "makefile_text_merge": "clean",
+  "preserved": [
+    "Production AUDIO and FLAG_POPUPS flags",
+    "Independent experimental target include"
+  ],
+  "audio_branch_experiment_path_overlap": [],
+  "scope": "Read-only three-way Makefile merge probe plus changed-path inventory. No branch merge/commit; runtime parity not established."
+}

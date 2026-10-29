@@ -46,7 +46,21 @@ Sprite_ResumeUpload:
     sbc hl,de
     ld de,(Sprite_UploadDestination)
     add hl,de
+    IF FLAG_POPUPS
+    ld a,(Sprite_UploadActive)
+    cp 2
+    jr nz,.sprite
+    ld a,(Sprite_UploadBank)
+    out ($99),a
+    ld a,$8e
+    out ($99),a
+    jr .pointer
+.sprite:
+    ENDIF
     vdp_write 14,7
+    IF FLAG_POPUPS
+.pointer:
+    ENDIF
     ld a,l
     out ($99),a
     ld a,h

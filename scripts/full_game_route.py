@@ -32,10 +32,16 @@ def main(argv=None):
     p.add_argument('--fixture-first-round',type=int,choices=range(1,255),help='Explicit initial displayed round using the original round preparer; changes guest setup')
     p.add_argument('--allow-game-over',action='store_true',help='Keep measured evidence when a legitimate game over ends the keyboard route early')
     p.add_argument('--profile',action='store_true',help='Observe main-loop call durations without guest writes')
+    p.add_argument('--audio-record',action='store_true',help='Record 20 seconds of actual PSG output in an audio-enabled route')
+    p.add_argument('--audio-worker-disabled',action='store_true',help='Diagnostic only: suppress production audio service to compare timing')
     p.add_argument('--record-round',type=int,help='Record eight seconds of actual scanout from this displayed round')
     p.add_argument('--trace-di',action='store_true',help='Observe interrupt-masked intervals without guest writes')
     p.add_argument('--radar-trace',action='store_true',help='Compare live radar SAT against latched R23 before each visible band')
     p.add_argument('--effects-trace',action='store_true',help='Require bounded flag removal and visible smoke publication')
+    p.add_argument('--terrain-trace',action='store_true',help='Check scenery pixels throughout the route, not only sparse snapshots')
+    p.add_argument('--require-map-bounds',action='store_true',help='Reject scenery exposure beyond the original maze border; requires terrain/radar traces')
+    p.add_argument('--stress-seed',type=int,help='Deterministic abrupt keyboard turns/reversals/smoke, with no guest-memory writes')
+    p.add_argument('--stress-frames',type=int,default=3600,help='Foreground-frame limit for the seeded input stress run')
     p.add_argument('--require-stable-radar',action='store_true')
     p.add_argument('--require-stable-fuel',action='store_true')
     p.add_argument('--require-stable-player',action='store_true')
@@ -53,6 +59,10 @@ def main(argv=None):
     p.add_argument('--bios',type=Path,default=Path('references/msxbios'))
     p.add_argument('--machine',default='Panasonic_FS-A1WSX');p.add_argument('--openmsx',default='openmsx')
     args=p.parse_args(argv);root=Path(__file__).resolve().parents[1]
+    if args.require_map_bounds and not (args.terrain_trace and args.radar_trace):raise ValueError('Map bounds require --terrain-trace --radar-trace')
+    if args.stress_seed is not None:
+        if not 300<=args.stress_frames<=12000:raise ValueError('Stress run requires 300..12000 foreground frames')
+        args.allow_game_over=True
     first_round=args.fixture_first_round or 1
     last_round=first_round+args.rounds-1
     if last_round>254:raise ValueError('Controlled route exceeds the acquired round range')
@@ -67,6 +77,10 @@ def main(argv=None):
     program,_=acquire(root)
     for i in range(4):(out/f'board-{i}.bin').write_bytes(cells_from_rom(program,0x30+i))
     syms=symbols(bundle/'raster-scroll.sym')
+    if args.audio_record and not syms.get('AUDIO_ENABLED'):
+        raise ValueError('Audio recording requires an audio-enabled candidate')
+    if args.audio_worker_disabled and (not syms.get('AUDIO_ENABLED') or args.audio_record):
+        raise ValueError('Disabled-worker diagnostic requires audio and cannot record sound')
     lines=['set save_settings_on_exit false',f'set renderer {"SDLGL-PP" if args.record_round else "none"}','set sound_driver null','set vsync off',
         f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
         reference_machine(root,args.machine),'set firmwareswitch off','set throttle off','set pause_on_lost_focus false',
@@ -79,6 +93,23 @@ def main(argv=None):
     if args.effects_trace:
         from scripts.msx.full_effects import trace
         lines.extend(trace(syms))
+    if syms.get('FLAG_POPUPS'):
+        from scripts.msx.flag_popup import trace as popup_trace
+        lines.extend(popup_trace(syms))
+    if args.audio_worker_disabled:
+        lines.append(f'debug set_bp {syms["Audio_Work"]} {{1}} {{debug write memory {syms["Audio_LastUI"]} [debug read memory {syms["ticks"]}]}}')
+    if syms.get('AUDIO_ENABLED') and not args.audio_worker_disabled:
+        lines.extend([
+            'set audio_out [open [file join $out audio.tsv] w]',
+            'set audio_state_writes 0',
+            f'set audio_signature [binary decode hex { (bundle/"audio-score.bin").read_bytes()[:16].hex() }]',
+            f'debug set_watchpoint write_mem {{59808 59887}} {{[info exists ::phase] && $::phase eq "game"}} {{incr ::audio_state_writes;set pc [reg PC];if {{!(($pc>={syms["Audio_RuntimeStep"]} && $pc<{syms["Audio_RuntimeEnd"]} && [debug read_block memory 32768 16] eq $::audio_signature) || ($pc>={syms["Player_Init.fresh"]+14} && $pc<={syms["Player_Init.fresh"]+16}))}} {{puts stderr "Unexpected native write to reserved audio state: PC=$pc address=$::wp_last_address";exit 2}}}}',
+            f'debug set_bp {syms["Audio_Work"]} {{[info exists ::phase] && $::phase eq "game" && (([debug read memory {syms["ticks"]}]-[debug read memory {syms["Audio_LastUI"]}])&255)>=2}} {{set ::audio_begin [machine_info time];set ::audio_due [expr {{(([debug read memory {syms["ticks"]}]-[debug read memory {syms["Audio_LastUI"]}])&255)/2}}]}}',
+            f'debug set_bp {syms["Audio_WorkReturn"]} {{[info exists ::audio_begin]}} {{puts $::audio_out "[machine_info time] $::frames $::audio_due [expr {{([machine_info time]-$::audio_begin)*1000}}] [debug read memory {syms["Audio_QueueCount"]}] [debug read memory {syms["Audio_QueueDrops"]}] [debug read memory {syms["Audio_NoiseID"]}] [debug read memory {syms["Audio_MusicMode"]}] [debug read {{PSG regs}} 8] [debug read {{PSG regs}} 9] [debug read {{PSG regs}} 10]";unset ::audio_begin}}',
+        ])
+    if args.audio_record:
+        lines.extend(['set audio_recorded 0',
+            f'debug set_bp {syms["main"]} {{[info exists ::phase] && $::phase eq "game" && !$::audio_recorded}} {{set ::audio_recorded 1;record start -audioonly {tcl(out/"audio.wav")};after time 20 {{record stop}}}}'])
     if args.record_round:
         lines.extend(['set recording_started 0',
             f'debug set_bp {syms["main"]} {{[info exists ::phase] && $::phase eq "game" && [debug read memory 0xe1b0]=={args.record_round+1} && !$::recording_started}} {{',
@@ -86,7 +117,22 @@ def main(argv=None):
             f' record start -videoonly {tcl(out/"scanout.avi")}',
             f' after time 8 {{record stop;screenshot -raw {tcl(out/"scanout-last.png")};set renderer none}}',
             '}'])
+    if args.terrain_trace:
+        from scripts.msx.terrain_live import observer
+        lines.extend(observer())
     script=(root/'scripts/msx/full-route-probe.tcl').read_text().replace('@SHOW_SCENE@',str(syms['show_scene']))
+    if args.stress_seed is not None:
+        lines.append(f'set stress_rng {args.stress_seed&0xffffffff}')
+        script=script.replace('    if {$::frames>40000 || $state==2} {',
+            f'    if {{$::frames>={args.stress_frames}}} {{snapshot;close $::events;close $::headers;exit 0;return}}\n    if {{$::frames>40000 || $state==2}} {{')
+        script=script.replace('    # Plan the next input from the current native position.',
+            '    if {$::frames%17==0} {set ::stress_rng [expr {($::stress_rng*1664525+1013904223)&0xffffffff}];set ::mask [lindex {16 128 32 64} [expr {($::stress_rng>>16)&3}]]}\n'
+            '    if {$::frames%113<7} {set ::mask [expr {$::mask in {16 128}?($::mask^144):($::mask^96)}]}\n'
+            '    keys $::mask [expr {$::frames%23<6}]\n'
+            '    if {$::frames%240==0 && ![debug read memory 0xc50e] && ![debug read memory 0xc494] && ![debug read memory 0xc70e]} {snapshot}\n'
+            '    return\n    # Plan the next input from the current native position.')
+    if args.terrain_trace:
+        script=script.replace('    if {$::frames%240', '    terrain_observe\n    if {$::frames%240')
     if args.allow_game_over:
         script=script.replace('    if {$::frames>40000 || $state==2} {',
             '    if {$state==2} {snapshot;close $::events;close $::headers;exit 0;return}\n    if {$::frames>40000 || $state==2} {')
@@ -191,6 +237,9 @@ def main(argv=None):
             'set fuel_samples 0;set fuel_mismatches 0;set fuel_out [open [file join $out fuel.tsv] w]',
             'set footer_samples 0;set footer_mismatches 0',
             'set player_samples 0;set player_mismatches 0;set player_out [open [file join $out player.tsv] w]',
+            'set player_visible {124 107};set player_sealed {124 107}',
+            *([f'debug set_bp {syms["Full_PresentSealed"]} {{$::phase eq "game"}} {{set ::player_sealed [list [expr {{[u16 {syms["player_x"]}]-[u16 {syms["world_x"]}]}}] [expr {{[u16 {syms["player_y"]}]-[u16 {syms["world_y"]}]+2}}]]}}',
+               f'debug set_bp {syms["Full_CommitCamera"]} {{$::phase eq "game"}} {{set ::player_visible $::player_sealed}}'] if 'Full_PlayerPose' in syms else []),
             'set camera_out [open [file join $out camera.tsv] w]',
             'set motion_out [open [file join $out motion.tsv] w]',
             'set terrain_out [open [file join $out terrain.tsv] w]',
@@ -203,8 +252,9 @@ def main(argv=None):
             ' set hardware_x [expr {[debug read {VDP regs} 26]*8+8-([debug read {VDP regs} 27]&7)}]',
             ' set wx [expr {$wx+(($hardware_x-$wx+256)&511)-256}]',
             f' set wy [expr {{$wy+(($sy+{syms["BODY_TOP"]}-$wy+128)&255)-128}}]',
+            *(['terrain_capture $wx $wy $::terrain_latch_out'] if args.terrain_trace else []),
             f' puts $::camera_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $sy [debug read memory {syms["scroll_y"]}] $wy [u16 0xc407] [u16 0xc452]"',
-            f' puts $::motion_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $wx $wy [u16 0xc450] [u16 0xc452] [debug read memory 0xe06b] [debug read memory 0xe048] [u16 0xe069] [debug read memory 0xe068] [u16 {syms["player_native_ticks"]}] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0] [debug read memory 0xc009] [debug read memory 0xc49a] [debug read memory 0xc5b0]"',
+            f' puts $::motion_out "[machine_info time] [debug read memory 0xe1b0] [debug read memory 0xc490] [debug read memory 0xc724] $wx $wy [u16 0xc450] [u16 0xc452] [debug read memory 0xe06b] [debug read memory 0xe048] [u16 0xe069] [debug read memory 0xe068] [u16 {syms["player_native_ticks"]}] [debug read memory {syms["Full_Loading"]}] [debug read memory 0xc7d0] [debug read memory 0xc009] [debug read memory 0xc49a] [debug read memory 0xc5b0]'+(' [lindex $::player_visible 0] [expr {[lindex $::player_visible 1]-2}]' if 'Full_PlayerPose' in syms else '')+'"',
             ' set queue [list [machine_info time]]',
             ' foreach a {'+' '.join(str(syms[n]) for n in ('Full_CameraBlocked','row_left','row_x','row_y','Stage_RowLeft','Stage_RowEnd','column_left','column_x','column_y','Stage_ColumnTop','Stage_ColumnEnd','Full_DirX','Full_DirY','Full_QueueDirty','cache_left','cache_top','Full_ClockDue','Full_LoopTicks','raster_phase'))+'} {lappend queue [debug read memory $a]}',
             ' puts $::terrain_out $queue',
@@ -237,8 +287,8 @@ def main(argv=None):
             '}',
             'proc player_sample {} {',
             ' if {$::phase ne "game" || $::skip_headers || [debug read memory 0xc7d0]!=0 || [debug read memory 0xc49a]} {return}',
-            ' incr ::player_samples;set sy [expr {([debug read {VDP regs} 23]+107)&255}];if {$sy==216} {incr sy -1}',
-            f' set expected [binary format c* [list $sy {syms["PLAYER_X"]} 180 0 $sy {syms["PLAYER_X"]} 184 0]]',
+            ' incr ::player_samples;lassign $::player_visible px py;set sy [expr {([debug read {VDP regs} 23]+$py)&255}];if {$sy==216} {incr sy -1}',
+            ' set expected [binary format c* [list $sy $px 180 0 $sy $px 184 0]]',
             f' set actual [debug read_block VRAM {0x1f600+syms["PLAYER_SLOT"]*4} 8]',
             ' if {$actual ne $expected} {incr ::player_mismatches;puts $::player_out "$::frames [debug read {VDP regs} 23] [binary encode hex $actual] [binary encode hex $expected]"}',
             '}',
@@ -309,6 +359,12 @@ def main(argv=None):
         names.update({'Full_PoolPreloadNative','Full_PresentBegin','Full_PoolBegin','Full_PoolReserveNative','Full_PoolAssignNative'})
         names.update({'Player_Draw','Player_Patch','Score_ReservedFrame','Flag_Stream','Death_Stream','Smoke_Stream',
                       'Flag_Frame','Death_Frame','Radar_CommitPublished','Life_Frame','Round_Frame','Session_Check','Player_Update'})
+        audio_names={'Audio_Work','Audio_RuntimeStep','Audio_RuntimeControl','Audio_Observe','Audio_Enqueue',
+                     'Audio_MusicTick','Audio_SelectMusic','Audio_ScoreStart','Audio_ReadTone','Audio_NoiseTick',
+                     'Audio_ApplyC','Audio_RenderMusic','Audio_WritePSG'}
+        names.update(audio_names)
+        if syms.get('AUDIO_ENABLED'):
+            lines.append('set audio_cycles_out [open [file join $out audio-cycles.tsv] w]')
         aliases={'$8cd6':'NativeAI','$b600':'MSXAI' if 'Full_MSXAI' in syms else 'GuardedAI','$95bd':'NativeVisibility',
                  '$91bf':'NativeCameraX','$9207':'NativeCameraY','$838a':'NativeContact',
                  '$8069':'NativeMotion','$9052':'NativeSteering'}
@@ -319,8 +375,13 @@ def main(argv=None):
             condition='$::phase eq "game"'
             if 0x8000<=address<0xc000:
                 condition+=f' && [debug read_block memory {address} 3] eq [binary format H* {match[2].replace(" ","")}]'
+            caller=max(((syms[n],n) for n in audio_names if n in syms and syms[n]<=address),default=(0,'renderer'))[1]
+            if not (syms.get('Audio_RuntimeStep',65536)<=address<syms.get('Audio_RuntimeEnd',0) or
+                    syms.get('Audio_Work',65536)<=address<syms.get('Audio_WorkReturn',0)):
+                caller='renderer'
+            ledger=(f'puts $::audio_cycles_out "{name} {caller} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}]";' if name in audio_names else '')
             lines.extend([f'debug set_bp {address} {{{condition}}} {{set ::profile_{name} [machine_info time];set ::profile_irq_{name} $::profile_irq_total;set ::profile_site_{name} {address}}}',
-                f'debug set_bp {address+3} {{{condition} && [info exists ::profile_{name}] && $::profile_site_{name}=={address}}} {{puts $::profile_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [debug read memory 0xe1b0]";puts $::profile_cpu_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}] [debug read memory 0xe1b0]";unset ::profile_{name} ::profile_irq_{name} ::profile_site_{name}}}'])
+                f'debug set_bp {address+3} {{{condition} && [info exists ::profile_{name}] && $::profile_site_{name}=={address}}} {{puts $::profile_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name})*3579545}}] [debug read memory 0xe1b0]";puts $::profile_cpu_out "{name} $::frames [expr {{([machine_info time]-$::profile_{name}-($::profile_irq_total-$::profile_irq_{name}))*3579545}}] [debug read memory 0xe1b0]";{ledger}unset ::profile_{name} ::profile_irq_{name} ::profile_site_{name}}}'])
             if name=='stage_stream':
                 lines.extend([
                     f'debug set_bp {address} {{$::phase eq "game"}} {{set ::stream_before [list [machine_info time] [debug read memory 0xc0b6] [debug read memory 0xc0b7] [debug read memory {syms["Stage_GuardClosed"]}] [debug read memory {syms["raster_phase"]}]]}}',
@@ -357,6 +418,22 @@ def main(argv=None):
         subprocess.run([args.openmsx,'-script',str(out/'session.tcl')],check=True,timeout=240,
             stdout=log,stderr=subprocess.STDOUT,
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
+    flag_popups=None
+    if syms.get('FLAG_POPUPS'):
+        from scripts.msx.flag_popup import analyze as analyze_popups
+        flag_popups=analyze_popups(bundle,out/'popups.tsv',required=not args.allow_game_over)
+    terrain_live=None
+    if args.terrain_trace:
+        from scripts.msx.terrain_live import analyze
+        terrain_live=analyze(root,bundle,out/'terrain-live.bin')
+        json_write(out/'terrain-live.json',terrain_live)
+        if args.radar_trace:
+            latch=analyze(root,bundle,out/'terrain-latch.bin')
+            json_write(out/'terrain-latch.json',latch)
+            if not latch['passed']:
+                raise ValueError(f'Latched terrain differs from original scenery: {out}/terrain-latch.json')
+        if not terrain_live['passed']:
+            raise ValueError(f'Live terrain differs from original scenery: {out}/terrain-live.json')
     rows=[list(map(int,line.split())) for line in (out/'events.tsv').read_text().splitlines()]
     if args.fixture_first_round is not None and (not rows or rows[0][1]!=first_round+1):
         raise ValueError('Original preparer did not apply the declared initial-round fixture')
@@ -374,7 +451,7 @@ def main(argv=None):
             scope='Live SAT before each band fetch against actual latched R23; dot uses its IRQ point snapshot')
         if args.require_stable_radar and (mismatches or not samples):raise ValueError('Fixed radar missed its scanline-coherence gate')
         if args.require_stable_fuel and (fuel_mismatches or not fuel_samples or footer_mismatches or not footer_samples):raise ValueError('Fuel/footer sprites missed their scanline-coherence gate')
-        if args.require_stable_player and (player_mismatches or not player_samples):raise ValueError('Player sprites missed their fixed-centre scanline gate')
+        if args.require_stable_player and (player_mismatches or not player_samples):raise ValueError('Player sprites missed their sealed world-to-screen projection gate')
     verify_manifest(bundle)
     cadence=analyze_cadence(out/'cadence.tsv')
     population_passed=args.fixture_enemies is None or all(r['enemy_counts']==[args.fixture_enemies] for r in cadence['rounds'])
@@ -384,6 +461,12 @@ def main(argv=None):
         raise ValueError('Packet gate requires a deferred presentation build')
     if args.maximum_owed_repeat_ms is not None and physical_motion is None:raise ValueError('Owed motion gate requires --radar-trace')
     if args.record_round and not (out/'scanout.avi').is_file():raise ValueError('Requested scanout recording is missing')
+    bounds=None
+    if args.terrain_trace and args.radar_trace:
+        from scripts.msx.terrain_live import camera_bounds
+        bounds=camera_bounds(out/'terrain-latch.bin')
+        json_write(out/'camera-bounds.json',bounds)
+        if args.require_map_bounds and not bounds['passed']:raise ValueError('Physical viewport left the original maze bounds')
     camera_motion=analyze_scroll(out/'camera.tsv') if args.radar_trace else None
     scroll_passed=args.maximum_scroll_step is None or camera_motion['maximum_vertical_step']<=args.maximum_scroll_step
     cadence_passed=args.minimum_native_hz is None or all(r['native_hz']>=args.minimum_native_hz for r in cadence['rounds'] if r['active_seconds']>=5)
@@ -400,18 +483,53 @@ def main(argv=None):
     clock_evidence=dict(mode='fixed base diagnostic' if args.fixed_base_clock else 'machine controlled',
         native_instruction_samples=len(clock_rows),native_instruction_cpu_hz=sorted({int(row[2]) for row in clock_rows}),
         vdp_frequency_gate='3.58 MHz at ordinary sprite uploads, command waits and radar IRQs; bounded VBlank packets use factory turbo with real VDP access checks')
-    controlled=args.fixture_enemies is not None or args.fixture_first_round is not None
+    controlled=args.fixture_enemies is not None or args.fixture_first_round is not None or args.audio_worker_disabled
     effects=None
     if args.effects_trace:
         from scripts.msx.full_effects import analyze
-        effects=analyze(out,syms)
-    json_write(out/'report.json',dict(rom_sha256=digest(args.rom),natural_completed_rounds=completed if not controlled else 0,
+        timing=read_json(bundle/'build.json')['timing']
+        # The original nominal 200 ms smoke budget is twelve NTSC refreshes.
+        # Use their actual VDP duration instead of rounding that boundary down.
+        smoke_limit=12*timing['frame_seconds']*1000 if timing['nominal_hz']==60 else 200
+        effects=analyze(out,syms,maximum_smoke_ms=smoke_limit)
+        effects['smoke_budget_basis']='12 physical NTSC refreshes (nominal 200 ms)' if timing['nominal_hz']==60 else '200 ms'
+    audio=None
+    if (out/'audio.tsv').is_file():
+        rows=[list(map(float,line.split())) for line in (out/'audio.tsv').read_text().splitlines()]
+        if not rows:raise ValueError('Audio-enabled route produced no worker samples')
+        costs=sorted(row[3] for row in rows)
+        audio=dict(worker_calls=len(rows),maximum_call_ms=max(costs),mean_call_ms=sum(costs)/len(costs),
+            percentile_95_call_ms=costs[int((len(costs)-1)*.95)],maximum_due_packets=max(row[2] for row in rows),
+            maximum_queued_effects=max(row[4] for row in rows),maximum_queue_drops=max(row[5] for row in rows),
+            observed_noise_ids=sorted({int(row[6]) for row in rows}),
+            active_music_frames=[sum(row[8+ch]>0 for row in rows) for ch in range(2)],
+            scope='Observed production worker wall time includes actual raster interrupts; no guest state changes.')
+        if args.radar_trace:
+            from scripts.msx.axis_timing import analyze as analyze_axes
+            audio['axis_timing']=analyze_axes(out/'motion.tsv',out/'audio.tsv',out/'presentation.tsv')
+        if args.profile:
+            from scripts.msx.audio_cycles import summarize as audio_cycles
+            audio['cycle_ledger']=audio_cycles(out/'audio-cycles.tsv',out/'presentation.tsv',
+                                               read_json(bundle/'build.json')['timing']['frame_seconds'])
+        if args.audio_record:
+            import array
+            import wave
+            with wave.open(str(out/'audio.wav'),'rb') as wav:
+                if wav.getsampwidth()!=2:raise ValueError('Expected recorded signed 16-bit PCM')
+                duration=wav.getnframes()/wav.getframerate();samples=array.array('h',wav.readframes(wav.getnframes()))
+            if not 19.9<=duration<=20.1 or not samples or not any(samples):raise ValueError('Missing/non-audible 20-second PCM capture')
+            audio['recording']=dict(seconds=duration,peak=max(abs(n) for n in samples),
+                rms=(sum(n*n for n in samples)/len(samples))**.5,
+                scope='Actual emulator PCM, not a listening/timbre verdict.')
+    json_write(out/'report.json',dict(rom_sha256=digest(args.rom),audio=audio,audio_worker_disabled_diagnostic=args.audio_worker_disabled,natural_completed_rounds=completed if not controlled else 0,
         controlled_completed_rounds=completed if controlled else 0,fixture_first_round=args.fixture_first_round,
-        requested_rounds=args.rounds,target_rounds_reached=reached,stopped_on_game_over=not reached,
+        requested_rounds=args.rounds,target_rounds_reached=reached,
+        stopped_on_game_over=not reached and not (args.stress_seed is not None and len(rows)>=args.stress_frames),
         fixture_enemy_count=args.fixture_enemies,cpu_clock=clock_evidence,host_steering_margin=args.steering_margin,
         fixture_population_retained=args.fixture_enemies is not None,
         fixture_population_gate=dict(required=args.fixture_enemies is not None,passed=population_passed),
-        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,
+        physical_motion=physical_motion,packet_cadence=packet_cadence,effects=effects,flag_popups=flag_popups,terrain_live=terrain_live,camera_bounds=bounds,
+        input_stress=(dict(seed=args.stress_seed,frame_limit=args.stress_frames,stopped_at_limit=len(rows)>=args.stress_frames) if args.stress_seed is not None else None),
         retained_tick_gate=dict(required=args.require_retained_native_ticks,passed=retained_passed),
         packet_gate=dict(maximum_miss_percent=args.maximum_packet_miss_percent,maximum_gap_ms=args.maximum_packet_gap_ms,population_minimum_seconds=2,passed=packet_passed),
         owed_motion_gate=dict(maximum_ms=args.maximum_owed_repeat_ms,passed=owed_passed),
@@ -424,7 +542,7 @@ def main(argv=None):
         vertical_update_gate=dict(minimum_hz=args.minimum_vertical_update_hz,passed=vertical_passed),
         camera_ownership_checks=int((out/'camera-count.txt').read_text()) if 'Full_CameraValidated' in syms else None,
         header_reservations=headers,radar_coherence=radar,maximum_smoke_placements=max(r[6] for r in rows),
-        scope=('Explicit initial round/population fixture; requested enemy count is retained across native parameter writes. Real keyboard credit/start, steering and smoke; this is controlled load, not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
+        scope=('Audio-worker-disabled timing diagnostic: the harness advances the audio clock to suppress service. ' if args.audio_worker_disabled else '')+('Seeded abrupt keyboard turns/reversals/smoke, ending at game over or the declared foreground-frame limit; no guest-state writes. ' if args.stress_seed is not None else '')+('Explicit initial round/population fixture; requested enemy count is retained across native parameter writes. Real keyboard credit/start, steering and smoke; this is controlled load, not natural progression from round one.' if controlled else 'Real keyboard credit/start, steering and smoke; no guest-state writes.')+' Dynamic sprite/cache images require separate scene checks.'))
     require_ignored(root,[x for x in out.rglob('*') if x.is_file()]);seal(out)
     if not population_passed:raise ValueError(f'Controlled population did not remain at the requested count; evidence retained at {out}/report.json')
     if effects is not None and not effects['passed']:raise ValueError(f'Effects publication gate failed; evidence retained at {out}/report.json')

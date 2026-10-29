@@ -1,0 +1,534 @@
+{
+  "rom_sha256": "49a99fda5d36e9e146fea4a1d864114d2ac7c78c810e4b4d24de56604e687932",
+  "clear_audio": {
+    "frames": 53,
+    "nominal_seconds": 1.7689443770088098,
+    "original": {
+      "inputs": {
+        "emulator": "0.289 (unknown)",
+        "script_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+        "seed_sha256": "22b3e32d734ecc7e9eae263ffb6095f7f55e3ce0e5836517ca46d399cc6b5670",
+        "roms": [
+          {
+            "name": "nrx1-1.11n",
+            "size": 32,
+            "crc32": "a0a49017",
+            "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+          },
+          {
+            "name": "nrx1-7.8p",
+            "size": 256,
+            "crc32": "4e46f485",
+            "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+          },
+          {
+            "name": "nrx_chg1.8e",
+            "size": 2048,
+            "crc32": "1fff38a4",
+            "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+          },
+          {
+            "name": "nrx_chg2.8d",
+            "size": 2048,
+            "crc32": "85d9fffd",
+            "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+          },
+          {
+            "name": "nrx_prg1.1d",
+            "size": 4096,
+            "crc32": "ba7de9fc",
+            "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+          },
+          {
+            "name": "nrx_prg2.1e",
+            "size": 4096,
+            "crc32": "eedfccae",
+            "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+          },
+          {
+            "name": "nrx_prg3.1k",
+            "size": 4096,
+            "crc32": "b4d5d34a",
+            "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+          },
+          {
+            "name": "nrx_prg4.1l",
+            "size": 4096,
+            "crc32": "7da5496d",
+            "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+          },
+          {
+            "name": "rx1-2.4n",
+            "size": 32,
+            "crc32": "8f574815",
+            "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+          },
+          {
+            "name": "rx1-3.7k",
+            "size": 32,
+            "crc32": "b8861096",
+            "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+          },
+          {
+            "name": "rx1-4.2m",
+            "size": 256,
+            "crc32": "77245b66",
+            "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+          },
+          {
+            "name": "rx1-5.3p",
+            "size": 256,
+            "crc32": "4bad7017",
+            "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+          },
+          {
+            "name": "rx1-6.8m",
+            "size": 256,
+            "crc32": "3c16f62c",
+            "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+          }
+        ]
+      },
+      "completion_call": 107,
+      "nominal_arcade_hz": 60.60606060606061,
+      "seconds": 1.7654999999999998,
+      "wsg_sha256": "cd90e4a80d775faf17b88d2df1040de6b07def2f010a717699115e854c7d27cf",
+      "wav_sha256": "ee91195c99ee3e14f91c14f8a00988855ed1c177ad0de17415175faed31cd274",
+      "original_wait_addresses": [
+        "1B03",
+        "1B0A"
+      ],
+      "port_score_parts": [
+        8,
+        9,
+        10
+      ],
+      "port_score_frames_30hz": 53,
+      "scope": "Original2580 routine at one call per original video tick; clear request28 and contributor RAM seed, no original ROM writes. Original1B03 minimum-settle/1B0A sound-ready waits inspected separately. Controlled sound fixture, not natural playthrough."
+    },
+    "compared_voice_samples": 135,
+    "max_pitch_error_cents": 7.7168236776012105,
+    "scope": "All three note voices against original WSG on paired native ticks; PSG period quantization, not waveform/timbre equivalence."
+  },
+  "clear_sequence": {
+    "passed": true,
+    "cases": [
+      {
+        "rom_sha256": "49a99fda5d36e9e146fea4a1d864114d2ac7c78c810e4b4d24de56604e687932",
+        "scenario": "flags",
+        "passed": true,
+        "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-94nau0j3",
+        "snapshots": [
+          "captured-flag-3",
+          "select",
+          "captured-flag-2",
+          "after-ten-flags",
+          "captured-flag-1",
+          "captured-flag-5",
+          "captured-flag-4",
+          "captured-flag-6",
+          "captured-flag-7",
+          "captured-flag-9",
+          "cast",
+          "captured-flag-8",
+          "captured-flag-10",
+          "first-stage"
+        ],
+        "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+        "clear_sequence": {
+          "settlement_start": 27.72155595194361,
+          "first_audible_mode4": 27.72155595194361,
+          "bonus_start": 29.461670687196275,
+          "settlement_seconds": 1.7401147352526642,
+          "fuel_before_bonus": 14850,
+          "fuel_and_score_stable_during_music": true,
+          "flag_order": "0 9 1 2 3 4 5 6 7 8"
+        },
+        "clear_costs": [
+          {
+            "name": "GameSession_CompletionWait (minimum)",
+            "calls": 61,
+            "inclusive": {
+              "mean": 75.93442622812043,
+              "p95": 75.0000000063304,
+              "max": 132.00000000605468
+            }
+          },
+          {
+            "name": "GameSession_CompletionWait (music_wait)",
+            "calls": 46,
+            "inclusive": {
+              "mean": 103.00000000051058,
+              "p95": 103.0000000010635,
+              "max": 103.0000000010635
+            }
+          },
+          {
+            "name": "GameSession_CompletionWait (begin_bonus)",
+            "calls": 1,
+            "inclusive": {
+              "mean": 4477.000000004,
+              "p95": 4477.000000004,
+              "max": 4477.000000004
+            }
+          }
+        ],
+        "clear_cost_method": "Matched entry-to-caller-PC/SP return inclusive guest cycles, including RET/IRQ; no tracked child self costs. Foreground settlement only. begin_bonus includes Completion_Begin; never add parent/child costs.",
+        "cold_silence_checks": 5,
+        "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+      },
+      {
+        "rom_sha256": "49a99fda5d36e9e146fea4a1d864114d2ac7c78c810e4b4d24de56604e687932",
+        "scenario": "flags",
+        "passed": true,
+        "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-9afyyecx",
+        "snapshots": [
+          "captured-flag-3",
+          "select",
+          "captured-flag-2",
+          "after-ten-flags",
+          "captured-flag-1",
+          "captured-flag-5",
+          "captured-flag-4",
+          "captured-flag-6",
+          "captured-flag-7",
+          "captured-flag-9",
+          "cast",
+          "captured-flag-8",
+          "captured-flag-10",
+          "first-stage"
+        ],
+        "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+        "clear_sequence": {
+          "settlement_start": 33.041933541832826,
+          "first_audible_mode4": 33.041933541832826,
+          "bonus_start": 34.80203740978253,
+          "settlement_seconds": 1.7601038679497023,
+          "fuel_before_bonus": 14852,
+          "fuel_and_score_stable_during_music": true,
+          "flag_order": "0 9 8 1 2 3 4 5 6 7"
+        },
+        "clear_costs": [
+          {
+            "name": "GameSession_CompletionWait (minimum)",
+            "calls": 61,
+            "inclusive": {
+              "mean": 75.93442622666109,
+              "p95": 75.0000000063304,
+              "max": 131.9999999806205
+            }
+          },
+          {
+            "name": "GameSession_CompletionWait (music_wait)",
+            "calls": 46,
+            "inclusive": {
+              "mean": 103.00000000161641,
+              "p95": 103.00000001378059,
+              "max": 103.00000001378059
+            }
+          },
+          {
+            "name": "GameSession_CompletionWait (begin_bonus)",
+            "calls": 1,
+            "inclusive": {
+              "mean": 4469.000000010955,
+              "p95": 4469.000000010955,
+              "max": 4469.000000010955
+            }
+          }
+        ],
+        "clear_cost_method": "Matched entry-to-caller-PC/SP return inclusive guest cycles, including RET/IRQ; no tracked child self costs. Foreground settlement only. begin_bonus includes Completion_Begin; never add parent/child costs.",
+        "cold_silence_checks": 5,
+        "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+      },
+      {
+        "rom_sha256": "49a99fda5d36e9e146fea4a1d864114d2ac7c78c810e4b4d24de56604e687932",
+        "scenario": "flags",
+        "passed": true,
+        "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-73eko2id",
+        "snapshots": [
+          "captured-flag-3",
+          "select",
+          "captured-flag-2",
+          "after-ten-flags",
+          "captured-flag-1",
+          "captured-flag-5",
+          "captured-flag-4",
+          "captured-flag-6",
+          "captured-flag-7",
+          "captured-flag-9",
+          "cast",
+          "captured-flag-8",
+          "captured-flag-10",
+          "first-stage"
+        ],
+        "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+        "clear_sequence": {
+          "settlement_start": 32.96190912532179,
+          "first_audible_mode4": 32.96190912532179,
+          "bonus_start": 34.70203335898836,
+          "settlement_seconds": 1.7401242336665703,
+          "fuel_before_bonus": 14851,
+          "fuel_and_score_stable_during_music": true,
+          "flag_order": "0 1 2 3 4 5 6 7 8 9"
+        },
+        "clear_costs": [
+          {
+            "name": "GameSession_CompletionWait (minimum)",
+            "calls": 61,
+            "inclusive": {
+              "mean": 75.93442623041368,
+              "p95": 75.0000000063304,
+              "max": 132.00000000605468
+            }
+          },
+          {
+            "name": "GameSession_CompletionWait (music_wait)",
+            "calls": 45,
+            "inclusive": {
+              "mean": 103.00000000021568,
+              "p95": 103.00000001378059,
+              "max": 103.00000001378059
+            }
+          },
+          {
+            "name": "GameSession_CompletionWait (begin_bonus)",
+            "calls": 1,
+            "inclusive": {
+              "mean": 4469.000000010955,
+              "p95": 4469.000000010955,
+              "max": 4469.000000010955
+            }
+          }
+        ],
+        "clear_cost_method": "Matched entry-to-caller-PC/SP return inclusive guest cycles, including RET/IRQ; no tracked child self costs. Foreground settlement only. begin_bonus includes Completion_Begin; never add parent/child costs.",
+        "cold_silence_checks": 5,
+        "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+      },
+      {
+        "rom_sha256": "49a99fda5d36e9e146fea4a1d864114d2ac7c78c810e4b4d24de56604e687932",
+        "scenario": "flags",
+        "passed": true,
+        "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-215q5w7m",
+        "snapshots": [
+          "captured-flag-3",
+          "select",
+          "captured-flag-2",
+          "after-ten-flags",
+          "captured-flag-1",
+          "captured-flag-5",
+          "captured-flag-4",
+          "captured-flag-6",
+          "captured-flag-7",
+          "captured-flag-9",
+          "cast",
+          "captured-flag-8",
+          "captured-flag-10",
+          "first-stage"
+        ],
+        "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+        "clear_sequence": {
+          "settlement_start": 33.041933541832826,
+          "first_audible_mode4": 33.041933541832826,
+          "bonus_start": 35.082058473912184,
+          "settlement_seconds": 2.040124932079358,
+          "fuel_before_bonus": 14852,
+          "fuel_and_score_stable_during_music": true,
+          "flag_order": "0 9 8 1 2 3 4 5 6 7",
+          "pause_seconds": 0.2800216228598913,
+          "pause_cursor_and_timer_frozen": true
+        },
+        "clear_costs": [
+          {
+            "name": "GameSession_CompletionWait (minimum)",
+            "calls": 61,
+            "inclusive": {
+              "mean": 75.9344262283289,
+              "p95": 75.0000000063304,
+              "max": 132.00000000605468
+            }
+          },
+          {
+            "name": "GameSession_CompletionWait (music_wait)",
+            "calls": 45,
+            "inclusive": {
+              "mean": 102.99999999965048,
+              "p95": 103.00000001378059,
+              "max": 103.00000001378059
+            }
+          },
+          {
+            "name": "GameSession_CompletionWait (begin_bonus)",
+            "calls": 1,
+            "inclusive": {
+              "mean": 4469.000000010955,
+              "p95": 4469.000000010955,
+              "max": 4469.000000010955
+            }
+          }
+        ],
+        "clear_cost_method": "Matched entry-to-caller-PC/SP return inclusive guest cycles, including RET/IRQ; no tracked child self costs. Foreground settlement only. begin_bonus includes Completion_Begin; never add parent/child costs.",
+        "cold_silence_checks": 5,
+        "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+      }
+    ],
+    "original": {
+      "inputs": {
+        "emulator": "0.289 (unknown)",
+        "script_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+        "seed_sha256": "22b3e32d734ecc7e9eae263ffb6095f7f55e3ce0e5836517ca46d399cc6b5670",
+        "roms": [
+          {
+            "name": "nrx1-1.11n",
+            "size": 32,
+            "crc32": "a0a49017",
+            "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+          },
+          {
+            "name": "nrx1-7.8p",
+            "size": 256,
+            "crc32": "4e46f485",
+            "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+          },
+          {
+            "name": "nrx_chg1.8e",
+            "size": 2048,
+            "crc32": "1fff38a4",
+            "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+          },
+          {
+            "name": "nrx_chg2.8d",
+            "size": 2048,
+            "crc32": "85d9fffd",
+            "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+          },
+          {
+            "name": "nrx_prg1.1d",
+            "size": 4096,
+            "crc32": "ba7de9fc",
+            "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+          },
+          {
+            "name": "nrx_prg2.1e",
+            "size": 4096,
+            "crc32": "eedfccae",
+            "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+          },
+          {
+            "name": "nrx_prg3.1k",
+            "size": 4096,
+            "crc32": "b4d5d34a",
+            "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+          },
+          {
+            "name": "nrx_prg4.1l",
+            "size": 4096,
+            "crc32": "7da5496d",
+            "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+          },
+          {
+            "name": "rx1-2.4n",
+            "size": 32,
+            "crc32": "8f574815",
+            "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+          },
+          {
+            "name": "rx1-3.7k",
+            "size": 32,
+            "crc32": "b8861096",
+            "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+          },
+          {
+            "name": "rx1-4.2m",
+            "size": 256,
+            "crc32": "77245b66",
+            "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+          },
+          {
+            "name": "rx1-5.3p",
+            "size": 256,
+            "crc32": "4bad7017",
+            "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+          },
+          {
+            "name": "rx1-6.8m",
+            "size": 256,
+            "crc32": "3c16f62c",
+            "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+          }
+        ]
+      },
+      "completion_call": 107,
+      "nominal_arcade_hz": 60.60606060606061,
+      "seconds": 1.7654999999999998,
+      "wsg_sha256": "cd90e4a80d775faf17b88d2df1040de6b07def2f010a717699115e854c7d27cf",
+      "wav_sha256": "ee91195c99ee3e14f91c14f8a00988855ed1c177ad0de17415175faed31cd274",
+      "original_wait_addresses": [
+        "1B03",
+        "1B0A"
+      ],
+      "port_score_parts": [
+        8,
+        9,
+        10
+      ],
+      "port_score_frames_30hz": 53,
+      "scope": "Original2580 routine at one call per original video tick; clear request28 and contributor RAM seed, no original ROM writes. Original1B03 minimum-settle/1B0A sound-ready waits inspected separately. Controlled sound fixture, not natural playthrough."
+    },
+    "cost_groups": [
+      {
+        "name": "GameSession_CompletionWait (minimum)",
+        "calls": 244,
+        "inclusive": {
+          "min": 74.9999999808962,
+          "mean": 75.93442622838103,
+          "p95": 75.0000000063304,
+          "max": 132.00000000605468
+        }
+      },
+      {
+        "name": "GameSession_CompletionWait (music_wait)",
+        "calls": 182,
+        "inclusive": {
+          "min": 102.99999998834639,
+          "mean": 103.0000000005045,
+          "p95": 103.00000001378059,
+          "max": 103.00000001378059
+        }
+      },
+      {
+        "name": "GameSession_CompletionWait (begin_bonus)",
+        "calls": 4,
+        "inclusive": {
+          "min": 4469.000000010955,
+          "mean": 4471.000000009216,
+          "p95": 4477.000000004,
+          "max": 4477.000000004
+        }
+      }
+    ],
+    "extra_active_selector_cycles_per_call": 5,
+    "extra_state_ram_bytes": 0,
+    "extra_resident_code_ram_bytes": 33,
+    "extra_vram_bytes": 0,
+    "scope": "Controlled first-phase normal/S/L last-flag contacts and paused clear; foreground settlement, not VBlank or a scanline hook. Minimum/flag wait and converter-entry groups do not overlap. Converter entry includes the original Completion_Begin child; self costs not separated."
+  },
+  "audio_file": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/full-session/audio-proof-hwu2875g/stage-clear.wav",
+  "presented_fps": 29.903149903519527,
+  "active_sample_frames": 238,
+  "known_steering_regression": {
+    "passed": false,
+    "requested_active_refreshes": 16000,
+    "rom_sha256": "49a99fda5d36e9e146fea4a1d864114d2ac7c78c810e4b4d24de56604e687932",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/steering-proof-kg3xtwz6",
+    "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze",
+    "observed": [
+      16000,
+      7536,
+      5,
+      5146,
+      0
+    ],
+    "distinct_poses_after_refresh5000": 4
+  }
+}

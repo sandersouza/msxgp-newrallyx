@@ -1,0 +1,99 @@
+{
+  "cpu_hz": 3579545,
+  "machine": "Panasonic_FS-A1WSX_NR128",
+  "routines": "GameSprites_Prepare + GameSprites_Commit",
+  "scope": "inclusive wrapper DI/CALL/CALL/JP; dirty active-pattern uploads and dirty-color/SAT publication; elapsed emulated time times reference CPU clock includes wait states; no synchronization waits or HUD/native game costs",
+  "synthetic_asset_sha256": "8c166e635ca042208a72c8a48f7845b1f831a2d450eb84af4eead4ea6e6c1f83",
+  "rom_sha256": "9dcb0dff13bd9fde94b273ecc40170be17fd2ce413c1bfaf7d318f9dc74febe2",
+  "cases": 3147,
+  "optimized": true,
+  "timings": {
+    "one-car-all-scroll": {
+      "calls": 256,
+      "mean": 10689.2265625,
+      "minimum": 10612,
+      "p99": 10654,
+      "maximum": 25048
+    },
+    "eight-cars-all-scroll": {
+      "calls": 256,
+      "mean": 13737.10546875,
+      "minimum": 13366,
+      "p99": 30478,
+      "maximum": 50748
+    },
+    "all-cases": {
+      "calls": 3147,
+      "mean": 19581.358436606293,
+      "minimum": 4449,
+      "p99": 60695,
+      "maximum": 62070
+    },
+    "eight-interior-unchanged-warm": {
+      "calls": 30,
+      "mean": 13378,
+      "minimum": 13366,
+      "p99": 13390,
+      "maximum": 13390,
+      "prepare_mean": 11416,
+      "prepare_maximum": 11428,
+      "commit_mean": 1962,
+      "commit_maximum": 1962
+    },
+    "eight-interior-animation-change": {
+      "calls": 30,
+      "mean": 30322,
+      "minimum": 30166,
+      "p99": 30478,
+      "maximum": 30478,
+      "prepare_mean": 28360,
+      "prepare_maximum": 28516,
+      "commit_mean": 1962,
+      "commit_maximum": 1962
+    },
+    "eight-interior-scroll-only": {
+      "calls": 99,
+      "mean": 13377.878787878788,
+      "minimum": 13366,
+      "p99": 13390,
+      "maximum": 13390,
+      "prepare_mean": 11415.878787878788,
+      "prepare_maximum": 11428,
+      "commit_mean": 1962,
+      "commit_maximum": 1962
+    },
+    "eight-right-clipped-animation-change": {
+      "calls": 30,
+      "mean": 61914,
+      "minimum": 61758,
+      "p99": 62070,
+      "maximum": 62070,
+      "prepare_mean": 59952,
+      "prepare_maximum": 60108,
+      "commit_mean": 1962,
+      "commit_maximum": 1962
+    },
+    "four-vertical-clipped-animation-change": {
+      "calls": 30,
+      "mean": 37012,
+      "minimum": 36934,
+      "p99": 37090,
+      "maximum": 37090,
+      "prepare_mean": 35050,
+      "prepare_maximum": 35128,
+      "commit_mean": 1962,
+      "commit_maximum": 1962
+    },
+    "sentinel-animation-change": {
+      "calls": 30,
+      "mean": 25013.5,
+      "minimum": 24979,
+      "p99": 25048,
+      "maximum": 25048,
+      "prepare_mean": 20183.5,
+      "prepare_maximum": 20218,
+      "commit_mean": 4830,
+      "commit_maximum": 4830
+    }
+  }
+}

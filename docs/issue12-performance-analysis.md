@@ -153,6 +153,12 @@ frames; selected frames are inspected. Black frontend recordings made with the h
 display asleep are excluded from visual evidence. Human gameplay and physical
 hardware acceptance remain open.
 
+That startup-contact result describes the historical Issue12 build. The current
+Issue13 rule, explicitly clarified by the user, preserves normal startup
+pass-through and solid challenge parking. The current `full_startup_probe.py`
+checks six normal crossings and two challenge collisions; see the current
+[audio/gameplay validation](issue13-audio-validation.md).
+
 The default rebuild and `latest.rom` must match the current hash above.
 The bounded Issue 11 image remains byte-identical:
 `9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12`.

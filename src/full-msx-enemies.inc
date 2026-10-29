@@ -420,12 +420,15 @@ Full_MSXContact:
     ld c,10
     ld e,21
     ld a,(ix+0)
-    cp $89
+    cp $88
     jr c,.bounds
     ld a,($e1b0)
     and 3
-    jr z,.bounds             ; Challenge parked cars retain the established bound.
-    ld c,14                  ; Normal startup silhouettes must not overlap freely.
+    jr z,.bounds             ; Keep the already accepted challenge contact bound.
+    ld a,(ix+21)
+    or a
+    jr z,.next               ; Normal startup wait is passable; smoke spin remains solid.
+    ld c,14                  ; Retain the existing normal smoke-spin contact bound.
     ld e,29
 .bounds:
     ld a,(ix+5)

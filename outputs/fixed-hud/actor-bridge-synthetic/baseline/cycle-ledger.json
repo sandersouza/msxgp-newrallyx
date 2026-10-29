@@ -1,0 +1,95 @@
+{
+  "cpu_hz": 3579545,
+  "machine": "Panasonic_FS-A1WSX_NR128",
+  "video_hz_nominal": 60,
+  "hardware_sprite_limits": true,
+  "cases": 1048,
+  "calls_per_case": 1,
+  "synchronization_waits": 0,
+  "scope": "Per-routine inclusive entry-to-return, emulated elapsed CPU cycles including wait states; synthetic descriptor/animation/template bytes; excludes renderer, HUD, simulation, IRQ and synchronization",
+  "rom_sha256": "f79bdfa3d97e71d163230c4a3851289f6f843469d15c64cd91378587f5f68e62",
+  "core_source_sha256": "280d8859c7b3508c8513719a7ddbeb2958f9f728a9b34d3a3c193feaddc8caf5",
+  "sprites_source_sha256": "437a76ebf5675ad884732fab1bb70c1f2881700c75c2949883c0929b974c2033",
+  "workloads": {
+    "two-interior-warm": {
+      "Game_Actors": {
+        "calls": 32,
+        "mean": 3718,
+        "p99": 3718,
+        "maximum": 3718
+      },
+      "GameSprites_Prepare": {
+        "calls": 32,
+        "mean": 6048,
+        "p99": 6079,
+        "maximum": 6079
+      },
+      "GameSprites_Commit": {
+        "calls": 32,
+        "mean": 2111,
+        "p99": 2111,
+        "maximum": 2111
+      }
+    },
+    "two-interior-animation-change": {
+      "Game_Actors": {
+        "calls": 32,
+        "mean": 3718,
+        "p99": 3718,
+        "maximum": 3718
+      },
+      "GameSprites_Prepare": {
+        "calls": 32,
+        "mean": 10604,
+        "p99": 10671,
+        "maximum": 10671
+      },
+      "GameSprites_Commit": {
+        "calls": 32,
+        "mean": 2111,
+        "p99": 2111,
+        "maximum": 2111
+      }
+    },
+    "player-and-offscreen-enemy-warm": {
+      "Game_Actors": {
+        "calls": 32,
+        "mean": 3718,
+        "p99": 3718,
+        "maximum": 3718
+      },
+      "GameSprites_Prepare": {
+        "calls": 32,
+        "mean": 5055.5,
+        "p99": 5071,
+        "maximum": 5071
+      },
+      "GameSprites_Commit": {
+        "calls": 32,
+        "mean": 2111,
+        "p99": 2111,
+        "maximum": 2111
+      }
+    },
+    "eight-interior-warm": {
+      "Game_Actors": {
+        "calls": 32,
+        "mean": 9684,
+        "p99": 9684,
+        "maximum": 9684
+      },
+      "GameSprites_Prepare": {
+        "calls": 32,
+        "mean": 12591,
+        "p99": 12715,
+        "maximum": 12715
+      },
+      "GameSprites_Commit": {
+        "calls": 32,
+        "mean": 2111,
+        "p99": 2111,
+        "maximum": 2111
+      }
+    }
+  }
+}

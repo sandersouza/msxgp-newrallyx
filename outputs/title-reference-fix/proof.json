@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "rom_sha256": "7468f404a694c8e36d0178452521e3e6a66ce9c4791f52c43e7e8fa07c85d26e",
+  "previous_rom_sha256": "cb66694c9785a724d693bf89093497f6c0525129ccf3cfa7495d79700887b7c8",
+  "previous_rom": "references/experiments/full-session/boot-proof-a3rek4wy/measured.rom",
+  "changed_bytes": 540,
+  "changed_banks": [
+    238
+  ],
+  "allowed_title_banks": [
+    237,
+    238
+  ],
+  "all_executable_and_gameplay_bytes_identical": true,
+  "active_cpu_delta_cycles": 0,
+  "extra_title_transfer_bytes": 0,
+  "scope": "Static fixed-size title pages only; complete bytewise ROM comparison. Existing performance ledger remains bound to previous ROM; no new active-FPS claim.",
+  "reference_checks": {
+    "native_screen": [
+      256,
+      212
+    ],
+    "footer_rect": [
+      0,
+      195,
+      256,
+      17
+    ],
+    "compared_footer_pixels": 4352,
+    "mismatches": 0,
+    "normal_report": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/boot-proof-yn2adhok",
+    "test_report": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-test/boot-proof-ruuutzc5"
+  }
+}

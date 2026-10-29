@@ -1,0 +1,251 @@
+{
+  "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58",
+  "rom_bytes": 3997696,
+  "unit_tests": {
+    "run": 56,
+    "skipped": 1,
+    "passed": true,
+    "successful": 55
+  },
+  "scenarios": [
+    {
+      "scenario": "start",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-l556ak1t",
+      "passed": true,
+      "active_snapshots": 2,
+      "silence_checks": 3,
+      "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58"
+    },
+    {
+      "scenario": "integration",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-rhee6q1j",
+      "passed": true,
+      "active_snapshots": 14,
+      "silence_checks": 30,
+      "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58"
+    },
+    {
+      "scenario": "two-player",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-gqm4pj4_",
+      "passed": true,
+      "active_snapshots": 3,
+      "silence_checks": 7,
+      "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58"
+    },
+    {
+      "scenario": "flags",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-o9uau7nh",
+      "passed": true,
+      "active_snapshots": 12,
+      "silence_checks": 5,
+      "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58"
+    },
+    {
+      "scenario": "attract",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-7606llyb",
+      "passed": true,
+      "active_snapshots": 3,
+      "silence_checks": 6,
+      "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58"
+    },
+    {
+      "scenario": "radar",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-_n5prx4n",
+      "passed": true,
+      "active_snapshots": 129,
+      "silence_checks": 3,
+      "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58"
+    }
+  ],
+  "stable_graphics_snapshots": 163,
+  "cold_silence_checks": 54,
+  "steering": {
+    "passed": true,
+    "requested_active_refreshes": 16000,
+    "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/steering-proof-s5h0x_zz",
+    "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze",
+    "observed": [
+      16000,
+      6973,
+      9,
+      1831,
+      0
+    ],
+    "distinct_poses_after_refresh5000": 2508
+  },
+  "audio": {
+    "passed": true,
+    "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-wf5mqgoh",
+    "seconds": 25.56721088435374,
+    "engine": [
+      {
+        "velocity": 0,
+        "expected_fundamental_hz": 49.93784877232143,
+        "measured_pcm_hz": 49.98778662109375,
+        "all_four_headings_identical": true,
+        "baseline_rms": 1859.5379802147925,
+        "rms": 1598.8593306489959,
+        "amplitude_ratio": 0.8598153668602746,
+        "reduction_percent": 14.01846331397254
+      },
+      {
+        "velocity": 1,
+        "expected_fundamental_hz": 49.93784877232143,
+        "measured_pcm_hz": 49.98778662109375,
+        "all_four_headings_identical": true,
+        "baseline_rms": 1864.2795080726773,
+        "rms": 1594.4644019840707,
+        "amplitude_ratio": 0.8552711088008762,
+        "reduction_percent": 14.47288911991238
+      },
+      {
+        "velocity": 2,
+        "expected_fundamental_hz": 65.95564932193396,
+        "measured_pcm_hz": 65.95564932193396,
+        "all_four_headings_identical": true,
+        "baseline_rms": 1848.802028607675,
+        "rms": 1560.6949821774717,
+        "amplitude_ratio": 0.8441655504634125,
+        "reduction_percent": 15.583444953658754
+      }
+    ],
+    "crash": [
+      {
+        "cue": "crash1",
+        "initial_rms": 8258.8098068657,
+        "tail_rms": 438.9560970742789
+      },
+      {
+        "cue": "crash2",
+        "initial_rms": 8256.645400176896,
+        "tail_rms": 434.7082152233715
+      }
+    ],
+    "cue_ticks_30hz": {
+      "gameover": 249,
+      "challenge_intro": 193,
+      "challenge": 31,
+      "cold": 12
+    },
+    "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance.",
+    "engine_baseline": {
+      "rom_sha256": "5451bd8933b22f1fa334dbc538a905b5615cf1ea58623af23933e900cdf3ffa2",
+      "wav": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-2x6n5jfb/engine-and-cues.wav",
+      "wav_sha256": "f0115b312d340f2d66401252cef7ccde97f00a8f3f02b73c49152f21dd692fa1",
+      "window_seconds": [
+        0.15,
+        1.95
+      ],
+      "method": "DC-removed PCM RMS at each velocity across all four headings; matched machine/PSG settings"
+    }
+  },
+  "sprite_clip": {
+    "passed": true,
+    "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58",
+    "helper_sha256": "7e56fb8cd1185dc82a1e93313c88a518249233965aefee13ef3e805fdd8df43f",
+    "path": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/full-session/sprite-clip-proof-8k3iwf8d",
+    "scope": "Synthetic complete-pattern/SAT/color matrix, including vertical/horizontal clips and sentinel216. Component cycles are not integrated FPS."
+  },
+  "audio_assets": {
+    "reference": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/arcade-audio-feedback",
+    "reference_wsg_sha256": "ed840e22443756b335458b88517fea5e0c927a892c903cc3eeaef1b9b08867cf",
+    "challenge_original_ticks": 1540,
+    "challenge_psg_frames": 770,
+    "challenge_bytes": 1033,
+    "intro_original_calls": 385,
+    "intro_psg_frames": 192,
+    "dictionary_entries": 168,
+    "engine": {
+      "levels": [
+        12,
+        13
+      ],
+      "high_level_duty": [
+        0.21875,
+        0.21875,
+        0.15625
+      ],
+      "requested_amplitude_ratio": 0.85,
+      "revoicing_authorized": "2026-10-28",
+      "scope": "Volume-controlled square at the former envelope fundamental; deterministic physical-clock level mixing. PCM attenuation is measured separately."
+    },
+    "crash": {
+      "noise_period": 31,
+      "mixer": 4,
+      "frames": 25,
+      "levels": [
+        15,
+        15,
+        15,
+        15,
+        15,
+        15,
+        15,
+        15,
+        14,
+        14,
+        14,
+        13,
+        13,
+        13,
+        12,
+        12,
+        11,
+        10,
+        9,
+        8,
+        7,
+        6,
+        4,
+        2,
+        0
+      ],
+      "nominal_seconds": 0.8333333333333334,
+      "channels": [
+        "B",
+        "C"
+      ],
+      "coherent_gain_db": 6.020599913,
+      "reference": "https://github.com/mamedev/mame/blob/mame0289/src/mame/namco/nl_rallyx.cpp",
+      "scope": "Cached gated noise attack/hold/release, following the arcade circuit topology. Silent B follows C only during a crash. AY noise is an approximation; final auditory acceptance remains with user."
+    },
+    "scope": "Pitches, original linear volumes and part/loop order from original WSG execution. AY waveforms remain an approximation; runtime does not execute the original sound CPU."
+  },
+  "phase_policy": {
+    "pattern_sets": 8,
+    "bytes_per_set": 16384,
+    "names_base": 2048,
+    "extra_mapper_segments": 0,
+    "additional_cache_metadata_bytes": 76,
+    "method": "Cold prewarm, validated exact-phase lookup, then256-cycle-quantized estimates for seven inactive sets. Visible set never written.",
+    "cost_table_sha256": "b2970ee55c49078369da9ff2869a50604ffac97eab2ab8ea4f0df264d866d2f7"
+  },
+  "profile": {
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/profile-rbw9gzte",
+    "active_frames": 246,
+    "active_seconds": 8.258980959870604,
+    "presented_fps": 29.78575700746671,
+    "late_frames": 3
+  },
+  "baseline_comparison": {
+    "source": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/outputs/full-session/baseline-5451bd/cycle-ledger.json",
+    "rom_sha256": "5451bd8933b22f1fa334dbc538a905b5615cf1ea58623af23933e900cdf3ffa2",
+    "presented_fps": 28.879552418891517,
+    "late_frames": 19,
+    "active_frames": 252,
+    "mean_work_ms": 24.114172575848595,
+    "cold_video_mean_ms": 201.07836929793368,
+    "rom_bytes": 3932160,
+    "scope": "Same machine, source revision and scripted input; execution timing changes trajectories and active/death partitions. Not a matched marginal speedup or a full course."
+  },
+  "limitations": "Short directional three-enemy sample; three late frames remain. Controlled native contact/round/death/radar/audio fixtures are marked. Steering includes death holds/restarts. Real sprite limits remain enabled. Engine revoicing authorized; final audio/visual/timing acceptance belongs to user. No physical hardware/controller validation.",
+  "launcher": {
+    "target": "make run-experiments",
+    "rom_sha256": "15c931239d0616b00bff8dedf9b344923b81088ae0ae079b50277220388c1a58",
+    "script": "references/build/run-b62cd4a31b5a487d83cb755346f2230e/session.tcl",
+    "process_id": 43591,
+    "scope": "Rebuilt/exported the verified cartridge and launched a separate openMSX process; previous user session left running."
+  }
+}

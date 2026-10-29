@@ -1,0 +1,520 @@
+{
+  "complete": true,
+  "phases_checked": 64,
+  "transitions": 72,
+  "pointer_offset": 10496,
+  "mapper_bank_numbers": "One-based banks.bin page indices; resident ROM is mapper bank0",
+  "first_packet_bank": 72,
+  "added_banks": 2,
+  "unique_packets": 65,
+  "unique_packet_bytes": 28389,
+  "input_banks_sha256": "fb8cc7959336278464aeae60dc761eea4abd44b9e721f516b27213e53b60fc88",
+  "output_banks_sha256": "6df0b44b3a82690ef7cfb4cc5f0157c6421bafaaed3c181fa4c94283ce9e6f7e",
+  "costs": {
+    "0->0": {
+      "payload_bytes": 0,
+      "spans": 0,
+      "packet_bytes": 3,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 784
+    },
+    "0->1": {
+      "payload_bytes": 47,
+      "spans": 25,
+      "packet_bytes": 125,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 737
+    },
+    "0->2": {
+      "payload_bytes": 55,
+      "spans": 17,
+      "packet_bytes": 109,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 489
+    },
+    "0->3": {
+      "payload_bytes": 80,
+      "spans": 10,
+      "packet_bytes": 113,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 272
+    },
+    "0->4": {
+      "payload_bytes": 267,
+      "spans": 5,
+      "packet_bytes": 285,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 85
+    },
+    "0->5": {
+      "payload_bytes": 490,
+      "spans": 4,
+      "packet_bytes": 505,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 54
+    },
+    "0->6": {
+      "payload_bytes": 745,
+      "spans": 5,
+      "packet_bytes": 763,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 39
+    },
+    "0->7": {
+      "payload_bytes": 761,
+      "spans": 5,
+      "packet_bytes": 779,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 23
+    },
+    "1->0": {
+      "payload_bytes": 41,
+      "spans": 25,
+      "packet_bytes": 119,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 743
+    },
+    "1->1": {
+      "payload_bytes": 0,
+      "spans": 0,
+      "packet_bytes": 3,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 784
+    },
+    "1->2": {
+      "payload_bytes": 32,
+      "spans": 18,
+      "packet_bytes": 89,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 512
+    },
+    "1->3": {
+      "payload_bytes": 57,
+      "spans": 11,
+      "packet_bytes": 93,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 295
+    },
+    "1->4": {
+      "payload_bytes": 244,
+      "spans": 6,
+      "packet_bytes": 265,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 108
+    },
+    "1->5": {
+      "payload_bytes": 467,
+      "spans": 5,
+      "packet_bytes": 485,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 77
+    },
+    "1->6": {
+      "payload_bytes": 722,
+      "spans": 6,
+      "packet_bytes": 743,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 62
+    },
+    "1->7": {
+      "payload_bytes": 738,
+      "spans": 6,
+      "packet_bytes": 759,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 46
+    },
+    "2->0": {
+      "payload_bytes": 297,
+      "spans": 17,
+      "packet_bytes": 351,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 487
+    },
+    "2->1": {
+      "payload_bytes": 281,
+      "spans": 17,
+      "packet_bytes": 335,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 503
+    },
+    "2->2": {
+      "payload_bytes": 0,
+      "spans": 0,
+      "packet_bytes": 3,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 544
+    },
+    "2->3": {
+      "payload_bytes": 48,
+      "spans": 11,
+      "packet_bytes": 84,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 304
+    },
+    "2->4": {
+      "payload_bytes": 235,
+      "spans": 6,
+      "packet_bytes": 256,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 117
+    },
+    "2->5": {
+      "payload_bytes": 458,
+      "spans": 5,
+      "packet_bytes": 476,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 86
+    },
+    "2->6": {
+      "payload_bytes": 713,
+      "spans": 6,
+      "packet_bytes": 734,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 71
+    },
+    "2->7": {
+      "payload_bytes": 729,
+      "spans": 6,
+      "packet_bytes": 750,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 55
+    },
+    "3->0": {
+      "payload_bytes": 505,
+      "spans": 11,
+      "packet_bytes": 541,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 279
+    },
+    "3->1": {
+      "payload_bytes": 489,
+      "spans": 11,
+      "packet_bytes": 525,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 295
+    },
+    "3->2": {
+      "payload_bytes": 234,
+      "spans": 12,
+      "packet_bytes": 273,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 310
+    },
+    "3->3": {
+      "payload_bytes": 0,
+      "spans": 0,
+      "packet_bytes": 3,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 352
+    },
+    "3->4": {
+      "payload_bytes": 203,
+      "spans": 7,
+      "packet_bytes": 227,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 149
+    },
+    "3->5": {
+      "payload_bytes": 426,
+      "spans": 6,
+      "packet_bytes": 447,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 118
+    },
+    "3->6": {
+      "payload_bytes": 681,
+      "spans": 7,
+      "packet_bytes": 705,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 103
+    },
+    "3->7": {
+      "payload_bytes": 697,
+      "spans": 7,
+      "packet_bytes": 721,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 87
+    },
+    "4->0": {
+      "payload_bytes": 697,
+      "spans": 7,
+      "packet_bytes": 721,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 87
+    },
+    "4->1": {
+      "payload_bytes": 681,
+      "spans": 7,
+      "packet_bytes": 705,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 103
+    },
+    "4->2": {
+      "payload_bytes": 426,
+      "spans": 6,
+      "packet_bytes": 447,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 118
+    },
+    "4->3": {
+      "payload_bytes": 203,
+      "spans": 7,
+      "packet_bytes": 227,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 149
+    },
+    "4->4": {
+      "payload_bytes": 0,
+      "spans": 0,
+      "packet_bytes": 3,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 352
+    },
+    "4->5": {
+      "payload_bytes": 234,
+      "spans": 12,
+      "packet_bytes": 273,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 310
+    },
+    "4->6": {
+      "payload_bytes": 489,
+      "spans": 11,
+      "packet_bytes": 525,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 295
+    },
+    "4->7": {
+      "payload_bytes": 505,
+      "spans": 11,
+      "packet_bytes": 541,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 279
+    },
+    "5->0": {
+      "payload_bytes": 729,
+      "spans": 6,
+      "packet_bytes": 750,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 55
+    },
+    "5->1": {
+      "payload_bytes": 713,
+      "spans": 6,
+      "packet_bytes": 734,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 71
+    },
+    "5->2": {
+      "payload_bytes": 458,
+      "spans": 5,
+      "packet_bytes": 476,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 86
+    },
+    "5->3": {
+      "payload_bytes": 235,
+      "spans": 6,
+      "packet_bytes": 256,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 117
+    },
+    "5->4": {
+      "payload_bytes": 48,
+      "spans": 11,
+      "packet_bytes": 84,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 304
+    },
+    "5->5": {
+      "payload_bytes": 0,
+      "spans": 0,
+      "packet_bytes": 3,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 544
+    },
+    "5->6": {
+      "payload_bytes": 281,
+      "spans": 17,
+      "packet_bytes": 335,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 503
+    },
+    "5->7": {
+      "payload_bytes": 297,
+      "spans": 17,
+      "packet_bytes": 351,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 487
+    },
+    "6->0": {
+      "payload_bytes": 738,
+      "spans": 6,
+      "packet_bytes": 759,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 46
+    },
+    "6->1": {
+      "payload_bytes": 722,
+      "spans": 6,
+      "packet_bytes": 743,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 62
+    },
+    "6->2": {
+      "payload_bytes": 467,
+      "spans": 5,
+      "packet_bytes": 485,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 77
+    },
+    "6->3": {
+      "payload_bytes": 244,
+      "spans": 6,
+      "packet_bytes": 265,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 108
+    },
+    "6->4": {
+      "payload_bytes": 57,
+      "spans": 11,
+      "packet_bytes": 93,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 295
+    },
+    "6->5": {
+      "payload_bytes": 32,
+      "spans": 18,
+      "packet_bytes": 89,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 512
+    },
+    "6->6": {
+      "payload_bytes": 0,
+      "spans": 0,
+      "packet_bytes": 3,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 784
+    },
+    "6->7": {
+      "payload_bytes": 41,
+      "spans": 25,
+      "packet_bytes": 119,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 743
+    },
+    "7->0": {
+      "payload_bytes": 761,
+      "spans": 5,
+      "packet_bytes": 779,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 23
+    },
+    "7->1": {
+      "payload_bytes": 745,
+      "spans": 5,
+      "packet_bytes": 763,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 39
+    },
+    "7->2": {
+      "payload_bytes": 490,
+      "spans": 4,
+      "packet_bytes": 505,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 54
+    },
+    "7->3": {
+      "payload_bytes": 267,
+      "spans": 5,
+      "packet_bytes": 285,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 85
+    },
+    "7->4": {
+      "payload_bytes": 80,
+      "spans": 10,
+      "packet_bytes": 113,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 272
+    },
+    "7->5": {
+      "payload_bytes": 55,
+      "spans": 17,
+      "packet_bytes": 109,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 489
+    },
+    "7->6": {
+      "payload_bytes": 47,
+      "spans": 25,
+      "packet_bytes": 125,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 737
+    },
+    "7->7": {
+      "payload_bytes": 0,
+      "spans": 0,
+      "packet_bytes": 3,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 784
+    },
+    "8->0": {
+      "payload_bytes": 784,
+      "spans": 6,
+      "packet_bytes": 805,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 0
+    },
+    "8->1": {
+      "payload_bytes": 784,
+      "spans": 6,
+      "packet_bytes": 805,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 0
+    },
+    "8->2": {
+      "payload_bytes": 544,
+      "spans": 4,
+      "packet_bytes": 559,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 0
+    },
+    "8->3": {
+      "payload_bytes": 352,
+      "spans": 4,
+      "packet_bytes": 367,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 0
+    },
+    "8->4": {
+      "payload_bytes": 352,
+      "spans": 4,
+      "packet_bytes": 367,
+      "full_payload_bytes": 352,
+      "saved_payload_bytes": 0
+    },
+    "8->5": {
+      "payload_bytes": 544,
+      "spans": 4,
+      "packet_bytes": 559,
+      "full_payload_bytes": 544,
+      "saved_payload_bytes": 0
+    },
+    "8->6": {
+      "payload_bytes": 784,
+      "spans": 6,
+      "packet_bytes": 805,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 0
+    },
+    "8->7": {
+      "payload_bytes": 784,
+      "spans": 6,
+      "packet_bytes": 805,
+      "full_payload_bytes": 784,
+      "saved_payload_bytes": 0
+    }
+  },
+  "scope": "Exact four current live pattern/color atlas arrays; all FY phases identical for an FX. Unknown prior FX8 forces complete active-byte writes. ROM packets never cross a16KiB page; writes are at most255 bytes. Transfer byte counts only; no measured CPU/gameplay/scanout claim."
+}

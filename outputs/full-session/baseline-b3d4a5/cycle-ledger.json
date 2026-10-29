@@ -1,0 +1,7232 @@
+{
+  "rom_sha256": "b3d4a58207c75b5beb2484c7f7f6e409aa7a20ce6b4dc8c57871ee1325948a98",
+  "source_revision": "6d562a791b0cc242119a31dd686ff8e93eb94fe0",
+  "cpu_hz": 3579545,
+  "machine": "Panasonic_FS-A1WSX_NR128",
+  "emulator": "openMSX 21.0\nflavour: opt\ncomponents: CORE GL LASERDISC",
+  "workload": "Full session, keyboard coin/start and F5 to native round5 (RND4), layout1, three native enemies; frames5..360, fixed directional input",
+  "profile_path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/profile-_w52yy1_",
+  "method": "Guest emulated seconds * CPU Hz; entry to matched PC/SP return; tracked descendants subtracted for self time",
+  "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=5 cycles",
+  "limitsprites": true,
+  "hud": true,
+  "audio": true,
+  "total_intervals": 356,
+  "active_frames": 246,
+  "active_seconds": 8.22560493023555,
+  "presented_fps": 29.906615025450236,
+  "work": {
+    "min": 60693.0000000298,
+    "mean": 82100.5528455283,
+    "p95": 110827.9999999851,
+    "max": 156678.9999999851
+  },
+  "interval": {
+    "min": 115097.0,
+    "mean": 119690.74390243905,
+    "p95": 121026.0,
+    "max": 176391.0
+  },
+  "cadence": {
+    "2": 245,
+    "3": 1
+  },
+  "late_frames": 1,
+  "enemy_distinct_positions": [
+    16,
+    16,
+    16
+  ],
+  "calibration": {
+    "cycles_per_line": 228,
+    "cycles_per_refresh": 59736,
+    "refresh_hz": 59.92274340431231,
+    "two_refresh_fps": 29.961371702156153,
+    "nominal_target_fps": 29.97,
+    "vblank_cycles": 11172.0,
+    "vblank_start_line": 244,
+    "vblank_start_cycle": 33.666666666666664,
+    "vblank_end_line": 31,
+    "vblank_end_cycle": 33.666666666666664,
+    "reserve_planning_cycles": 5000,
+    "all_status2_and_duration_checks_passed": true
+  },
+  "routines": [
+    {
+      "name": "Game_Prepare",
+      "purpose": "Native simulation and foreground actor/HUD preparation",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 29494.0,
+      "mean": 36681.94308943047,
+      "p95": 46799.9999999851,
+      "max": 65158.0,
+      "self_mean": 179.99999999939425,
+      "self_total": 44279.99999985099,
+      "frame_cycles": {
+        "min": 29494.0,
+        "mean": 36681.94308943047,
+        "p95": 46799.9999999851,
+        "max": 65158.0
+      },
+      "self_frame_cycles": {
+        "min": 179.99999997019768,
+        "mean": 179.99999999939425,
+        "p95": 180.00000002980232,
+        "max": 180.00000004470348
+      },
+      "self_call_cycles": {
+        "min": 179.99999997019768,
+        "mean": 179.99999999939425,
+        "p95": 180.00000002980232,
+        "max": 180.00000004470348
+      },
+      "self_per_frame": 179.99999999939425
+    },
+    {
+      "name": "Game_Frame",
+      "purpose": "Elapsed60Hz simulation including audio",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 19737.0,
+      "mean": 24544.943089430562,
+      "p95": 29213.0,
+      "max": 44785.0,
+      "self_mean": 1625.0121951213152,
+      "self_total": 399752.99999984354,
+      "frame_cycles": {
+        "min": 19737.0,
+        "mean": 24544.943089430562,
+        "p95": 29213.0,
+        "max": 44785.0
+      },
+      "self_frame_cycles": {
+        "min": 1606.999999910593,
+        "mean": 1625.0121951213152,
+        "p95": 1625.0000000447035,
+        "max": 3116.9999999701977
+      },
+      "self_call_cycles": {
+        "min": 1606.999999910593,
+        "mean": 1625.0121951213152,
+        "p95": 1625.0000000447035,
+        "max": 3116.9999999701977
+      },
+      "self_per_frame": 1625.0121951213152
+    },
+    {
+      "name": "Game_LogicTick",
+      "purpose": "Gameplay flags, fuel, collisions and enemy motion",
+      "calls": 495,
+      "calls_per_frame": 2.0121951219512195,
+      "min": 2574.999999985099,
+      "mean": 8292.89898989911,
+      "p95": 16540.0,
+      "max": 19483.0000000149,
+      "self_mean": 8172.935353535233,
+      "self_total": 4045602.9999999404,
+      "frame_cycles": {
+        "min": 13442.0,
+        "mean": 16686.930894309186,
+        "p95": 21392.9999999851,
+        "max": 31524.0000000149
+      },
+      "self_frame_cycles": {
+        "min": 13315.0,
+        "mean": 16445.540650406263,
+        "p95": 21263.0000000149,
+        "max": 31270.0000000149
+      },
+      "self_call_cycles": {
+        "min": 2574.999999985099,
+        "mean": 8172.935353535233,
+        "p95": 16412.9999999851,
+        "max": 19356.0000000149
+      },
+      "self_per_frame": 16445.540650406263
+    },
+    {
+      "name": "Game_Position",
+      "purpose": "Native coordinates and clamped camera projection",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 899.9999999850988,
+      "mean": 899.9999999998788,
+      "p95": 900.0,
+      "max": 900.0000000149012,
+      "self_mean": 899.9999999998788,
+      "self_total": 221399.9999999702,
+      "frame_cycles": {
+        "min": 899.9999999850988,
+        "mean": 899.9999999998788,
+        "p95": 900.0,
+        "max": 900.0000000149012
+      },
+      "self_frame_cycles": {
+        "min": 899.9999999850988,
+        "mean": 899.9999999998788,
+        "p95": 900.0,
+        "max": 900.0000000149012
+      },
+      "self_call_cycles": {
+        "min": 899.9999999850988,
+        "mean": 899.9999999998788,
+        "p95": 900.0,
+        "max": 900.0000000149012
+      },
+      "self_per_frame": 899.9999999998788
+    },
+    {
+      "name": "Game_Actors",
+      "purpose": "Native descriptors to sprite actor list",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 3984.999999985099,
+      "mean": 3985.000000000394,
+      "p95": 3985.000000014901,
+      "max": 3985.000000014901,
+      "self_mean": 3985.000000000394,
+      "self_total": 980310.0000000969,
+      "frame_cycles": {
+        "min": 3984.999999985099,
+        "mean": 3985.000000000394,
+        "p95": 3985.000000014901,
+        "max": 3985.000000014901
+      },
+      "self_frame_cycles": {
+        "min": 3984.999999985099,
+        "mean": 3985.000000000394,
+        "p95": 3985.000000014901,
+        "max": 3985.000000014901
+      },
+      "self_call_cycles": {
+        "min": 3984.999999985099,
+        "mean": 3985.000000000394,
+        "p95": 3985.000000014901,
+        "max": 3985.000000014901
+      },
+      "self_per_frame": 3985.000000000394
+    },
+    {
+      "name": "GameSprites_Prepare",
+      "purpose": "World sprite preparation and dirty pattern upload",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 4070.0,
+      "mean": 5896.41463414619,
+      "p95": 14441.0,
+      "max": 33856.00000000745,
+      "self_mean": 5335.345528455436,
+      "self_total": 1312495.0000000373,
+      "frame_cycles": {
+        "min": 4070.0,
+        "mean": 5896.41463414619,
+        "p95": 14441.0,
+        "max": 33856.00000000745
+      },
+      "self_frame_cycles": {
+        "min": 3657.999999985099,
+        "mean": 5335.345528455436,
+        "p95": 13617.0,
+        "max": 33273.0
+      },
+      "self_call_cycles": {
+        "min": 3657.999999985099,
+        "mean": 5335.345528455436,
+        "p95": 13617.0,
+        "max": 33273.0
+      },
+      "self_per_frame": 5335.345528455436
+    },
+    {
+      "name": "GameSprites_Commit",
+      "purpose": "World sprite publication",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 1950.9999999850988,
+      "mean": 1978.07317073201,
+      "p95": 1951.0000000149012,
+      "max": 4819.0,
+      "self_mean": 1978.07317073201,
+      "self_total": 486606.0000000745,
+      "frame_cycles": {
+        "min": 1950.9999999850988,
+        "mean": 1978.07317073201,
+        "p95": 1951.0000000149012,
+        "max": 4819.0
+      },
+      "self_frame_cycles": {
+        "min": 1950.9999999850988,
+        "mean": 1978.07317073201,
+        "p95": 1951.0000000149012,
+        "max": 4819.0
+      },
+      "self_call_cycles": {
+        "min": 1950.9999999850988,
+        "mean": 1978.07317073201,
+        "p95": 1951.0000000149012,
+        "max": 4819.0
+      },
+      "self_per_frame": 1978.07317073201
+    },
+    {
+      "name": "GameHUD_Prepare",
+      "purpose": "HUD numeric/fuel/lives preparation",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 943.9999999850988,
+      "mean": 1866.1463414636569,
+      "p95": 2023.0000000149012,
+      "max": 6170.0,
+      "self_mean": 1866.1463414636569,
+      "self_total": 459072.0000000596,
+      "frame_cycles": {
+        "min": 943.9999999850988,
+        "mean": 1866.1463414636569,
+        "p95": 2023.0000000149012,
+        "max": 6170.0
+      },
+      "self_frame_cycles": {
+        "min": 943.9999999850988,
+        "mean": 1866.1463414636569,
+        "p95": 2023.0000000149012,
+        "max": 6170.0
+      },
+      "self_call_cycles": {
+        "min": 943.9999999850988,
+        "mean": 1866.1463414636569,
+        "p95": 2023.0000000149012,
+        "max": 6170.0
+      },
+      "self_per_frame": 1866.1463414636569
+    },
+    {
+      "name": "GameHUD_Commit",
+      "purpose": "HUD sprite publication",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 70.99999998509884,
+      "mean": 1298.3495934952687,
+      "p95": 1623.0000000149012,
+      "max": 4444.000000014901,
+      "self_mean": 1298.3495934952687,
+      "self_total": 319393.9999998361,
+      "frame_cycles": {
+        "min": 70.99999998509884,
+        "mean": 1298.3495934952687,
+        "p95": 1623.0000000149012,
+        "max": 4444.000000014901
+      },
+      "self_frame_cycles": {
+        "min": 70.99999998509884,
+        "mean": 1298.3495934952687,
+        "p95": 1623.0000000149012,
+        "max": 4444.000000014901
+      },
+      "self_call_cycles": {
+        "min": 70.99999998509884,
+        "mean": 1298.3495934952687,
+        "p95": 1623.0000000149012,
+        "max": 4444.000000014901
+      },
+      "self_per_frame": 1298.3495934952687
+    },
+    {
+      "name": "render",
+      "purpose": "SCREEN4 background preparation",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 26246.9999999851,
+      "mean": 41508.18699187016,
+      "p95": 68401.9999999851,
+      "max": 94716.0000000149,
+      "self_mean": 4053.463414635721,
+      "self_total": 997152.0000003874,
+      "frame_cycles": {
+        "min": 26246.9999999851,
+        "mean": 41508.18699187016,
+        "p95": 68401.9999999851,
+        "max": 94716.0000000149
+      },
+      "self_frame_cycles": {
+        "min": 4026.9999999552965,
+        "mean": 4053.463414635721,
+        "p95": 4196.0,
+        "max": 4226.0000000447035
+      },
+      "self_call_cycles": {
+        "min": 4026.9999999552965,
+        "mean": 4053.463414635721,
+        "p95": 4196.0,
+        "max": 4226.0000000447035
+      },
+      "self_per_frame": 4053.463414635721
+    },
+    {
+      "name": "wait_blank",
+      "purpose": "Synchronization waits including HALT",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 1192.0,
+      "mean": 37590.19105691075,
+      "p95": 55186.9999999851,
+      "max": 58776.9999999851,
+      "self_mean": 37419.19105691057,
+      "self_total": 9205121.0,
+      "frame_cycles": {
+        "min": 1192.0,
+        "mean": 37590.19105691075,
+        "p95": 55186.9999999851,
+        "max": 58776.9999999851
+      },
+      "self_frame_cycles": {
+        "min": 1021.0,
+        "mean": 37419.19105691057,
+        "p95": 55015.9999999851,
+        "max": 58605.9999999851
+      },
+      "self_call_cycles": {
+        "min": 1021.0,
+        "mean": 37419.19105691057,
+        "p95": 55015.9999999851,
+        "max": 58605.9999999851
+      },
+      "self_per_frame": 37419.19105691057
+    },
+    {
+      "name": "commit",
+      "purpose": "Complete presentation publication",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 2549.999999985099,
+      "mean": 3804.4227642290657,
+      "p95": 4102.000000014901,
+      "max": 6970.000000014901,
+      "self_mean": 528.0000000017869,
+      "self_total": 129888.00000043958,
+      "frame_cycles": {
+        "min": 2549.999999985099,
+        "mean": 3804.4227642290657,
+        "p95": 4102.000000014901,
+        "max": 6970.000000014901
+      },
+      "self_frame_cycles": {
+        "min": 527.9999999850988,
+        "mean": 528.0000000017869,
+        "p95": 528.0000000298023,
+        "max": 528.0000000298023
+      },
+      "self_call_cycles": {
+        "min": 527.9999999850988,
+        "mean": 528.0000000017869,
+        "p95": 528.0000000298023,
+        "max": 528.0000000298023
+      },
+      "self_per_frame": 528.0000000017869
+    },
+    {
+      "name": "Ring_Prepare",
+      "purpose": "Incoming world ring cells",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 211.99999998509884,
+      "mean": 6645.203252032914,
+      "p95": 16998.0,
+      "max": 18589.0,
+      "self_mean": 6639.642276423218,
+      "self_total": 1633352.0000001118,
+      "frame_cycles": {
+        "min": 211.99999998509884,
+        "mean": 6645.203252032914,
+        "p95": 16998.0,
+        "max": 18589.0
+      },
+      "self_frame_cycles": {
+        "min": 211.99999998509884,
+        "mean": 6639.642276423218,
+        "p95": 16998.0,
+        "max": 18589.0
+      },
+      "self_call_cycles": {
+        "min": 211.99999998509884,
+        "mean": 6639.642276423218,
+        "p95": 16998.0,
+        "max": 18589.0
+      },
+      "self_per_frame": 6639.642276423218
+    },
+    {
+      "name": "Game_RingPatch",
+      "purpose": "Flag/smoke/death terrain overrides",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 141.99999998509884,
+      "mean": 993.5325203249912,
+      "p95": 1784.0,
+      "max": 1969.0,
+      "self_mean": 876.8861788608497,
+      "self_total": 215713.99999976903,
+      "frame_cycles": {
+        "min": 141.99999998509884,
+        "mean": 993.5325203249912,
+        "p95": 1784.0,
+        "max": 1969.0
+      },
+      "self_frame_cycles": {
+        "min": 141.99999998509884,
+        "mean": 876.8861788608497,
+        "p95": 1568.0000000149012,
+        "max": 1582.0
+      },
+      "self_call_cycles": {
+        "min": 141.99999998509884,
+        "mean": 876.8861788608497,
+        "p95": 1568.0000000149012,
+        "max": 1582.0
+      },
+      "self_per_frame": 876.8861788608497
+    },
+    {
+      "name": "Game_DirtyTileUpload",
+      "purpose": "Changed terrain cell publication",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 110.99999998509884,
+      "mean": 127.99999999978799,
+      "p95": 145.0,
+      "max": 145.00000001490116,
+      "self_mean": 127.99999999978799,
+      "self_total": 31487.999999947846,
+      "frame_cycles": {
+        "min": 110.99999998509884,
+        "mean": 127.99999999978799,
+        "p95": 145.0,
+        "max": 145.00000001490116
+      },
+      "self_frame_cycles": {
+        "min": 110.99999998509884,
+        "mean": 127.99999999978799,
+        "p95": 145.0,
+        "max": 145.00000001490116
+      },
+      "self_call_cycles": {
+        "min": 110.99999998509884,
+        "mean": 127.99999999978799,
+        "p95": 145.0,
+        "max": 145.00000001490116
+      },
+      "self_per_frame": 127.99999999978799
+    },
+    {
+      "name": "Game_Radar",
+      "purpose": "Native actor and flag radar",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 4125.000000007451,
+      "mean": 4958.999999999788,
+      "p95": 5684.0,
+      "max": 6500.0,
+      "self_mean": 3663.040650407261,
+      "self_total": 901108.0000001863,
+      "frame_cycles": {
+        "min": 4125.000000007451,
+        "mean": 4958.999999999788,
+        "p95": 5684.0,
+        "max": 6500.0
+      },
+      "self_frame_cycles": {
+        "min": 2864.999999985099,
+        "mean": 3663.040650407261,
+        "p95": 4275.000000029802,
+        "max": 5211.999999985099
+      },
+      "self_call_cycles": {
+        "min": 2864.999999985099,
+        "mean": 3663.040650407261,
+        "p95": 4275.000000029802,
+        "max": 5211.999999985099
+      },
+      "self_per_frame": 3663.040650407261
+    },
+    {
+      "name": "Game_RadarUpload",
+      "purpose": "Radar pattern/color transfers",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 1174.0,
+      "mean": 1668.1585365856688,
+      "p95": 1942.0000000149012,
+      "max": 2527.000000014901,
+      "self_mean": 1666.07317073201,
+      "self_total": 409854.0000000745,
+      "frame_cycles": {
+        "min": 1174.0,
+        "mean": 1668.1585365856688,
+        "p95": 1942.0000000149012,
+        "max": 2527.000000014901
+      },
+      "self_frame_cycles": {
+        "min": 1174.0,
+        "mean": 1666.07317073201,
+        "p95": 1942.0000000149012,
+        "max": 2356.000000014901
+      },
+      "self_call_cycles": {
+        "min": 1174.0,
+        "mean": 1666.07317073201,
+        "p95": 1942.0000000149012,
+        "max": 2356.000000014901
+      },
+      "self_per_frame": 1666.07317073201
+    },
+    {
+      "name": "Ring_UploadNames",
+      "purpose": "Terrain name table publication",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 10634.0,
+      "mean": 13870.45528455218,
+      "p95": 17269.0000000149,
+      "max": 38149.0000000149,
+      "self_mean": 13814.845528454678,
+      "self_total": 3398451.999999851,
+      "frame_cycles": {
+        "min": 10634.0,
+        "mean": 13870.45528455218,
+        "p95": 17269.0000000149,
+        "max": 38149.0000000149
+      },
+      "self_frame_cycles": {
+        "min": 10634.0,
+        "mean": 13814.845528454678,
+        "p95": 17269.0000000149,
+        "max": 38149.0000000149
+      },
+      "self_call_cycles": {
+        "min": 10634.0,
+        "mean": 13814.845528454678,
+        "p95": 17269.0000000149,
+        "max": 38149.0000000149
+      },
+      "self_per_frame": 13814.845528454678
+    },
+    {
+      "name": "hud_upload",
+      "purpose": "Static HUD phase transition",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 355.99999998509884,
+      "mean": 2873.451219511347,
+      "p95": 11520.0,
+      "max": 12915.999999985099,
+      "self_mean": 2854.682926828602,
+      "self_total": 702251.9999998361,
+      "frame_cycles": {
+        "min": 355.99999998509884,
+        "mean": 2873.451219511347,
+        "p95": 11520.0,
+        "max": 12915.999999985099
+      },
+      "self_frame_cycles": {
+        "min": 355.99999998509884,
+        "mean": 2854.682926828602,
+        "p95": 11495.000000014901,
+        "max": 12810.0
+      },
+      "self_call_cycles": {
+        "min": 355.99999998509884,
+        "mean": 2854.682926828602,
+        "p95": 11495.000000014901,
+        "max": 12810.0
+      },
+      "self_per_frame": 2854.682926828602
+    },
+    {
+      "name": "GameAudio_Tick",
+      "purpose": "30Hz PSG worker invoked at60Hz",
+      "calls": 495,
+      "calls_per_frame": 2.0121951219512195,
+      "min": 52.99999998509884,
+      "mean": 1749.8060606057595,
+      "p95": 4206.0,
+      "max": 7126.0,
+      "self_mean": 1749.8060606057595,
+      "self_total": 866153.999999851,
+      "frame_cycles": {
+        "min": 1916.9999999701977,
+        "mean": 3520.9512195115894,
+        "p95": 4329.0,
+        "max": 7284.999999985099
+      },
+      "self_frame_cycles": {
+        "min": 1916.9999999701977,
+        "mean": 3520.9512195115894,
+        "p95": 4329.0,
+        "max": 7284.999999985099
+      },
+      "self_call_cycles": {
+        "min": 52.99999998509884,
+        "mean": 1749.8060606057595,
+        "p95": 4206.0,
+        "max": 7126.0
+      },
+      "self_per_frame": 3520.9512195115894
+    },
+    {
+      "name": "GameSession_PhaseSelect",
+      "purpose": "Exact phase lookup, then offline ranking of seven inactive sets",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 264.99999998509884,
+      "mean": 930.191056910448,
+      "p95": 2830.0,
+      "max": 3020.0,
+      "self_mean": 921.8495934958744,
+      "self_total": 226774.9999999851,
+      "frame_cycles": {
+        "min": 264.99999998509884,
+        "mean": 930.191056910448,
+        "p95": 2830.0,
+        "max": 3020.0
+      },
+      "self_frame_cycles": {
+        "min": 264.99999998509884,
+        "mean": 921.8495934958744,
+        "p95": 2779.999999985099,
+        "max": 2849.0
+      },
+      "self_call_cycles": {
+        "min": 264.99999998509884,
+        "mean": 921.8495934958744,
+        "p95": 2779.999999985099,
+        "max": 2849.0
+      },
+      "self_per_frame": 921.8495934958744
+    },
+    {
+      "name": "Game_ReadInput",
+      "purpose": "One hardware input sample per presented gameplay update",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 1648.0,
+      "mean": 1659.1219512197545,
+      "p95": 1670.0,
+      "max": 1670.0000000149012,
+      "self_mean": 1659.1219512197545,
+      "self_total": 408144.0000000596,
+      "frame_cycles": {
+        "min": 1648.0,
+        "mean": 1659.1219512197545,
+        "p95": 1670.0,
+        "max": 1670.0000000149012
+      },
+      "self_frame_cycles": {
+        "min": 1648.0,
+        "mean": 1659.1219512197545,
+        "p95": 1670.0,
+        "max": 1670.0000000149012
+      },
+      "self_call_cycles": {
+        "min": 1648.0,
+        "mean": 1659.1219512197545,
+        "p95": 1670.0,
+        "max": 1670.0000000149012
+      },
+      "self_per_frame": 1659.1219512197545
+    },
+    {
+      "name": "GameSession_InputTick",
+      "purpose": "Preserve native60Hz corner-risk clock while reusing sampled input",
+      "calls": 495,
+      "calls_per_frame": 2.0121951219512195,
+      "min": 75.99999998509884,
+      "mean": 76.00000000027093,
+      "p95": 76.00000001490116,
+      "max": 76.00000001490116,
+      "self_mean": 76.00000000027093,
+      "self_total": 37620.00000013411,
+      "frame_cycles": {
+        "min": 151.99999997019768,
+        "mean": 152.92682926883785,
+        "p95": 152.00000002980232,
+        "max": 304.00000001490116
+      },
+      "self_frame_cycles": {
+        "min": 151.99999997019768,
+        "mean": 152.92682926883785,
+        "p95": 152.00000002980232,
+        "max": 304.00000001490116
+      },
+      "self_call_cycles": {
+        "min": 75.99999998509884,
+        "mean": 76.00000000027093,
+        "p95": 76.00000001490116,
+        "max": 76.00000001490116
+      },
+      "self_per_frame": 152.92682926883785
+    },
+    {
+      "name": "GameSession_SharedSprite",
+      "purpose": "Whole immutable car poses; unchanged private fallback for clips/other frames",
+      "calls": 341,
+      "calls_per_frame": 1.386178861788618,
+      "min": 77.99999998509884,
+      "mean": 400.24633431067565,
+      "p95": 412.00000001490116,
+      "max": 412.00000001490116,
+      "self_mean": 400.24633431067565,
+      "self_total": 136483.9999999404,
+      "frame_cycles": {
+        "min": 0,
+        "mean": 554.813008129839,
+        "p95": 1647.9999999925494,
+        "max": 1648.0000000447035
+      },
+      "self_frame_cycles": {
+        "min": 0,
+        "mean": 554.813008129839,
+        "p95": 1647.9999999925494,
+        "max": 1648.0000000447035
+      },
+      "self_call_cycles": {
+        "min": 77.99999998509884,
+        "mean": 400.24633431067565,
+        "p95": 412.00000001490116,
+        "max": 412.00000001490116
+      },
+      "self_per_frame": 554.813008129839
+    },
+    {
+      "name": "GameSession_FlagBlinkUpload",
+      "purpose": "One-byte S blink patch for an otherwise valid cached phase",
+      "calls": 45,
+      "calls_per_frame": 0.18292682926829268,
+      "min": 434.99999998509884,
+      "mean": 439.60000000132453,
+      "p95": 444.00000001490116,
+      "max": 444.00000001490116,
+      "self_mean": 439.60000000132453,
+      "self_total": 19782.000000059605,
+      "frame_cycles": {
+        "min": 0,
+        "mean": 80.41463414658377,
+        "p95": 444.0,
+        "max": 444.00000001490116
+      },
+      "self_frame_cycles": {
+        "min": 0,
+        "mean": 80.41463414658377,
+        "p95": 444.0,
+        "max": 444.00000001490116
+      },
+      "self_call_cycles": {
+        "min": 434.99999998509884,
+        "mean": 439.60000000132453,
+        "p95": 444.00000001490116,
+        "max": 444.00000001490116
+      },
+      "self_per_frame": 80.41463414658377
+    },
+    {
+      "name": "GameSession_Boundaries",
+      "purpose": "Boundary name preparation and theme mapping",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 2538.999999985099,
+      "mean": 2556.158536585487,
+      "p95": 2740.0,
+      "max": 2740.0,
+      "self_mean": 2541.560975609938,
+      "self_total": 625224.0000000447,
+      "frame_cycles": {
+        "min": 2538.999999985099,
+        "mean": 2556.158536585487,
+        "p95": 2740.0,
+        "max": 2740.0
+      },
+      "self_frame_cycles": {
+        "min": 2538.999999985099,
+        "mean": 2541.560975609938,
+        "p95": 2569.0,
+        "max": 2569.000000014901
+      },
+      "self_call_cycles": {
+        "min": 2538.999999985099,
+        "mean": 2541.560975609938,
+        "p95": 2569.0,
+        "max": 2569.000000014901
+      },
+      "self_per_frame": 2541.560975609938
+    },
+    {
+      "name": "GameBoundary_Upload",
+      "purpose": "Boundary pattern/color transition transfer",
+      "calls": 24,
+      "calls_per_frame": 0.0975609756097561,
+      "min": 10907.0,
+      "mean": 12571.791666666666,
+      "p95": 14385.999999985099,
+      "max": 14606.0,
+      "self_mean": 12571.791666666666,
+      "self_total": 301723.0,
+      "frame_cycles": {
+        "min": 0,
+        "mean": 1226.5162601626016,
+        "p95": 12693.0,
+        "max": 14606.0
+      },
+      "self_frame_cycles": {
+        "min": 0,
+        "mean": 1226.5162601626016,
+        "p95": 12693.0,
+        "max": 14606.0
+      },
+      "self_call_cycles": {
+        "min": 10907.0,
+        "mean": 12571.791666666666,
+        "p95": 14385.999999985099,
+        "max": 14606.0
+      },
+      "self_per_frame": 1226.5162601626016
+    },
+    {
+      "name": "Session_SaveMotion",
+      "purpose": "Shared conditional movement snapshot for corner risk",
+      "calls": 247,
+      "calls_per_frame": 1.0040650406504066,
+      "min": 95.99999998509884,
+      "mean": 171.1093117417353,
+      "p95": 1224.0,
+      "max": 1234.0000000149012,
+      "self_mean": 171.1093117417353,
+      "self_total": 42264.000000208616,
+      "frame_cycles": {
+        "min": 95.99999998509884,
+        "mean": 171.8048780496285,
+        "p95": 1224.0,
+        "max": 1234.0000000149012
+      },
+      "self_frame_cycles": {
+        "min": 95.99999998509884,
+        "mean": 171.8048780496285,
+        "p95": 1224.0,
+        "max": 1234.0000000149012
+      },
+      "self_call_cycles": {
+        "min": 95.99999998509884,
+        "mean": 171.1093117417353,
+        "p95": 1224.0,
+        "max": 1234.0000000149012
+      },
+      "self_per_frame": 171.8048780496285
+    },
+    {
+      "name": "Session_RestoreMotion",
+      "purpose": "Conditional corner rollback; preserves the newly selected escape direction (not called in this workload)",
+      "calls": 0,
+      "calls_per_frame": 0.0,
+      "min": null,
+      "mean": null,
+      "p95": null,
+      "max": null,
+      "self_mean": null,
+      "self_total": 0,
+      "frame_cycles": {
+        "min": 0,
+        "mean": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "self_frame_cycles": {
+        "min": 0,
+        "mean": 0,
+        "p95": 0,
+        "max": 0
+      },
+      "self_call_cycles": null,
+      "self_per_frame": 0
+    },
+    {
+      "name": "GameSession_ValidateMotion",
+      "purpose": "Shared native wall/contact validation and bounded rollback",
+      "calls": 247,
+      "calls_per_frame": 1.0040650406504066,
+      "min": 30.99999998509884,
+      "mean": 69.30364372433438,
+      "p95": 671.9999999850988,
+      "max": 754.0000000149012,
+      "self_mean": 69.30364372433438,
+      "self_total": 17117.999999910593,
+      "frame_cycles": {
+        "min": 30.99999998509884,
+        "mean": 69.58536585329509,
+        "p95": 671.9999999850988,
+        "max": 754.0000000149012
+      },
+      "self_frame_cycles": {
+        "min": 30.99999998509884,
+        "mean": 69.58536585329509,
+        "p95": 671.9999999850988,
+        "max": 754.0000000149012
+      },
+      "self_call_cycles": {
+        "min": 30.99999998509884,
+        "mean": 69.30364372433438,
+        "p95": 671.9999999850988,
+        "max": 754.0000000149012
+      },
+      "self_per_frame": 69.58536585329509
+    },
+    {
+      "name": "GameSession_SpecialFrame",
+      "purpose": "Physical-clock S/player flash latch",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 52.99999998509884,
+      "mean": 60.43902439027419,
+      "p95": 114.0,
+      "max": 114.00000001490116,
+      "self_mean": 60.43902439027419,
+      "self_total": 14868.00000000745,
+      "frame_cycles": {
+        "min": 52.99999998509884,
+        "mean": 60.43902439027419,
+        "p95": 114.0,
+        "max": 114.00000001490116
+      },
+      "self_frame_cycles": {
+        "min": 52.99999998509884,
+        "mean": 60.43902439027419,
+        "p95": 114.0,
+        "max": 114.00000001490116
+      },
+      "self_call_cycles": {
+        "min": 52.99999998509884,
+        "mean": 60.43902439027419,
+        "p95": 114.0,
+        "max": 114.00000001490116
+      },
+      "self_per_frame": 60.43902439027419
+    },
+    {
+      "name": "GameSession_SpecialOverlay",
+      "purpose": "Exact S cloth name selection",
+      "calls": 129,
+      "calls_per_frame": 0.524390243902439,
+      "min": 181.99999998509884,
+      "mean": 183.48837209446717,
+      "p95": 185.00000001490116,
+      "max": 185.00000001490116,
+      "self_mean": 183.48837209446717,
+      "self_total": 23670.000000186265,
+      "frame_cycles": {
+        "min": 0,
+        "mean": 96.21951219587912,
+        "p95": 185.0,
+        "max": 185.00000001490116
+      },
+      "self_frame_cycles": {
+        "min": 0,
+        "mean": 96.21951219587912,
+        "p95": 185.0,
+        "max": 185.00000001490116
+      },
+      "self_call_cycles": {
+        "min": 181.99999998509884,
+        "mean": 183.48837209446717,
+        "p95": 185.00000001490116,
+        "max": 185.00000001490116
+      },
+      "self_per_frame": 96.21951219587912
+    },
+    {
+      "name": "GameSession_RadarColor",
+      "purpose": "Actor radar color and packed-row priority",
+      "calls": 984,
+      "calls_per_frame": 4.0,
+      "min": 182.0,
+      "mean": 200.58638211357126,
+      "p95": 208.00000001490116,
+      "max": 409.0,
+      "self_mean": 199.3699186989371,
+      "self_total": 196179.99999975413,
+      "frame_cycles": {
+        "min": 773.9999999850988,
+        "mean": 802.345528454285,
+        "p95": 822.0,
+        "max": 1006.9999999850988
+      },
+      "self_frame_cycles": {
+        "min": 773.9999999850988,
+        "mean": 797.4796747957485,
+        "p95": 820.0000000149012,
+        "max": 835.9999999850988
+      },
+      "self_call_cycles": {
+        "min": 182.0,
+        "mean": 199.3699186989371,
+        "p95": 208.00000001490116,
+        "max": 238.0
+      },
+      "self_per_frame": 797.4796747957485
+    },
+    {
+      "name": "GameSession_FlagNames",
+      "purpose": "Cached flag radar name stores",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 416.99999998509884,
+      "mean": 438.2845528456496,
+      "p95": 448.00000001490116,
+      "max": 649.0000000074506,
+      "self_mean": 432.7235772358935,
+      "self_total": 106450.0000000298,
+      "frame_cycles": {
+        "min": 416.99999998509884,
+        "mean": 438.2845528456496,
+        "p95": 448.00000001490116,
+        "max": 649.0000000074506
+      },
+      "self_frame_cycles": {
+        "min": 416.99999998509884,
+        "mean": 432.7235772358935,
+        "p95": 448.00000001490116,
+        "max": 478.0000000074506
+      },
+      "self_call_cycles": {
+        "min": 416.99999998509884,
+        "mean": 432.7235772358935,
+        "p95": 448.00000001490116,
+        "max": 478.0000000074506
+      },
+      "self_per_frame": 432.7235772358935
+    },
+    {
+      "name": "GameSession_FlagUpload",
+      "purpose": "Lazy per-pattern-set flag radar upload",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 192.99999998509884,
+      "mean": 1521.0813008129778,
+      "p95": 5053.999999985099,
+      "max": 5246.0,
+      "self_mean": 1439.971544715235,
+      "self_total": 354232.99999994785,
+      "frame_cycles": {
+        "min": 192.99999998509884,
+        "mean": 1521.0813008129778,
+        "p95": 5053.999999985099,
+        "max": 5246.0
+      },
+      "self_frame_cycles": {
+        "min": 192.99999998509884,
+        "mean": 1439.971544715235,
+        "p95": 5053.999999985099,
+        "max": 5075.000000014901
+      },
+      "self_call_cycles": {
+        "min": 192.99999998509884,
+        "mean": 1439.971544715235,
+        "p95": 5053.999999985099,
+        "max": 5075.000000014901
+      },
+      "self_per_frame": 1439.971544715235
+    },
+    {
+      "name": "GameSession_LabelNames",
+      "purpose": "Current player label names",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 31.0,
+      "mean": 31.0,
+      "p95": 31.0,
+      "max": 31.0,
+      "self_mean": 31.0,
+      "self_total": 7626.0,
+      "frame_cycles": {
+        "min": 31.0,
+        "mean": 31.0,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "self_frame_cycles": {
+        "min": 31.0,
+        "mean": 31.0,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "self_call_cycles": {
+        "min": 31.0,
+        "mean": 31.0,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "self_per_frame": 31.0
+    },
+    {
+      "name": "GameSession_LabelUpload",
+      "purpose": "Lazy current player label upload",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 30.99999998509884,
+      "mean": 31.000000000060574,
+      "p95": 31.0,
+      "max": 31.00000001490116,
+      "self_mean": 31.000000000060574,
+      "self_total": 7626.000000014901,
+      "frame_cycles": {
+        "min": 30.99999998509884,
+        "mean": 31.000000000060574,
+        "p95": 31.0,
+        "max": 31.00000001490116
+      },
+      "self_frame_cycles": {
+        "min": 30.99999998509884,
+        "mean": 31.000000000060574,
+        "p95": 31.0,
+        "max": 31.00000001490116
+      },
+      "self_call_cycles": {
+        "min": 30.99999998509884,
+        "mean": 31.000000000060574,
+        "p95": 31.0,
+        "max": 31.00000001490116
+      },
+      "self_per_frame": 31.000000000060574
+    },
+    {
+      "name": "GameSession_PopupFrame",
+      "purpose": "Point inscription event state",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 87.99999998509884,
+      "mean": 88.00000000006058,
+      "p95": 88.0,
+      "max": 88.00000001490116,
+      "self_mean": 88.00000000006058,
+      "self_total": 21648.0000000149,
+      "frame_cycles": {
+        "min": 87.99999998509884,
+        "mean": 88.00000000006058,
+        "p95": 88.0,
+        "max": 88.00000001490116
+      },
+      "self_frame_cycles": {
+        "min": 87.99999998509884,
+        "mean": 88.00000000006058,
+        "p95": 88.0,
+        "max": 88.00000001490116
+      },
+      "self_call_cycles": {
+        "min": 87.99999998509884,
+        "mean": 88.00000000006058,
+        "p95": 88.0,
+        "max": 88.00000001490116
+      },
+      "self_per_frame": 88.00000000006058
+    },
+    {
+      "name": "GameSession_PopupOverlay",
+      "purpose": "Point inscription terrain overlay",
+      "calls": 129,
+      "calls_per_frame": 0.524390243902439,
+      "min": 30.99999998509884,
+      "mean": 30.99999999982673,
+      "p95": 31.0,
+      "max": 31.0,
+      "self_mean": 30.99999999982673,
+      "self_total": 3998.9999999776483,
+      "frame_cycles": {
+        "min": 0,
+        "mean": 16.25609756088475,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "self_frame_cycles": {
+        "min": 0,
+        "mean": 16.25609756088475,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "self_call_cycles": {
+        "min": 30.99999998509884,
+        "mean": 30.99999999982673,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "self_per_frame": 16.25609756088475
+    },
+    {
+      "name": "GameSession_PopupUpload",
+      "purpose": "Lazy point inscription glyph upload",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 30.99999998509884,
+      "mean": 31.817073170671133,
+      "p95": 31.0,
+      "max": 232.0,
+      "self_mean": 31.12195121945162,
+      "self_total": 7655.999999985099,
+      "frame_cycles": {
+        "min": 30.99999998509884,
+        "mean": 31.817073170671133,
+        "p95": 31.0,
+        "max": 232.0
+      },
+      "self_frame_cycles": {
+        "min": 30.99999998509884,
+        "mean": 31.12195121945162,
+        "p95": 31.0,
+        "max": 61.0
+      },
+      "self_call_cycles": {
+        "min": 30.99999998509884,
+        "mean": 31.12195121945162,
+        "p95": 31.0,
+        "max": 61.0
+      },
+      "self_per_frame": 31.12195121945162
+    },
+    {
+      "name": "GameSession_AfterFrame",
+      "purpose": "Demo and point inscription frame hooks",
+      "calls": 246,
+      "calls_per_frame": 1.0,
+      "min": 201.99999998509884,
+      "mean": 209.4390243902742,
+      "p95": 263.0,
+      "max": 263.00000001490116,
+      "self_mean": 60.999999999939426,
+      "self_total": 15005.999999985099,
+      "frame_cycles": {
+        "min": 201.99999998509884,
+        "mean": 209.4390243902742,
+        "p95": 263.0,
+        "max": 263.00000001490116
+      },
+      "self_frame_cycles": {
+        "min": 60.99999998509884,
+        "mean": 60.999999999939426,
+        "p95": 61.00000001490116,
+        "max": 61.00000001490116
+      },
+      "self_call_cycles": {
+        "min": 60.99999998509884,
+        "mean": 60.999999999939426,
+        "p95": 61.00000001490116,
+        "max": 61.00000001490116
+      },
+      "self_per_frame": 60.999999999939426
+    },
+    {
+      "name": "clock_irq",
+      "purpose": "VBlank ISR body",
+      "calls": 493,
+      "calls_per_frame": 2.0040650406504064,
+      "min": 170.99999998509884,
+      "mean": 170.9999999998791,
+      "p95": 171.00000001490116,
+      "max": 171.00000001490116,
+      "self_mean": 170.9999999998791,
+      "self_total": 84302.9999999404,
+      "frame_cycles": {
+        "min": 341.9999999701977,
+        "mean": 342.69512195097724,
+        "p95": 342.00000001490116,
+        "max": 513.0
+      },
+      "self_frame_cycles": {
+        "min": 341.9999999701977,
+        "mean": 342.69512195097724,
+        "p95": 342.00000001490116,
+        "max": 513.0
+      },
+      "self_call_cycles": {
+        "min": 170.99999998509884,
+        "mean": 170.9999999998791,
+        "p95": 171.00000001490116,
+        "max": 171.00000001490116
+      },
+      "self_per_frame": 342.69512195097724
+    }
+  ],
+  "raster": [
+    {
+      "name": "Game_Prepare",
+      "calls": 246,
+      "start_line": {
+        "min": 1,
+        "mean": 67.89430894308943,
+        "p95": 256,
+        "max": 256
+      },
+      "start_cycle": {
+        "min": 86.0,
+        "mean": 103.6829268292683,
+        "p95": 134.0,
+        "max": 220.0
+      },
+      "blank": {
+        "min": 3917.6666666666665,
+        "mean": 7333.235772357723,
+        "p95": 8339.666666666666,
+        "max": 16594.0
+      },
+      "outside": {
+        "min": 21154.333333333336,
+        "mean": 29348.707317072745,
+        "p95": 41908.333333318435,
+        "max": 48564.00000000745
+      },
+      "all_inside": 0,
+      "all_outside": 0
+    },
+    {
+      "name": "Game_Frame",
+      "calls": 246,
+      "start_line": {
+        "min": 1,
+        "mean": 68.20325203252033,
+        "p95": 257,
+        "max": 257
+      },
+      "start_cycle": {
+        "min": 17.0,
+        "mean": 148.2439024390244,
+        "p95": 205.0,
+        "max": 205.0
+      },
+      "blank": {
+        "min": 3802.6666666666665,
+        "mean": 6944.154471544715,
+        "p95": 8224.666666666666,
+        "max": 8224.666666666666
+      },
+      "outside": {
+        "min": 11808.333333333334,
+        "mean": 17600.788617885846,
+        "p95": 22544.333333333332,
+        "max": 40933.333333333336
+      },
+      "all_inside": 0,
+      "all_outside": 0
+    },
+    {
+      "name": "Game_LogicTick",
+      "calls": 495,
+      "start_line": {
+        "min": 13,
+        "mean": 56.448484848484846,
+        "p95": 102,
+        "max": 149
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 108.20808080808081,
+        "p95": 218.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 645.9771043771043,
+        "p95": 2535.6666666666665,
+        "max": 4090.6666666666665
+      },
+      "outside": {
+        "min": 2574.999999985099,
+        "mean": 7646.921885522006,
+        "p95": 14818.333333333334,
+        "max": 19400.333333348233
+      },
+      "all_inside": 0,
+      "all_outside": 263
+    },
+    {
+      "name": "Game_Position",
+      "calls": 246,
+      "start_line": {
+        "min": 78,
+        "mean": 103.91463414634147,
+        "p95": 126,
+        "max": 206
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 109.91869918699187,
+        "p95": 215.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "outside": {
+        "min": 899.9999999850988,
+        "mean": 899.9999999998788,
+        "p95": 900.0,
+        "max": 900.0000000149012
+      },
+      "all_inside": 0,
+      "all_outside": 246
+    },
+    {
+      "name": "Game_Actors",
+      "calls": 246,
+      "start_line": {
+        "min": 83,
+        "mean": 108.9349593495935,
+        "p95": 131,
+        "max": 211
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 110.72357723577235,
+        "p95": 214.0,
+        "max": 226.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "outside": {
+        "min": 3984.999999985099,
+        "mean": 3985.000000000394,
+        "p95": 3985.000000014901,
+        "max": 3985.000000014901
+      },
+      "all_inside": 0,
+      "all_outside": 246
+    },
+    {
+      "name": "GameSprites_Prepare",
+      "calls": 246,
+      "start_line": {
+        "min": 101,
+        "mean": 126.48780487804878,
+        "p95": 148,
+        "max": 229
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 111.67479674796748,
+        "p95": 215.0,
+        "max": 225.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 199.66666666666666,
+        "p95": 0.0,
+        "max": 7772.333333333333
+      },
+      "outside": {
+        "min": 3389.6666666815677,
+        "mean": 5696.747967479523,
+        "p95": 14441.0,
+        "max": 30276.666666666668
+      },
+      "all_inside": 0,
+      "all_outside": 237
+    },
+    {
+      "name": "GameSprites_Commit",
+      "calls": 246,
+      "start_line": {
+        "min": 4,
+        "mean": 243.9918699186992,
+        "p95": 254,
+        "max": 254
+      },
+      "start_cycle": {
+        "min": 119.0,
+        "mean": 135.5731707317073,
+        "p95": 167.0,
+        "max": 208.0
+      },
+      "blank": {
+        "min": 1951.0,
+        "mean": 1978.0731707317073,
+        "p95": 1951.0,
+        "max": 4819.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 2.786395995597529e-09,
+        "p95": 1.4901161193847656e-08,
+        "max": 1.4901161193847656e-08
+      },
+      "all_inside": 246,
+      "all_outside": 0
+    },
+    {
+      "name": "GameHUD_Prepare",
+      "calls": 246,
+      "start_line": {
+        "min": 1,
+        "mean": 144.9430894308943,
+        "p95": 184,
+        "max": 259
+      },
+      "start_cycle": {
+        "min": 1.0,
+        "mean": 111.47967479674797,
+        "p95": 218.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 74.01219512195122,
+        "p95": 0.0,
+        "max": 2023.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 1792.134146341736,
+        "p95": 2023.0000000149012,
+        "max": 6170.0
+      },
+      "all_inside": 9,
+      "all_outside": 237
+    },
+    {
+      "name": "GameHUD_Commit",
+      "calls": 246,
+      "start_line": {
+        "min": 247,
+        "mean": 247,
+        "p95": 247,
+        "max": 247
+      },
+      "start_cycle": {
+        "min": 74.0,
+        "mean": 76.0040650406504,
+        "p95": 78.0,
+        "max": 78.0
+      },
+      "blank": {
+        "min": 71.0,
+        "mean": 1298.3495934959349,
+        "p95": 1623.0,
+        "max": 4444.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 2.1503708226893977e-09,
+        "p95": 1.4901161193847656e-08,
+        "max": 1.4901161193847656e-08
+      },
+      "all_inside": 246,
+      "all_outside": 0
+    },
+    {
+      "name": "render",
+      "calls": 246,
+      "start_line": {
+        "min": 5,
+        "mean": 151.0691056910569,
+        "p95": 186,
+        "max": 222
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 113.23577235772358,
+        "p95": 220.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 1154.3333333333333,
+        "mean": 9597.964769647697,
+        "p95": 11172.0,
+        "max": 17101.666666666668
+      },
+      "outside": {
+        "min": 15089.999999985099,
+        "mean": 31910.222222222466,
+        "p95": 57229.9999999851,
+        "max": 77614.33333334823
+      },
+      "all_inside": 0,
+      "all_outside": 0
+    },
+    {
+      "name": "wait_blank",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 88.27235772357723,
+        "p95": 227,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 1.0,
+        "mean": 106.34959349593495,
+        "p95": 214.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 212.33333333333334,
+        "mean": 1553.4864498644986,
+        "p95": 6623.0,
+        "max": 10213.0
+      },
+      "outside": {
+        "min": 977.6666666666666,
+        "mean": 36036.70460704625,
+        "p95": 48564.00000000745,
+        "max": 48564.0000000149
+      },
+      "all_inside": 0,
+      "all_outside": 0
+    },
+    {
+      "name": "commit",
+      "calls": 246,
+      "start_line": {
+        "min": 245,
+        "mean": 245,
+        "p95": 245,
+        "max": 245
+      },
+      "start_cycle": {
+        "min": 36.0,
+        "mean": 38.00406504065041,
+        "p95": 40.0,
+        "max": 40.0
+      },
+      "blank": {
+        "min": 2550.0,
+        "mean": 3804.4227642276423,
+        "p95": 4102.0,
+        "max": 6970.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 2.665248343615028e-09,
+        "p95": 1.4901161193847656e-08,
+        "max": 1.4901161193847656e-08
+      },
+      "all_inside": 246,
+      "all_outside": 0
+    },
+    {
+      "name": "Ring_Prepare",
+      "calls": 246,
+      "start_line": {
+        "min": 6,
+        "mean": 152.2642276422764,
+        "p95": 187,
+        "max": 223
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 104.7479674796748,
+        "p95": 215.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 187.76829268292684,
+        "p95": 390.3333333333333,
+        "max": 6554.333333333333
+      },
+      "outside": {
+        "min": 0,
+        "mean": 6457.434959349987,
+        "p95": 16998.0,
+        "max": 18589.0
+      },
+      "all_inside": 4,
+      "all_outside": 229
+    },
+    {
+      "name": "Game_RingPatch",
+      "calls": 246,
+      "start_line": {
+        "min": 1,
+        "mean": 178.23170731707316,
+        "p95": 235,
+        "max": 258
+      },
+      "start_cycle": {
+        "min": 1.0,
+        "mean": 118.8780487804878,
+        "p95": 217.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 99.6829268292683,
+        "p95": 1434.3333333333333,
+        "max": 1784.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 893.8495934958744,
+        "p95": 1784.0,
+        "max": 1784.0
+      },
+      "all_inside": 12,
+      "all_outside": 228
+    },
+    {
+      "name": "Game_DirtyTileUpload",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 88.6178861788618,
+        "p95": 228,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 113.39837398373983,
+        "p95": 216.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 44.43766937669377,
+        "p95": 145.0,
+        "max": 145.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 83.56233062333652,
+        "p95": 145.0,
+        "max": 145.00000001490116
+      },
+      "all_inside": 76,
+      "all_outside": 169
+    },
+    {
+      "name": "Game_Radar",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 170.3130081300813,
+        "p95": 252,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 2.0,
+        "mean": 120.7479674796748,
+        "p95": 216.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 1879.1544715447155,
+        "p95": 5099.0,
+        "max": 5585.333333333333
+      },
+      "outside": {
+        "min": 0,
+        "mean": 3079.8455284559814,
+        "p95": 5526.0,
+        "max": 6500.0
+      },
+      "all_inside": 54,
+      "all_outside": 125
+    },
+    {
+      "name": "Game_RadarUpload",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 126.26422764227642,
+        "p95": 257,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 2.0,
+        "mean": 114.34552845528455,
+        "p95": 221.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 608.9024390243902,
+        "p95": 1942.0,
+        "max": 1942.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 1059.2560975620054,
+        "p95": 1942.0,
+        "max": 2326.000000014901
+      },
+      "all_inside": 81,
+      "all_outside": 147
+    },
+    {
+      "name": "Ring_UploadNames",
+      "calls": 246,
+      "start_line": {
+        "min": 1,
+        "mean": 118.2439024390244,
+        "p95": 249,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 110.69918699186992,
+        "p95": 214.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 3732.8617886178863,
+        "p95": 9793.333333333334,
+        "max": 11172.0
+      },
+      "outside": {
+        "min": 1411.6666666815672,
+        "mean": 10137.593495934294,
+        "p95": 15975.0,
+        "max": 28910.333333348237
+      },
+      "all_inside": 0,
+      "all_outside": 83
+    },
+    {
+      "name": "hud_upload",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 143.15040650406505,
+        "p95": 257,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 120.67479674796748,
+        "p95": 217.0,
+        "max": 225.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 860.9512195121952,
+        "p95": 5673.333333333333,
+        "max": 10795.333333333334
+      },
+      "outside": {
+        "min": 0,
+        "mean": 2012.4999999997576,
+        "p95": 10208.0,
+        "max": 12810.0
+      },
+      "all_inside": 80,
+      "all_outside": 115
+    },
+    {
+      "name": "GameAudio_Tick",
+      "calls": 495,
+      "start_line": {
+        "min": 2,
+        "mean": 46.65858585858586,
+        "p95": 100,
+        "max": 147
+      },
+      "start_cycle": {
+        "min": 1.0,
+        "mean": 127.12323232323233,
+        "p95": 207.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 1682.8377104377105,
+        "p95": 4196.0,
+        "max": 4413.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 66.96835016931347,
+        "p95": 53.00000001490116,
+        "max": 5085.333333333333
+      },
+      "all_inside": 236,
+      "all_outside": 249
+    },
+    {
+      "name": "GameSession_PhaseSelect",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 180.869918699187,
+        "p95": 242,
+        "max": 260
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 121.23983739837398,
+        "p95": 218.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 148.3048780487805,
+        "p95": 1357.3333333333333,
+        "max": 2908.3333333333335
+      },
+      "outside": {
+        "min": 0,
+        "mean": 781.8861788619098,
+        "p95": 2750.0,
+        "max": 2830.0
+      },
+      "all_inside": 18,
+      "all_outside": 216
+    },
+    {
+      "name": "Game_ReadInput",
+      "calls": 246,
+      "start_line": {
+        "min": 2,
+        "mean": 68.89430894308943,
+        "p95": 257,
+        "max": 257
+      },
+      "start_cycle": {
+        "min": 40.0,
+        "mean": 57.68292682926829,
+        "p95": 88.0,
+        "max": 174.0
+      },
+      "blank": {
+        "min": 1648.0,
+        "mean": 1659.121951219512,
+        "p95": 1670.0,
+        "max": 1670.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 6.057382599125063e-10,
+        "p95": 0,
+        "max": 1.4901161193847656e-08
+      },
+      "all_inside": 246,
+      "all_outside": 0
+    },
+    {
+      "name": "GameSession_InputTick",
+      "calls": 495,
+      "start_line": {
+        "min": 11,
+        "mean": 54.61616161616162,
+        "p95": 100,
+        "max": 147
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 107.6020202020202,
+        "p95": 203.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 36.21750841750842,
+        "p95": 76.0,
+        "max": 76.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 39.7824915840118,
+        "p95": 76.00000001490116,
+        "max": 76.00000001490116
+      },
+      "all_inside": 235,
+      "all_outside": 259
+    },
+    {
+      "name": "GameSession_SharedSprite",
+      "calls": 341,
+      "start_line": {
+        "min": 106,
+        "mean": 137.683284457478,
+        "p95": 174,
+        "max": 251
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 106.91495601173021,
+        "p95": 210.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 2.4164222873900294,
+        "p95": 0.0,
+        "max": 412.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 397.8299120232856,
+        "p95": 412.00000001490116,
+        "max": 412.00000001490116
+      },
+      "all_inside": 2,
+      "all_outside": 339
+    },
+    {
+      "name": "GameSession_FlagBlinkUpload",
+      "calls": 45,
+      "start_line": {
+        "min": 0,
+        "mean": 137.86666666666667,
+        "p95": 260,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 2.0,
+        "mean": 108.31111111111112,
+        "p95": 214.0,
+        "max": 226.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 195.33333333333334,
+        "p95": 444.0,
+        "max": 444.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 244.2666666686535,
+        "p95": 444.00000001490116,
+        "max": 444.00000001490116
+      },
+      "all_inside": 20,
+      "all_outside": 25
+    },
+    {
+      "name": "GameSession_Boundaries",
+      "calls": 246,
+      "start_line": {
+        "min": 2,
+        "mean": 182.4512195121951,
+        "p95": 256,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 109.5040650406504,
+        "p95": 209.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 614.0582655826558,
+        "p95": 2539.0,
+        "max": 2539.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 1942.1002710028313,
+        "p95": 2539.0,
+        "max": 2539.000000014901
+      },
+      "all_inside": 49,
+      "all_outside": 174
+    },
+    {
+      "name": "GameBoundary_Upload",
+      "calls": 24,
+      "start_line": {
+        "min": 13,
+        "mean": 71.125,
+        "p95": 109,
+        "max": 186
+      },
+      "start_cycle": {
+        "min": 8.0,
+        "mean": 105.41666666666667,
+        "p95": 207.0,
+        "max": 222.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 407.13888888888886,
+        "p95": 2490.6666666666665,
+        "max": 3915.6666666666665
+      },
+      "outside": {
+        "min": 8777.333333333334,
+        "mean": 12164.652777777777,
+        "p95": 14385.999999985099,
+        "max": 14606.0
+      },
+      "all_inside": 0,
+      "all_outside": 19
+    },
+    {
+      "name": "Session_SaveMotion",
+      "calls": 247,
+      "start_line": {
+        "min": 16,
+        "mean": 30.639676113360323,
+        "p95": 41,
+        "max": 153
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 114.68016194331983,
+        "p95": 214.0,
+        "max": 226.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 72.63427800269905,
+        "p95": 150.0,
+        "max": 1234.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 98.47503373988083,
+        "p95": 150.0,
+        "max": 1234.0000000149012
+      },
+      "all_inside": 102,
+      "all_outside": 138
+    },
+    {
+      "name": "GameSession_ValidateMotion",
+      "calls": 247,
+      "start_line": {
+        "min": 41,
+        "mean": 61.40890688259109,
+        "p95": 76,
+        "max": 181
+      },
+      "start_cycle": {
+        "min": 1.0,
+        "mean": 111.61943319838056,
+        "p95": 213.0,
+        "max": 226.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "outside": {
+        "min": 30.99999998509884,
+        "mean": 69.30364372433438,
+        "p95": 671.9999999850988,
+        "max": 754.0000000149012
+      },
+      "all_inside": 0,
+      "all_outside": 247
+    },
+    {
+      "name": "GameSession_SpecialFrame",
+      "calls": 246,
+      "start_line": {
+        "min": 83,
+        "mean": 108.02439024390245,
+        "p95": 130,
+        "max": 210
+      },
+      "start_cycle": {
+        "min": 2.0,
+        "mean": 108.89430894308943,
+        "p95": 211.0,
+        "max": 225.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "outside": {
+        "min": 52.99999998509884,
+        "mean": 60.43902439027419,
+        "p95": 114.0,
+        "max": 114.00000001490116
+      },
+      "all_inside": 0,
+      "all_outside": 246
+    },
+    {
+      "name": "GameSession_SpecialOverlay",
+      "calls": 129,
+      "start_line": {
+        "min": 2,
+        "mean": 204.75968992248062,
+        "p95": 249,
+        "max": 260
+      },
+      "start_cycle": {
+        "min": 1.0,
+        "mean": 118.48062015503876,
+        "p95": 210.0,
+        "max": 225.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 21.3953488372093,
+        "p95": 185.0,
+        "max": 185.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 162.09302325760441,
+        "p95": 185.00000001490116,
+        "max": 185.00000001490116
+      },
+      "all_inside": 15,
+      "all_outside": 114
+    },
+    {
+      "name": "GameSession_RadarColor",
+      "calls": 984,
+      "start_line": {
+        "min": 0,
+        "mean": 157.8069105691057,
+        "p95": 256,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 112.73069105691057,
+        "p95": 216.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 81.91666666666667,
+        "p95": 208.0,
+        "max": 391.3333333333333
+      },
+      "outside": {
+        "min": 0,
+        "mean": 118.6697154478435,
+        "p95": 208.0,
+        "max": 208.00000001490116
+      },
+      "all_inside": 393,
+      "all_outside": 580
+    },
+    {
+      "name": "GameSession_FlagNames",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 170.51626016260164,
+        "p95": 253,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 122.40650406504065,
+        "p95": 218.0,
+        "max": 226.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 138.68970189701898,
+        "p95": 448.0,
+        "max": 602.3333333333334
+      },
+      "outside": {
+        "min": 0,
+        "mean": 299.5948509494181,
+        "p95": 448.0,
+        "max": 448.00000001490116
+      },
+      "all_inside": 71,
+      "all_outside": 167
+    },
+    {
+      "name": "GameSession_FlagUpload",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 131.41463414634146,
+        "p95": 258,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 1.0,
+        "mean": 113.8089430894309,
+        "p95": 218.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 625.3089430894308,
+        "p95": 4670.0,
+        "max": 5054.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 895.7723577246372,
+        "p95": 5045.0,
+        "max": 5054.000000014901
+      },
+      "all_inside": 100,
+      "all_outside": 138
+    },
+    {
+      "name": "GameSession_LabelNames",
+      "calls": 246,
+      "start_line": {
+        "min": 1,
+        "mean": 170.3821138211382,
+        "p95": 254,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 123.6178861788618,
+        "p95": 212.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 9.955284552845528,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 21.04471544715447,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "all_inside": 79,
+      "all_outside": 167
+    },
+    {
+      "name": "GameSession_LabelUpload",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 125.82926829268293,
+        "p95": 256,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 114.69918699186992,
+        "p95": 216.0,
+        "max": 224.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 11.971544715447154,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 19.02845528461342,
+        "p95": 31.0,
+        "max": 31.00000001490116
+      },
+      "all_inside": 95,
+      "all_outside": 151
+    },
+    {
+      "name": "GameSession_PopupFrame",
+      "calls": 246,
+      "start_line": {
+        "min": 83,
+        "mean": 108.46341463414635,
+        "p95": 130,
+        "max": 211
+      },
+      "start_cycle": {
+        "min": 0.0,
+        "mean": 112.23577235772358,
+        "p95": 216.0,
+        "max": 227.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "outside": {
+        "min": 87.99999998509884,
+        "mean": 88.00000000006058,
+        "p95": 88.0,
+        "max": 88.00000001490116
+      },
+      "all_inside": 0,
+      "all_outside": 246
+    },
+    {
+      "name": "GameSession_PopupOverlay",
+      "calls": 129,
+      "start_line": {
+        "min": 3,
+        "mean": 205.65116279069767,
+        "p95": 250,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 2.0,
+        "mean": 116.71317829457364,
+        "p95": 215.0,
+        "max": 226.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 3.604651162790698,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 27.395348837036032,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "all_inside": 15,
+      "all_outside": 114
+    },
+    {
+      "name": "GameSession_PopupUpload",
+      "calls": 246,
+      "start_line": {
+        "min": 0,
+        "mean": 126.04471544715447,
+        "p95": 256,
+        "max": 261
+      },
+      "start_cycle": {
+        "min": 1.0,
+        "mean": 114.57723577235772,
+        "p95": 216.0,
+        "max": 226.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 12.879403794037941,
+        "p95": 31.0,
+        "max": 223.33333333333334
+      },
+      "outside": {
+        "min": 0,
+        "mean": 18.937669376693766,
+        "p95": 31.0,
+        "max": 31.0
+      },
+      "all_inside": 95,
+      "all_outside": 150
+    },
+    {
+      "name": "GameSession_AfterFrame",
+      "calls": 246,
+      "start_line": {
+        "min": 83,
+        "mean": 107.92682926829268,
+        "p95": 130,
+        "max": 210
+      },
+      "start_cycle": {
+        "min": 2.0,
+        "mean": 113.13821138211382,
+        "p95": 219.0,
+        "max": 226.0
+      },
+      "blank": {
+        "min": 0.0,
+        "mean": 0.0,
+        "p95": 0.0,
+        "max": 0.0
+      },
+      "outside": {
+        "min": 201.99999998509884,
+        "mean": 209.4390243902742,
+        "p95": 263.0,
+        "max": 263.00000001490116
+      },
+      "all_inside": 0,
+      "all_outside": 246
+    },
+    {
+      "name": "clock_irq",
+      "calls": 493,
+      "start_line": {
+        "min": 244,
+        "mean": 244,
+        "p95": 244,
+        "max": 244
+      },
+      "start_cycle": {
+        "min": 64.0,
+        "mean": 71.29817444219067,
+        "p95": 94.0,
+        "max": 149.0
+      },
+      "blank": {
+        "min": 171.0,
+        "mean": 171.0,
+        "p95": 171.0,
+        "max": 171.0
+      },
+      "outside": {
+        "min": 0,
+        "mean": 9.521025914933088e-10,
+        "p95": 1.4901161193847656e-08,
+        "max": 1.4901161193847656e-08
+      },
+      "all_inside": 493,
+      "all_outside": 0
+    }
+  ],
+  "frames": [
+    {
+      "frame": 5,
+      "refreshes": 2,
+      "ready_margin": 34700.66666666418,
+      "interval_cycles": 122296.00000000745,
+      "work_cycles": 87379.00000000745,
+      "logic_cycles": 40267.99999999255,
+      "render_cycles": 40082.0,
+      "wait_cycles": 34917.0,
+      "commit_cycles": 6922.999999992549,
+      "untracked_cycles": 106.00000002235174,
+      "cx": 292,
+      "cy": 1111,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 6,
+      "refreshes": 2,
+      "ready_margin": 46706.66666666418,
+      "interval_cycles": 116650.0,
+      "work_cycles": 69728.0,
+      "logic_cycles": 36722.00000000745,
+      "render_cycles": 28798.00000000745,
+      "wait_cycles": 46922.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 1107,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 7,
+      "refreshes": 2,
+      "ready_margin": 39937.66666666418,
+      "interval_cycles": 119471.0,
+      "work_cycles": 79319.0,
+      "logic_cycles": 35029.0,
+      "render_cycles": 40081.99999999255,
+      "wait_cycles": 40152.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000000745058,
+      "cx": 292,
+      "cy": 1103,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 8,
+      "refreshes": 2,
+      "ready_margin": 49939.66666666418,
+      "interval_cycles": 119470.0,
+      "work_cycles": 69317.99999999255,
+      "logic_cycles": 36312.00000000745,
+      "render_cycles": 28798.00000000745,
+      "wait_cycles": 50152.00000000745,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997764826,
+      "cx": 292,
+      "cy": 1099,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 9,
+      "refreshes": 2,
+      "ready_margin": 38242.66666666418,
+      "interval_cycles": 119474.0,
+      "work_cycles": 81016.99999999255,
+      "logic_cycles": 36185.0,
+      "render_cycles": 40624.0,
+      "wait_cycles": 38457.00000000745,
+      "commit_cycles": 4101.999999992549,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1095,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 10,
+      "refreshes": 2,
+      "ready_margin": 49773.66666666418,
+      "interval_cycles": 119471.0,
+      "work_cycles": 69483.99999999255,
+      "logic_cycles": 35955.00000000745,
+      "render_cycles": 29321.0,
+      "wait_cycles": 49987.00000000745,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 1091,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 11,
+      "refreshes": 2,
+      "ready_margin": 39920.66666666418,
+      "interval_cycles": 119475.0,
+      "work_cycles": 79338.0,
+      "logic_cycles": 35007.00000000745,
+      "render_cycles": 40122.99999999255,
+      "wait_cycles": 40137.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1087,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 12,
+      "refreshes": 2,
+      "ready_margin": 49910.66666666418,
+      "interval_cycles": 119471.99999999255,
+      "work_cycles": 69345.0,
+      "logic_cycles": 36327.0,
+      "render_cycles": 28810.00000000745,
+      "wait_cycles": 50126.99999999255,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999999254942,
+      "cx": 292,
+      "cy": 1083,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 13,
+      "refreshes": 2,
+      "ready_margin": 10475.666666664183,
+      "interval_cycles": 119472.00000000745,
+      "work_cycles": 108780.0,
+      "logic_cycles": 63787.0,
+      "render_cycles": 40785.00000000745,
+      "wait_cycles": 10692.00000000745,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999999254942,
+      "cx": 292,
+      "cy": 1079,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 14,
+      "refreshes": 2,
+      "ready_margin": 23053.666666664183,
+      "interval_cycles": 119469.0,
+      "work_cycles": 96202.0,
+      "logic_cycles": 63385.00000000745,
+      "render_cycles": 28609.0,
+      "wait_cycles": 23267.0,
+      "commit_cycles": 4101.999999992549,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1075,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 15,
+      "refreshes": 2,
+      "ready_margin": 12429.666666664183,
+      "interval_cycles": 119471.0,
+      "work_cycles": 106828.99999999255,
+      "logic_cycles": 61836.00000000745,
+      "render_cycles": 40785.0,
+      "wait_cycles": 12642.00000000745,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 1071,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 16,
+      "refreshes": 2,
+      "ready_margin": 23407.666666656733,
+      "interval_cycles": 119474.0,
+      "work_cycles": 95852.0,
+      "logic_cycles": 63034.99999999255,
+      "render_cycles": 28609.0,
+      "wait_cycles": 23622.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000000745058,
+      "cx": 292,
+      "cy": 1067,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 17,
+      "refreshes": 2,
+      "ready_margin": 38817.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 80440.0,
+      "logic_cycles": 34743.0,
+      "render_cycles": 41489.0,
+      "wait_cycles": 39032.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1063,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 18,
+      "refreshes": 2,
+      "ready_margin": 51332.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 67925.0,
+      "logic_cycles": 34417.0,
+      "render_cycles": 29300.0,
+      "wait_cycles": 51547.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1059,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 19,
+      "refreshes": 2,
+      "ready_margin": 41322.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 77935.0,
+      "logic_cycles": 32782.0,
+      "render_cycles": 40945.0,
+      "wait_cycles": 41537.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 1055,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 20,
+      "refreshes": 2,
+      "ready_margin": 52072.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 67185.0000000149,
+      "logic_cycles": 34179.0,
+      "render_cycles": 28798.0,
+      "wait_cycles": 52286.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 292,
+      "cy": 1051,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 21,
+      "refreshes": 2,
+      "ready_margin": 40088.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 79169.0,
+      "logic_cycles": 34016.0,
+      "render_cycles": 40945.0,
+      "wait_cycles": 40302.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1047,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 22,
+      "refreshes": 2,
+      "ready_margin": 52400.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 66858.0,
+      "logic_cycles": 33852.0000000149,
+      "render_cycles": 28798.0,
+      "wait_cycles": 52617.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 1043,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 23,
+      "refreshes": 2,
+      "ready_margin": 41378.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 77877.0,
+      "logic_cycles": 32724.0000000149,
+      "render_cycles": 40945.0000000149,
+      "wait_cycles": 41592.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 292,
+      "cy": 1039,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 24,
+      "refreshes": 2,
+      "ready_margin": 52115.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 67143.0,
+      "logic_cycles": 34137.0,
+      "render_cycles": 28798.0,
+      "wait_cycles": 52332.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1035,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 25,
+      "refreshes": 2,
+      "ready_margin": 38668.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 80587.0000000149,
+      "logic_cycles": 34892.0,
+      "render_cycles": 41487.0,
+      "wait_cycles": 38881.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 292,
+      "cy": 1031,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 26,
+      "refreshes": 2,
+      "ready_margin": 51270.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 67988.0000000149,
+      "logic_cycles": 34459.0,
+      "render_cycles": 29321.0,
+      "wait_cycles": 51486.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 292,
+      "cy": 1027,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 27,
+      "refreshes": 2,
+      "ready_margin": 43245.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 76010.0,
+      "logic_cycles": 30818.0,
+      "render_cycles": 40984.0,
+      "wait_cycles": 43462.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 1023,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 28,
+      "refreshes": 2,
+      "ready_margin": 54042.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 65213.0,
+      "logic_cycles": 32195.0,
+      "render_cycles": 28810.0000000149,
+      "wait_cycles": 54257.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 292,
+      "cy": 1019,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 29,
+      "refreshes": 2,
+      "ready_margin": 39440.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 79817.0,
+      "logic_cycles": 34625.0,
+      "render_cycles": 40984.0,
+      "wait_cycles": 39657.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 292,
+      "cy": 1015,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 30,
+      "refreshes": 2,
+      "ready_margin": 51859.666666671634,
+      "interval_cycles": 119468.0,
+      "work_cycles": 67396.0000000149,
+      "logic_cycles": 34378.0,
+      "render_cycles": 28810.0000000149,
+      "wait_cycles": 52071.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1011,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 31,
+      "refreshes": 2,
+      "ready_margin": 41342.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 77917.0,
+      "logic_cycles": 32725.0,
+      "render_cycles": 40984.0000000149,
+      "wait_cycles": 41557.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 1007,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 32,
+      "refreshes": 2,
+      "ready_margin": 52166.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 67091.0,
+      "logic_cycles": 34072.9999999851,
+      "render_cycles": 28810.0,
+      "wait_cycles": 52382.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 1003,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 33,
+      "refreshes": 2,
+      "ready_margin": 39530.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 79726.0,
+      "logic_cycles": 34031.0,
+      "render_cycles": 41487.0000000149,
+      "wait_cycles": 39747.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 999,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 34,
+      "refreshes": 2,
+      "ready_margin": 51934.666666671634,
+      "interval_cycles": 119467.9999999851,
+      "work_cycles": 67320.9999999851,
+      "logic_cycles": 33812.9999999851,
+      "render_cycles": 29299.9999999851,
+      "wait_cycles": 52147.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 292,
+      "cy": 995,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 35,
+      "refreshes": 2,
+      "ready_margin": 41405.666666671634,
+      "interval_cycles": 119476.0000000149,
+      "work_cycles": 77854.0000000298,
+      "logic_cycles": 32703.0,
+      "render_cycles": 40943.0,
+      "wait_cycles": 41621.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 292,
+      "cy": 991,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 36,
+      "refreshes": 2,
+      "ready_margin": 54030.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 65225.0,
+      "logic_cycles": 32219.0,
+      "render_cycles": 28798.0,
+      "wait_cycles": 54247.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 987,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 37,
+      "refreshes": 2,
+      "ready_margin": 39439.666666671634,
+      "interval_cycles": 119468.0,
+      "work_cycles": 79815.9999999851,
+      "logic_cycles": 34665.0,
+      "render_cycles": 40943.0,
+      "wait_cycles": 39652.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 983,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 38,
+      "refreshes": 2,
+      "ready_margin": 51758.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 67500.9999999851,
+      "logic_cycles": 34495.0,
+      "render_cycles": 28798.0,
+      "wait_cycles": 51972.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 979,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 39,
+      "refreshes": 2,
+      "ready_margin": 42095.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 77163.0,
+      "logic_cycles": 32012.0,
+      "render_cycles": 40943.0,
+      "wait_cycles": 42312.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 975,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 40,
+      "refreshes": 2,
+      "ready_margin": 54054.666666671634,
+      "interval_cycles": 119468.0000000149,
+      "work_cycles": 65201.0000000149,
+      "logic_cycles": 32195.0,
+      "render_cycles": 28798.0,
+      "wait_cycles": 54267.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 971,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 41,
+      "refreshes": 2,
+      "ready_margin": 38862.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 80397.0,
+      "logic_cycles": 34704.0,
+      "render_cycles": 41485.0,
+      "wait_cycles": 39077.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 292,
+      "cy": 967,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 42,
+      "refreshes": 2,
+      "ready_margin": 51978.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 67279.0,
+      "logic_cycles": 33750.0,
+      "render_cycles": 29321.0,
+      "wait_cycles": 52192.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 963,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 43,
+      "refreshes": 2,
+      "ready_margin": 41328.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 77930.0000000149,
+      "logic_cycles": 32738.0,
+      "render_cycles": 40984.0,
+      "wait_cycles": 41541.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 292,
+      "cy": 959,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 44,
+      "refreshes": 2,
+      "ready_margin": 52122.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 67136.0,
+      "logic_cycles": 34118.0,
+      "render_cycles": 28810.0,
+      "wait_cycles": 52337.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 955,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 45,
+      "refreshes": 2,
+      "ready_margin": 36796.666666671634,
+      "interval_cycles": 122293.9999999851,
+      "work_cycles": 85281.9999999851,
+      "logic_cycles": 37269.0,
+      "render_cycles": 40984.0,
+      "wait_cycles": 37012.0,
+      "commit_cycles": 6923.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 292,
+      "cy": 951,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 46,
+      "refreshes": 2,
+      "ready_margin": 49673.666666671634,
+      "interval_cycles": 116649.0000000149,
+      "work_cycles": 66762.0000000149,
+      "logic_cycles": 33744.0,
+      "render_cycles": 28810.0,
+      "wait_cycles": 49887.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 292,
+      "cy": 947,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 47,
+      "refreshes": 2,
+      "ready_margin": 41306.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 77952.0,
+      "logic_cycles": 32760.0,
+      "render_cycles": 40984.0,
+      "wait_cycles": 41522.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 943,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 48,
+      "refreshes": 2,
+      "ready_margin": 52073.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 67183.0,
+      "logic_cycles": 34165.0,
+      "render_cycles": 28810.0,
+      "wait_cycles": 52287.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 292,
+      "cy": 939,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 49,
+      "refreshes": 2,
+      "ready_margin": 1623.6666666716337,
+      "interval_cycles": 117920.0,
+      "work_cycles": 116083.0,
+      "logic_cycles": 33397.0000000149,
+      "render_cycles": 80029.9999999851,
+      "wait_cycles": 1837.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 296,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 50,
+      "refreshes": 2,
+      "ready_margin": 50994.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 68264.0000000149,
+      "logic_cycles": 33528.0,
+      "render_cycles": 32079.9999999851,
+      "wait_cycles": 51206.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 300,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 51,
+      "refreshes": 2,
+      "ready_margin": 36354.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 82905.0,
+      "logic_cycles": 29494.0,
+      "render_cycles": 50755.0,
+      "wait_cycles": 36567.0,
+      "commit_cycles": 2549.999999985099,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 304,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 52,
+      "refreshes": 2,
+      "ready_margin": 52317.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 66942.0,
+      "logic_cycles": 32708.0000000149,
+      "render_cycles": 31578.0,
+      "wait_cycles": 52532.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 308,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 53,
+      "refreshes": 2,
+      "ready_margin": 30800.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 88457.0000000149,
+      "logic_cycles": 33455.0,
+      "render_cycles": 52345.9999999851,
+      "wait_cycles": 31016.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 312,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 54,
+      "refreshes": 2,
+      "ready_margin": 51784.666666671634,
+      "interval_cycles": 119468.0,
+      "work_cycles": 67471.0,
+      "logic_cycles": 33237.0,
+      "render_cycles": 31578.0,
+      "wait_cycles": 51997.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 316,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 55,
+      "refreshes": 2,
+      "ready_margin": 35483.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 83776.0,
+      "logic_cycles": 31347.0,
+      "render_cycles": 49773.0,
+      "wait_cycles": 35697.0,
+      "commit_cycles": 2549.999999985099,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 320,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 56,
+      "refreshes": 2,
+      "ready_margin": 54914.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 64344.0,
+      "logic_cycles": 32683.0000000149,
+      "render_cycles": 29005.0,
+      "wait_cycles": 55127.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 324,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 57,
+      "refreshes": 2,
+      "ready_margin": 35136.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 84123.0,
+      "logic_cycles": 32691.0,
+      "render_cycles": 48776.0000000149,
+      "wait_cycles": 35352.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 328,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 58,
+      "refreshes": 2,
+      "ready_margin": 54682.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 64573.9999999851,
+      "logic_cycles": 32390.0,
+      "render_cycles": 29528.0,
+      "wait_cycles": 54897.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 332,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 59,
+      "refreshes": 2,
+      "ready_margin": 37060.666666671634,
+      "interval_cycles": 119474.0000000149,
+      "work_cycles": 82197.0000000149,
+      "logic_cycles": 31344.0,
+      "render_cycles": 48197.0,
+      "wait_cycles": 37277.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 336,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 60,
+      "refreshes": 2,
+      "ready_margin": 54971.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 64284.0000000149,
+      "logic_cycles": 32611.0,
+      "render_cycles": 29017.0,
+      "wait_cycles": 55186.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 340,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 61,
+      "refreshes": 2,
+      "ready_margin": 29070.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 90186.0,
+      "logic_cycles": 39333.0,
+      "render_cycles": 48197.0,
+      "wait_cycles": 29287.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 344,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 62,
+      "refreshes": 2,
+      "ready_margin": 53136.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 66118.9999999851,
+      "logic_cycles": 34446.0,
+      "render_cycles": 29017.0,
+      "wait_cycles": 53352.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 348,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 63,
+      "refreshes": 2,
+      "ready_margin": 37537.666666671634,
+      "interval_cycles": 119471.0000000149,
+      "work_cycles": 81719.0000000149,
+      "logic_cycles": 30866.0,
+      "render_cycles": 48197.0,
+      "wait_cycles": 37752.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 352,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 64,
+      "refreshes": 2,
+      "ready_margin": 55276.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 63981.0,
+      "logic_cycles": 32308.0,
+      "render_cycles": 29017.0,
+      "wait_cycles": 55492.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 356,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 65,
+      "refreshes": 2,
+      "ready_margin": 33009.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 86247.0,
+      "logic_cycles": 34838.9999999851,
+      "render_cycles": 48752.0,
+      "wait_cycles": 33222.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 360,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 66,
+      "refreshes": 2,
+      "ready_margin": 48505.666666671634,
+      "interval_cycles": 119475.9999999851,
+      "work_cycles": 70753.9999999851,
+      "logic_cycles": 38591.0,
+      "render_cycles": 29507.0,
+      "wait_cycles": 48722.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 364,
+      "cy": 939,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 67,
+      "refreshes": 2,
+      "ready_margin": 20376.666666671634,
+      "interval_cycles": 121023.0000000149,
+      "work_cycles": 100431.0000000149,
+      "logic_cycles": 39637.9999999851,
+      "render_cycles": 56585.0,
+      "wait_cycles": 20592.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 364,
+      "cy": 935,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 68,
+      "refreshes": 2,
+      "ready_margin": 23203.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 96053.0,
+      "logic_cycles": 35718.0,
+      "render_cycles": 56127.0,
+      "wait_cycles": 23417.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 365,
+      "cy": 931,
+      "dx": 1,
+      "dy": -4
+    },
+    {
+      "frame": 69,
+      "refreshes": 2,
+      "ready_margin": 10714.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 108544.0,
+      "logic_cycles": 35371.0,
+      "render_cycles": 68964.9999999851,
+      "wait_cycles": 10927.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 365,
+      "cy": 927,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 70,
+      "refreshes": 2,
+      "ready_margin": 22938.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 96321.0000000149,
+      "logic_cycles": 35403.0,
+      "render_cycles": 56710.0,
+      "wait_cycles": 23151.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 366,
+      "cy": 923,
+      "dx": 1,
+      "dy": -4
+    },
+    {
+      "frame": 71,
+      "refreshes": 2,
+      "ready_margin": 11560.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 107698.0,
+      "logic_cycles": 34913.0,
+      "render_cycles": 68577.0,
+      "wait_cycles": 11777.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 366,
+      "cy": 919,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 72,
+      "refreshes": 2,
+      "ready_margin": 23120.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 96134.9999999851,
+      "logic_cycles": 35884.0,
+      "render_cycles": 56043.0,
+      "wait_cycles": 23337.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 367,
+      "cy": 915,
+      "dx": 1,
+      "dy": -4
+    },
+    {
+      "frame": 73,
+      "refreshes": 2,
+      "ready_margin": 5789.666666671634,
+      "interval_cycles": 119468.0,
+      "work_cycles": 113466.0,
+      "logic_cycles": 41344.0,
+      "render_cycles": 67914.0,
+      "wait_cycles": 6002.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 367,
+      "cy": 911,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 74,
+      "refreshes": 2,
+      "ready_margin": 49489.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 69770.0,
+      "logic_cycles": 37913.0,
+      "render_cycles": 27649.0,
+      "wait_cycles": 49702.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 367,
+      "cy": 907,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 75,
+      "refreshes": 2,
+      "ready_margin": 42634.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 76625.0,
+      "logic_cycles": 33153.0,
+      "render_cycles": 39264.0,
+      "wait_cycles": 42847.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 367,
+      "cy": 903,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 76,
+      "refreshes": 2,
+      "ready_margin": 53308.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 65950.9999999851,
+      "logic_cycles": 34605.0,
+      "render_cycles": 27138.0,
+      "wait_cycles": 53522.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 367,
+      "cy": 899,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 77,
+      "refreshes": 2,
+      "ready_margin": 39720.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 79538.0,
+      "logic_cycles": 36040.0,
+      "render_cycles": 39289.9999999851,
+      "wait_cycles": 39937.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 367,
+      "cy": 895,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 78,
+      "refreshes": 2,
+      "ready_margin": 1832.6666666716337,
+      "interval_cycles": 117918.0,
+      "work_cycles": 115870.9999999851,
+      "logic_cycles": 34919.0,
+      "render_cycles": 78296.0000000149,
+      "wait_cycles": 2047.0000000149012,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 371,
+      "cy": 895,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 79,
+      "refreshes": 2,
+      "ready_margin": 36446.666666671634,
+      "interval_cycles": 121025.0000000149,
+      "work_cycles": 84363.0000000149,
+      "logic_cycles": 34272.0,
+      "render_cycles": 45883.0,
+      "wait_cycles": 36662.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 375,
+      "cy": 894,
+      "dx": 4,
+      "dy": -1
+    },
+    {
+      "frame": 80,
+      "refreshes": 2,
+      "ready_margin": 6876.666666671634,
+      "interval_cycles": 117919.9999999851,
+      "work_cycles": 110827.9999999851,
+      "logic_cycles": 41224.0,
+      "render_cycles": 66948.0,
+      "wait_cycles": 7092.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 379,
+      "cy": 894,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 81,
+      "refreshes": 2,
+      "ready_margin": 32558.666666671634,
+      "interval_cycles": 121022.0000000149,
+      "work_cycles": 88250.0000000149,
+      "logic_cycles": 37434.0,
+      "render_cycles": 46608.0,
+      "wait_cycles": 32772.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 383,
+      "cy": 893,
+      "dx": 4,
+      "dy": -1
+    },
+    {
+      "frame": 82,
+      "refreshes": 2,
+      "ready_margin": 13502.666666671634,
+      "interval_cycles": 117921.0,
+      "work_cycles": 104204.0,
+      "logic_cycles": 36210.0,
+      "render_cycles": 65338.0,
+      "wait_cycles": 13717.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 387,
+      "cy": 893,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 83,
+      "refreshes": 2,
+      "ready_margin": 36994.666666671634,
+      "interval_cycles": 121022.0,
+      "work_cycles": 83815.0,
+      "logic_cycles": 36101.0,
+      "render_cycles": 43506.0,
+      "wait_cycles": 37207.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 391,
+      "cy": 892,
+      "dx": 4,
+      "dy": -1
+    },
+    {
+      "frame": 84,
+      "refreshes": 2,
+      "ready_margin": 17892.666666671634,
+      "interval_cycles": 117922.0,
+      "work_cycles": 99815.0,
+      "logic_cycles": 33680.9999999851,
+      "render_cycles": 63478.0,
+      "wait_cycles": 18107.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 395,
+      "cy": 892,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 85,
+      "refreshes": 2,
+      "ready_margin": 30347.666666671634,
+      "interval_cycles": 123845.0,
+      "work_cycles": 93283.0000000149,
+      "logic_cycles": 39739.0,
+      "render_cycles": 46515.0,
+      "wait_cycles": 30561.9999999851,
+      "commit_cycles": 6922.999999985099,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 399,
+      "cy": 891,
+      "dx": 4,
+      "dy": -1
+    },
+    {
+      "frame": 86,
+      "refreshes": 2,
+      "ready_margin": 6094.666666671634,
+      "interval_cycles": 115097.0,
+      "work_cycles": 108790.0000000149,
+      "logic_cycles": 39396.9999999851,
+      "render_cycles": 66736.9999999851,
+      "wait_cycles": 6306.999999985099,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 403,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 87,
+      "refreshes": 2,
+      "ready_margin": 53052.666666671634,
+      "interval_cycles": 119473.9999999851,
+      "work_cycles": 66206.9999999702,
+      "logic_cycles": 33704.0,
+      "render_cycles": 29847.0,
+      "wait_cycles": 53267.0000000149,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 407,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 88,
+      "refreshes": 2,
+      "ready_margin": 35594.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 83663.0,
+      "logic_cycles": 33645.0,
+      "render_cycles": 47362.0,
+      "wait_cycles": 35807.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 411,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 89,
+      "refreshes": 2,
+      "ready_margin": 49784.666666671634,
+      "interval_cycles": 119472.0000000149,
+      "work_cycles": 69475.0000000149,
+      "logic_cycles": 34807.0,
+      "render_cycles": 32012.0,
+      "wait_cycles": 49997.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 415,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 90,
+      "refreshes": 2,
+      "ready_margin": 35350.666666671634,
+      "interval_cycles": 119476.0,
+      "work_cycles": 83909.0,
+      "logic_cycles": 33365.0000000149,
+      "render_cycles": 47888.0000000149,
+      "wait_cycles": 35567.0,
+      "commit_cycles": 2550.000000014901,
+      "untracked_cycles": 105.99999995529652,
+      "cx": 419,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 91,
+      "refreshes": 2,
+      "ready_margin": 54163.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 65091.9999999851,
+      "logic_cycles": 32577.0,
+      "render_cycles": 29859.0,
+      "wait_cycles": 54377.0000000149,
+      "commit_cycles": 2549.999999985099,
+      "untracked_cycles": 106.0,
+      "cx": 423,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 92,
+      "refreshes": 2,
+      "ready_margin": 29413.666666671634,
+      "interval_cycles": 119471.9999999851,
+      "work_cycles": 89844.9999999851,
+      "logic_cycles": 39812.0000000149,
+      "render_cycles": 47377.0,
+      "wait_cycles": 29627.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 427,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 93,
+      "refreshes": 2,
+      "ready_margin": 50515.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 68743.0,
+      "logic_cycles": 36228.0,
+      "render_cycles": 29859.0,
+      "wait_cycles": 50732.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 431,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 94,
+      "refreshes": 2,
+      "ready_margin": 34500.666666671634,
+      "interval_cycles": 119472.0000000149,
+      "work_cycles": 84755.0000000149,
+      "logic_cycles": 34722.0,
+      "render_cycles": 47377.0000000149,
+      "wait_cycles": 34717.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 435,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 95,
+      "refreshes": 2,
+      "ready_margin": 51642.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 67613.0,
+      "logic_cycles": 35098.0000000149,
+      "render_cycles": 29859.0000000149,
+      "wait_cycles": 51857.0,
+      "commit_cycles": 2549.999999985099,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 439,
+      "cy": 891,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 96,
+      "refreshes": 2,
+      "ready_margin": 34369.666666671634,
+      "interval_cycles": 121022.0,
+      "work_cycles": 86440.0,
+      "logic_cycles": 39387.0,
+      "render_cycles": 42845.0,
+      "wait_cycles": 34582.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 439,
+      "cy": 895,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 97,
+      "refreshes": 2,
+      "ready_margin": 7524.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 111735.0,
+      "logic_cycles": 38286.0,
+      "render_cycles": 69241.0,
+      "wait_cycles": 7737.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 438,
+      "cy": 899,
+      "dx": -1,
+      "dy": 4
+    },
+    {
+      "frame": 98,
+      "refreshes": 2,
+      "ready_margin": 19436.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 99822.9999999851,
+      "logic_cycles": 38356.0,
+      "render_cycles": 57259.0,
+      "wait_cycles": 19652.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 438,
+      "cy": 903,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 99,
+      "refreshes": 2,
+      "ready_margin": 7660.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 111596.0,
+      "logic_cycles": 38985.9999999851,
+      "render_cycles": 68401.9999999851,
+      "wait_cycles": 7877.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 437,
+      "cy": 907,
+      "dx": -1,
+      "dy": 4
+    },
+    {
+      "frame": 100,
+      "refreshes": 2,
+      "ready_margin": 24218.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 95037.0,
+      "logic_cycles": 33845.0,
+      "render_cycles": 56984.0,
+      "wait_cycles": 24432.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 437,
+      "cy": 911,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 101,
+      "refreshes": 2,
+      "ready_margin": 40119.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 79138.9999999851,
+      "logic_cycles": 35712.0,
+      "render_cycles": 39219.0000000149,
+      "wait_cycles": 40332.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 436,
+      "cy": 915,
+      "dx": -1,
+      "dy": 4
+    },
+    {
+      "frame": 102,
+      "refreshes": 2,
+      "ready_margin": 35124.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 84135.0,
+      "logic_cycles": 35464.9999999851,
+      "render_cycles": 44462.0,
+      "wait_cycles": 35337.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 436,
+      "cy": 919,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 103,
+      "refreshes": 2,
+      "ready_margin": 42824.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 76435.0,
+      "logic_cycles": 33871.0,
+      "render_cycles": 38356.0,
+      "wait_cycles": 43037.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 436,
+      "cy": 923,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 104,
+      "refreshes": 2,
+      "ready_margin": 53788.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 65471.0,
+      "logic_cycles": 35013.0,
+      "render_cycles": 26250.0000000149,
+      "wait_cycles": 54002.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 436,
+      "cy": 927,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 105,
+      "refreshes": 2,
+      "ready_margin": 36105.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 83153.0,
+      "logic_cycles": 40021.0,
+      "render_cycles": 38924.0000000149,
+      "wait_cycles": 36322.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 436,
+      "cy": 931,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 106,
+      "refreshes": 2,
+      "ready_margin": 50571.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 68684.0,
+      "logic_cycles": 37703.0000000149,
+      "render_cycles": 26773.0,
+      "wait_cycles": 50787.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 436,
+      "cy": 935,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 107,
+      "refreshes": 2,
+      "ready_margin": 32034.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 87221.9999999851,
+      "logic_cycles": 43707.0,
+      "render_cycles": 39307.0000000149,
+      "wait_cycles": 32247.0000000149,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 436,
+      "cy": 939,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 108,
+      "refreshes": 2,
+      "ready_margin": 43654.666666671634,
+      "interval_cycles": 119471.9999999851,
+      "work_cycles": 75604.9999999851,
+      "logic_cycles": 45135.0000000149,
+      "render_cycles": 26262.0,
+      "wait_cycles": 43867.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 436,
+      "cy": 943,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 109,
+      "refreshes": 2,
+      "ready_margin": 29361.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 89898.0,
+      "logic_cycles": 46383.0,
+      "render_cycles": 39307.0,
+      "wait_cycles": 29577.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 436,
+      "cy": 947,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 110,
+      "refreshes": 2,
+      "ready_margin": 42697.666666671634,
+      "interval_cycles": 119471.0000000149,
+      "work_cycles": 76559.0000000298,
+      "logic_cycles": 46089.0,
+      "render_cycles": 26261.9999999851,
+      "wait_cycles": 42911.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 436,
+      "cy": 951,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 111,
+      "refreshes": 2,
+      "ready_margin": 31831.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 87425.9999999702,
+      "logic_cycles": 43911.0,
+      "render_cycles": 39307.0000000149,
+      "wait_cycles": 32047.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999995529652,
+      "cx": 436,
+      "cy": 955,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 112,
+      "refreshes": 2,
+      "ready_margin": 38850.666666671634,
+      "interval_cycles": 119473.0000000149,
+      "work_cycles": 80406.0000000149,
+      "logic_cycles": 49920.0,
+      "render_cycles": 26278.0,
+      "wait_cycles": 39067.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 436,
+      "cy": 959,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 113,
+      "refreshes": 2,
+      "ready_margin": 38108.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 81147.0,
+      "logic_cycles": 37148.0000000149,
+      "render_cycles": 39791.0,
+      "wait_cycles": 38322.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 436,
+      "cy": 963,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 114,
+      "refreshes": 2,
+      "ready_margin": 51515.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 67743.0,
+      "logic_cycles": 36767.0000000149,
+      "render_cycles": 26768.0,
+      "wait_cycles": 51732.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 436,
+      "cy": 967,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 115,
+      "refreshes": 2,
+      "ready_margin": 40636.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 78619.0,
+      "logic_cycles": 35138.0000000149,
+      "render_cycles": 39273.0,
+      "wait_cycles": 40852.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 436,
+      "cy": 971,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 116,
+      "refreshes": 2,
+      "ready_margin": 44081.666666671634,
+      "interval_cycles": 121368.0,
+      "work_cycles": 77071.0000000149,
+      "logic_cycles": 44701.0,
+      "render_cycles": 26265.9999999851,
+      "wait_cycles": 44296.9999999851,
+      "commit_cycles": 5998.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 436,
+      "cy": 975,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 117,
+      "refreshes": 2,
+      "ready_margin": 30570.666666671634,
+      "interval_cycles": 117577.0,
+      "work_cycles": 86790.0,
+      "logic_cycles": 43309.0,
+      "render_cycles": 39272.9999999851,
+      "wait_cycles": 30787.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 436,
+      "cy": 979,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 118,
+      "refreshes": 2,
+      "ready_margin": 39644.666666671634,
+      "interval_cycles": 121364.0,
+      "work_cycles": 81507.0,
+      "logic_cycles": 49137.0,
+      "render_cycles": 26266.0000000149,
+      "wait_cycles": 39857.0,
+      "commit_cycles": 5998.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 436,
+      "cy": 983,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 119,
+      "refreshes": 2,
+      "ready_margin": 26235.666666671634,
+      "interval_cycles": 117580.0,
+      "work_cycles": 91128.0,
+      "logic_cycles": 46799.9999999851,
+      "render_cycles": 40120.0,
+      "wait_cycles": 26452.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 436,
+      "cy": 987,
+      "dx": 0,
+      "dy": 4
+    },
+    {
+      "frame": 120,
+      "refreshes": 2,
+      "ready_margin": 33977.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 85277.9999999851,
+      "logic_cycles": 41544.0,
+      "render_cycles": 39526.0,
+      "wait_cycles": 34192.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 432,
+      "cy": 988,
+      "dx": -4,
+      "dy": 1
+    },
+    {
+      "frame": 121,
+      "refreshes": 2,
+      "ready_margin": 10125.666666671634,
+      "interval_cycles": 117922.0,
+      "work_cycles": 107580.0,
+      "logic_cycles": 40478.0,
+      "render_cycles": 64446.0,
+      "wait_cycles": 10342.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 428,
+      "cy": 988,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 122,
+      "refreshes": 2,
+      "ready_margin": 32302.666666671634,
+      "interval_cycles": 121022.0,
+      "work_cycles": 88505.0,
+      "logic_cycles": 41204.0000000149,
+      "render_cycles": 43093.0,
+      "wait_cycles": 32517.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.0,
+      "cx": 424,
+      "cy": 989,
+      "dx": -4,
+      "dy": 1
+    },
+    {
+      "frame": 123,
+      "refreshes": 2,
+      "ready_margin": 13369.666666671634,
+      "interval_cycles": 117918.0,
+      "work_cycles": 104336.0,
+      "logic_cycles": 36164.0,
+      "render_cycles": 65516.0,
+      "wait_cycles": 13582.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 420,
+      "cy": 989,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 124,
+      "refreshes": 2,
+      "ready_margin": 32178.666666671634,
+      "interval_cycles": 121025.0,
+      "work_cycles": 88633.0,
+      "logic_cycles": 40642.0,
+      "render_cycles": 43783.0,
+      "wait_cycles": 32392.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 416,
+      "cy": 990,
+      "dx": -4,
+      "dy": 1
+    },
+    {
+      "frame": 125,
+      "refreshes": 2,
+      "ready_margin": 977.6666666716337,
+      "interval_cycles": 122294.0,
+      "work_cycles": 121102.0,
+      "logic_cycles": 45194.0,
+      "render_cycles": 68879.0,
+      "wait_cycles": 1192.0,
+      "commit_cycles": 6923.0,
+      "untracked_cycles": 106.0,
+      "cx": 412,
+      "cy": 990,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 126,
+      "refreshes": 2,
+      "ready_margin": 44153.666666671634,
+      "interval_cycles": 115098.0,
+      "work_cycles": 70731.0,
+      "logic_cycles": 39069.0000000149,
+      "render_cycles": 29006.0,
+      "wait_cycles": 44367.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 408,
+      "cy": 990,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 237,
+      "refreshes": 3,
+      "ready_margin": -40240.333333328366,
+      "interval_cycles": 176391.0,
+      "work_cycles": 156678.9999999851,
+      "logic_cycles": 57755.0,
+      "render_cycles": 94716.0000000149,
+      "wait_cycles": 19712.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 291,
+      "cy": 1123,
+      "dx": -1,
+      "dy": -8
+    },
+    {
+      "frame": 238,
+      "refreshes": 2,
+      "ready_margin": 3683.6666666716337,
+      "interval_cycles": 119469.0,
+      "work_cycles": 115571.9999999851,
+      "logic_cycles": 39894.0,
+      "render_cycles": 71470.0,
+      "wait_cycles": 3897.000000014901,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 291,
+      "cy": 1119,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 239,
+      "refreshes": 2,
+      "ready_margin": 16270.666666671634,
+      "interval_cycles": 122296.0,
+      "work_cycles": 105809.0,
+      "logic_cycles": 39839.0,
+      "render_cycles": 58941.0,
+      "wait_cycles": 16487.0,
+      "commit_cycles": 6923.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 290,
+      "cy": 1115,
+      "dx": -1,
+      "dy": -4
+    },
+    {
+      "frame": 240,
+      "refreshes": 2,
+      "ready_margin": 5431.666666671634,
+      "interval_cycles": 116649.9999999851,
+      "work_cycles": 111002.9999999851,
+      "logic_cycles": 36532.0,
+      "render_cycles": 70263.0,
+      "wait_cycles": 5647.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 290,
+      "cy": 1111,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 241,
+      "refreshes": 2,
+      "ready_margin": 17412.666666671634,
+      "interval_cycles": 119471.0000000149,
+      "work_cycles": 101844.0000000298,
+      "logic_cycles": 37982.9999999851,
+      "render_cycles": 59653.0,
+      "wait_cycles": 17626.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 289,
+      "cy": 1107,
+      "dx": -1,
+      "dy": -4
+    },
+    {
+      "frame": 242,
+      "refreshes": 2,
+      "ready_margin": 6901.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 112355.9999999851,
+      "logic_cycles": 36667.9999999851,
+      "render_cycles": 71479.9999999851,
+      "wait_cycles": 7117.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 289,
+      "cy": 1103,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 243,
+      "refreshes": 2,
+      "ready_margin": 46999.666666671634,
+      "interval_cycles": 119469.0000000149,
+      "work_cycles": 72257.0000000149,
+      "logic_cycles": 38436.0,
+      "render_cycles": 29613.0,
+      "wait_cycles": 47212.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 289,
+      "cy": 1099,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 244,
+      "refreshes": 2,
+      "ready_margin": 40540.666666671634,
+      "interval_cycles": 119475.9999999851,
+      "work_cycles": 78718.9999999851,
+      "logic_cycles": 33486.0,
+      "render_cycles": 41025.0,
+      "wait_cycles": 40757.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 289,
+      "cy": 1095,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 245,
+      "refreshes": 2,
+      "ready_margin": 50602.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 68653.0,
+      "logic_cycles": 34832.0,
+      "render_cycles": 29613.0,
+      "wait_cycles": 50817.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 289,
+      "cy": 1091,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 246,
+      "refreshes": 2,
+      "ready_margin": 37413.666666671634,
+      "interval_cycles": 119471.0000000149,
+      "work_cycles": 81844.0000000298,
+      "logic_cycles": 36585.0,
+      "render_cycles": 41050.9999999851,
+      "wait_cycles": 37626.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 289,
+      "cy": 1087,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 247,
+      "refreshes": 2,
+      "ready_margin": 45997.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 73260.9999999702,
+      "logic_cycles": 39439.9999999851,
+      "render_cycles": 29613.0,
+      "wait_cycles": 46212.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 289,
+      "cy": 1083,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 248,
+      "refreshes": 2,
+      "ready_margin": 9985.666666671634,
+      "interval_cycles": 119474.0000000149,
+      "work_cycles": 109272.0000000149,
+      "logic_cycles": 63351.0,
+      "render_cycles": 41713.0,
+      "wait_cycles": 10202.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 289,
+      "cy": 1079,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 249,
+      "refreshes": 2,
+      "ready_margin": 19872.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 99383.0,
+      "logic_cycles": 63598.0,
+      "render_cycles": 31576.9999999851,
+      "wait_cycles": 20087.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 289,
+      "cy": 1075,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 250,
+      "refreshes": 2,
+      "ready_margin": 11964.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 107292.9999999851,
+      "logic_cycles": 60846.0,
+      "render_cycles": 42239.0,
+      "wait_cycles": 12177.000000014901,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 289,
+      "cy": 1071,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 251,
+      "refreshes": 2,
+      "ready_margin": 20469.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 98789.9999999851,
+      "logic_cycles": 65158.0,
+      "render_cycles": 29424.0000000149,
+      "wait_cycles": 20682.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 289,
+      "cy": 1067,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 252,
+      "refreshes": 2,
+      "ready_margin": 40241.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 79018.0,
+      "logic_cycles": 32881.0,
+      "render_cycles": 41929.0,
+      "wait_cycles": 40457.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 289,
+      "cy": 1063,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 253,
+      "refreshes": 2,
+      "ready_margin": 28390.666666671634,
+      "interval_cycles": 117920.9999999851,
+      "work_cycles": 89313.9999999851,
+      "logic_cycles": 35818.0,
+      "render_cycles": 50840.0,
+      "wait_cycles": 28607.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 285,
+      "cy": 1063,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 254,
+      "refreshes": 2,
+      "ready_margin": 30972.666666671634,
+      "interval_cycles": 121022.0,
+      "work_cycles": 89835.0,
+      "logic_cycles": 35192.0,
+      "render_cycles": 50434.9999999851,
+      "wait_cycles": 31187.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 281,
+      "cy": 1062,
+      "dx": -4,
+      "dy": -1
+    },
+    {
+      "frame": 255,
+      "refreshes": 2,
+      "ready_margin": 9812.666666671634,
+      "interval_cycles": 117920.0000000149,
+      "work_cycles": 107893.0000000149,
+      "logic_cycles": 36980.0,
+      "render_cycles": 68256.9999999851,
+      "wait_cycles": 10027.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 277,
+      "cy": 1062,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 256,
+      "refreshes": 2,
+      "ready_margin": 32648.666666671634,
+      "interval_cycles": 121023.0,
+      "work_cycles": 88161.0,
+      "logic_cycles": 34167.0,
+      "render_cycles": 49786.0000000149,
+      "wait_cycles": 32862.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 273,
+      "cy": 1061,
+      "dx": -4,
+      "dy": -1
+    },
+    {
+      "frame": 257,
+      "refreshes": 2,
+      "ready_margin": 14511.666666671634,
+      "interval_cycles": 117922.0,
+      "work_cycles": 103195.0,
+      "logic_cycles": 33466.0,
+      "render_cycles": 67073.0,
+      "wait_cycles": 14727.0,
+      "commit_cycles": 2549.999999985099,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 269,
+      "cy": 1061,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 258,
+      "refreshes": 2,
+      "ready_margin": 34426.666666671634,
+      "interval_cycles": 121023.9999999851,
+      "work_cycles": 86381.9999999851,
+      "logic_cycles": 34447.0000000149,
+      "render_cycles": 47727.0,
+      "wait_cycles": 34642.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 265,
+      "cy": 1060,
+      "dx": -4,
+      "dy": -1
+    },
+    {
+      "frame": 259,
+      "refreshes": 2,
+      "ready_margin": 18113.666666671634,
+      "interval_cycles": 117918.0,
+      "work_cycles": 99591.0,
+      "logic_cycles": 34391.0,
+      "render_cycles": 62544.0000000149,
+      "wait_cycles": 18327.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 261,
+      "cy": 1060,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 260,
+      "refreshes": 2,
+      "ready_margin": 35146.666666671634,
+      "interval_cycles": 121026.0,
+      "work_cycles": 85663.9999999851,
+      "logic_cycles": 33136.0,
+      "render_cycles": 48320.0,
+      "wait_cycles": 35362.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 257,
+      "cy": 1059,
+      "dx": -4,
+      "dy": -1
+    },
+    {
+      "frame": 261,
+      "refreshes": 2,
+      "ready_margin": 14457.666666671634,
+      "interval_cycles": 117919.0,
+      "work_cycles": 103247.0,
+      "logic_cycles": 33188.9999999851,
+      "render_cycles": 67402.0,
+      "wait_cycles": 14672.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 253,
+      "cy": 1059,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 262,
+      "refreshes": 2,
+      "ready_margin": 36803.666666671634,
+      "interval_cycles": 121023.0000000149,
+      "work_cycles": 84006.0000000149,
+      "logic_cycles": 31822.9999999851,
+      "render_cycles": 47974.9999999851,
+      "wait_cycles": 37017.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 249,
+      "cy": 1058,
+      "dx": -4,
+      "dy": -1
+    },
+    {
+      "frame": 263,
+      "refreshes": 2,
+      "ready_margin": 16356.666666671634,
+      "interval_cycles": 117922.0,
+      "work_cycles": 101350.0000000149,
+      "logic_cycles": 33665.0000000149,
+      "render_cycles": 65029.0000000149,
+      "wait_cycles": 16571.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 245,
+      "cy": 1058,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 264,
+      "refreshes": 2,
+      "ready_margin": 33220.666666671634,
+      "interval_cycles": 121024.9999999851,
+      "work_cycles": 87587.9999999851,
+      "logic_cycles": 38093.0,
+      "render_cycles": 45287.0000000149,
+      "wait_cycles": 33437.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 241,
+      "cy": 1057,
+      "dx": -4,
+      "dy": -1
+    },
+    {
+      "frame": 265,
+      "refreshes": 2,
+      "ready_margin": 19611.666666671634,
+      "interval_cycles": 117919.0,
+      "work_cycles": 98092.0000000149,
+      "logic_cycles": 33168.0,
+      "render_cycles": 62268.0,
+      "wait_cycles": 19826.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 237,
+      "cy": 1057,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 266,
+      "refreshes": 2,
+      "ready_margin": 34322.666666671634,
+      "interval_cycles": 121023.0000000149,
+      "work_cycles": 86486.0,
+      "logic_cycles": 36874.0,
+      "render_cycles": 45404.0000000149,
+      "wait_cycles": 34537.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 233,
+      "cy": 1056,
+      "dx": -4,
+      "dy": -1
+    },
+    {
+      "frame": 267,
+      "refreshes": 2,
+      "ready_margin": 17991.666666671634,
+      "interval_cycles": 117920.9999999851,
+      "work_cycles": 99713.9999999851,
+      "logic_cycles": 34606.0,
+      "render_cycles": 62452.0,
+      "wait_cycles": 18207.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 229,
+      "cy": 1056,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 268,
+      "refreshes": 2,
+      "ready_margin": 56126.666666671634,
+      "interval_cycles": 119472.0000000149,
+      "work_cycles": 63130.0000000149,
+      "logic_cycles": 30566.9999999851,
+      "render_cycles": 29907.0,
+      "wait_cycles": 56342.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 225,
+      "cy": 1056,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 269,
+      "refreshes": 2,
+      "ready_margin": 37034.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 82221.9999999851,
+      "logic_cycles": 33098.0,
+      "render_cycles": 46468.0,
+      "wait_cycles": 37247.0000000149,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 221,
+      "cy": 1056,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 270,
+      "refreshes": 2,
+      "ready_margin": 54358.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 64900.9999999851,
+      "logic_cycles": 32338.0,
+      "render_cycles": 29906.9999999851,
+      "wait_cycles": 54572.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 217,
+      "cy": 1056,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 271,
+      "refreshes": 2,
+      "ready_margin": 37582.666666671634,
+      "interval_cycles": 119473.0000000149,
+      "work_cycles": 81676.0000000149,
+      "logic_cycles": 32552.0,
+      "render_cycles": 46468.0,
+      "wait_cycles": 37797.0,
+      "commit_cycles": 2549.999999985099,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 213,
+      "cy": 1056,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 272,
+      "refreshes": 2,
+      "ready_margin": 55165.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 64092.0,
+      "logic_cycles": 31529.0000000149,
+      "render_cycles": 29907.0,
+      "wait_cycles": 55382.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 209,
+      "cy": 1056,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 273,
+      "refreshes": 2,
+      "ready_margin": 36664.666666671634,
+      "interval_cycles": 119467.9999999851,
+      "work_cycles": 82591.0,
+      "logic_cycles": 32912.0,
+      "render_cycles": 47023.0,
+      "wait_cycles": 36876.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 205,
+      "cy": 1056,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 274,
+      "refreshes": 2,
+      "ready_margin": 55585.666666671634,
+      "interval_cycles": 119476.0000000149,
+      "work_cycles": 63674.0,
+      "logic_cycles": 30621.0,
+      "render_cycles": 30397.0000000149,
+      "wait_cycles": 55802.0000000149,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 201,
+      "cy": 1056,
+      "dx": -4,
+      "dy": 0
+    },
+    {
+      "frame": 275,
+      "refreshes": 2,
+      "ready_margin": 28735.666666671634,
+      "interval_cycles": 121024.0,
+      "work_cycles": 92072.0,
+      "logic_cycles": 33584.0,
+      "render_cycles": 54280.0,
+      "wait_cycles": 28952.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 201,
+      "cy": 1052,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 276,
+      "refreshes": 2,
+      "ready_margin": 42518.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 76737.0,
+      "logic_cycles": 32349.0,
+      "render_cycles": 40180.0,
+      "wait_cycles": 42732.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 200,
+      "cy": 1048,
+      "dx": -1,
+      "dy": -4
+    },
+    {
+      "frame": 277,
+      "refreshes": 2,
+      "ready_margin": 15877.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 103381.0000000149,
+      "logic_cycles": 34016.0,
+      "render_cycles": 65157.0,
+      "wait_cycles": 16091.999999985099,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 200,
+      "cy": 1044,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 278,
+      "refreshes": 2,
+      "ready_margin": 4561.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 114695.9999999702,
+      "logic_cycles": 34292.0,
+      "render_cycles": 76196.0000000149,
+      "wait_cycles": 4777.000000014901,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999995529652,
+      "cx": 199,
+      "cy": 1040,
+      "dx": -1,
+      "dy": -4
+    },
+    {
+      "frame": 279,
+      "refreshes": 2,
+      "ready_margin": 3377.6666666716337,
+      "interval_cycles": 122292.0000000149,
+      "work_cycles": 118700.0000000298,
+      "logic_cycles": 40759.0,
+      "render_cycles": 70911.9999999851,
+      "wait_cycles": 3591.999999985099,
+      "commit_cycles": 6923.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 199,
+      "cy": 1036,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 280,
+      "refreshes": 2,
+      "ready_margin": 25843.666666671634,
+      "interval_cycles": 116650.0,
+      "work_cycles": 90593.0,
+      "logic_cycles": 32130.9999999851,
+      "render_cycles": 54254.0,
+      "wait_cycles": 26057.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 198,
+      "cy": 1032,
+      "dx": -1,
+      "dy": -4
+    },
+    {
+      "frame": 281,
+      "refreshes": 2,
+      "ready_margin": 17339.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 101919.0,
+      "logic_cycles": 31648.0000000149,
+      "render_cycles": 66063.0,
+      "wait_cycles": 17552.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 198,
+      "cy": 1028,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 282,
+      "refreshes": 2,
+      "ready_margin": 56058.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 63201.0,
+      "logic_cycles": 32222.9999999851,
+      "render_cycles": 26770.0,
+      "wait_cycles": 56272.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 197,
+      "cy": 1024,
+      "dx": -1,
+      "dy": -4
+    },
+    {
+      "frame": 283,
+      "refreshes": 2,
+      "ready_margin": 11457.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 107800.9999999851,
+      "logic_cycles": 36827.9999999851,
+      "render_cycles": 66765.0,
+      "wait_cycles": 11672.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 197,
+      "cy": 1020,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 284,
+      "refreshes": 2,
+      "ready_margin": 38787.666666671634,
+      "interval_cycles": 119472.0000000149,
+      "work_cycles": 80470.0000000149,
+      "logic_cycles": 34100.0,
+      "render_cycles": 42162.0,
+      "wait_cycles": 39002.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 1016,
+      "dx": -1,
+      "dy": -4
+    },
+    {
+      "frame": 285,
+      "refreshes": 2,
+      "ready_margin": 27276.666666671634,
+      "interval_cycles": 119472.9999999851,
+      "work_cycles": 91980.9999999702,
+      "logic_cycles": 33400.0000000149,
+      "render_cycles": 54373.0,
+      "wait_cycles": 27492.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999995529652,
+      "cx": 196,
+      "cy": 1012,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 286,
+      "refreshes": 2,
+      "ready_margin": 58563.666666671634,
+      "interval_cycles": 119470.0000000149,
+      "work_cycles": 60693.0000000298,
+      "logic_cycles": 30226.0,
+      "render_cycles": 26259.0,
+      "wait_cycles": 58776.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 196,
+      "cy": 1008,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 287,
+      "refreshes": 2,
+      "ready_margin": 42362.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 76896.0,
+      "logic_cycles": 34299.0,
+      "render_cycles": 38389.0,
+      "wait_cycles": 42577.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 1004,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 288,
+      "refreshes": 2,
+      "ready_margin": 56493.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 62763.9999999851,
+      "logic_cycles": 32297.0,
+      "render_cycles": 26259.0,
+      "wait_cycles": 56707.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 1000,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 289,
+      "refreshes": 2,
+      "ready_margin": 42745.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 76513.0,
+      "logic_cycles": 33413.0,
+      "render_cycles": 38891.9999999851,
+      "wait_cycles": 42962.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 996,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 290,
+      "refreshes": 2,
+      "ready_margin": 56114.666666671634,
+      "interval_cycles": 119468.0000000149,
+      "work_cycles": 63141.0,
+      "logic_cycles": 32184.0,
+      "render_cycles": 26749.0,
+      "wait_cycles": 56327.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 992,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 291,
+      "refreshes": 2,
+      "ready_margin": 41687.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 77571.9999999851,
+      "logic_cycles": 35015.9999999851,
+      "render_cycles": 38348.0,
+      "wait_cycles": 41902.0000000149,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 988,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 292,
+      "refreshes": 2,
+      "ready_margin": 57228.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 62029.0,
+      "logic_cycles": 31574.0000000149,
+      "render_cycles": 26246.9999999851,
+      "wait_cycles": 57442.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 984,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 293,
+      "refreshes": 2,
+      "ready_margin": 43922.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 75336.0,
+      "logic_cycles": 32780.0,
+      "render_cycles": 38348.0,
+      "wait_cycles": 44137.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 980,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 294,
+      "refreshes": 2,
+      "ready_margin": 56659.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 62598.0,
+      "logic_cycles": 32143.0000000149,
+      "render_cycles": 26247.0,
+      "wait_cycles": 56872.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 976,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 295,
+      "refreshes": 2,
+      "ready_margin": 37412.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 81847.0000000149,
+      "logic_cycles": 39291.0000000149,
+      "render_cycles": 38347.9999999851,
+      "wait_cycles": 37626.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 972,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 296,
+      "refreshes": 2,
+      "ready_margin": 52302.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 66955.0,
+      "logic_cycles": 36500.0,
+      "render_cycles": 26247.0000000149,
+      "wait_cycles": 52517.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 196,
+      "cy": 968,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 297,
+      "refreshes": 2,
+      "ready_margin": 40809.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 78448.0,
+      "logic_cycles": 35350.0,
+      "render_cycles": 38889.9999999851,
+      "wait_cycles": 41022.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 964,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 298,
+      "refreshes": 2,
+      "ready_margin": 55331.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 63927.9999999851,
+      "logic_cycles": 32040.0,
+      "render_cycles": 27680.0,
+      "wait_cycles": 55547.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 960,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 299,
+      "refreshes": 2,
+      "ready_margin": 41749.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 77507.0,
+      "logic_cycles": 34910.0,
+      "render_cycles": 38389.0,
+      "wait_cycles": 41962.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 956,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 300,
+      "refreshes": 2,
+      "ready_margin": 54022.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 65236.9999999851,
+      "logic_cycles": 33860.0,
+      "render_cycles": 27169.0000000149,
+      "wait_cycles": 54237.0000000149,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 952,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 301,
+      "refreshes": 2,
+      "ready_margin": 41477.666666671634,
+      "interval_cycles": 119471.9999999851,
+      "work_cycles": 77779.9999999702,
+      "logic_cycles": 35183.0000000149,
+      "render_cycles": 38389.0,
+      "wait_cycles": 41692.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999995529652,
+      "cx": 196,
+      "cy": 948,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 302,
+      "refreshes": 2,
+      "ready_margin": 49062.666666671634,
+      "interval_cycles": 119472.0000000149,
+      "work_cycles": 70195.0000000149,
+      "logic_cycles": 38818.0,
+      "render_cycles": 27169.0000000149,
+      "wait_cycles": 49277.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 944,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 303,
+      "refreshes": 2,
+      "ready_margin": 39848.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 79408.9999999851,
+      "logic_cycles": 36812.0,
+      "render_cycles": 38389.0,
+      "wait_cycles": 40062.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 196,
+      "cy": 940,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 304,
+      "refreshes": 2,
+      "ready_margin": 55823.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 63435.0000000149,
+      "logic_cycles": 32057.9999999851,
+      "render_cycles": 27168.9999999851,
+      "wait_cycles": 56036.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 196,
+      "cy": 936,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 305,
+      "refreshes": 2,
+      "ready_margin": 41582.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 77676.0,
+      "logic_cycles": 34576.0,
+      "render_cycles": 38891.9999999851,
+      "wait_cycles": 41797.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 932,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 306,
+      "refreshes": 2,
+      "ready_margin": 53464.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 65793.0,
+      "logic_cycles": 33934.9999999851,
+      "render_cycles": 27649.9999999851,
+      "wait_cycles": 53677.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 928,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 307,
+      "refreshes": 2,
+      "ready_margin": 39997.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 79261.9999999851,
+      "logic_cycles": 36705.9999999851,
+      "render_cycles": 38348.0,
+      "wait_cycles": 40212.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 924,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 308,
+      "refreshes": 2,
+      "ready_margin": 49118.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 70138.9999999851,
+      "logic_cycles": 38783.0,
+      "render_cycles": 27148.0,
+      "wait_cycles": 49332.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 920,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 309,
+      "refreshes": 2,
+      "ready_margin": 39121.666666671634,
+      "interval_cycles": 119474.0000000149,
+      "work_cycles": 80137.0000000149,
+      "logic_cycles": 37581.0,
+      "render_cycles": 38348.0,
+      "wait_cycles": 39337.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 916,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 310,
+      "refreshes": 2,
+      "ready_margin": 54607.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 64648.9999999851,
+      "logic_cycles": 33308.9999999851,
+      "render_cycles": 27132.0,
+      "wait_cycles": 54822.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 912,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 311,
+      "refreshes": 2,
+      "ready_margin": 39685.666666671634,
+      "interval_cycles": 119474.0000000149,
+      "work_cycles": 79572.0,
+      "logic_cycles": 36131.0,
+      "render_cycles": 39233.0,
+      "wait_cycles": 39902.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 908,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 312,
+      "refreshes": 2,
+      "ready_margin": 54055.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 65200.0000000149,
+      "logic_cycles": 33860.0,
+      "render_cycles": 27132.0000000149,
+      "wait_cycles": 54271.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 904,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 313,
+      "refreshes": 2,
+      "ready_margin": 40094.666666671634,
+      "interval_cycles": 119467.9999999851,
+      "work_cycles": 79160.9999999851,
+      "logic_cycles": 35169.0,
+      "render_cycles": 39784.0,
+      "wait_cycles": 40307.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 900,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 314,
+      "refreshes": 2,
+      "ready_margin": 53407.666666671634,
+      "interval_cycles": 119474.0000000149,
+      "work_cycles": 65852.0,
+      "logic_cycles": 33979.9999999851,
+      "render_cycles": 27664.0,
+      "wait_cycles": 53622.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 896,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 315,
+      "refreshes": 2,
+      "ready_margin": 34138.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 85118.9999999851,
+      "logic_cycles": 41628.0,
+      "render_cycles": 39283.0,
+      "wait_cycles": 34352.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 892,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 316,
+      "refreshes": 2,
+      "ready_margin": 37582.666666671634,
+      "interval_cycles": 122341.0000000149,
+      "work_cycles": 84544.0,
+      "logic_cycles": 50299.0,
+      "render_cycles": 27169.0000000149,
+      "wait_cycles": 37797.0000000149,
+      "commit_cycles": 6970.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 196,
+      "cy": 888,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 317,
+      "refreshes": 2,
+      "ready_margin": 39600.666666671634,
+      "interval_cycles": 116606.0,
+      "work_cycles": 76789.0,
+      "logic_cycles": 33282.0,
+      "render_cycles": 39299.0,
+      "wait_cycles": 39817.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 884,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 318,
+      "refreshes": 2,
+      "ready_margin": 54000.666666671634,
+      "interval_cycles": 119471.9999999851,
+      "work_cycles": 65254.9999999851,
+      "logic_cycles": 33878.0000000149,
+      "render_cycles": 27169.0,
+      "wait_cycles": 54217.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 196,
+      "cy": 880,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 319,
+      "refreshes": 2,
+      "ready_margin": 36221.666666671634,
+      "interval_cycles": 122292.0000000149,
+      "work_cycles": 85855.0000000298,
+      "logic_cycles": 39527.0,
+      "render_cycles": 39299.0,
+      "wait_cycles": 36436.9999999851,
+      "commit_cycles": 6923.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 196,
+      "cy": 876,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 320,
+      "refreshes": 2,
+      "ready_margin": 50945.666666671634,
+      "interval_cycles": 116652.0,
+      "work_cycles": 65490.0,
+      "logic_cycles": 34113.0,
+      "render_cycles": 27169.0,
+      "wait_cycles": 51162.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 872,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 321,
+      "refreshes": 2,
+      "ready_margin": 35216.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 84038.9999999851,
+      "logic_cycles": 40038.0,
+      "render_cycles": 39793.0,
+      "wait_cycles": 35432.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 868,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 322,
+      "refreshes": 2,
+      "ready_margin": 52973.666666671634,
+      "interval_cycles": 119470.0000000149,
+      "work_cycles": 66283.0000000298,
+      "logic_cycles": 34424.9999999851,
+      "render_cycles": 27649.9999999851,
+      "wait_cycles": 53186.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000005960464,
+      "cx": 196,
+      "cy": 864,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 323,
+      "refreshes": 2,
+      "ready_margin": 40939.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 78318.9999999851,
+      "logic_cycles": 34862.0,
+      "render_cycles": 39249.0,
+      "wait_cycles": 41152.0000000149,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 860,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 324,
+      "refreshes": 2,
+      "ready_margin": 53950.666666671634,
+      "interval_cycles": 119476.0,
+      "work_cycles": 65309.0,
+      "logic_cycles": 33953.0000000149,
+      "render_cycles": 27147.9999999851,
+      "wait_cycles": 54167.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 856,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 325,
+      "refreshes": 2,
+      "ready_margin": 41225.666666671634,
+      "interval_cycles": 119471.9999999851,
+      "work_cycles": 78029.9999999851,
+      "logic_cycles": 34573.0,
+      "render_cycles": 39248.9999999851,
+      "wait_cycles": 41442.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.0,
+      "cx": 196,
+      "cy": 852,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 326,
+      "refreshes": 2,
+      "ready_margin": 53999.666666671634,
+      "interval_cycles": 119468.0000000149,
+      "work_cycles": 65256.0,
+      "logic_cycles": 33900.0,
+      "render_cycles": 27148.0000000149,
+      "wait_cycles": 54212.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 196,
+      "cy": 848,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 327,
+      "refreshes": 2,
+      "ready_margin": 33998.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 85261.0,
+      "logic_cycles": 41804.0,
+      "render_cycles": 39249.0000000149,
+      "wait_cycles": 34212.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 844,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 328,
+      "refreshes": 2,
+      "ready_margin": 52038.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 67219.9999999851,
+      "logic_cycles": 35880.0,
+      "render_cycles": 27132.0,
+      "wait_cycles": 52252.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 196,
+      "cy": 840,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 329,
+      "refreshes": 2,
+      "ready_margin": 39319.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 79938.9999999851,
+      "logic_cycles": 35947.0,
+      "render_cycles": 39784.0,
+      "wait_cycles": 39532.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 196,
+      "cy": 836,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 330,
+      "refreshes": 2,
+      "ready_margin": 53500.666666671634,
+      "interval_cycles": 119476.0000000149,
+      "work_cycles": 65759.0000000298,
+      "logic_cycles": 33886.9999999851,
+      "render_cycles": 27664.0,
+      "wait_cycles": 53716.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 196,
+      "cy": 832,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 331,
+      "refreshes": 2,
+      "ready_margin": 37738.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 81517.0000000149,
+      "logic_cycles": 38026.0,
+      "render_cycles": 39283.0,
+      "wait_cycles": 37951.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 828,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 332,
+      "refreshes": 2,
+      "ready_margin": 53850.666666671634,
+      "interval_cycles": 119475.0,
+      "work_cycles": 65408.0000000149,
+      "logic_cycles": 34046.9999999851,
+      "render_cycles": 27152.9999999851,
+      "wait_cycles": 54066.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 196,
+      "cy": 824,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 333,
+      "refreshes": 2,
+      "ready_margin": 39184.666666671634,
+      "interval_cycles": 119468.0,
+      "work_cycles": 80071.0,
+      "logic_cycles": 36579.9999999851,
+      "render_cycles": 39283.0,
+      "wait_cycles": 39397.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 820,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 334,
+      "refreshes": 2,
+      "ready_margin": 49937.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 69321.9999999851,
+      "logic_cycles": 37945.0,
+      "render_cycles": 27169.0000000149,
+      "wait_cycles": 50152.0000000149,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 105.99999995529652,
+      "cx": 196,
+      "cy": 816,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 335,
+      "refreshes": 2,
+      "ready_margin": 41221.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 78036.0000000149,
+      "logic_cycles": 34529.0,
+      "render_cycles": 39299.0,
+      "wait_cycles": 41436.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 812,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 336,
+      "refreshes": 2,
+      "ready_margin": 54288.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 64968.0,
+      "logic_cycles": 33590.9999999851,
+      "render_cycles": 27168.9999999851,
+      "wait_cycles": 54502.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 196,
+      "cy": 808,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 337,
+      "refreshes": 2,
+      "ready_margin": 40224.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 79034.0,
+      "logic_cycles": 35032.9999999851,
+      "render_cycles": 39792.9999999851,
+      "wait_cycles": 40437.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 196,
+      "cy": 804,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 338,
+      "refreshes": 2,
+      "ready_margin": 53522.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 65737.0,
+      "logic_cycles": 33878.9999999851,
+      "render_cycles": 27649.9999999851,
+      "wait_cycles": 53737.0,
+      "commit_cycles": 4101.999999985099,
+      "untracked_cycles": 106.00000004470348,
+      "cx": 196,
+      "cy": 800,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 339,
+      "refreshes": 2,
+      "ready_margin": 39206.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 80051.0000000149,
+      "logic_cycles": 36594.0,
+      "render_cycles": 39249.0,
+      "wait_cycles": 39421.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 796,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 340,
+      "refreshes": 2,
+      "ready_margin": 48827.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 70429.0,
+      "logic_cycles": 38193.9999999851,
+      "render_cycles": 28027.0,
+      "wait_cycles": 49042.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 196,
+      "cy": 792,
+      "dx": 0,
+      "dy": -4
+    },
+    {
+      "frame": 341,
+      "refreshes": 2,
+      "ready_margin": 17319.666666671634,
+      "interval_cycles": 119470.0,
+      "work_cycles": 101938.0,
+      "logic_cycles": 37425.0,
+      "render_cycles": 60305.0000000149,
+      "wait_cycles": 17532.0,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 200,
+      "cy": 793,
+      "dx": 4,
+      "dy": 1
+    },
+    {
+      "frame": 342,
+      "refreshes": 2,
+      "ready_margin": 35654.666666671634,
+      "interval_cycles": 117920.0,
+      "work_cycles": 82053.0,
+      "logic_cycles": 33377.0000000149,
+      "render_cycles": 46020.0,
+      "wait_cycles": 35867.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 204,
+      "cy": 793,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 343,
+      "refreshes": 2,
+      "ready_margin": 15422.666666671634,
+      "interval_cycles": 121026.0,
+      "work_cycles": 105389.0,
+      "logic_cycles": 38511.9999999851,
+      "render_cycles": 62669.0,
+      "wait_cycles": 15637.0,
+      "commit_cycles": 4102.000000014901,
+      "untracked_cycles": 106.0,
+      "cx": 208,
+      "cy": 794,
+      "dx": 4,
+      "dy": 1
+    },
+    {
+      "frame": 344,
+      "refreshes": 2,
+      "ready_margin": 31397.666666671634,
+      "interval_cycles": 117919.9999999851,
+      "work_cycles": 86308.0,
+      "logic_cycles": 33564.0,
+      "render_cycles": 50088.0,
+      "wait_cycles": 31611.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 212,
+      "cy": 794,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 345,
+      "refreshes": 2,
+      "ready_margin": 17294.666666671634,
+      "interval_cycles": 121022.0000000149,
+      "work_cycles": 103515.0000000298,
+      "logic_cycles": 37054.0,
+      "render_cycles": 62253.0000000149,
+      "wait_cycles": 17506.9999999851,
+      "commit_cycles": 4102.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 216,
+      "cy": 795,
+      "dx": 4,
+      "dy": 1
+    },
+    {
+      "frame": 346,
+      "refreshes": 2,
+      "ready_margin": 32990.666666671634,
+      "interval_cycles": 117924.0,
+      "work_cycles": 84717.0,
+      "logic_cycles": 33458.0,
+      "render_cycles": 48603.0,
+      "wait_cycles": 33207.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 220,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 347,
+      "refreshes": 2,
+      "ready_margin": 29986.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 89269.0,
+      "logic_cycles": 39304.9999999851,
+      "render_cycles": 47307.9999999851,
+      "wait_cycles": 30202.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 224,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 348,
+      "refreshes": 2,
+      "ready_margin": 53190.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 66066.0000000149,
+      "logic_cycles": 33498.0000000149,
+      "render_cycles": 29912.0,
+      "wait_cycles": 53406.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 228,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 349,
+      "refreshes": 2,
+      "ready_margin": 34958.666666671634,
+      "interval_cycles": 119468.9999999851,
+      "work_cycles": 84296.9999999851,
+      "logic_cycles": 34333.0,
+      "render_cycles": 47308.0000000149,
+      "wait_cycles": 35172.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 232,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 350,
+      "refreshes": 2,
+      "ready_margin": 53191.666666671634,
+      "interval_cycles": 119474.0,
+      "work_cycles": 66067.0,
+      "logic_cycles": 33498.9999999851,
+      "render_cycles": 29912.0,
+      "wait_cycles": 53407.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 236,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 351,
+      "refreshes": 2,
+      "ready_margin": 33231.666666671634,
+      "interval_cycles": 119472.0000000149,
+      "work_cycles": 86025.0000000149,
+      "logic_cycles": 36061.0,
+      "render_cycles": 47308.0,
+      "wait_cycles": 33447.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000001490116,
+      "cx": 240,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 352,
+      "refreshes": 2,
+      "ready_margin": 53786.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 65470.0,
+      "logic_cycles": 32902.0,
+      "render_cycles": 29912.0,
+      "wait_cycles": 54002.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 244,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 353,
+      "refreshes": 2,
+      "ready_margin": 30555.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 88701.0,
+      "logic_cycles": 37319.0,
+      "render_cycles": 48726.0000000149,
+      "wait_cycles": 30772.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 105.99999998509884,
+      "cx": 248,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 354,
+      "refreshes": 2,
+      "ready_margin": 49506.666666671634,
+      "interval_cycles": 119471.0,
+      "work_cycles": 69749.0,
+      "logic_cycles": 35828.0000000149,
+      "render_cycles": 31265.0,
+      "wait_cycles": 49722.0,
+      "commit_cycles": 2550.000000014901,
+      "untracked_cycles": 105.99999997019768,
+      "cx": 252,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 355,
+      "refreshes": 2,
+      "ready_margin": 32061.666666671634,
+      "interval_cycles": 119472.0,
+      "work_cycles": 87195.0000000149,
+      "logic_cycles": 36385.9999999851,
+      "render_cycles": 48153.0,
+      "wait_cycles": 32276.9999999851,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.00000002980232,
+      "cx": 256,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 356,
+      "refreshes": 2,
+      "ready_margin": 52160.666666671634,
+      "interval_cycles": 119473.0,
+      "work_cycles": 67095.9999999851,
+      "logic_cycles": 33679.9999999851,
+      "render_cycles": 30760.0,
+      "wait_cycles": 52377.0000000149,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 260,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 357,
+      "refreshes": 2,
+      "ready_margin": 30901.666666671634,
+      "interval_cycles": 119470.9999999851,
+      "work_cycles": 88353.9999999851,
+      "logic_cycles": 34968.9999999851,
+      "render_cycles": 50729.0,
+      "wait_cycles": 31117.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 264,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 358,
+      "refreshes": 2,
+      "ready_margin": 52039.666666671634,
+      "interval_cycles": 119469.0,
+      "work_cycles": 67217.0,
+      "logic_cycles": 31225.0,
+      "render_cycles": 33336.0,
+      "wait_cycles": 52252.0,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 268,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 359,
+      "refreshes": 2,
+      "ready_margin": 28319.666666671634,
+      "interval_cycles": 123845.0,
+      "work_cycles": 95313.0,
+      "logic_cycles": 37555.0,
+      "render_cycles": 50729.0,
+      "wait_cycles": 28532.0,
+      "commit_cycles": 6923.0,
+      "untracked_cycles": 106.0,
+      "cx": 272,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    },
+    {
+      "frame": 360,
+      "refreshes": 2,
+      "ready_margin": 41044.666666671634,
+      "interval_cycles": 115099.0000000149,
+      "work_cycles": 73842.0,
+      "logic_cycles": 37850.0,
+      "render_cycles": 33336.0,
+      "wait_cycles": 41257.0000000149,
+      "commit_cycles": 2550.0,
+      "untracked_cycles": 106.0,
+      "cx": 276,
+      "cy": 795,
+      "dx": 4,
+      "dy": 0
+    }
+  ],
+  "movement": [
+    {
+      "axis": "horizontal",
+      "frames": 99,
+      "work": {
+        "min": 63130.0000000149,
+        "mean": 86661.66666666682,
+        "p95": 114695.9999999702,
+        "max": 156678.9999999851
+      }
+    },
+    {
+      "axis": "vertical",
+      "frames": 147,
+      "work": {
+        "min": 60693.0000000298,
+        "mean": 79028.78231292481,
+        "p95": 108544.0,
+        "max": 118700.0000000298
+      }
+    }
+  ],
+  "limitations": "Short directional workload, not a complete phase. Active endpoints require native round5, three enemies, no death/bonus and active session. Excludes110 stopped/death intervals. UI/cold and capture costs use separate controlled event ledgers; never mix their samples with active FPS. Inclusive parents overlap children; never sum them. IRQ spans exclude hardware entry/vector. No physical hardware measurement.",
+  "cold_ledger": [
+    {
+      "name": "GameSession_AudioStop",
+      "calls": 30,
+      "inclusive": {
+        "min": 2644.9999999943443,
+        "mean": 2645.000000000491,
+        "p95": 2645.000000019779,
+        "max": 2645.000000019779
+      },
+      "own": {
+        "min": 2644.9999999943443,
+        "mean": 2645.000000000491,
+        "p95": 2645.000000019779,
+        "max": 2645.000000019779
+      }
+    },
+    {
+      "name": "GameSession_ChallengeFrame",
+      "calls": 386,
+      "inclusive": {
+        "min": 83.99999999691637,
+        "mean": 1004.5544041448474,
+        "p95": 4939.999999997298,
+        "max": 18635.999999993513
+      },
+      "own": {
+        "min": 83.99999999691637,
+        "mean": 1004.5544041448474,
+        "p95": 4939.999999997298,
+        "max": 18635.999999993513
+      }
+    },
+    {
+      "name": "GameSession_ColdLoad",
+      "calls": 13,
+      "inclusive": {
+        "min": 6288247.000000002,
+        "mean": 6350151.769230766,
+        "p95": 6411049.000000005,
+        "max": 6411049.000000005
+      },
+      "own": {
+        "min": 4801865.000000009,
+        "mean": 4839448.307692306,
+        "p95": 4901217.999999994,
+        "max": 4901217.999999994
+      }
+    },
+    {
+      "name": "GameSession_Prewarm",
+      "calls": 14,
+      "inclusive": {
+        "min": 433182.99999999366,
+        "mean": 438975.5714285761,
+        "p95": 442399.000000006,
+        "max": 442399.000000006
+      },
+      "own": {
+        "min": 433182.99999999366,
+        "mean": 438975.5714285761,
+        "p95": 442399.000000006,
+        "max": 442399.000000006
+      }
+    },
+    {
+      "name": "GameSession_Video",
+      "calls": 14,
+      "inclusive": {
+        "min": 1462857.000000004,
+        "mean": 1508664.5000000016,
+        "p95": 1544601.0000000072,
+        "max": 1544601.0000000072
+      },
+      "own": {
+        "min": 1017884.9999999983,
+        "mean": 1067043.9285714212,
+        "p95": 1102700.9999999949,
+        "max": 1102700.9999999949
+      }
+    }
+  ],
+  "cold_scope": {
+    "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-mtq51tqm/cold-hooks.tsv",
+    "method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum.",
+    "scope": "Separate controlled full-session integration, native rounds2..14, UI/cold restoration; not part of the active frame statistics."
+  },
+  "flag_event": {
+    "calls": 10,
+    "inclusive": {
+      "min": 15909.999999994878,
+      "mean": 15909.999999999329,
+      "p95": 15910.000000007594,
+      "max": 15910.000000007594
+    },
+    "own": {
+      "min": 15909.999999994878,
+      "mean": 15909.999999999329,
+      "p95": 15910.000000007594,
+      "max": 15910.000000007594
+    },
+    "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-ioo6mvxa/cold-hooks.tsv",
+    "method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum.",
+    "scope": "Controlled real flag contact handler,10 captures; clears the normal and S-hidden caches. No recurring overload is hidden as a capture pause."
+  },
+  "smoke_regression": {
+    "committed_frames": 300,
+    "native_placements": 14,
+    "counter_resets": 1,
+    "fine_phases": {
+      "horizontal": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "vertical": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    "smoke_rows": [
+      10240,
+      10271
+    ],
+    "phase_cache": [
+      10272,
+      10279
+    ],
+    "scope": "Each committed frame checks full HUD/radar and both boundary columns with an independent pixel oracle. Real keyboard only; three native enemies; no native RAM fixtures."
+  },
+  "verification": {
+    "scenarios": [
+      {
+        "scenario": "start",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-1yenwjxz",
+        "passed": true,
+        "active_snapshots": 2,
+        "silence_checks": 3
+      },
+      {
+        "scenario": "integration",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-mtq51tqm",
+        "passed": true,
+        "active_snapshots": 14,
+        "silence_checks": 30
+      },
+      {
+        "scenario": "two-player",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-z5wp5s3k",
+        "passed": true,
+        "active_snapshots": 3,
+        "silence_checks": 7
+      },
+      {
+        "scenario": "flags",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-ioo6mvxa",
+        "passed": true,
+        "active_snapshots": 12,
+        "silence_checks": 5
+      },
+      {
+        "scenario": "attract",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-db5s_5i6",
+        "passed": true,
+        "active_snapshots": 3,
+        "silence_checks": 6
+      },
+      {
+        "scenario": "radar",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-arufci7v",
+        "passed": true,
+        "active_snapshots": 129,
+        "silence_checks": 3
+      },
+      {
+        "scenario": "smoke",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-razgyphu",
+        "passed": true,
+        "active_snapshots": 301,
+        "silence_checks": 9
+      }
+    ],
+    "stable_graphics_snapshots": 464,
+    "cold_silence_checks": 63,
+    "steering": {
+      "passed": false,
+      "requested_active_refreshes": 16000,
+      "rom_sha256": "b3d4a58207c75b5beb2484c7f7f6e409aa7a20ce6b4dc8c57871ee1325948a98",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/steering-proof-ecaauwx9",
+      "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze",
+      "observed": [
+        16000,
+        7767,
+        4,
+        5687,
+        0
+      ],
+      "distinct_poses_after_refresh5000": 5
+    },
+    "audio": {
+      "passed": true,
+      "rom_sha256": "b3d4a58207c75b5beb2484c7f7f6e409aa7a20ce6b4dc8c57871ee1325948a98",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-mf2fp5br",
+      "seconds": 26.76875283446712,
+      "engine": [
+        {
+          "velocity": 0,
+          "expected_fundamental_hz": 49.93784877232143,
+          "measured_pcm_hz": 49.98778662109375,
+          "all_four_headings_identical": true,
+          "baseline_rms": 1859.5379802147925,
+          "rms": 1598.8599405744171,
+          "amplitude_ratio": 0.8598156948586418,
+          "reduction_percent": 14.018430514135815
+        },
+        {
+          "velocity": 1,
+          "expected_fundamental_hz": 49.80444401157614,
+          "measured_pcm_hz": 49.85424845558771,
+          "all_four_headings_identical": true,
+          "baseline_rms": 1864.2795080726773,
+          "rms": 1584.8705521625986,
+          "amplitude_ratio": 0.8501249653283288,
+          "reduction_percent": 14.987503467167118
+        },
+        {
+          "velocity": 2,
+          "expected_fundamental_hz": 49.80444401157614,
+          "measured_pcm_hz": 49.80444401157614,
+          "all_four_headings_identical": true,
+          "baseline_rms": 1848.802028607675,
+          "rms": 1546.1169257462834,
+          "amplitude_ratio": 0.8362804139233109,
+          "reduction_percent": 16.371958607668912
+        }
+      ],
+      "smoke": [
+        {
+          "cue": "smoke1",
+          "rms": 2721.004543816311,
+          "levels": [
+            16,
+            16
+          ],
+          "tone_periods": [
+            51,
+            45
+          ],
+          "envelope_shape": 8,
+          "leased_channels": [
+            "B",
+            "C"
+          ],
+          "sound_frames": 2,
+          "native_placement_trigger": true,
+          "baseline_rms": 467.3932640588231,
+          "amplitude_ratio": 5.821659730795485,
+          "gain_db": 15.300936356798209
+        },
+        {
+          "cue": "smoke2",
+          "rms": 2363.0625952269816,
+          "levels": [
+            16,
+            16
+          ],
+          "tone_periods": [
+            51,
+            45
+          ],
+          "envelope_shape": 8,
+          "leased_channels": [
+            "B",
+            "C"
+          ],
+          "sound_frames": 2,
+          "native_placement_trigger": true,
+          "baseline_rms": 457.35800657544866,
+          "amplitude_ratio": 5.166767742672405,
+          "gain_db": 14.2643787902597
+        }
+      ],
+      "crash": [
+        {
+          "cue": "crash1",
+          "initial_rms": 8253.404942156962,
+          "tail_rms": 432.35241667699773
+        },
+        {
+          "cue": "crash2",
+          "initial_rms": 8257.55734120543,
+          "tail_rms": 438.28590149440186
+        }
+      ],
+      "cue_ticks_30hz": {
+        "gameover": 249,
+        "challenge_intro": 193,
+        "challenge": 31,
+        "cold": 12
+      },
+      "audio_costs": [
+        {
+          "name": "GameAudio_Tick (engine)",
+          "calls": 180,
+          "inclusive": {
+            "mean": 2295.511111111042,
+            "p95": 3033.9999999979286,
+            "max": 3949.999999996398
+          }
+        },
+        {
+          "name": "GameAudio_Tick (smoke_active)",
+          "calls": 4,
+          "inclusive": {
+            "mean": 3826.500000004414,
+            "p95": 4306.000000004828,
+            "max": 4306.000000004828
+          }
+        },
+        {
+          "name": "GameAudio_Tick (smoke_resume)",
+          "calls": 32,
+          "inclusive": {
+            "mean": 2206.125000000937,
+            "p95": 3788.999999991711,
+            "max": 3788.999999991711
+          }
+        },
+        {
+          "name": "GameAudio_Tick (crash)",
+          "calls": 72,
+          "inclusive": {
+            "mean": 2222.0972222221667,
+            "p95": 3219.0000000071855,
+            "max": 4092.9999999944794
+          }
+        },
+        {
+          "name": "GameAudio_Tick (fuel)",
+          "calls": 30,
+          "inclusive": {
+            "mean": 2529.20000000017,
+            "p95": 3831.0000000028863,
+            "max": 3909.9999999993806
+          }
+        },
+        {
+          "name": "GameSession_AudioStop",
+          "calls": 1,
+          "inclusive": {
+            "mean": 2655.9999999927295,
+            "p95": 2655.9999999927295,
+            "max": 2655.9999999927295
+          }
+        },
+        {
+          "name": "GameAudio_Tick (gameover)",
+          "calls": 249,
+          "inclusive": {
+            "mean": 2685.365461847276,
+            "p95": 3642.999999994648,
+            "max": 6570.000000007708
+          }
+        },
+        {
+          "name": "GameAudio_Tick (challenge_intro)",
+          "calls": 193,
+          "inclusive": {
+            "mean": 2195.0207253883345,
+            "p95": 3500.000000015643,
+            "max": 6547.00000000068
+          }
+        },
+        {
+          "name": "GameAudio_Tick (challenge)",
+          "calls": 31,
+          "inclusive": {
+            "mean": 2873.096774195987,
+            "p95": 3835.000000018484,
+            "max": 7146.000000002914
+          }
+        }
+      ],
+      "audio_cost_method": "Sound-only fixtures; breakpoint at worker entry and exact caller return address before trailing instructions. Guest elapsed inclusive cycles including RET; no tracked child self costs, no active-game FPS claim.",
+      "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance.",
+      "engine_baseline": {
+        "rom_sha256": "5451bd8933b22f1fa334dbc538a905b5615cf1ea58623af23933e900cdf3ffa2",
+        "wav": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-2x6n5jfb/engine-and-cues.wav",
+        "wav_sha256": "f0115b312d340f2d66401252cef7ccde97f00a8f3f02b73c49152f21dd692fa1",
+        "window_seconds": [
+          0.15,
+          1.95
+        ],
+        "method": "DC-removed PCM RMS at each velocity across all four headings; matched machine/PSG settings"
+      }
+    },
+    "sprite_clip": {
+      "passed": true,
+      "rom_sha256": "b3d4a58207c75b5beb2484c7f7f6e409aa7a20ce6b4dc8c57871ee1325948a98",
+      "helper_sha256": "7e56fb8cd1185dc82a1e93313c88a518249233965aefee13ef3e805fdd8df43f",
+      "path": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/full-session/sprite-clip-proof-k7p6bs5o",
+      "scope": "Synthetic complete-pattern/SAT/color matrix, including vertical/horizontal clips and sentinel216. Component cycles are not integrated FPS."
+    }
+  },
+  "audio_assets": {
+    "reference": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/arcade-audio-feedback",
+    "reference_wsg_sha256": "ed840e22443756b335458b88517fea5e0c927a892c903cc3eeaef1b9b08867cf",
+    "challenge_original_ticks": 1540,
+    "challenge_psg_frames": 770,
+    "challenge_bytes": 1033,
+    "intro_original_calls": 385,
+    "intro_psg_frames": 192,
+    "dictionary_entries": 170,
+    "engine": {
+      "levels": [
+        12,
+        13
+      ],
+      "high_level_duty": [
+        0.21875,
+        0.21875,
+        0.15625
+      ],
+      "requested_amplitude_ratio": 0.85,
+      "revoicing_authorized": "2026-10-28",
+      "scope": "Volume-controlled square at the former envelope fundamental; deterministic physical-clock level mixing. PCM attenuation is measured separately."
+    },
+    "motion_reference": {
+      "inputs": {
+        "script_sha256": "49c121c253d8fed556ae9e2d00806a335647f460b9f9162995bc7448784869d7",
+        "emulator": "0.289 (unknown)",
+        "roms": [
+          {
+            "name": "nrx1-1.11n",
+            "size": 32,
+            "crc32": "a0a49017",
+            "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+          },
+          {
+            "name": "nrx1-7.8p",
+            "size": 256,
+            "crc32": "4e46f485",
+            "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+          },
+          {
+            "name": "nrx_chg1.8e",
+            "size": 2048,
+            "crc32": "1fff38a4",
+            "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+          },
+          {
+            "name": "nrx_chg2.8d",
+            "size": 2048,
+            "crc32": "85d9fffd",
+            "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+          },
+          {
+            "name": "nrx_prg1.1d",
+            "size": 4096,
+            "crc32": "ba7de9fc",
+            "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+          },
+          {
+            "name": "nrx_prg2.1e",
+            "size": 4096,
+            "crc32": "eedfccae",
+            "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+          },
+          {
+            "name": "nrx_prg3.1k",
+            "size": 4096,
+            "crc32": "b4d5d34a",
+            "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+          },
+          {
+            "name": "nrx_prg4.1l",
+            "size": 4096,
+            "crc32": "7da5496d",
+            "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+          },
+          {
+            "name": "rx1-2.4n",
+            "size": 32,
+            "crc32": "8f574815",
+            "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+          },
+          {
+            "name": "rx1-3.7k",
+            "size": 32,
+            "crc32": "b8861096",
+            "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+          },
+          {
+            "name": "rx1-4.2m",
+            "size": 256,
+            "crc32": "77245b66",
+            "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+          },
+          {
+            "name": "rx1-5.3p",
+            "size": 256,
+            "crc32": "4bad7017",
+            "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+          },
+          {
+            "name": "rx1-6.8m",
+            "size": 256,
+            "crc32": "3c16f62c",
+            "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+          }
+        ]
+      },
+      "frames": 4000,
+      "smoke_bursts": 37,
+      "smoke": [
+        {
+          "waveform": 4,
+          "step": 1456,
+          "volume": 15
+        },
+        {
+          "waveform": 4,
+          "step": 1536,
+          "volume": 15
+        },
+        {
+          "waveform": 4,
+          "step": 1632,
+          "volume": 15
+        },
+        {
+          "waveform": 4,
+          "step": 1728,
+          "volume": 15
+        }
+      ],
+      "engine_steps": [
+        544
+      ],
+      "engine_hz": 49.8046875,
+      "axis_frames": {
+        "horizontal": 723,
+        "vertical": 649
+      },
+      "clips": {
+        "smoke-arcade": {
+          "path": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/arcade-motion-audio/smoke-arcade.wav",
+          "start_seconds": 36.893999999,
+          "stop_seconds": 37.124999999,
+          "scope": "Full original mix; music is not suppressed."
+        },
+        "engine-horizontal-arcade": {
+          "path": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/arcade-motion-audio/engine-horizontal-arcade.wav",
+          "start_seconds": 38.279999999,
+          "stop_seconds": 38.774999999,
+          "scope": "Full original mix; music is not suppressed."
+        },
+        "engine-vertical-arcade": {
+          "path": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/references/experiments/arcade-motion-audio/engine-vertical-arcade.wav",
+          "start_seconds": 36.316499999,
+          "stop_seconds": 36.811499999,
+          "scope": "Full original mix; music is not suppressed."
+        }
+      },
+      "hashes": {
+        "frames.tsv": "4e4828c98abd3093187e2ce79b48e0fe130b8746f5adc78480e62f4753be0585",
+        "writes.tsv": "0444455f1c8580c8e71d014f9c83371f6c35b6d6fee05ad52f8e4148ae20e715",
+        "inputs.tsv": "669064d39bea789bca88f2a3a8575318bb6cf1c30e67925d470b60801a705afa",
+        "arcade.wav": "af722279622cac55344a557950c72b7e75b2cc188ac61aec2a9abec6819c6ce6"
+      },
+      "scope": "Real original coin/start/4-way/smoke input. No guest RAM/ROM writes, forced sound calls or muted voices. Captured wavetable timbre cannot be copied literally into a square-wave PSG."
+    },
+    "smoke": {
+      "levels": [
+        16,
+        16
+      ],
+      "tone_periods": [
+        51,
+        45
+      ],
+      "envelope_periods": [
+        51,
+        45
+      ],
+      "envelope_shape": 8,
+      "noise_periods": [
+        0,
+        0
+      ],
+      "frames": 2,
+      "channels": [
+        "B",
+        "C"
+      ],
+      "original_ticks": 4,
+      "score_offset": 14592,
+      "scope": "Captured rising gated tone, pair-midpoint conversion at30Hz. B is leased only during smoke; A continues music and B is restored immediately. Hardware envelope approximates the square gate; not literal PCM."
+    },
+    "crash": {
+      "noise_period": 31,
+      "mixer": 4,
+      "frames": 25,
+      "levels": [
+        15,
+        15,
+        15,
+        15,
+        15,
+        15,
+        15,
+        15,
+        14,
+        14,
+        14,
+        13,
+        13,
+        13,
+        12,
+        12,
+        11,
+        10,
+        9,
+        8,
+        7,
+        6,
+        4,
+        2,
+        0
+      ],
+      "nominal_seconds": 0.8333333333333334,
+      "channels": [
+        "B",
+        "C"
+      ],
+      "coherent_gain_db": 6.020599913,
+      "reference": "https://github.com/mamedev/mame/blob/mame0289/src/mame/namco/nl_rallyx.cpp",
+      "scope": "Cached gated noise attack/hold/release, following the arcade circuit topology. Silent B follows C only during a crash. AY noise is an approximation; final auditory acceptance remains with user."
+    },
+    "scope": "Pitches, original linear volumes and part/loop order from original WSG execution. AY waveforms remain an approximation; runtime does not execute the original sound CPU."
+  },
+  "challenge_reveal": {
+    "units": 66,
+    "glyph_bitmap_bytes": 960,
+    "nominal_refreshes": 276,
+    "glyph_scale": "Original8x8; rock24x24; car16x16",
+    "sequence": [
+      "Typed title",
+      "Typed stage number",
+      "Rock, equality, count",
+      "Red car, equality, count",
+      "Typed rule lines"
+    ]
+  },
+  "phase_policy": {
+    "pattern_sets": 8,
+    "bytes_per_set": 16384,
+    "names_base": 2048,
+    "extra_mapper_segments": 0,
+    "additional_cache_metadata_bytes": 76,
+    "method": "Cold prewarm, validated exact-phase lookup, then256-cycle-quantized estimates for seven inactive sets. Visible set never written.",
+    "cost_table_sha256": "b2970ee55c49078369da9ff2869a50604ffac97eab2ab8ea4f0df264d866d2f7"
+  },
+  "rom_bytes": 3997696,
+  "baseline_comparison": {
+    "source": "/Users/sandersouza/.codex/worktrees/fixed-hud-lab/newrallyx/outputs/full-session/baseline-5451bd/cycle-ledger.json",
+    "rom_sha256": "5451bd8933b22f1fa334dbc538a905b5615cf1ea58623af23933e900cdf3ffa2",
+    "presented_fps": 28.879552418891517,
+    "late_frames": 19,
+    "active_frames": 252,
+    "mean_work_ms": 24.114172575848595,
+    "cold_video_mean_ms": 201.07836929793368,
+    "rom_bytes": 3932160,
+    "scope": "Same machine, source revision and scripted input; execution timing changes trajectories and active/death partitions. Not a matched marginal speedup or a full course."
+  }
+}

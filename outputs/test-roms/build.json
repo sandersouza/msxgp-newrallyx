@@ -1,0 +1,11 @@
+{
+  "rom_sha256": "34aab943550df300e3258bd6bb43f853330eca48a7a06acbf8a4b1d8702cf46a",
+  "branch": "codex/fixed-hud-lab",
+  "rom": "outputs/test-roms/newrallyx-screen4-3-enemies.rom",
+  "enemies": 3,
+  "graphics_preserved": true,
+  "frames": 913,
+  "active_fps": 29.91419972561634,
+  "late_frames": 16,
+  "scope": "First-stage keyboard route until native game over; excludes death/bonus/stopped endpoints. Full-session integration is deferred per user request."
+}

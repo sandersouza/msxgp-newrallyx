@@ -75,7 +75,10 @@ Full_DemoFrame:
     sbc hl,de
     ret c
 .finish:
+    ld a,(Session_Keys)
+    ld (Full_UIHeld),a
     xor a
+    ld (Full_UIEdges),a
     ld (Full_Attract),a
     ld (Full_AttractClock),a
     ld (Full_AttractClock+1),a

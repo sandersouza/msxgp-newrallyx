@@ -11,6 +11,7 @@ if __package__ in (None, ''):
 
 from scripts.msx.build import destination
 from scripts.msx.emulator import reference_machine, tcl
+from scripts.msx.hud_verify import symbols
 from scripts.msx.completion_route_verify import verify_header_reservations
 from scripts.scenes.bundle import digest, verify_manifest, read_json
 from scripts.scenes.storage import json_write, require_ignored, seal
@@ -27,6 +28,7 @@ def main():
     root = Path(__file__).resolve().parents[1]
     bundle = args.rom.resolve().parent
     verify_manifest(bundle)
+    syms=symbols(bundle/'raster-scroll.sym')
     verify_manifest(args.reference)
     original=read_json(args.reference/'report.json')
     if original.get('guest_state_writes') is not False or original.get('rejected_insufficient_credits') is not True:
@@ -64,7 +66,7 @@ proc step {} {
         coin1 {if {$::age==4} {keymatrixup 0 32;set ::phase release1;set ::age 0}}
         release1 {if {$::age==4} {keymatrixdown 0 4;set ::phase reject1;set ::age 0}}
         reject1 {if {$::age==4} {
-            if {$state!=1 || [debug read memory 0xc7d2]!=1} {error "Two-player credit rule diverged"}
+            if {$state!=6 || [debug read memory 0xc7d2]!=1} {error "Two-player credit rule diverged"}
             keymatrixup 0 4;keymatrixdown 0 32;set ::phase coin2;set ::age 0
         }}
         coin2 {if {$::age==4} {keymatrixup 0 32;set ::phase release2;set ::age 0}}
@@ -79,12 +81,6 @@ proc step {} {
         game {
             incr ::frames
             if {$::skip} {incr ::skip -1}
-            set player [debug read memory 0xc7ec]
-            if {$player!=$::previous} {
-                incr ::turns
-                puts $::events "$::frames $player [debug read memory 0xe00f] [debug read memory 0xd238] [debug read memory 0xe1b0]"
-                set ::previous $player
-            }
             if {$state==2} {
                 if {$::turns!=6 || [debug read memory 0xe00f]!=0 || [debug read memory 0xd238]!=0} {error "Final two-player lives/turns diverged"}
                 close $::events;close $::headers;exit 0
@@ -103,6 +99,16 @@ proc poll {} {if {[catch {step} p]} {puts stderr $p;exit 2}}
 set VDP.too_fast_vram_access_callback {puts stderr "Session VRAM timing violation";exit 2}
 after time 850 {puts stderr "Two-player natural session timeout";exit 2}
 after time 0.02 poll
+'''
+    script+=f'''\n# Observe completed foreground boundaries, never a partially swapped player.
+debug set_bp {syms['main']} {{$::phase eq "game" && [debug read memory 0xc7d0]==0 && ![debug read memory 0xc5c1]}} {{
+ set player [debug read memory 0xc7ec]
+ if {{$player!=$::previous}} {{
+  incr ::turns
+  puts $::events "$::frames $player [debug read memory 0xe00f] [debug read memory 0xd238] [debug read memory 0xe1b0]"
+  set ::previous $player
+ }}
+}}
 '''
     (out/'session.tcl').write_text('if {[catch {\n'+'\n'.join(lines)+'\n'+script+
         '\n} p]} {puts stderr $p;exit 2}\n')
