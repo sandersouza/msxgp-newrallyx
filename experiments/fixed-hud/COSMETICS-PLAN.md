@@ -16,8 +16,8 @@ Keep all changes in the full-session experimental build. Preserve the functional
    keeping numeric values, saturation and event-based refresh intact.
 3. Shift the complete cast presentation up8px. Center the single-line terminal
    caption `[5] insert coin - [1/2] start player(s)` at y186, without reversed
-   text; only5 and1/2 blink. Copy the approved namco - retrowork PNG without scaling:
-   162x10 at47,198, centered with exactly four rows of bottom margin. Optional MSX logo
+   text; only5 and1/2 blink. Copy the original arcade namco tile block without scaling:
+   56x8 at100,200, centered with exactly four rows of bottom margin. Optional MSX logo
    include: uniform3:1 reduction,54x20, top/right margins8px.
 4. Add a falling low-frequency body to the cached explosion while preserving
    smoke and engine. Verify PCM headroom and low-band energy; user accepts timbre.

@@ -4,7 +4,7 @@ from pathlib import Path
 from PIL import Image
 
 CAPTION='[5] insert coin - [1/2] start player(s)'
-BRAND='namco - retrowork'
+BRAND='namco'
 
 def pack(pixels):
     return bytes(a*16+b for a,b in zip(pixels[::2],pixels[1::2]))
@@ -30,7 +30,7 @@ def brand_reference(root):
     from title_reference import ensure
     source=ensure(root)
     with Image.open(source) as image:mask,meta=import_brand(image)
-    assert (meta['width'],meta['height'])==(162,10),'Approved signature dimensions changed'
+    assert (meta['width'],meta['height'])==(56,8),'Original arcade wordmark dimensions changed'
     meta['source_sha256']=hashlib.sha256(source.read_bytes()).hexdigest()
     return mask,meta
 
@@ -67,7 +67,7 @@ def compose(original,font,colors,brand):
         patches.append(dict(rect=[left,cy,right-left,8],on=on,off=bytes(off)))
     return pixels,dict(caption=CAPTION,caption_y=cy,caption_x=cx,brand=BRAND,brand_y=by,
         brand_x=bx,brand_width=brand_width,brand_height=brand_height,shift_y=-8,
-        brand_source='User-supplied finished artwork; no generated letter shapes',
+        brand_source='Original arcade tiles 0x19..0x1f; native pixels without resampling',
         blink_pixels=blink_pixels,blink_keys=['5','1/2'],blink_half_period_refreshes=32,inverted_keys=[]),patches
 
 def logo_enabled():

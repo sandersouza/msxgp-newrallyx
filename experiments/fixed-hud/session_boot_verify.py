@@ -123,16 +123,16 @@ after time 90 {{puts stderr "Boot/title timeout PC=[reg PC] state=[debug read me
     red=defs['RED']
     unpack=lambda data:bytes(v for b in data for v in (b>>4,b&15))
     original_pixels=unpack(source_image[:27136]);title_pixels=unpack(image[:27136])
-    # The approved native PNG is the oracle. No resampling, RGB thresholding,
-    # inferred glyphs or generated mask may redefine its geometry or holes.
-    reference=Image.open(ROOT/'references/exports/namco-retrowork/namco-retrowork-162x10.png').convert('RGBA')
-    assert reference.size==(162,10)
-    rx,ry=47,198
+    # Compare the original native tile block with no resampling or inferred glyphs.
+    from title_reference import ensure
+    reference=Image.open(ensure(ROOT)).convert('RGBA')
+    assert reference.size==(56,8)
+    rx,ry=100,200
     for y in range(195,212):
         for x in range(256):
             wanted=original_pixels[0]
-            if rx<=x<rx+162 and ry<=y<ry+10 and reference.getpixel((x-rx,y-ry))[3]==255:wanted=red
-            assert title_pixels[y*256+x]==wanted,('Signature differs from approved PNG at1:1',x,y)
+            if rx<=x<rx+56 and ry<=y<ry+8 and reference.getpixel((x-rx,y-ry))[3]==255:wanted=red
+            assert title_pixels[y*256+x]==wanted,('Signature differs from original arcade tiles at1:1',x,y)
     assert title['brand_x']==rx and title['brand_y']==ry
     assert 212-ry-reference.height==4
     bx,by,bw,bh=(title[k] for k in ('brand_x','brand_y','brand_width','brand_height'))

@@ -16,7 +16,7 @@ class Title(unittest.TestCase):
         result,meta,patches=compose(pixels,font,dict(RED=2,WHITE=15,BLACK=0),(brand,144,10,57,199))
         self.assertEqual(result[8*256+100],2)
         self.assertEqual(meta['caption'],CAPTION)
-        self.assertEqual(meta['brand'],'namco - retrowork')
+        self.assertEqual(meta['brand'],'namco')
         self.assertEqual(meta['brand_y'],199)
         self.assertEqual(meta['brand_x'],57)
         self.assertEqual(meta['brand_width'],144)
@@ -35,13 +35,13 @@ class Title(unittest.TestCase):
         self.assertTrue(all(186<=p//256<194 for p in changed))
 
     def test_signature_keeps_every_native_pixel_and_four_pixel_bottom_margin(self):
-        source=Image.new('RGBA',(162,10),(0,0,0,0))
-        ink={(x,y) for y in range(10) for x in range(162) if (x+3*y)%7==0}
+        source=Image.new('RGBA',(56,8),(0,0,0,0))
+        ink={(x,y) for y in range(8) for x in range(56) if (x+3*y)%7==0}
         for point in ink:source.putpixel(point,(200,0,0,255))
         mask,meta=import_brand(source)
-        self.assertEqual((meta['x'],meta['y'],meta['width'],meta['height']),(47,198,162,10))
-        self.assertEqual({(x,y) for y in range(10) for x in range(162) if mask[y*162+x]},ink)
-        self.assertEqual(meta['source_size'],[162,10])
+        self.assertEqual((meta['x'],meta['y'],meta['width'],meta['height']),(100,200,56,8))
+        self.assertEqual({(x,y) for y in range(8) for x in range(56) if mask[y*56+x]},ink)
+        self.assertEqual(meta['source_size'],[56,8])
         self.assertEqual(212-meta['y']-meta['height'],4)
 
     def test_signature_never_silently_resizes_an_oversized_input(self):

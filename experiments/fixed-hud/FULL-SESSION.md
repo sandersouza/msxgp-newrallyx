@@ -124,9 +124,9 @@ symbols/resources and real-keyboard start/HUD workers in the disabled build.
 The complete cast moves up8px, preserving all96 original reveal bitmaps and
 delays. One centered terminal line at y186 reads
 `[5] insert coin - [1/2] start player(s)`, without reversed text. Only5 and1/2
-blink. The approved `namco - retrowork` PNG is copied at1:1:162x10 at47,198,
-horizontally centered with exactly four blank rows below it. The complete user wordmark is imported as a
-fixed mask; no replacement glyphs are generated.
+blink. The original arcade `namco` tile block is copied at1:1:56x8 at100,200,
+horizontally centered with exactly four blank rows below it. The native wordmark
+is extracted from contributor ROM tiles; no replacement glyphs are generated.
 
 The optional MSX label is54x20 at194,8, using uniform3:1 sampling of the supplied
 black/white logo. Removing its include removes its routine, bitmap and call.
