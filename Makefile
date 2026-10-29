@@ -85,5 +85,5 @@ test:
 clean:
 	@python3 -B scripts/clean.py
 
-# Historical experiment aliases remain supported; SCREEN5 uses LEGACY=1.
--include experiments/fixed-hud/targets.mk
+# SCREEN 4 component; keep the optional include for isolated legacy/tool fixtures.
+-include src/screen4/targets.mk

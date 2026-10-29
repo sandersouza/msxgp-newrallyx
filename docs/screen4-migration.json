@@ -1,0 +1,1218 @@
+{
+  "before_commit": "fa0f63006da6edec79fc0b868372940cc8439326",
+  "scope": "Mechanical component relocation; same path depth, sibling imports, assembly names and ignored artifact locations. No runtime module extraction or logic rewrite.",
+  "source_root_before": "experiments/fixed-hud",
+  "source_root_after": "src/screen4",
+  "files": [
+    {
+      "old_path": "experiments/fixed-hud/BUILD-PROFILES.md",
+      "new_path": "src/screen4/BUILD-PROFILES.md",
+      "before_sha256": "e5c1ac1aab188a75a394d1ccae75b2037536d239f2cd8010a59fee070ea40d7f",
+      "after_sha256": "6c58a246d8c5d0f67fb730fd111d07a8324f60b2438df05e2fceb46f7a5393e3",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/COMPONENT-TIMING.md",
+      "new_path": "src/screen4/COMPONENT-TIMING.md",
+      "before_sha256": "cace613d36dcf717ceed90d9553b3608f9e2b6384f7df286fd276a6e844b76bf",
+      "after_sha256": "e464e4bca983496773ac78d3d4a47ac643eb77bb1f0e53270a07caa21a2249c8",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/COSMETICS-PLAN.md",
+      "new_path": "src/screen4/COSMETICS-PLAN.md",
+      "before_sha256": "35a874ce42c532f78a5e3ed5f62750321c718b6fd5f66a10aa7627cf656bb849",
+      "after_sha256": "35a874ce42c532f78a5e3ed5f62750321c718b6fd5f66a10aa7627cf656bb849",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/FIRST-STAGE.md",
+      "new_path": "src/screen4/FIRST-STAGE.md",
+      "before_sha256": "c4754f8e059297be2c07549bf407269acba0415b3442d60dfb9afc24d1b3d575",
+      "after_sha256": "f50d95bfafb5e53093b6704a8abc20326885dddf934e952573049af709da2694",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/FULL-SESSION.md",
+      "new_path": "src/screen4/FULL-SESSION.md",
+      "before_sha256": "bd82bf14c7213340a0f649df0bbaed4d583d1669c7b19b3de658db5bf1b254f8",
+      "after_sha256": "bd82bf14c7213340a0f649df0bbaed4d583d1669c7b19b3de658db5bf1b254f8",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/PERFORMANCE.md",
+      "new_path": "src/screen4/PERFORMANCE.md",
+      "before_sha256": "d03063e10bf7cca082645fe09800a8868a346206a5271f909a7270484008dda5",
+      "after_sha256": "d03063e10bf7cca082645fe09800a8868a346206a5271f909a7270484008dda5",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/README.md",
+      "new_path": "src/screen4/README.md",
+      "before_sha256": "c0ae7b2c7bd30553730e917678239548a5b996f89957a7ad4f75d7acd0c0f866",
+      "after_sha256": "e035cbc63352c638f1a869e0d92bef6df36341f875e9232937e3486cad5b17b2",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/TITLE.md",
+      "new_path": "src/screen4/TITLE.md",
+      "before_sha256": "de6cccec859102a6b631274b737d7eb229017816f6ea55c168363e0e01854f2d",
+      "after_sha256": "de6cccec859102a6b631274b737d7eb229017816f6ea55c168363e0e01854f2d",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/analyze.py",
+      "new_path": "src/screen4/analyze.py",
+      "before_sha256": "7e629924795e9946b95dce96eaf628d65cf80616350f64f8c128ca5927ceaeb9",
+      "after_sha256": "7e629924795e9946b95dce96eaf628d65cf80616350f64f8c128ca5927ceaeb9",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/arcade-audio-feedback.lua",
+      "new_path": "src/screen4/arcade-audio-feedback.lua",
+      "before_sha256": "dc4dcb7c9caef867685f403b325f7812d0a01365719a625650660ac2156e9b85",
+      "after_sha256": "dc4dcb7c9caef867685f403b325f7812d0a01365719a625650660ac2156e9b85",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/arcade-bang.lua",
+      "new_path": "src/screen4/arcade-bang.lua",
+      "before_sha256": "e4d68ce1a0fab552a15909e0b66d226d766432bb74f22baf49dc957b11e0ba77",
+      "after_sha256": "e4d68ce1a0fab552a15909e0b66d226d766432bb74f22baf49dc957b11e0ba77",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/arcade-challenge-speed.lua",
+      "new_path": "src/screen4/arcade-challenge-speed.lua",
+      "before_sha256": "f1328ff90cb4accdbc511a50e7afe584a425977c76397b39ea840645cfaa2680",
+      "after_sha256": "f1328ff90cb4accdbc511a50e7afe584a425977c76397b39ea840645cfaa2680",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/arcade-clear-audio.lua",
+      "new_path": "src/screen4/arcade-clear-audio.lua",
+      "before_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+      "after_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/arcade-enemy-rock.lua",
+      "new_path": "src/screen4/arcade-enemy-rock.lua",
+      "before_sha256": "ca7d7e7542d68da552665d63a9a91e8ba8a76831cf0af8505ef887dc20833706",
+      "after_sha256": "ca7d7e7542d68da552665d63a9a91e8ba8a76831cf0af8505ef887dc20833706",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/arcade-motion-audio.lua",
+      "new_path": "src/screen4/arcade-motion-audio.lua",
+      "before_sha256": "49c121c253d8fed556ae9e2d00806a335647f460b9f9162995bc7448784869d7",
+      "after_sha256": "49c121c253d8fed556ae9e2d00806a335647f460b9f9162995bc7448784869d7",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/arcade_clear_reference.py",
+      "new_path": "src/screen4/arcade_clear_reference.py",
+      "before_sha256": "27df1187795612b036b48f1c5593cec711513dd7531045d0a8265e180e084e02",
+      "after_sha256": "27df1187795612b036b48f1c5593cec711513dd7531045d0a8265e180e084e02",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/arcade_motion_reference.py",
+      "new_path": "src/screen4/arcade_motion_reference.py",
+      "before_sha256": "f2c6417f49d3b3ce6266e0effdcdae6b0de193f9cf31ec067a8fd3ad8d245f6f",
+      "after_sha256": "f2c6417f49d3b3ce6266e0effdcdae6b0de193f9cf31ec067a8fd3ad8d245f6f",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/build.py",
+      "new_path": "src/screen4/build.py",
+      "before_sha256": "62689eb11b4d1a1247698f2fdb37a604a66d9199787c55a19a0d3f423026f91e",
+      "after_sha256": "62689eb11b4d1a1247698f2fdb37a604a66d9199787c55a19a0d3f423026f91e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/build_profiles.py",
+      "new_path": "src/screen4/build_profiles.py",
+      "before_sha256": "a7766e72745dba3fcaafc1cdd93ef9602796e40f09809eb846ae6e951a27320a",
+      "after_sha256": "a7766e72745dba3fcaafc1cdd93ef9602796e40f09809eb846ae6e951a27320a",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/component_actor_profile.py",
+      "new_path": "src/screen4/component_actor_profile.py",
+      "before_sha256": "86ce731cc38936a42eac43145aa966bc2252a5683bfe24cc133f016ec45c474b",
+      "after_sha256": "86ce731cc38936a42eac43145aa966bc2252a5683bfe24cc133f016ec45c474b",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/component_profile.py",
+      "new_path": "src/screen4/component_profile.py",
+      "before_sha256": "cfb9fecf91224fca4f58d2179f5e9e637e30173b35339ece05ba2be6b7697874",
+      "after_sha256": "cfb9fecf91224fca4f58d2179f5e9e637e30173b35339ece05ba2be6b7697874",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/component_report.py",
+      "new_path": "src/screen4/component_report.py",
+      "before_sha256": "16e061aedf5ff039343ec0ed74ba9dee78a99c7d00f2c4280e998d5e503d58ee",
+      "after_sha256": "16e061aedf5ff039343ec0ed74ba9dee78a99c7d00f2c4280e998d5e503d58ee",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/component_workbook.mjs",
+      "new_path": "src/screen4/component_workbook.mjs",
+      "before_sha256": "ebd9cf7abddccb930dca30045b57bafdd73adb7721cd27867e077036b352392e",
+      "after_sha256": "ebd9cf7abddccb930dca30045b57bafdd73adb7721cd27867e077036b352392e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/edge.py",
+      "new_path": "src/screen4/edge.py",
+      "before_sha256": "269806b7a2529a9945ca20db8502b5dcc1ce970e48e6b82876526b9389ce1c31",
+      "after_sha256": "269806b7a2529a9945ca20db8502b5dcc1ce970e48e6b82876526b9389ce1c31",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/edge_contract.py",
+      "new_path": "src/screen4/edge_contract.py",
+      "before_sha256": "24a1e1131f772fcc25bd035a236e036ca815840f72c849235dbacb338785930c",
+      "after_sha256": "24a1e1131f772fcc25bd035a236e036ca815840f72c849235dbacb338785930c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/effect_codec.py",
+      "new_path": "src/screen4/effect_codec.py",
+      "before_sha256": "01cddaf384063b9127113ee4b03e8e5c26c9788d45d01d673f8f5e28b02ee4f0",
+      "after_sha256": "01cddaf384063b9127113ee4b03e8e5c26c9788d45d01d673f8f5e28b02ee4f0",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/effect_proposal.py",
+      "new_path": "src/screen4/effect_proposal.py",
+      "before_sha256": "13e7b9d7a1454ad09237c67608977d6493824dfdd67aa96f089b92e7315fe31e",
+      "after_sha256": "13e7b9d7a1454ad09237c67608977d6493824dfdd67aa96f089b92e7315fe31e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-audio.inc",
+      "new_path": "src/screen4/game-audio.inc",
+      "before_sha256": "46936df6c8c57abad1e1051f3072e20fc1f7ae8a3c237067ab34decd5d6e2830",
+      "after_sha256": "46936df6c8c57abad1e1051f3072e20fc1f7ae8a3c237067ab34decd5d6e2830",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-boundary-fast.inc",
+      "new_path": "src/screen4/game-boundary-fast.inc",
+      "before_sha256": "ba0a654f5307ff17de0fdcd25846c8db875d7371fb84755ba5e194661e9621d3",
+      "after_sha256": "ba0a654f5307ff17de0fdcd25846c8db875d7371fb84755ba5e194661e9621d3",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-core.inc",
+      "new_path": "src/screen4/game-core.inc",
+      "before_sha256": "8dde1f0abc25ded7b92254779ef840af41ca9000fdf51b08bbce6fddc9903c52",
+      "after_sha256": "8dde1f0abc25ded7b92254779ef840af41ca9000fdf51b08bbce6fddc9903c52",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-dirty.inc",
+      "new_path": "src/screen4/game-dirty.inc",
+      "before_sha256": "2c5b5e5b8b1c663fc491e2ba3f7063a7efa92ca13a7728db3af200fb734353ba",
+      "after_sha256": "2c5b5e5b8b1c663fc491e2ba3f7063a7efa92ca13a7728db3af200fb734353ba",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-hud.inc",
+      "new_path": "src/screen4/game-hud.inc",
+      "before_sha256": "4df5dd76eae9d9d7875484288dc0cbaa502aabc1986fdb9090364e8ed9ba49d8",
+      "after_sha256": "4df5dd76eae9d9d7875484288dc0cbaa502aabc1986fdb9090364e8ed9ba49d8",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-main.inc",
+      "new_path": "src/screen4/game-main.inc",
+      "before_sha256": "6a5b75a6571e3442cef48a6235b4ddc98d0711ab8bdcac65721459e44eac7c7c",
+      "after_sha256": "6a5b75a6571e3442cef48a6235b4ddc98d0711ab8bdcac65721459e44eac7c7c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-multi.inc",
+      "new_path": "src/screen4/game-multi.inc",
+      "before_sha256": "c414fba027de5ab9f22fc49c4620d8642dccd6394d84bba46d5b6557303464d1",
+      "after_sha256": "c414fba027de5ab9f22fc49c4620d8642dccd6394d84bba46d5b6557303464d1",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-name-stream.inc",
+      "new_path": "src/screen4/game-name-stream.inc",
+      "before_sha256": "13fa1e457f5b60276d8d1f6e5844404501fb1a17163290776a1208c2e5e3b6e0",
+      "after_sha256": "13fa1e457f5b60276d8d1f6e5844404501fb1a17163290776a1208c2e5e3b6e0",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-packet-fast.inc",
+      "new_path": "src/screen4/game-packet-fast.inc",
+      "before_sha256": "8fb9c02043893c0bca83e5d0c273cff154e37d71129f7ee61f5881d034650af1",
+      "after_sha256": "8fb9c02043893c0bca83e5d0c273cff154e37d71129f7ee61f5881d034650af1",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-phase-cache.inc",
+      "new_path": "src/screen4/game-phase-cache.inc",
+      "before_sha256": "3bf5af4692d9b91297c0c575a4f7c71035dffdeee1a0ad468dbf0c525f562a0d",
+      "after_sha256": "3bf5af4692d9b91297c0c575a4f7c71035dffdeee1a0ad468dbf0c525f562a0d",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-radar-fast.inc",
+      "new_path": "src/screen4/game-radar-fast.inc",
+      "before_sha256": "469117bb98eebe9f476936e4355aed23120a74145e8594dfeead06a5ed94ca0d",
+      "after_sha256": "469117bb98eebe9f476936e4355aed23120a74145e8594dfeead06a5ed94ca0d",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-ring.inc",
+      "new_path": "src/screen4/game-ring.inc",
+      "before_sha256": "a281a3a11440f459a7c7e662bec0f9189632cd1c689ac4eb8b30e89c3bf57d42",
+      "after_sha256": "a281a3a11440f459a7c7e662bec0f9189632cd1c689ac4eb8b30e89c3bf57d42",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-smoke-cache.inc",
+      "new_path": "src/screen4/game-smoke-cache.inc",
+      "before_sha256": "387fd9f6518fa0c5b24a8b35b6a53ab04f5498d2318b2ea36ebd8dac5cd1ae93",
+      "after_sha256": "387fd9f6518fa0c5b24a8b35b6a53ab04f5498d2318b2ea36ebd8dac5cd1ae93",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-sprite-clip-fast.inc",
+      "new_path": "src/screen4/game-sprite-clip-fast.inc",
+      "before_sha256": "4d368562ffe21629757999af039c0add051b96c7ecb94835304d6a0240c4efb8",
+      "after_sha256": "4d368562ffe21629757999af039c0add051b96c7ecb94835304d6a0240c4efb8",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-sprite-mask-fast.inc",
+      "new_path": "src/screen4/game-sprite-mask-fast.inc",
+      "before_sha256": "6d5ccc1b0829abf11fd63c703f6dbbd7bc3bebd426d64cc64306d101a486ffa2",
+      "after_sha256": "6d5ccc1b0829abf11fd63c703f6dbbd7bc3bebd426d64cc64306d101a486ffa2",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game-sprites.inc",
+      "new_path": "src/screen4/game-sprites.inc",
+      "before_sha256": "24db932c3277f5cf568d5c974e282a1e6464283b9d6cf69a4f5dcc85ae8b1547",
+      "after_sha256": "24db932c3277f5cf568d5c974e282a1e6464283b9d6cf69a4f5dcc85ae8b1547",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_analyze.py",
+      "new_path": "src/screen4/game_analyze.py",
+      "before_sha256": "80f07f085059ff63b87a5eb42316992dd768657970c3807604c5b451e58f559c",
+      "after_sha256": "80f07f085059ff63b87a5eb42316992dd768657970c3807604c5b451e58f559c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_audio.py",
+      "new_path": "src/screen4/game_audio.py",
+      "before_sha256": "96cd37bd5208930a2d11b3171b9fee49287c46f5773fa25687e5b47700118a43",
+      "after_sha256": "96cd37bd5208930a2d11b3171b9fee49287c46f5773fa25687e5b47700118a43",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_boundary_fast.py",
+      "new_path": "src/screen4/game_boundary_fast.py",
+      "before_sha256": "f332b91e951d9e4d76cb9cb76ae2af733daec2a54796c990872be9ccb26269f5",
+      "after_sha256": "f332b91e951d9e4d76cb9cb76ae2af733daec2a54796c990872be9ccb26269f5",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_boundary_stable.py",
+      "new_path": "src/screen4/game_boundary_stable.py",
+      "before_sha256": "5b1301fa2353c3abcb5f59e7e6ca1137fecd4bd7a41ccb7b457cea0ae8370d5b",
+      "after_sha256": "5b1301fa2353c3abcb5f59e7e6ca1137fecd4bd7a41ccb7b457cea0ae8370d5b",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_build.py",
+      "new_path": "src/screen4/game_build.py",
+      "before_sha256": "b5e18c0678e0ac5e3a4f1b120dc6f9ff7b32963e1e7a52d52dbd63acc438351c",
+      "after_sha256": "b5e18c0678e0ac5e3a4f1b120dc6f9ff7b32963e1e7a52d52dbd63acc438351c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_core.py",
+      "new_path": "src/screen4/game_core.py",
+      "before_sha256": "61e6b84343648c457324a4cddf000e62f6ff0703d38dd5405acaf9ef2ccbfdca",
+      "after_sha256": "61e6b84343648c457324a4cddf000e62f6ff0703d38dd5405acaf9ef2ccbfdca",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_core_probe.py",
+      "new_path": "src/screen4/game_core_probe.py",
+      "before_sha256": "a7d7f8f20c54cdecece4a97221177bd53b7c63e627a4663cb3c1577f68b2e618",
+      "after_sha256": "5750bdb696edae91e3fa8920194147b5160735ba5b64e9daeb397377f3ce0d94",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_dirty_probe.py",
+      "new_path": "src/screen4/game_dirty_probe.py",
+      "before_sha256": "17221b8e1773fa88941ba087952d8fa510b6e446a2be55b82665c0b84b93433c",
+      "after_sha256": "17221b8e1773fa88941ba087952d8fa510b6e446a2be55b82665c0b84b93433c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_hud.py",
+      "new_path": "src/screen4/game_hud.py",
+      "before_sha256": "263ed794a6ec80cbeaff6096af7a8456127adc0c4caf10012090e390eae9bcf8",
+      "after_sha256": "263ed794a6ec80cbeaff6096af7a8456127adc0c4caf10012090e390eae9bcf8",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_logic_profile.py",
+      "new_path": "src/screen4/game_logic_profile.py",
+      "before_sha256": "5ef2652edb41c76f76c613db2f9b949eb628673ce7271b74e37752654dd549fd",
+      "after_sha256": "5ef2652edb41c76f76c613db2f9b949eb628673ce7271b74e37752654dd549fd",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_multi.py",
+      "new_path": "src/screen4/game_multi.py",
+      "before_sha256": "bf267f9fec12fbbbe9cf069cef795f598f9f994044fe3f56f58fe86c2c5cda83",
+      "after_sha256": "bf267f9fec12fbbbe9cf069cef795f598f9f994044fe3f56f58fe86c2c5cda83",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_multi_verify.py",
+      "new_path": "src/screen4/game_multi_verify.py",
+      "before_sha256": "4772c999f1d236d515f658614774c7194b9f8a03bcf1f73d8fd99fcdbfeb2ca2",
+      "after_sha256": "4772c999f1d236d515f658614774c7194b9f8a03bcf1f73d8fd99fcdbfeb2ca2",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_phase_cache.py",
+      "new_path": "src/screen4/game_phase_cache.py",
+      "before_sha256": "336104ca0a5de0258f4a2ced4f8362c7a5a17429c373554327e10b69ac2246a4",
+      "after_sha256": "336104ca0a5de0258f4a2ced4f8362c7a5a17429c373554327e10b69ac2246a4",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_phase_verify.py",
+      "new_path": "src/screen4/game_phase_verify.py",
+      "before_sha256": "dfd4c4980ab142a136481007a21049d076365e1b057e3469cd12890d237edb3c",
+      "after_sha256": "dfd4c4980ab142a136481007a21049d076365e1b057e3469cd12890d237edb3c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_position_proof.py",
+      "new_path": "src/screen4/game_position_proof.py",
+      "before_sha256": "c04a219a106d94459476e4adaaabb5392af402ac3c302cef19e69f6986527163",
+      "after_sha256": "c04a219a106d94459476e4adaaabb5392af402ac3c302cef19e69f6986527163",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_profile.py",
+      "new_path": "src/screen4/game_profile.py",
+      "before_sha256": "4bc309f4c74a06f9173dc2fe87aaedb51a78c9494f38bc2cd5545f5ff900977c",
+      "after_sha256": "4bc309f4c74a06f9173dc2fe87aaedb51a78c9494f38bc2cd5545f5ff900977c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_radar_source_cache.py",
+      "new_path": "src/screen4/game_radar_source_cache.py",
+      "before_sha256": "c0fe956fe883ead7fed59b6aefd1b1474a32f811437ef8bc3017f403b032f12a",
+      "after_sha256": "c0fe956fe883ead7fed59b6aefd1b1474a32f811437ef8bc3017f403b032f12a",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_ring_refresh.py",
+      "new_path": "src/screen4/game_ring_refresh.py",
+      "before_sha256": "546432bcb4d2afc9e3d48b80d2ebc31052c7dc584eacc5eb4ffa09cf416329ce",
+      "after_sha256": "546432bcb4d2afc9e3d48b80d2ebc31052c7dc584eacc5eb4ffa09cf416329ce",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_route.py",
+      "new_path": "src/screen4/game_route.py",
+      "before_sha256": "844c85ae001af5ecda828c02a93dbb73b692b957111601646f18647931451df2",
+      "after_sha256": "844c85ae001af5ecda828c02a93dbb73b692b957111601646f18647931451df2",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_smoke_cache.py",
+      "new_path": "src/screen4/game_smoke_cache.py",
+      "before_sha256": "0630ad2a84432cf24e268644c332df55df3cd163577a577d1775ebf88258ded9",
+      "after_sha256": "0630ad2a84432cf24e268644c332df55df3cd163577a577d1775ebf88258ded9",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_smoke_fast.py",
+      "new_path": "src/screen4/game_smoke_fast.py",
+      "before_sha256": "3bc0faa64b481f9d297e4c442896ff613adbda1012aa1b1fc79d3f974d9bb743",
+      "after_sha256": "3bc0faa64b481f9d297e4c442896ff613adbda1012aa1b1fc79d3f974d9bb743",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_sprites.py",
+      "new_path": "src/screen4/game_sprites.py",
+      "before_sha256": "923d8e79f5ced4c54ae10654bf8e8cf53ffe4b3504a1795258734d3788fbe949",
+      "after_sha256": "923d8e79f5ced4c54ae10654bf8e8cf53ffe4b3504a1795258734d3788fbe949",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/game_verify.py",
+      "new_path": "src/screen4/game_verify.py",
+      "before_sha256": "97b776d728edebab7a419982a380492a7491526caf0455bb3d8950f838e273c2",
+      "after_sha256": "97b776d728edebab7a419982a380492a7491526caf0455bb3d8950f838e273c2",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud.py",
+      "new_path": "src/screen4/hud.py",
+      "before_sha256": "e16dc4bbd3a64b65e09d7cd71eb1d864fdf18d51bcd71a6d23ddfb553b02417b",
+      "after_sha256": "e16dc4bbd3a64b65e09d7cd71eb1d864fdf18d51bcd71a6d23ddfb553b02417b",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud/README.md",
+      "new_path": "src/screen4/hud/README.md",
+      "before_sha256": "58364a3d9b474bd4922235b2b1d4a7eb97082adf96e7842d95133a362606d784",
+      "after_sha256": "58364a3d9b474bd4922235b2b1d4a7eb97082adf96e7842d95133a362606d784",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud/classic.inc",
+      "new_path": "src/screen4/hud/classic.inc",
+      "before_sha256": "31002eb0a51f78d3e6f18e9aea2666fdfa449be6853356eb9d55d05c83bc8cfb",
+      "after_sha256": "31002eb0a51f78d3e6f18e9aea2666fdfa449be6853356eb9d55d05c83bc8cfb",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud/compact.inc",
+      "new_path": "src/screen4/hud/compact.inc",
+      "before_sha256": "725b97d2a031463c6c8c6450e86e203661c82dbe0af6723a71f1e0a389634e2a",
+      "after_sha256": "725b97d2a031463c6c8c6450e86e203661c82dbe0af6723a71f1e0a389634e2a",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud/native-inputs.inc",
+      "new_path": "src/screen4/hud/native-inputs.inc",
+      "before_sha256": "02ea5381fe660e5ca7261e0a579bbb9a44dfc0460c90f9639ce8542f82cfa959",
+      "after_sha256": "02ea5381fe660e5ca7261e0a579bbb9a44dfc0460c90f9639ce8542f82cfa959",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud/small-round.inc",
+      "new_path": "src/screen4/hud/small-round.inc",
+      "before_sha256": "cfa4b75eeb19e0b78c65b8e324904ff69833e2da4b628e547945b4e0bff92b19",
+      "after_sha256": "cfa4b75eeb19e0b78c65b8e324904ff69833e2da4b628e547945b4e0bff92b19",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud_module.py",
+      "new_path": "src/screen4/hud_module.py",
+      "before_sha256": "ffaecfc6d6e58af3c34511580c2ee8beec647cf1d77191ea9429768ad9072c5d",
+      "after_sha256": "ffaecfc6d6e58af3c34511580c2ee8beec647cf1d77191ea9429768ad9072c5d",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud_programs.py",
+      "new_path": "src/screen4/hud_programs.py",
+      "before_sha256": "131e595bc120143dc3f6e466ca288cbbc0d573cf82f1b3c5087084ca320a2d28",
+      "after_sha256": "131e595bc120143dc3f6e466ca288cbbc0d573cf82f1b3c5087084ca320a2d28",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/hud_tile_layout.py",
+      "new_path": "src/screen4/hud_tile_layout.py",
+      "before_sha256": "e6774a8c5191e5ed72601aaa0be2a506cb340411321ec2ec3daba76935e6c770",
+      "after_sha256": "e6774a8c5191e5ed72601aaa0be2a506cb340411321ec2ec3daba76935e6c770",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/lab.asm",
+      "new_path": "src/screen4/lab.asm",
+      "before_sha256": "dc3e10fb35497185d6832e4a834cf361f377871397cb3a98e9cfeae79fe69bd2",
+      "after_sha256": "dc3e10fb35497185d6832e4a834cf361f377871397cb3a98e9cfeae79fe69bd2",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/patch_square_probe.py",
+      "new_path": "src/screen4/patch_square_probe.py",
+      "before_sha256": "e938917b4582aab2ede566d057861ba12410e78628362417140454e1ea161c63",
+      "after_sha256": "e938917b4582aab2ede566d057861ba12410e78628362417140454e1ea161c63",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/performance_report.py",
+      "new_path": "src/screen4/performance_report.py",
+      "before_sha256": "290f56fd52e2550e78c1635f12fe5e1aa68d4242d4aecfe5565f308d938234d2",
+      "after_sha256": "98f6f35be15aab040fa6b8afb3cd7617504195791379cbdd9447266db940a14f",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/phase_cache_report.py",
+      "new_path": "src/screen4/phase_cache_report.py",
+      "before_sha256": "6d0dc4dd394842822a180eb648321076936995ca7c1ec37a11799fe1b0f6f8d2",
+      "after_sha256": "6d0dc4dd394842822a180eb648321076936995ca7c1ec37a11799fe1b0f6f8d2",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/prepare.py",
+      "new_path": "src/screen4/prepare.py",
+      "before_sha256": "0410b298c4229ea41544b53f142dd007019f2e8a67f45b38fb4937f988e4560e",
+      "after_sha256": "0410b298c4229ea41544b53f142dd007019f2e8a67f45b38fb4937f988e4560e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/profile.py",
+      "new_path": "src/screen4/profile.py",
+      "before_sha256": "f58c1d7d242939da8b025bc619fb0e4bc426e8c290a25194b724f2f73c287725",
+      "after_sha256": "f58c1d7d242939da8b025bc619fb0e4bc426e8c290a25194b724f2f73c287725",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/radar_variants.py",
+      "new_path": "src/screen4/radar_variants.py",
+      "before_sha256": "aca34ab47f0dec3d38f61d86ebf8762e8568955ba3bc95e65291d8e6b2aa1f14",
+      "after_sha256": "aca34ab47f0dec3d38f61d86ebf8762e8568955ba3bc95e65291d8e6b2aa1f14",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/raster_phase_profile.py",
+      "new_path": "src/screen4/raster_phase_profile.py",
+      "before_sha256": "67ad300f58969222548ed4b6e21d4f27590f4fb03061ac716a753170619be10c",
+      "after_sha256": "67ad300f58969222548ed4b6e21d4f27590f4fb03061ac716a753170619be10c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/ring.inc",
+      "new_path": "src/screen4/ring.inc",
+      "before_sha256": "a60f9e032990aea08844e61ad12a4d53c4e2fd37ce93bcd77272986ac5b61916",
+      "after_sha256": "a60f9e032990aea08844e61ad12a4d53c4e2fd37ce93bcd77272986ac5b61916",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/scanout.py",
+      "new_path": "src/screen4/scanout.py",
+      "before_sha256": "0c27c7cb0f35c073e1e31ae882323626b84c2bdaf205d046b81083adfe74b1d4",
+      "after_sha256": "0c27c7cb0f35c073e1e31ae882323626b84c2bdaf205d046b81083adfe74b1d4",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-boot.inc",
+      "new_path": "src/screen4/session-boot.inc",
+      "before_sha256": "e64c697773e19dac1d36ca4066cd6f5c5f1fd54b09025de0ced676e3cae33d69",
+      "after_sha256": "e64c697773e19dac1d36ca4066cd6f5c5f1fd54b09025de0ced676e3cae33d69",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-challenge.inc",
+      "new_path": "src/screen4/session-challenge.inc",
+      "before_sha256": "ecb14ff0fe65a2da11e0ba3bf98fbf7c85d85c45bc7f819c8b65555c471c388e",
+      "after_sha256": "ecb14ff0fe65a2da11e0ba3bf98fbf7c85d85c45bc7f819c8b65555c471c388e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-cold.inc",
+      "new_path": "src/screen4/session-cold.inc",
+      "before_sha256": "f621b91669870f8dc73abcef4adaed5208c550b54a274b00c6da7ced42cc6674",
+      "after_sha256": "f621b91669870f8dc73abcef4adaed5208c550b54a274b00c6da7ced42cc6674",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-controls.tcl",
+      "new_path": "src/screen4/session-controls.tcl",
+      "before_sha256": "1761b20ab907d097ac4724d93b8a68ee1cef9f74924ac8be48f7f23313ba5753",
+      "after_sha256": "1761b20ab907d097ac4724d93b8a68ee1cef9f74924ac8be48f7f23313ba5753",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-enemy-rock.inc",
+      "new_path": "src/screen4/session-enemy-rock.inc",
+      "before_sha256": "144117c5334713df6c9484540aacb0c19bfde0b3adc435b7f9e19d85f3963e53",
+      "after_sha256": "144117c5334713df6c9484540aacb0c19bfde0b3adc435b7f9e19d85f3963e53",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-flags.inc",
+      "new_path": "src/screen4/session-flags.inc",
+      "before_sha256": "015939c5031cdb5923b5d987bb896f479240613b0a21282fa65c7f955542827d",
+      "after_sha256": "015939c5031cdb5923b5d987bb896f479240613b0a21282fa65c7f955542827d",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-input.inc",
+      "new_path": "src/screen4/session-input.inc",
+      "before_sha256": "602393799eec9bbb691f11798247337d8fb7610264cd0bc81233dd008ca5cab4",
+      "after_sha256": "602393799eec9bbb691f11798247337d8fb7610264cd0bc81233dd008ca5cab4",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-msx-logo.inc",
+      "new_path": "src/screen4/session-msx-logo.inc",
+      "before_sha256": "5f48236b61b96356576305b72a82166bbbeddb7242bfdf0e03768bafbf042beb",
+      "after_sha256": "5f48236b61b96356576305b72a82166bbbeddb7242bfdf0e03768bafbf042beb",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-pattern-address.inc",
+      "new_path": "src/screen4/session-pattern-address.inc",
+      "before_sha256": "f8fc0b516712b4ce378b50c782f953e45b3c9a2576ca9f04d4ca95f6696493a6",
+      "after_sha256": "f8fc0b516712b4ce378b50c782f953e45b3c9a2576ca9f04d4ca95f6696493a6",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-phase.inc",
+      "new_path": "src/screen4/session-phase.inc",
+      "before_sha256": "d9c7e31eefd18d74049c880ac85af9dc2c6728aaf55854b05a572cc232669c59",
+      "after_sha256": "d9c7e31eefd18d74049c880ac85af9dc2c6728aaf55854b05a572cc232669c59",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-resident.inc",
+      "new_path": "src/screen4/session-resident.inc",
+      "before_sha256": "960f3013650b8e228ea9bf7150905b7dc9ffb45ed23f8fb666b12ba564ad4e88",
+      "after_sha256": "960f3013650b8e228ea9bf7150905b7dc9ffb45ed23f8fb666b12ba564ad4e88",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-scenarios.tcl",
+      "new_path": "src/screen4/session-scenarios.tcl",
+      "before_sha256": "5f7f23bb33609e0e353e972810df7e15264f30bc961dde154eccdc5dc4109d6c",
+      "after_sha256": "5f7f23bb33609e0e353e972810df7e15264f30bc961dde154eccdc5dc4109d6c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-sprite-clip.inc",
+      "new_path": "src/screen4/session-sprite-clip.inc",
+      "before_sha256": "7e56fb8cd1185dc82a1e93313c88a518249233965aefee13ef3e805fdd8df43f",
+      "after_sha256": "7e56fb8cd1185dc82a1e93313c88a518249233965aefee13ef3e805fdd8df43f",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-sprite-static.inc",
+      "new_path": "src/screen4/session-sprite-static.inc",
+      "before_sha256": "45544c4faadfa62ad7459b9280b72c17cb6ca598db5050640582ece25287cb4a",
+      "after_sha256": "45544c4faadfa62ad7459b9280b72c17cb6ca598db5050640582ece25287cb4a",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-startup-options.inc",
+      "new_path": "src/screen4/session-startup-options.inc",
+      "before_sha256": "58c6d2665960d89a67ddafbd629e5bbc5f137fa8a2fc3631dfaf4ed51b879a98",
+      "after_sha256": "58c6d2665960d89a67ddafbd629e5bbc5f137fa8a2fc3631dfaf4ed51b879a98",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-test.inc",
+      "new_path": "src/screen4/session-test.inc",
+      "before_sha256": "dfb65b98a5bbe730e33789680a359897671b14f203b30473409262b90547d0b0",
+      "after_sha256": "dfb65b98a5bbe730e33789680a359897671b14f203b30473409262b90547d0b0",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-title.inc",
+      "new_path": "src/screen4/session-title.inc",
+      "before_sha256": "c9ae7a4bc7d994375cd5e796535f0726cb7f7be7883a08f35162ec90dcd37853",
+      "after_sha256": "c9ae7a4bc7d994375cd5e796535f0726cb7f7be7883a08f35162ec90dcd37853",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-ui-options.inc",
+      "new_path": "src/screen4/session-ui-options.inc",
+      "before_sha256": "53373b045d41f94ad928d9f2392b933e551b8695aeefbe92dcb007926d329f60",
+      "after_sha256": "53373b045d41f94ad928d9f2392b933e551b8695aeefbe92dcb007926d329f60",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session-ui.inc",
+      "new_path": "src/screen4/session-ui.inc",
+      "before_sha256": "0fb3de729e1d93eb22561d2264120739440720a82a3c6801200b53757216d492",
+      "after_sha256": "0fb3de729e1d93eb22561d2264120739440720a82a3c6801200b53757216d492",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_audio_assets.py",
+      "new_path": "src/screen4/session_audio_assets.py",
+      "before_sha256": "6068e5016836459670a742f6c3766e755ca7f13bd472ab5e9e7baaab9314d943",
+      "after_sha256": "6068e5016836459670a742f6c3766e755ca7f13bd472ab5e9e7baaab9314d943",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_audio_compare.py",
+      "new_path": "src/screen4/session_audio_compare.py",
+      "before_sha256": "5439a7515ba76f49609b1c37b35650727ca039fac201e219747b114bb82ad49f",
+      "after_sha256": "5439a7515ba76f49609b1c37b35650727ca039fac201e219747b114bb82ad49f",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_audio_verify.py",
+      "new_path": "src/screen4/session_audio_verify.py",
+      "before_sha256": "a485f662bc0fa9d6c90750bf0e908854c84cfec82a6e804ebed78897ffeede03",
+      "after_sha256": "a485f662bc0fa9d6c90750bf0e908854c84cfec82a6e804ebed78897ffeede03",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_boot.py",
+      "new_path": "src/screen4/session_boot.py",
+      "before_sha256": "412f67fb32882ee1b82a494e067e2643d5b7026c7e8dae7961cee1969faa1222",
+      "after_sha256": "412f67fb32882ee1b82a494e067e2643d5b7026c7e8dae7961cee1969faa1222",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_boot_module_verify.py",
+      "new_path": "src/screen4/session_boot_module_verify.py",
+      "before_sha256": "8b2ce15445631e888cfb55f4319ffbcd7870a3bf7f52acffd6ad81ba5cffbc5b",
+      "after_sha256": "48bf514b3b13af73835284f2604ba741ee4a9d7c82b66a14a30d136be927411d",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_boot_skip_verify.py",
+      "new_path": "src/screen4/session_boot_skip_verify.py",
+      "before_sha256": "c96e0f7e47d26d15a179ec8db84a118558c13e2edf60024d090725813d17a1fb",
+      "after_sha256": "c96e0f7e47d26d15a179ec8db84a118558c13e2edf60024d090725813d17a1fb",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_boot_verify.py",
+      "new_path": "src/screen4/session_boot_verify.py",
+      "before_sha256": "eab223684d9f9ab554ba61394be448471fcad08bbb0d7d4da21a0dff5557604b",
+      "after_sha256": "eab223684d9f9ab554ba61394be448471fcad08bbb0d7d4da21a0dff5557604b",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_build.py",
+      "new_path": "src/screen4/session_build.py",
+      "before_sha256": "a99e106cbf09ff8e4f0456d6d5edcf74bf7fe897f49674830cb3342309257009",
+      "after_sha256": "a99e106cbf09ff8e4f0456d6d5edcf74bf7fe897f49674830cb3342309257009",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_completion.py",
+      "new_path": "src/screen4/session_completion.py",
+      "before_sha256": "0911d4c8b343a81f6f1c7ee1d7772fb679ba3f8b30df7bd7c3de774319874620",
+      "after_sha256": "0911d4c8b343a81f6f1c7ee1d7772fb679ba3f8b30df7bd7c3de774319874620",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_contracts.py",
+      "new_path": "src/screen4/session_contracts.py",
+      "before_sha256": "bbabe78cc23c85fa325c46ccc9c3807b7b3cd60dac45e061f128a6e3260f670c",
+      "after_sha256": "bbabe78cc23c85fa325c46ccc9c3807b7b3cd60dac45e061f128a6e3260f670c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_cosmetics.py",
+      "new_path": "src/screen4/session_cosmetics.py",
+      "before_sha256": "b38eaa1f4b824afc18427aae26888eb8f9aa7b25a0283c85e3a4038cb47916dd",
+      "after_sha256": "b38eaa1f4b824afc18427aae26888eb8f9aa7b25a0283c85e3a4038cb47916dd",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_phase.py",
+      "new_path": "src/screen4/session_phase.py",
+      "before_sha256": "a9f900f7525b1dffea534d3b4ea32a421f2315097d45128e74946aeae2fc8a70",
+      "after_sha256": "a9f900f7525b1dffea534d3b4ea32a421f2315097d45128e74946aeae2fc8a70",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_profile.py",
+      "new_path": "src/screen4/session_profile.py",
+      "before_sha256": "b8c5e0563b2930779d2a3797f9302dab13787ff1832c2ede796637af3950de11",
+      "after_sha256": "b8c5e0563b2930779d2a3797f9302dab13787ff1832c2ede796637af3950de11",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_profile_adapter.py",
+      "new_path": "src/screen4/session_profile_adapter.py",
+      "before_sha256": "6868f4405911e8db4bf249759e4f7c8c79154e92eeb410c12f4bec18898bf238",
+      "after_sha256": "6868f4405911e8db4bf249759e4f7c8c79154e92eeb410c12f4bec18898bf238",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_report.py",
+      "new_path": "src/screen4/session_report.py",
+      "before_sha256": "22145d68151a0415b0d18f318098fcc225a7f31d2b90c95f03e4fcd9ee0cf70e",
+      "after_sha256": "22145d68151a0415b0d18f318098fcc225a7f31d2b90c95f03e4fcd9ee0cf70e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_rocks_verify.py",
+      "new_path": "src/screen4/session_rocks_verify.py",
+      "before_sha256": "90bcea8a0a10f007d64f285732d1b0ef66c52610522fb829e0ca3434ecbc13a9",
+      "after_sha256": "90bcea8a0a10f007d64f285732d1b0ef66c52610522fb829e0ca3434ecbc13a9",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_speed_verify.py",
+      "new_path": "src/screen4/session_speed_verify.py",
+      "before_sha256": "65f5c76521bdd9dcc22735a5338dd4bb273690320db12d8440a9f5caa2e4d29e",
+      "after_sha256": "65f5c76521bdd9dcc22735a5338dd4bb273690320db12d8440a9f5caa2e4d29e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_sprite_verify.py",
+      "new_path": "src/screen4/session_sprite_verify.py",
+      "before_sha256": "9d5884eddf3a414ad2ad90320caa68e5d515808f151cb24a8f45e5fc08776498",
+      "after_sha256": "9d5884eddf3a414ad2ad90320caa68e5d515808f151cb24a8f45e5fc08776498",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_steering_verify.py",
+      "new_path": "src/screen4/session_steering_verify.py",
+      "before_sha256": "4043c9d0114456a20e746b37be2b1f9db0f61f9a159ea42681844da40d7cda9c",
+      "after_sha256": "4043c9d0114456a20e746b37be2b1f9db0f61f9a159ea42681844da40d7cda9c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_title.py",
+      "new_path": "src/screen4/session_title.py",
+      "before_sha256": "0bca76055e1ee81fa399346b246cc40de8395d0ad867b01aedbe1760fbf9cb19",
+      "after_sha256": "0bca76055e1ee81fa399346b246cc40de8395d0ad867b01aedbe1760fbf9cb19",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_verify.py",
+      "new_path": "src/screen4/session_verify.py",
+      "before_sha256": "7c84003ba681d856386c8c41997cf57463a68e373f0dcbe1bd7b7ee34bcf8cd9",
+      "after_sha256": "7c84003ba681d856386c8c41997cf57463a68e373f0dcbe1bd7b7ee34bcf8cd9",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/session_workbook.mjs",
+      "new_path": "src/screen4/session_workbook.mjs",
+      "before_sha256": "b74cb5b2c96cc928ae54ca45dcf1382dc68b8110c83799c201d8511d3a950d40",
+      "after_sha256": "b74cb5b2c96cc928ae54ca45dcf1382dc68b8110c83799c201d8511d3a950d40",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/targets.mk",
+      "new_path": "src/screen4/targets.mk",
+      "before_sha256": "91dbbfe0eb7bf1590f0ceddcc110ab6cc527908b29b128032c599ffac2fcb66b",
+      "after_sha256": "e86dcd7ccfc15e73e54165615a54e09354944a4a59428014382e13c9de304c08",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_actors.py",
+      "new_path": "src/screen4/test_game_actors.py",
+      "before_sha256": "b02e248fb2f156dc398e961af7290b6283264a3c052529fb15494be0c31a04bf",
+      "after_sha256": "96d4e5d9ee0cba241d6649a6310e39ad7e6e9ce926989b0827f76599a87fc7da",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_audio.py",
+      "new_path": "src/screen4/test_game_audio.py",
+      "before_sha256": "28d876f96618544927ee13da2df4bb196dca4843b99b04b9ab483341d8fc4740",
+      "after_sha256": "28d876f96618544927ee13da2df4bb196dca4843b99b04b9ab483341d8fc4740",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_boundary_fast.py",
+      "new_path": "src/screen4/test_game_boundary_fast.py",
+      "before_sha256": "83c8429c2cef834f7eea805a4d46a91ee742df41c90643e12d9a80dbcb6ed7f0",
+      "after_sha256": "83c8429c2cef834f7eea805a4d46a91ee742df41c90643e12d9a80dbcb6ed7f0",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_boundary_stable.py",
+      "new_path": "src/screen4/test_game_boundary_stable.py",
+      "before_sha256": "d1cf96346692e6a5ac6cf3f16c96d5d2d7ad08eed8f20e4c7456218870201e8c",
+      "after_sha256": "d1cf96346692e6a5ac6cf3f16c96d5d2d7ad08eed8f20e4c7456218870201e8c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_core.py",
+      "new_path": "src/screen4/test_game_core.py",
+      "before_sha256": "2cf629703b9976e48e55f05533b3aa5cc89b7d6ddd205475d85da2b56af03264",
+      "after_sha256": "2cf629703b9976e48e55f05533b3aa5cc89b7d6ddd205475d85da2b56af03264",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_dirty.py",
+      "new_path": "src/screen4/test_game_dirty.py",
+      "before_sha256": "f0a34a15a78643ee159a073fbcc58f1ce08fda76e0048dc6a274737d0ab4042e",
+      "after_sha256": "f0a34a15a78643ee159a073fbcc58f1ce08fda76e0048dc6a274737d0ab4042e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_effects.py",
+      "new_path": "src/screen4/test_game_effects.py",
+      "before_sha256": "82f69be549546b0edcac2460d0e2c92276bbd4a729bfbcc1c5cae016362f10f7",
+      "after_sha256": "82f69be549546b0edcac2460d0e2c92276bbd4a729bfbcc1c5cae016362f10f7",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_hud.py",
+      "new_path": "src/screen4/test_game_hud.py",
+      "before_sha256": "0cd0e68a6bf5d2459657e247897df51bfb62df7361c6074129e0d11a8d434951",
+      "after_sha256": "0cd0e68a6bf5d2459657e247897df51bfb62df7361c6074129e0d11a8d434951",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_multi.py",
+      "new_path": "src/screen4/test_game_multi.py",
+      "before_sha256": "56df146adbc0aa454868af37f88f52f4f09f8fd916587720e8c7a6a8442e3934",
+      "after_sha256": "56df146adbc0aa454868af37f88f52f4f09f8fd916587720e8c7a6a8442e3934",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_name_stream.py",
+      "new_path": "src/screen4/test_game_name_stream.py",
+      "before_sha256": "e64af1543f1378bae6f4557c300f23694d66c51e919538ceca34d5eda81e93be",
+      "after_sha256": "e64af1543f1378bae6f4557c300f23694d66c51e919538ceca34d5eda81e93be",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_packet_fast.py",
+      "new_path": "src/screen4/test_game_packet_fast.py",
+      "before_sha256": "830f0a46bca2e66f6733884ad95a9b832d5b42e56f1b7c467cd0af818b45e4f8",
+      "after_sha256": "830f0a46bca2e66f6733884ad95a9b832d5b42e56f1b7c467cd0af818b45e4f8",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_radar.py",
+      "new_path": "src/screen4/test_game_radar.py",
+      "before_sha256": "9a4ced0f642624c5b06748a3e7d637b3165dc64db371b7695ef289374a16c750",
+      "after_sha256": "1a5e7596508ef43730114cf70bf87710dd5deedfd50f6b346021058a31e94a53",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_radar_fast.py",
+      "new_path": "src/screen4/test_game_radar_fast.py",
+      "before_sha256": "79f5fe318e5126e2b403208f93ef1213f87985edcb607a0fa9fb8a0432b7a789",
+      "after_sha256": "6c992b2ac56307d3b883204f05b3b8a8ce0ecf9d583ffafbe5e51bf818e09ee0",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_radar_source_cache.py",
+      "new_path": "src/screen4/test_game_radar_source_cache.py",
+      "before_sha256": "8593445feffaa394c23f84292bb57817b6a57550ee4dea7ce1d99f8d4e92e308",
+      "after_sha256": "8593445feffaa394c23f84292bb57817b6a57550ee4dea7ce1d99f8d4e92e308",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_ring.py",
+      "new_path": "src/screen4/test_game_ring.py",
+      "before_sha256": "7d326cac0b3d692fce782c60ac8e83d77b456069a765af75630cf9ba98d92454",
+      "after_sha256": "7d326cac0b3d692fce782c60ac8e83d77b456069a765af75630cf9ba98d92454",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_smoke_cache.py",
+      "new_path": "src/screen4/test_game_smoke_cache.py",
+      "before_sha256": "a6ec28dd67ac59f93fa9f1a6d1fc61582faee7fb1fce5c33d11bfd15c3aa97ce",
+      "after_sha256": "a6ec28dd67ac59f93fa9f1a6d1fc61582faee7fb1fce5c33d11bfd15c3aa97ce",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_smoke_fast.py",
+      "new_path": "src/screen4/test_game_smoke_fast.py",
+      "before_sha256": "2121bed8d47aa38d1bbdb3c7268579226cf841fe815e6eca21840f663eb2cf43",
+      "after_sha256": "2121bed8d47aa38d1bbdb3c7268579226cf841fe815e6eca21840f663eb2cf43",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_sprite_mask_fast.py",
+      "new_path": "src/screen4/test_game_sprite_mask_fast.py",
+      "before_sha256": "324d2f0f868b59990e228ab768de15daa3255ee41fc4c409309f20fd7bc0ab9c",
+      "after_sha256": "31704a404d5cd45c7c319351c954c6841b4fc868ebf5ce62403df72375687aec",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_game_sprites.py",
+      "new_path": "src/screen4/test_game_sprites.py",
+      "before_sha256": "f99f2567c1a0c937c975a198e960925ad430edb216fdae3e1df63287c061fb79",
+      "after_sha256": "adaba2c870a36a5290921b4fc80c13e6845a98e9265e4006045943b5888ec831",
+      "content_unchanged": false
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_hud.py",
+      "new_path": "src/screen4/test_hud.py",
+      "before_sha256": "88a4fc60acef2e29e81f8598e6c101aa82bbbec81343c8b09d92f5b898034bcc",
+      "after_sha256": "88a4fc60acef2e29e81f8598e6c101aa82bbbec81343c8b09d92f5b898034bcc",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_hud_programs.py",
+      "new_path": "src/screen4/test_hud_programs.py",
+      "before_sha256": "422ddd77b0fb14e95d35f4895ea0907af0ca7af058b368924c46d78d2a0a4bcc",
+      "after_sha256": "422ddd77b0fb14e95d35f4895ea0907af0ca7af058b368924c46d78d2a0a4bcc",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_hud_tile_layout.py",
+      "new_path": "src/screen4/test_hud_tile_layout.py",
+      "before_sha256": "e0c414f5af00b47a08a2d2aa1799d0f82a45d14bf44493ad095b4baabfb8a905",
+      "after_sha256": "e0c414f5af00b47a08a2d2aa1799d0f82a45d14bf44493ad095b4baabfb8a905",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_session_boot.py",
+      "new_path": "src/screen4/test_session_boot.py",
+      "before_sha256": "d28be49f1a033dc56c36e56944f3b525fae924bd6b91aaab899dd3578f09ca8e",
+      "after_sha256": "d28be49f1a033dc56c36e56944f3b525fae924bd6b91aaab899dd3578f09ca8e",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_session_cosmetics.py",
+      "new_path": "src/screen4/test_session_cosmetics.py",
+      "before_sha256": "1cbfd381fd7a096c902916e36fcf47a80cdccd6bc80c792f57892c44cc00832c",
+      "after_sha256": "1cbfd381fd7a096c902916e36fcf47a80cdccd6bc80c792f57892c44cc00832c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/test_session_title.py",
+      "new_path": "src/screen4/test_session_title.py",
+      "before_sha256": "99646711e882c012be4172ac73aa1571203450871265971ca867f082892a7b4b",
+      "after_sha256": "99646711e882c012be4172ac73aa1571203450871265971ca867f082892a7b4b",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/title_reference.py",
+      "new_path": "src/screen4/title_reference.py",
+      "before_sha256": "c938ea573cf35d416308a9a2615311eeb5e26be84e367d2095dd21609520ea78",
+      "after_sha256": "c938ea573cf35d416308a9a2615311eeb5e26be84e367d2095dd21609520ea78",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/verify.py",
+      "new_path": "src/screen4/verify.py",
+      "before_sha256": "a8ff2ebed7de5a51f64345218f24b4387540e961c4eb3146a3ce11744c03eb0c",
+      "after_sha256": "a8ff2ebed7de5a51f64345218f24b4387540e961c4eb3146a3ce11744c03eb0c",
+      "content_unchanged": true
+    },
+    {
+      "old_path": "experiments/fixed-hud/workbook.mjs",
+      "new_path": "src/screen4/workbook.mjs",
+      "before_sha256": "c8a4cf0c4bfd9dc6db6e18f24734bab7aa2a035713a7292ce5ba9fbd5019a595",
+      "after_sha256": "c8a4cf0c4bfd9dc6db6e18f24734bab7aa2a035713a7292ce5ba9fbd5019a595",
+      "content_unchanged": true
+    }
+  ],
+  "path_updates": [
+    "Makefile",
+    "README.md",
+    "docs/architecture.md",
+    "docs/checkpoints.md",
+    "docs/maintenance.md",
+    "docs/setup.md",
+    "documentation-spec.json",
+    "src/screen4/BUILD-PROFILES.md",
+    "src/screen4/COMPONENT-TIMING.md",
+    "src/screen4/FIRST-STAGE.md",
+    "src/screen4/README.md",
+    "src/screen4/game_core_probe.py",
+    "src/screen4/performance_report.py",
+    "src/screen4/session_boot_module_verify.py",
+    "src/screen4/targets.mk",
+    "src/screen4/test_game_actors.py",
+    "src/screen4/test_game_radar.py",
+    "src/screen4/test_game_radar_fast.py",
+    "src/screen4/test_game_sprite_mask_fast.py",
+    "src/screen4/test_game_sprites.py",
+    "tests/test_make_modes.py",
+    "tests/test_repository_inventory.py"
+  ],
+  "validation": {
+    "roms": [
+      {
+        "command": "make build",
+        "path": "references/experiments/full-session/fixed-hud.rom",
+        "sha256": "98ce0135b628a1837a3d6df2910f572e466b4bffe465344238f4c44a9015346a",
+        "bytes": 4177920,
+        "before_after_identical": true
+      },
+      {
+        "command": "make build TEST_MODE=1",
+        "path": "references/experiments/full-session-test/fixed-hud.rom",
+        "sha256": "9f61724047bb444a6ea7fe9e87a53f0138436f8f1a84ee3b18a3d55bc713e53b",
+        "bytes": 4177920,
+        "before_after_identical": true
+      },
+      {
+        "command": "make build LEGACY=1",
+        "path": "references/build/newrallyx.rom",
+        "sha256": "e95a4a803c0ac3d0096b7021c877a56086d09d6ba8ed307dde7a8d039198537c",
+        "bytes": 2097152,
+        "before_after_identical": true
+      },
+      {
+        "command": "make build-first-stage ENEMIES=3",
+        "path": "references/experiments/stage-one-3-enemies/fixed-hud.rom",
+        "sha256": "ae106e6a3d22e295c0e5eac1eaf74f1c1626485c889268d15149f5fdb53dae5c",
+        "bytes": 3604480,
+        "before_after_identical": true
+      },
+      {
+        "command": "make build-hud-lab",
+        "path": "references/experiments/fixed-hud/fixed-hud.rom",
+        "sha256": "e1d5a44c743b62241351c44959fd047a65f0fbe230f1b49a4f1006c6c40c64cc",
+        "bytes": 3489792,
+        "before_after_identical": true
+      }
+    ],
+    "assembly_include_tcl_files_unchanged": 41,
+    "general_unit_tests": {
+      "run": 439,
+      "passed": true
+    },
+    "component_unit_tests": {
+      "run": 69,
+      "skipped": 1,
+      "passed": true,
+      "skip": "Assembled multi-enemy initializer requires explicit --emulator"
+    },
+    "integrated_suite": {
+      "command": "make test-experiments",
+      "passed": true,
+      "steering_refreshes": 16000
+    },
+    "test_mode_controls": {
+      "passed": true,
+      "rom_sha256": "9f61724047bb444a6ea7fe9e87a53f0138436f8f1a84ee3b18a3d55bc713e53b"
+    },
+    "make_target_plans_checked": 17,
+    "profile": {
+      "before_after_active_statistics_identical": true,
+      "measured": {
+        "rom_sha256": "98ce0135b628a1837a3d6df2910f572e466b4bffe465344238f4c44a9015346a",
+        "cpu_hz": 3579545,
+        "machine": "Panasonic_FS-A1WSX_NR128",
+        "emulator": "openMSX 21.0\nflavour: opt\ncomponents: CORE GL LASERDISC",
+        "workload": "Full session, keyboard coin/start and F5 to native round5 (RND4), layout1, three native enemies; frames5..360, fixed directional input",
+        "hud": true,
+        "audio": true,
+        "limitsprites": true,
+        "active_frames": 238,
+        "active_seconds": 7.959028032892453,
+        "presented_fps": 29.903148853906796,
+        "cadence": {
+          "2": 237,
+          "3": 1
+        },
+        "late_frames": 1,
+        "enemy_distinct_positions": [
+          12,
+          11,
+          14
+        ],
+        "work": {
+          "min": 64632.9999999851,
+          "mean": 81013.56302521084,
+          "p95": 109983.0,
+          "max": 127374.9999999851
+        },
+        "interval": {
+          "min": 115099.0000000149,
+          "mean": 119704.61764705888,
+          "p95": 121028.0,
+          "max": 176387.0
+        }
+      },
+      "scope": "Matched short directional native-round-5 workload; three moving enemies; no full-course or hardware acceptance claim"
+    },
+    "raw_evidence": "references/issue34/migration/",
+    "source_backup": "references/issue34/migration/before.tar"
+  }
+}

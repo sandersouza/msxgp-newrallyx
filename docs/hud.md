@@ -8,7 +8,7 @@ original routines preserves the original rules, including their side effects.
 
 The keyboard ROM is one consumer of this interface. Its initial record, life
 count, five Fuel shortcuts, camera cursor and captured stage points belong to
-[`hud-demo.inc`](../src/hud-demo.inc), not to the reusable component. The full
+[`hud-demo.inc`](../src/screen5/hud-demo.inc), not to the reusable component. The full
 original game runtime has not yet been integrated. This interface replaces
 presentation calls inside a port; it is not a binary patch for the arcade ROM.
 
@@ -45,8 +45,8 @@ or overscan masking is used.
 
 ## Public state API, version 1
 
-Public definitions are in [`hud-api.inc`](../src/hud-api.inc) and
-[`hud-native.inc`](../src/hud-native.inc). Call setters with interrupts disabled
+Public definitions are in [`hud-api.inc`](../src/screen5/hud-api.inc) and
+[`hud-native.inc`](../src/screen5/hud-native.inc). Call setters with interrupts disabled
 and stable input memory. They copy the input immediately, write HUD-owned RAM
 only, and do not touch VDP ports or switch ROM banks. They are not reentrant.
 
@@ -88,11 +88,11 @@ that diagnostic policy is not part of the component.
 
 ## Initialization and frame calls
 
-The implementation is [`hud.inc`](../src/hud.inc), with resource declarations in
-[`hud-assets.inc`](../src/hud-assets.inc), RAM definitions in
-[`hud-state.inc`](../src/hud-state.inc), and inline ISR hooks in
-[`hud-raster.inc`](../src/hud-raster.inc). Include these through the current
-renderer as shown in [`raster-scroll.asm`](../src/raster-scroll.asm). Do not
+The implementation is [`hud.inc`](../src/screen5/hud.inc), with resource declarations in
+[`hud-assets.inc`](../src/screen5/hud-assets.inc), RAM definitions in
+[`hud-state.inc`](../src/screen5/hud-state.inc), and inline ISR hooks in
+[`hud-raster.inc`](../src/screen5/hud-raster.inc). Include these through the current
+renderer as shown in [`raster-scroll.asm`](../src/screen5/raster-scroll.asm). Do not
 include `hud-demo.inc` in the game adapter.
 
 | Entry | When to call | Contract |

@@ -82,15 +82,15 @@ def cold_source(root):
         body=body.rsplit('    ENDIF',1)[0]
         return start+body
     return ('    DISP $f000\nFull_LoadStart:\n'+
-            section('src/raster-scroll.asm','show_scene:\n','    IF !HUD_ENABLED\n; Preserve')+
-            section('src/hud.inc','HUD_Init:\n','; Reusable SCREEN')+
-            section('src/stage-one-stream.inc','stage_load:\n','stage_tile:\n')+
-            (root/'src/full-strip-load.inc').read_text()+
+            section('src/screen5/raster-scroll.asm','show_scene:\n','    IF !HUD_ENABLED\n; Preserve')+
+            section('src/screen5/hud.inc','HUD_Init:\n','; Reusable SCREEN')+
+            section('src/screen5/stage-one-stream.inc','stage_load:\n','stage_tile:\n')+
+            (root/'src/screen5/full-strip-load.inc').read_text()+
             '\nFull_ObjectSources:\n    INCBIN "full-object-sources.bin"\n'+
-            (root/'src/full-enemy-records.inc').read_text()+
-            (root/'src/full-wide-strips.inc').read_text()+
+            (root/'src/screen5/full-enemy-records.inc').read_text()+
+            (root/'src/screen5/full-wide-strips.inc').read_text()+
             '    ASSERT $ <= $f300\nFull_LoadEnd:\n    ENT\n'+
-            '    DISP $c680\nFull_EnemyHotStart:\n'+(root/'src/full-enemy-hot.inc').read_text()+
+            '    DISP $c680\nFull_EnemyHotStart:\n'+(root/'src/screen5/full-enemy-hot.inc').read_text()+
             '    ASSERT $ <= $c700\nFull_EnemyHotEnd:\n    ENT\n'+
-            '    DISP $c5d2\nFull_RadarIRQStart:\n'+(root/'src/full-radar-irq.inc').read_text()+
+            '    DISP $c5d2\nFull_RadarIRQStart:\n'+(root/'src/screen5/full-radar-irq.inc').read_text()+
             '    ASSERT $ <= $c63c\nFull_RadarIRQEnd:\n    ENT\n')

@@ -64,8 +64,8 @@ Camera overscroll uses signed 16-bit positions and does not alter collisions.
 
 ## Integration and ownership
 
-[`player.inc`](../src/player.inc) supplies the adapter used by
-[`raster-scroll.asm`](../src/raster-scroll.asm). Calls run with DI, may clobber
+[`player.inc`](../src/screen5/player.inc) supplies the adapter used by
+[`raster-scroll.asm`](../src/screen5/raster-scroll.asm). Calls run with DI, may clobber
 general, index and alternate registers, and balance SP. The renderer owns the
 ISR, display, palette and mapper.
 

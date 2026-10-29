@@ -729,7 +729,7 @@ def build(root, args):
         (output/'audio-volumes.bin').write_bytes(volume_curve())
         json_write(output/'audio-relocation.json',dict(changes=changes,compiled_scores=score_info))
         for name in ('full-audio.inc','full-audio-state.inc','full-audio-mapper.inc','full-audio-runtime.inc'):
-            shutil.copyfile(root/'src'/name,output/name)
+            shutil.copyfile(root/'src/screen5'/name,output/name)
     if full_game:
         from .full_ui import build as build_ui
         ui_info=build_ui(root,output,assets,palette)
@@ -823,50 +823,50 @@ def build(root, args):
         config.write(f'STAGE_WIDTH EQU {stage_one.WIDTH}\n'
             f'STAGE_HEIGHT EQU {stage_one.HEIGHT}\nSTAGE_COLUMNS EQU {stage_one.TILE_COLUMNS}\n'
             f'STAGE_ROWS EQU {stage_one.TILE_ROWS}\n')
-    shutil.copyfile(root/'src/stage-one-stream.inc', output/'stage-one-stream.inc')
+    shutil.copyfile(root/'src/screen5/stage-one-stream.inc', output/'stage-one-stream.inc')
     if round_preparation:
-        shutil.copyfile(root/'src/round-objects.inc', output/'round-objects.inc')
+        shutil.copyfile(root/'src/screen5/round-objects.inc', output/'round-objects.inc')
     if full_game:
         for name in ('full-ui.inc','session-entries.inc','full-flag-popup.inc'):
-            shutil.copyfile(root/'src'/name,output/name)
+            shutil.copyfile(root/'src/screen5'/name,output/name)
         for name in ('full-radar-motion.inc','full-hud-number.inc','full-round-native.inc','full-msx-enemies.inc','full-presentation.inc','full-sprite-cache.inc','full-main.inc','full-native-ai.inc','full-native-motion.inc','full-wide-native.inc','full-enemy-far-native.inc','full-terrain-cache.inc','full-terrain-engine.inc','full-wide-strips.inc','full-round-runtime.inc'):
-            shutil.copyfile(root/'src'/name,output/name)
-    shutil.copyfile(root/'src/player.inc',output/'player.inc')
-    if smoke_runtime:shutil.copyfile(root/'src/smoke.inc',output/'smoke.inc')
-    if completion_component:shutil.copyfile(root/'src/completion.inc',output/'completion.inc')
+            shutil.copyfile(root/'src/screen5'/name,output/name)
+    shutil.copyfile(root/'src/screen5/player.inc',output/'player.inc')
+    if smoke_runtime:shutil.copyfile(root/'src/screen5/smoke.inc',output/'smoke.inc')
+    if completion_component:shutil.copyfile(root/'src/screen5/completion.inc',output/'completion.inc')
     if stage>=12:
-        for name in ('session.inc','session-loader.inc','full-session.inc'):shutil.copyfile(root/'src'/name,output/name)
-    if player_blitter or bitmap_radar:shutil.copyfile(root/'src/bitmap-player.inc',output/'bitmap-player.inc')
-    if bitmap_radar:shutil.copyfile(root/'src/bitmap-radar.inc',output/'bitmap-radar.inc')
-    if flicker:shutil.copyfile(root/'src/sprite-flicker.inc',output/'sprite-flicker.inc')
-    if outline_flicker:shutil.copyfile(root/'src/outline-flicker.inc',output/'outline-flicker.inc')
-    if tile_mode:shutil.copyfile(root/'src/tilemap.inc',output/'tilemap.inc')
-    if stage>=9:shutil.copyfile(root/'src/sprite-upload.inc',output/'sprite-upload.inc')
-    shutil.copyfile(root/'src/rock-collision.inc',output/'rock-collision.inc')
-    shutil.copyfile(root/'src/death.inc',output/'death.inc')
-    shutil.copyfile(root/'src/flags.inc',output/'flags.inc')
-    shutil.copyfile(root/'src/score.inc',output/'score.inc')
-    shutil.copyfile(root/'src/fuel.inc',output/'fuel.inc')
-    shutil.copyfile(root/'src/lives.inc',output/'lives.inc')
-    if tile_strips:shutil.copyfile(root/'src/tile-strips.inc',output/'tile-strips.inc')
+        for name in ('session.inc','session-loader.inc','full-session.inc'):shutil.copyfile(root/'src/screen5'/name,output/name)
+    if player_blitter or bitmap_radar:shutil.copyfile(root/'src/screen5/bitmap-player.inc',output/'bitmap-player.inc')
+    if bitmap_radar:shutil.copyfile(root/'src/screen5/bitmap-radar.inc',output/'bitmap-radar.inc')
+    if flicker:shutil.copyfile(root/'src/screen5/sprite-flicker.inc',output/'sprite-flicker.inc')
+    if outline_flicker:shutil.copyfile(root/'src/screen5/outline-flicker.inc',output/'outline-flicker.inc')
+    if tile_mode:shutil.copyfile(root/'src/screen5/tilemap.inc',output/'tilemap.inc')
+    if stage>=9:shutil.copyfile(root/'src/screen5/sprite-upload.inc',output/'sprite-upload.inc')
+    shutil.copyfile(root/'src/screen5/rock-collision.inc',output/'rock-collision.inc')
+    shutil.copyfile(root/'src/screen5/death.inc',output/'death.inc')
+    shutil.copyfile(root/'src/screen5/flags.inc',output/'flags.inc')
+    shutil.copyfile(root/'src/screen5/score.inc',output/'score.inc')
+    shutil.copyfile(root/'src/screen5/fuel.inc',output/'fuel.inc')
+    shutil.copyfile(root/'src/screen5/lives.inc',output/'lives.inc')
+    if tile_strips:shutil.copyfile(root/'src/screen5/tile-strips.inc',output/'tile-strips.inc')
     from .enemy_population import assembly as enemy_assembly
     if full_game:
         from .full_enemy import assembly as full_enemy_assembly,registration_table
         (output/'full-registration.bin').write_bytes(registration_table())
-        resident,native_prepare=full_enemy_assembly((root/'src/enemy.inc').read_text())
+        resident,native_prepare=full_enemy_assembly((root/'src/screen5/enemy.inc').read_text())
         (output/'enemy.inc').write_text(resident)
         (output/'full-enemy-prepare.inc').write_text(native_prepare)
-        shutil.copyfile(root/'src/full-enemy-loop.inc',output/'full-enemy-loop.inc')
+        shutil.copyfile(root/'src/screen5/full-enemy-loop.inc',output/'full-enemy-loop.inc')
     else:
-        (output/'enemy.inc').write_text(enemy_assembly((root/'src/enemy.inc').read_text(),enemy_count,enemy_planes,compact=cells_only,player_slot=player_slot,radar_player=radar_player and not player_blitter,player_blitter=player_blitter)
-                                  if enemy_render else (root/'src/enemy.inc').read_text())
-    if cells_only:shutil.copyfile(root/'src/radar-cells.inc',output/'radar-cells.inc')
+        (output/'enemy.inc').write_text(enemy_assembly((root/'src/screen5/enemy.inc').read_text(),enemy_count,enemy_planes,compact=cells_only,player_slot=player_slot,radar_player=radar_player and not player_blitter,player_blitter=player_blitter)
+                                  if enemy_render else (root/'src/screen5/enemy.inc').read_text())
+    if cells_only:shutil.copyfile(root/'src/screen5/radar-cells.inc',output/'radar-cells.inc')
     if enemy_count>1 and enemy_render and not cells_only:
-        shutil.copyfile(root/'src/enemy-radar-pair.inc',output/'enemy-radar-pair.inc')
+        shutil.copyfile(root/'src/screen5/enemy-radar-pair.inc',output/'enemy-radar-pair.inc')
     (output/'stage-flower-phase.bin').write_bytes(bytes((i-256 if i>=224 else i)%3 for i in range(256)))
     for name in ('hud.inc','hud-api.inc','hud-demo.inc','hud-native.inc','hud-state.inc','hud-assets.inc','hud-raster.inc'):
-        shutil.copyfile(root/'src'/name,output/name)
-    shutil.copyfile(root/'src/raster-scroll.asm', output/'raster-scroll.asm')
+        shutil.copyfile(root/'src/screen5'/name,output/name)
+    shutil.copyfile(root/'src/screen5/raster-scroll.asm', output/'raster-scroll.asm')
     result = subprocess.run([str(args.assembler.resolve()), '--nologo', '--sym=raster-scroll.sym',
                              '--lst=raster-scroll.lst', 'raster-scroll.asm'], cwd=output,
                             capture_output=True, text=True)
@@ -914,7 +914,7 @@ def build(root, args):
             approximation='Articulated PSG arrangement, original three-part cues and pitched effects; shared channel C with a hardware-envelope engine; eight-entry priority FIFO',
             scope='Buffered PSG base; use the qualification report for measured workloads and listening status') if audio else None),
         full_hud_layout=(dict(header_left=full_hud.HEADER_LEFT,visible_score_digits=7,native_score_digits=8,
-            source_sha256={p:digest(root/p) for p in ('scripts/msx/full_hud.py','src/full-hud-number.inc')},
+            source_sha256={p:digest(root/p) for p in ('scripts/msx/full_hud.py','src/screen5/full-hud-number.inc')},
             score_policy='Lowest seven native digits; scoring and record state unchanged',
             high_digits_x=full_hud.HIGH_FIELD_X+8,score_digits_x=full_hud.SCORE_FIELD_X+8,
             player_label_x=full_hud.PLAYER_LABEL_X,round_x=full_hud.ROUND_X,
@@ -929,7 +929,7 @@ def build(root, args):
                 signed_corner_threshold=8,
                 scope='After multi-key input or near an inside corner, reject a wall-center position while retaining steering, fuel, score, enemies and native clocks'),
             initial_state=1,game_over_state=2,completed_state=3,high_score_preserved=True,
-            source_sha256={p:digest(root/p) for p in ('src/session.inc','src/session-loader.inc','scripts/msx/session.py')},
+            source_sha256={p:digest(root/p) for p in ('src/screen5/session.inc','src/screen5/session-loader.inc','scripts/msx/session.py')},
             source_font_scale='1:1 original 8x8',next_round_enabled=full_game,
             player_capacity=2 if full_game else 1,attract_demo=full_game,
             attract_wait_refreshes=900 if full_game else None) if stage>=12 else None),
@@ -937,7 +937,7 @@ def build(root, args):
             horizontal_debt_tiles=None if full_game else cache_guard-1,
             scope=('Hold the camera/native advance only for an incomplete newly exposed edge; retain bounded elapsed-time debt' if full_game else 'Hold all native simulation clocks for one refresh while hidden cache jobs recover; preserve original pixels and rules')) if smoke_runtime else None),
         completion_component=(dict(runtime_enabled=stage>=11,source_entry=0x1fa9,
-            source_sha256=digest(root/'src/completion.inc'),scope='Original remaining-fuel conversion, normal/challenge progression and session transitions' if full_game else 'Initial normal round, original remaining-fuel conversion and explicit session transitions' if stage>=12 else 'Initial normal-round remaining-fuel conversion and explicit stopped segment; credit/start/game-over presentation pending' if stage>=11 else 'Isolated remaining-fuel converter; round completion and start/game-over not yet integrated') if completion_component else None),
+            source_sha256=digest(root/'src/screen5/completion.inc'),scope='Original remaining-fuel conversion, normal/challenge progression and session transitions' if full_game else 'Initial normal round, original remaining-fuel conversion and explicit session transitions' if stage>=12 else 'Initial normal-round remaining-fuel conversion and explicit stopped segment; credit/start/game-over presentation pending' if stage>=11 else 'Isolated remaining-fuel converter; round completion and start/game-over not yet integrated') if completion_component else None),
         parameter_component=(dict(runtime_enabled=stage>=11,source_entry=0x1b1f,
             table_pointer=int.from_bytes((native/'video.bin').read_bytes()[0x2d2:0x2d4],'little')+0x8000,
             round_limit=(native/'video.bin').read_bytes()[0x2d8],
@@ -946,7 +946,7 @@ def build(root, args):
             final_state=3,next_round_enabled=full_game,credit_start_enabled=stage>=12,
             scope='Original fuel award and dynamic normal/challenge rounds' if full_game else 'Original remaining-fuel award; initial-round session screens' if stage>=12 else 'Original remaining-fuel award, explicit stopped initial-round segment; menu/credit/start pending') if stage>=11 else None),
         smoke_component=(dict(runtime_enabled=smoke_runtime,activation=0x0f64,expiry=0x0185,
-            source_sha256={p:digest(root/p) for p in ('src/smoke.inc','scripts/msx/smoke.py','scripts/msx/player.py')},
+            source_sha256={p:digest(root/p) for p in ('src/screen5/smoke.inc','scripts/msx/smoke.py','scripts/msx/player.py')},
             keyboard='Ctrl, active-low original input bit 1' if smoke_runtime else None,
             additional_sprite_slots=0,
             code_buffer=0xe400,attribute_buffer=0xec00,
@@ -964,7 +964,7 @@ def build(root, args):
         outline_flicker=outline_flicker,
         outline_body_adaptation='One majority original body color per row; original black ink independent, no CC' if outline_flicker else None,
         sprite_flicker=(dict(mode='Independent body-first cars; alternate outlines/radar' if outline_flicker else 'Alternate canonical priority / two complete enemy pairs in radar slots6..9, displaced cells in slots19..22',
-                            phases=4 if outline_flicker else 2,phase_address=0xc7ca if outline_flicker else 0xc7c0,source_sha256=digest(root/'src/sprite-flicker.inc'),
+                            phases=4 if outline_flicker else 2,phase_address=0xc7ca if outline_flicker else 0xc7c0,source_sha256=digest(root/'src/screen5/sprite-flicker.inc'),
                             front_table_address=0xc7c1 if outline_flicker else None,
                             table_offsets=[0,0x800] if outline_flicker else None,
                             stationary_stress_fixture=flicker_stress,
@@ -1035,7 +1035,7 @@ def build(root, args):
                          (['original keyboard smoke, fuel charge, bitmap clouds and enemy stun/recovery'] if smoke_runtime else [])+
                          (['original post-flag difficulty and remaining-fuel completion bonus'] if stage>=11 else [])+
                          (['four original dynamic maps and original flag/rock placements','normal/challenge progression','alternating two-player boards','original cast and autonomous attract demonstration'] if full_game else []),
-        msx_enemy_navigation=(dict(entry=0xb600,source_sha256=digest(root/'src/full-msx-enemies.inc'),
+        msx_enemy_navigation=(dict(entry=0xb600,source_sha256=digest(root/'src/screen5/full-msx-enemies.inc'),
             decisions='New cell centres only; reciprocal wall exits, actor-dependent axis priority, no reverse outside dead ends',
             motion_hz=1/(2*video_timing(args.hz)['frame_seconds']) if args.hz==60 else None,
             motion_divisor=2,player_motion_divisor=2,player_speed_cap_pixels=2,enemy_speed_cap_pixels=1.875,
@@ -1088,30 +1088,30 @@ def build(root, args):
                     rock_fixture=digest(rock_reference/'manifest.json') if rock_reference else None,
                     captures=[digest(s['path']/'manifest.json') for s in scenes],
                     hud=[digest(p/'manifest.json') for p in (args.normal, args.overlap)]),
-        source_sha256={p:digest(root/p) for p in ('src/raster-scroll.asm', 'scripts/msx/raster_scroll.py',
-                       'scripts/msx/inputs.py', 'scripts/msx/display.py', 'scripts/msx/sprite_radar.py', 'scripts/msx/player.py','src/player.inc',
+        source_sha256={p:digest(root/p) for p in ('src/screen5/raster-scroll.asm', 'scripts/msx/raster_scroll.py',
+                       'scripts/msx/inputs.py', 'scripts/msx/display.py', 'scripts/msx/sprite_radar.py', 'scripts/msx/player.py','src/screen5/player.inc',
                        'scripts/msx/sprite_fuel.py', 'scripts/msx/sprite_lives.py',
-                       'src/stage-one-stream.inc', 'src/hud.inc', 'src/hud-api.inc', 'src/hud-demo.inc', 'src/hud-native.inc', 'src/hud-state.inc', 'src/hud-assets.inc', 'src/hud-raster.inc', 'scripts/msx/stage_one.py',
+                       'src/screen5/stage-one-stream.inc', 'src/screen5/hud.inc', 'src/screen5/hud-api.inc', 'src/screen5/hud-demo.inc', 'src/screen5/hud-native.inc', 'src/screen5/hud-state.inc', 'src/screen5/hud-assets.inc', 'src/screen5/hud-raster.inc', 'scripts/msx/stage_one.py',
                        'scripts/msx/stage_one_capture.lua')}, rom_sha256=digest(rom),
-        rock_source_sha256={p:digest(root/p) for p in ('scripts/msx/rocks.py','scripts/msx/rocks_capture.lua','src/rock-collision.inc')} if stage >= 1 else None,
-        death_source_sha256={p:digest(root/p) for p in ('scripts/msx/death.py','scripts/msx/death_capture.lua','src/death.inc')} if stage>=3 else None,
-        flag_source_sha256={p:digest(root/p) for p in ('scripts/msx/flags.py','src/flags.inc')} if stage>=4 else None,
-        score_source_sha256={p:digest(root/p) for p in ('src/score.inc',)} if stage>=5 else None,
-        fuel_rules=(dict(source_sha256=digest(root/'src/fuel.inc'),consumption=0x1ecc,decrement=0x1f13,
+        rock_source_sha256={p:digest(root/p) for p in ('scripts/msx/rocks.py','scripts/msx/rocks_capture.lua','src/screen5/rock-collision.inc')} if stage >= 1 else None,
+        death_source_sha256={p:digest(root/p) for p in ('scripts/msx/death.py','scripts/msx/death_capture.lua','src/screen5/death.inc')} if stage>=3 else None,
+        flag_source_sha256={p:digest(root/p) for p in ('scripts/msx/flags.py','src/screen5/flags.inc')} if stage>=4 else None,
+        score_source_sha256={p:digest(root/p) for p in ('src/screen5/score.inc',)} if stage>=5 else None,
+        fuel_rules=(dict(source_sha256=digest(root/'src/screen5/fuel.inc'),consumption=0x1ecc,decrement=0x1f13,
                          empty_deceleration=0x0482,clock='Fresh counter zero; consume before increment each 16.5 ms logical tick',
                          lucky='Original round-dependent HALT/chunk cadence; saved fuel restored; last flag excluded',
                          scope='Selected original logic without full arcade IRQ/foreground; original post-flag parameter dispatch active' if stage>=11 else 'No full arcade IRQ or foreground; post-flag difficulty parameter update deferred') if stage>=6 else None),
-        life_rules=(dict(source_sha256=digest(root/'src/lives.inc'),decrement=0x18da,refill_prefix=0x08e7,
+        life_rules=(dict(source_sha256=digest(root/'src/screen5/lives.inc'),decrement=0x18da,refill_prefix=0x08e7,
                          nonfinal_ticks=120,final_ticks=96,hud='Remaining count minus current car, presentation cap nine',
                          persistence='Score, high score, award bits and collected flags retained; current-life flag ordinal resets',
                          restart='Bounded scene reload, fresh active fuel clock; explicit game-over session screen' if stage>=12 else 'Bounded scene reload, fresh active fuel clock; game-over presentation pending') if stage>=7 else None),
-        enemy_logic=(dict(source_sha256=digest(root/'src/enemy.inc'),count=enemy_count,ai=0xb600 if full_game else 0x0cd6,
+        enemy_logic=(dict(source_sha256=digest(root/'src/screen5/enemy.inc'),count=enemy_count,ai=0xb600 if full_game else 0x0cd6,
                          initializer=0x0ab5,virtual_slots=6,registration=None if full_game else 0x15bd,contact=0xb603 if full_game else 0x038a,
                          rendered=enemy_render,contact_applied=enemy_contact,
                          sprite_planes=enemy_planes,
                          paired_radar=enemy_count>1 and enemy_render and not cells_only,
                          generator_sha256=digest(root/('scripts/msx/full_enemy.py' if full_game else 'scripts/msx/enemy_population.py')) if enemy_count>1 else None,
-                         radar_pair_source_sha256=digest(root/'src/enemy-radar-pair.inc') if enemy_count>1 and enemy_render and not cells_only else None,
+                         radar_pair_source_sha256=digest(root/'src/screen5/enemy-radar-pair.inc') if enemy_count>1 and enemy_render and not cells_only else None,
                          color_adaptation='One red silhouette retaining every opaque source pixel' if enemy_planes==1 else None,
                          palette=dict(body=6,window=10,black=14) if enemy_render else None,
                          sentinel_bias='One presentation pixel upward only at forbidden SAT Y=216' if enemy_render else None,

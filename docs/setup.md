@@ -12,6 +12,42 @@ Windows_NT environment fallback), and unknown systems. Only macOS has an
 implementation today. Other platforms fail before installation. Native Windows
 make/shell prerequisites and provisioning belong to a future implementation.
 
+## Current build and launch selection
+
+After supplying the ROM/BIOS/assets below, run commands from the intended checkout:
+
+| Command | Selection |
+| --- | --- |
+| `make build` / `make run` | Default integrated SCREEN 4 gameplay, SCREEN 5 menus, HUD and PSG enabled |
+| `make build TEST_MODE=1` / `make run TEST_MODE=1` | Separate optimized test ROM; Enter advances a round, equals toggles collision invulnerability; walls remain solid |
+| `make build LEGACY=1` / `make run LEGACY=1` | Maintained SCREEN 5 sprite-HUD/PSG build; `legacy=1` is an alias |
+| `make run ROM=<path>` | Existing cartridge, no rebuild |
+| `make run CHECKPOINT=<name>` | Existing named local checkpoint, no rebuild |
+| `make run LATEST=1` | Latest sealed legacy build, no rebuild |
+
+Unqualified `run` rebuilds even if its output already exists. Test mode is rejected
+with `LEGACY=1`. `STAGE`, `FULL_GAME`, `AUDIO` and `HZ` select legacy diagnostics;
+use `LEGACY=1` with those flags. The optimized complete session uses native enemy
+progression; `ENEMIES=3` selects the earlier first-stage benchmark, not a complete
+session population override. `make run-experiments` remains a default-presenter
+alias; see [all build profiles](../src/screen4/BUILD-PROFILES.md).
+
+The optimized artifact is `references/experiments/full-session/fixed-hud.rom`
+(or `full-session-test/` for test mode). Exports in `outputs/test-roms/` include
+an identical copy ending in ` [ASCII16].rom`; retain that filename hint when
+loading through WebMSX AUTO, or explicitly select ASCII16. Export manifests
+record both names and the SHA-256. Legacy builds publish
+`references/build/newrallyx.rom` separately.
+
+The optimized source integration depends on local Git commit
+`6d562a791b0cc242119a31dd686ff8e93eb94fe0`. A verified source view under
+`references/experiments/source-views/` is rebuilt without changing the checkout.
+Do not substitute another revision silently or edit cached source exports.
+See [source ownership](architecture.md#build-ownership),
+[graphics regeneration](graphics-extraction.md), [scene preparation](arcade-scenes.md)
+and [maintenance/validation](maintenance.md). These procedures use contributor
+inputs only; setup does not obtain game ROMs or BIOS.
+
 ## macOS prerequisites
 
 The port's emulator reference requires at least **128 KB RAM mapper and 128 KB
@@ -190,7 +226,7 @@ for pure CPU work, 3,579,545 Hz for VDP access and raster IRQs**. Unsupported
 machines keep their base clock. In openMSX, `z80_freq_locked true` follows
 hardware clock switching; `false` forces the user's frequency override. The
 bounded reference retains its original base-clock behavior. The full-game default
-sets 60 Hz through VDP R9; bounded stages retain 50 Hz. `make build HZ=50` selects
+sets 60 Hz through VDP R9; bounded stages retain 50 Hz. `make build LEGACY=1 HZ=50` selects
 an explicit full-game 50 Hz diagnostic. BIOS calls require an MSX2 or later machine; the recorded
 integration target is MSX2+.
 
