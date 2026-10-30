@@ -4,8 +4,8 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.msx.native_video_verify import verify_video_frames
-from scripts.msx.native_verify import analyze_presentation_callers
+from src.toolchain.msx.native_video_verify import verify_video_frames
+from src.toolchain.msx.native_verify import analyze_presentation_callers
 
 
 class NativeVideoEvidenceTests(unittest.TestCase):

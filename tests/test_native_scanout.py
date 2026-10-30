@@ -1,7 +1,7 @@
 import unittest
 
-from scripts.msx.native_scanout import compose
-from scripts.msx.raster_scroll import palette_rgb
+from src.toolchain.msx.native_scanout import compose
+from src.toolchain.msx.raster_scroll import palette_rgb
 
 
 class NativeScanoutTests(unittest.TestCase):

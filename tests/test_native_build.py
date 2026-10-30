@@ -5,9 +5,9 @@ import subprocess
 import tempfile
 import unittest
 
-from scripts.msx.native_build import build, build_probe
-from scripts.scenes.bundle import verify_manifest
-from scripts.graphics.roms import load_metadata
+from src.toolchain.msx.native_build import build, build_probe
+from src.toolchain.scenes.bundle import verify_manifest
+from src.toolchain.graphics.roms import load_metadata
 
 
 ROOT = Path(__file__).resolve().parents[1]

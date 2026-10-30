@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 # Public platform dispatcher. Compatible with stock macOS Bash 3.2.
+# This layer only validates CLI/platform and delegates. Tool versions, SDK/CPU
+# checks and Python creation belong to environment/macos.sh and its lock files.
+# Keep --check/read-only behavior intact when reusing the dispatcher in a port.
 set -eu
 
 usage() {
@@ -36,4 +39,4 @@ if [ "$platform" != macOS ]; then
 fi
 
 script_dir=$(CDPATH='' cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
-exec bash "$script_dir/environment/macos.sh" "$@"
+exec bash "$script_dir/../src/toolchain/environment/macos.sh" "$@"

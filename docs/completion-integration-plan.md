@@ -109,7 +109,7 @@ header reservations (`issue11-r12-steering-proof-v260`).
 Reproduce with a fresh output directory:
 
 ```sh
-.venv/bin/python -B scripts/raster_scroll.py verify-steering --smoke-stress --rom references/build/issue11-r12-smoke-irq-v260/raster-scroll.rom --output references/build/my-smoke-header-check
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-steering --smoke-stress --rom references/build/issue11-r12-smoke-irq-v260/raster-scroll.rom --output references/build/my-smoke-header-check
 ```
 
 The full first-round route on v260 passes 3,606 visible-cache states, 44 gameplay
@@ -173,8 +173,8 @@ unit tests pass; fresh Stage8/9 ROMs remain byte-identical to accepted reference
 Reproduce the added regressions with fresh output directories:
 
 ```sh
-.venv/bin/python -B scripts/raster_scroll.py verify-steering --rom references/build/issue11-r12-input-fuel-v255/raster-scroll.rom --output references/build/my-steering-check
-.venv/bin/python -B scripts/raster_scroll.py verify-lucky-route --rom references/build/issue11-r12-input-fuel-v255/raster-scroll.rom --output references/build/my-lucky-check
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-steering --rom references/build/issue11-r12-input-fuel-v255/raster-scroll.rom --output references/build/my-steering-check
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-lucky-route --rom references/build/issue11-r12-input-fuel-v255/raster-scroll.rom --output references/build/my-lucky-check
 ```
 
 ## Preserved HUD/session adjustments
@@ -219,17 +219,17 @@ Reproduce with `make build STAGE=12`. Verification commands require fresh output
 directories and the contributor-supplied local ROM/BIOS inputs:
 
 ```sh
-.venv/bin/python -B scripts/raster_scroll.py verify-completion-route --rom references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom --output references/build/my-session-route
-.venv/bin/python -B scripts/raster_scroll.py verify-hud-alerts --rom references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom --output references/build/my-hud-alerts
-.venv/bin/python -B scripts/raster_scroll.py verify-session --rom references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom --output references/build/my-session-ui
-.venv/bin/python -B scripts/raster_scroll.py verify-session-inputs --rom references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom --output references/build/my-session-inputs
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-completion-route --rom references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom --output references/build/my-session-route
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-hud-alerts --rom references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom --output references/build/my-hud-alerts
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-session --rom references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom --output references/build/my-session-ui
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-session-inputs --rom references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom --output references/build/my-session-inputs
 ```
 
 `make build STAGE=12` publishes the newly built ROM as default/latest. To build
 without replacing the default cartridge, run:
 
 ```sh
-.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --output references/build/my-session-build
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py build --stage 12 --output references/build/my-session-build
 ```
 
 ## Implementation sequence

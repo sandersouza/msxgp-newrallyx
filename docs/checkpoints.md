@@ -569,7 +569,7 @@ layers, completed validation and remaining limitations here. Publish a sealed
 local cartridge using:
 
 ```sh
-.venv/bin/python -B scripts/native_runtime.py checkpoint \
+.venv/bin/python -B src/toolchain/legacy/native_runtime.py checkpoint \
   --name <new-name> \
   --rom references/build/<bundle>/native.rom \
   --description '<components and purpose>' \

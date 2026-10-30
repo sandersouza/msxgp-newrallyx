@@ -2,14 +2,14 @@ import tempfile
 import unittest
 from pathlib import Path
 from scene_fixtures import assets_at, capture_at, json_write, seal
-from scripts.scenes.bundle import load_assets
-from scripts.scenes.record import validate_replay, finalize_case
+from src.toolchain.scenes.bundle import load_assets
+from src.toolchain.scenes.record import validate_replay, finalize_case
 
 
 class RecordTests(unittest.TestCase):
     def test_narrow_acquisition_unignore_is_rejected(self):
         from graphics_fixtures import temporary_repo
-        from scripts.scenes.record import check_acquisition_paths
+        from src.toolchain.scenes.record import check_acquisition_paths
         root,_,_=temporary_repo(self)
         (root/'.gitignore').write_text('/references/**\n!/references/**/\n!/references/scenes/**/video.bin\n')
         with self.assertRaises(ValueError):
@@ -47,7 +47,7 @@ class RecordTests(unittest.TestCase):
         from types import SimpleNamespace
         import subprocess
         from graphics_fixtures import temporary_repo
-        from scripts.scenes.record import capture_gameplay
+        from src.toolchain.scenes.record import capture_gameplay
         root,_,_=temporary_repo(self)
         assets=assets_at(root/'references/assets/test')
         replay=root/'replay.json'; json_write(replay,[])
@@ -56,6 +56,6 @@ class RecordTests(unittest.TestCase):
             if command==['mame','-help']:
                 return SimpleNamespace(stdout='MAME v0.290 (test)')
             return real_run(command,**kwargs)
-        with patch('scripts.scenes.record.subprocess.run',side_effect=version_only):
+        with patch('src.toolchain.scenes.record.subprocess.run',side_effect=version_only):
             with self.assertRaisesRegex(ValueError,'0.289'):
                 capture_gameplay(root,assets,root/'references/scenes/test',replay,[10])

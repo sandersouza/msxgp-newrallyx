@@ -7,15 +7,15 @@ from scripts.repository_inventory import static_references
 
 class InventoryReferencesTest(unittest.TestCase):
     def test_package_and_sibling_imports(self):
-        paths = list(map(Path, ['scripts/project.py', 'scripts/msx/build.py',
-                               'src/screen4/session_build.py',
-                               'src/screen4/build_profiles.py']))
+        paths = list(map(Path, ['scripts/project.py', 'src/toolchain/msx/build.py',
+                               'src/toolchain/screen4/session_build.py',
+                               'src/toolchain/screen4/build_profiles.py']))
         refs = static_references(paths, {
-            'scripts/project.py': 'from scripts.msx.build import destination\n',
-            'src/screen4/session_build.py': 'from build_profiles import source_view\n'})
-        self.assertIn(('scripts/project.py', 'python-import'), refs['scripts/msx/build.py'])
-        self.assertIn(('src/screen4/session_build.py', 'python-import'),
-                      refs['src/screen4/build_profiles.py'])
+            'scripts/project.py': 'from src.toolchain.msx.build import destination\n',
+            'src/toolchain/screen4/session_build.py': 'from build_profiles import source_view\n'})
+        self.assertIn(('scripts/project.py', 'python-import'), refs['src/toolchain/msx/build.py'])
+        self.assertIn(('src/toolchain/screen4/session_build.py', 'python-import'),
+                      refs['src/toolchain/screen4/build_profiles.py'])
 
     def test_ambiguous_include_retains_both_and_marks_uncertainty(self):
         paths = list(map(Path, ['src/main.asm', 'src/screen5/hud.inc', 'src/screen4/hud.inc']))

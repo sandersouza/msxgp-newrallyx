@@ -2,7 +2,7 @@
 from pathlib import Path
 import subprocess
 import tempfile
-from scripts.graphics.decode import decode_graphics, decode_palette, graphics_metadata
+from src.toolchain.graphics.decode import decode_graphics, decode_palette, graphics_metadata
 
 
 def temporary_repo(test):
@@ -10,7 +10,7 @@ def temporary_repo(test):
     test.addCleanup(temp.cleanup)
     root = Path(temp.name).resolve()
     subprocess.run(['git', 'init', '-q', str(root)], check=True)
-    (root / '.gitignore').write_text('/references/**\n')
+    (root / '.gitignore').write_text('/references/**\n/assets/arcade/**\n')
     (root / 'references/assets').mkdir(parents=True)
     inputs = root / 'references/roms/synthetic'
     inputs.mkdir(parents=True)

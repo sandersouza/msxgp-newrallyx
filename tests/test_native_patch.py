@@ -2,7 +2,7 @@
 import hashlib
 import unittest
 
-from scripts.msx.native_patch import Patch, apply_patches
+from src.toolchain.msx.native_patch import Patch, apply_patches
 
 
 def digest(data):

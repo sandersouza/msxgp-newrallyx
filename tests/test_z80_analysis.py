@@ -3,7 +3,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.z80_analysis import program_image, guarded_hook, destination, compare_references, hook_specs
+from src.toolchain.legacy.z80_analysis import program_image, guarded_hook, destination, compare_references, hook_specs
 
 
 class ProgramAnalysisTests(unittest.TestCase):

@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-30",
+  "scope": "Automatic first-build preparation from contributor ROMs; no MSX runtime changes",
+  "cold_build": {
+    "command": "make build",
+    "initially_absent": [
+      "assets/arcade",
+      "assets/namco-title-56x8.png",
+      "references/cache",
+      "references/build"
+    ],
+    "source": "Contributor-supplied unpacked nrallyx set in references/roms/nrallyx; MAME 0.289; project tools and authored MSX logo present",
+    "generated": [
+      "137 graphics payloads and manifest",
+      "5 sealed arcade captures",
+      "2 reconstructed scene/HUD bundles",
+      "native geometry/rocks/explosion bundles",
+      "original 56x8 wordmark",
+      "final linked MSX resource banks"
+    ],
+    "reconstruction_mismatches": {
+      "normal": 0,
+      "overlap": 0
+    },
+    "passed": true
+  },
+  "roms": [
+    {
+      "mode": "default",
+      "bytes": 2048000,
+      "sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+      "byte_identical_to_preparation_baseline": true
+    },
+    {
+      "mode": "legacy",
+      "bytes": 2097152,
+      "sha256": "e95a4a803c0ac3d0096b7021c877a56086d09d6ba8ed307dde7a8d039198537c",
+      "byte_identical_to_preparation_baseline": true
+    }
+  ],
+  "emulator_checks": [
+    {
+      "ram_kib": 64,
+      "scenario": "start",
+      "passed": true,
+      "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+    },
+    {
+      "ram_kib": 128,
+      "scenario": "integration",
+      "passed": true,
+      "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+    }
+  ],
+  "unit_tests": {
+    "host": 467,
+    "component": 93,
+    "component_skipped": 1,
+    "passed": true
+  },
+  "checks": {
+    "environment_check": true,
+    "explicit_extraction_stages": true,
+    "repeated_extract_all": true,
+    "extract_grafics_alias": true,
+    "private_payload_ignore_and_index": true,
+    "make_preparation_failure_blocks_link_and_launch": true,
+    "diff_whitespace": true
+  },
+  "source_sha256": {
+    "Makefile": "904ae789345fa17fce7016129a87f4e26728b3b6777e9f050b10f99f325bd1ab",
+    ".gitignore": "1bc94302914ce7be52769709df86fa5b10f48f5c735ad46c8212785b1d67a9a1",
+    "scripts/prepare_assets.py": "fe90a27dfd333d654885b21e3636cc646934d12085dd046fbb2fc8c46b5869f7",
+    "src/toolchain/graphics/prepare.py": "02fa5850ab12d4c7c43a29d23e23824d4ac189d25ee78113642b9c96e0c4a569",
+    "src/toolchain/screen4/targets.mk": "9cbc61837e11805e89a1f4fbf3a248ddf14b9c0e36c1f67dce0b04b680b1259e",
+    "src/toolchain/msx/rocks.py": "5087b5c075291b56e1e89f3933505868d2a2be9784e9aa87b5fad52217ea984d",
+    "src/toolchain/scenes/record.py": "de0c795100596a8311b5bb5c155080a3de50f2045530976d3a212535756553e3"
+  },
+  "retention": "Raw build/acquisition logs and emulator snapshots discarded after recording compact results; canonical inputs, default ROM and original contributor ROM/BIOS remain local and ignored.",
+  "limits": "Emulator qualification only. No new physical hardware, perceptual acceptance or performance measurement is claimed."
+}

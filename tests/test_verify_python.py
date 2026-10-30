@@ -8,7 +8,7 @@ import tempfile
 import unittest
 import venv
 
-VERIFY = Path(__file__).resolve().parents[1] / "scripts/environment/verify_python.py"
+VERIFY = Path(__file__).resolve().parents[1] / "src/toolchain/environment/verify_python.py"
 
 
 class PythonVerificationTests(unittest.TestCase):

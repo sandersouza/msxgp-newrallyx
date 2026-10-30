@@ -4,7 +4,7 @@ import subprocess
 import tempfile
 import unittest
 
-from scripts.restore_probe_artifacts import restore
+from src.toolchain.legacy.restore_probe_artifacts import restore
 
 
 class RestoreProbeArtifactsTest(unittest.TestCase):

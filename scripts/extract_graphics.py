@@ -4,14 +4,10 @@ import argparse
 from pathlib import Path
 import sys
 
-if __package__:
-    from .graphics.roms import input_records, load_metadata, validate_roms
-    from .graphics.decode import decode_graphics, decode_palette, graphics_metadata
-else:
-    from graphics.roms import input_records, load_metadata, validate_roms
-    from graphics.decode import decode_graphics, decode_palette, graphics_metadata
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:sys.path.insert(0,str(REPO_ROOT))
+from src.toolchain.graphics.roms import input_records, load_metadata, validate_roms
+from src.toolchain.graphics.decode import decode_graphics, decode_palette, graphics_metadata
 
 
 def _path(value):
@@ -37,19 +33,16 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=(
         'Extract the unpacked nrallyx set pinned to MAME 0.289. '
         'Requires Python 3.14 and Pillow 13.0.0. Generated data must stay '
-        'strictly below this repository\'s ignored references/assets/.'))
+        'strictly below this repository\'s ignored assets/arcade/ (or temporary references/assets/).'))
     parser.add_argument('--input', required=True, type=_path, help='Contributor-supplied unpacked ROM directory')
-    parser.add_argument('--output', required=True, type=_path, help='New directory below references/assets/')
+    parser.add_argument('--output', required=True, type=_path, help='New directory below assets/arcade/; references/assets/ is temporary')
     parser.add_argument('--overwrite', action='store_true',
                         help='Replace only an unchanged complete extraction; unknown or modified output is preserved')
     args = parser.parse_args(argv)
     try:
         if sys.version_info[:2] != (3,14):
             raise ValueError('Use Python 3.14, preferably .venv/bin/python; see docs/setup.md')
-        if __package__:
-            from .graphics.export import publish_output, write_payload, PILLOW_VERSION
-        else:
-            from graphics.export import publish_output, write_payload, PILLOW_VERSION
+        from src.toolchain.graphics.export import publish_output, write_payload, PILLOW_VERSION
         if PILLOW_VERSION != '13.0.0':
             raise ValueError('Install Pillow 13.0.0 using .venv/bin/python -m pip install -r requirements.txt')
         metadata = load_metadata()

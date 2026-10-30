@@ -2,7 +2,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from scripts.msx.audio_cycles import summarize
+from src.toolchain.msx.audio_cycles import summarize
 
 
 class AudioCycleTests(unittest.TestCase):

@@ -1,4 +1,4 @@
-# Experimental cast screen
+# Title and cast screen
 
 The original static header and all96 reveal units move up8px. Original glyph
 bitmaps, item dimensions and reveal delays are unchanged. The final smoke
@@ -44,18 +44,24 @@ make run-experiments MSX_LOGO=0
 make run-experiments MSX_LOGO=1
 ```
 
-The no-logo export ends in `-no-logo.rom`; the default export retains its usual
-name. Fixed bank padding means both cartridge files can have the same total
+The default export is `dist/newrallyx.rom`; the no-logo diagnostic uses
+`dist/diagnostic/no-logo/newrallyx.rom`. Fixed bank padding means both can have the same total
 length even though the omitted module occupies no code/data space.
 
-The contributor-supplied reference is stored, untracked, at
-`references/experiments/msx-logo/source.png`. The importer extracts its162x60
-black label and samples both axes with the same integer divisor3, producing
-54x20 pixels at x194,y8. Top and right margins are exactly8px. The blue surround
-is excluded. The logo module uses the existing SCREEN5 blitter, allocates no
+The contributor-supplied optimized logo is `assets/msxlogo.bmp`:54x20 pixels,
+one-bit black/white, already at its final display size. `import_logo` copies
+every pixel at1:1 and maps only the two inks to the existing palette. No crop,
+resampling, smoothing or implicit color reduction is allowed; wrong dimensions
+or bit depth fail the build. Placement remains x194,y8, with8px top/right margins.
+The logo module uses the existing SCREEN5 blitter, allocates no
 persistent RAM, and is called once with the display off before each cast reveal.
 Its inline contract specifies clobbers and dependencies. Original ROM-derived
 and generated artwork stays under ignored `references/` directories.
+
+The frozen module-extraction proof uses its historical logo from the pinned Git
+asset revision, converted to a temporary1-bit input under `references/baselines/`.
+That explicit proof input does not replace the current BMP or change expected
+baseline hashes. Normal build/run always selects `assets/msxlogo.bmp`.
 
 ## Reproducible checks
 

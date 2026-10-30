@@ -1,3 +1,26 @@
+; Reuse contract: session-world (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: GameSession_ColdBoot, GameSession_ColdLoad, GameSession_BuildMap,
+;   GameSession_MapTerrain, GameSession_PhaseSelect, GameSession_SharedInit,
+;   GameSession_SharedSprite
+; Inputs: Main Page0 segment mapped. LoadKind selects new board, next round or restored
+;   player. Native state/tables and generated world banks are installed. PhaseSelect takes
+;   A=new phase, with phase holding that same value; its result is written to pattern_back and
+;   the existing lookup cache, not returned as an A bank argument.
+; Outputs: Allocates the established segment identities, restores round/map/flags/sprites and
+;   existing video lifecycle. PhaseSelect excludes the visible set and updates pattern_back.
+; Registers: Common caller-saved ABI. PhaseSelect preserves IX/IY; shared-sprite helper
+;   retains its adjacent carry/result contract.
+; Interrupts: Cold loading may DI/EI and block with audio silenced/display hidden. PhaseSelect
+;   runs foreground; it is not a map-building call.
+; Memory / hardware: Existing main segment, two 16 KiB map segments, normal/hidden flag
+;   segments, native seed and exact cache metadata. No additional segment is allocated by
+;   extraction.
+; Reuse boundary: Native map/round adapter. Cold world initialization composes the already
+;   independent phase selector and shared-sprite helpers; they remain separately includable
+;   through their existing files.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: Main Page0 cold initialization, round loading, map construction; display/audio gated.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 ; Runs from independent Page0 RAM. Resident helpers temporarily map other RAM
@@ -5,6 +28,8 @@
     INCLUDE "../../session-phase.inc"
     INCLUDE "../../session-sprite-static.inc"
 GameSession_ColdBoot:
+    ; This source is the128KiB binding. Generated64KiB/automatic assembly views
+    ; adapt the mask and segment count; do not copy this allocator in isolation.
     in a,($fc)
     and 7
     ld (GameSession_MainSegment),a
@@ -16,6 +41,8 @@ GameSession_ColdBoot:
     ld d,3
     xor a
 .segment:
+    ; Never assign Page3/stack or main Page0 to map/flag storage. Resident ROM
+    ; helpers can switch Page0 because their own instruction fetch remains live.
     cp b
     jr z,.next
     cp c
@@ -58,6 +85,8 @@ GameSession_ColdBoot:
     ret
 
 GameSession_ColdLoad:
+    ; Blocking work belongs to a display-off, silent transition. LoadKind0
+    ; starts a game,1 advances a round,2 restores the alternate player's state.
     call GameSession_AudioStop
     xor a
     ld (ready),a
@@ -98,6 +127,8 @@ GameSession_ColdLoad:
 .next_round:
     call $ae03
 .prepared:
+    ; Reset host transient state after the native seed/round initializer. The
+    ; captured-flag restore below must follow InitCore, which clears host state.
     xor a
     ld hl,$c080
     ld de,$c081

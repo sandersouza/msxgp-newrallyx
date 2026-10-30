@@ -143,7 +143,7 @@ sprite enable, R19 arming and R23/R26/R27 remain the renderer's responsibility.
 ## Original RAM adapter and replacement boundaries
 
 `HUD_SyncNative` targets the contributor-supplied `nrallyx` revision pinned by
-[`nrallyx.json`](../scripts/graphics/nrallyx.json), MAME 0.289. HL points at a
+[`nrallyx.json`](../src/toolchain/graphics/nrallyx.json), MAME 0.289. HL points at a
 stable, already relocated view of logical RAM `$8000..$8fff`; native pointers
 inside it still contain arcade addresses. The adapter relocates those pointers
 for reading. Do not copy 4 KB each refresh merely for this call: use the port's
@@ -260,10 +260,10 @@ or palette requires regenerating matching resources and rerunning raster tests.
 ```sh
 make test
 make build
-.venv/bin/python -B scripts/raster_scroll.py verify-hud \
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-hud \
   --rom references/build/default-<id>/raster-scroll.rom \
   --output references/build/hud-api-check
-.venv/bin/python -B scripts/raster_scroll.py verify \
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify \
   --rom references/build/default-<id>/raster-scroll.rom \
   --output references/build/renderer-check
 ```

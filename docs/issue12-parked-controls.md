@@ -73,5 +73,5 @@ ROM=references/build/latest.rom
 .venv/bin/python -B scripts/full_debug_probe.py --rom "$ROM" --output references/build/my-debug-key
 .venv/bin/python -B scripts/full_msx_enemy_probe.py --rom "$ROM" --output references/build/my-parked-contact
 .venv/bin/python -B scripts/full_state_probe.py --rom "$ROM" --output references/build/my-compact-hud
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-parked-route --rounds 2 --steering-margin 8 --avoid-enemies --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 8 --maximum-packet-miss-percent 2.5 --maximum-packet-gap-ms 67
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --output references/build/my-parked-route --rounds 2 --steering-margin 8 --avoid-enemies --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 8 --maximum-packet-miss-percent 2.5 --maximum-packet-gap-ms 67
 ```

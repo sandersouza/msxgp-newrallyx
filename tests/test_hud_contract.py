@@ -1,6 +1,6 @@
 """Native HUD ownership and pointer semantics, using synthetic RAM only."""
 import unittest
-from scripts.msx.hud_contract import native_values,DIGIT_OFFSETS
+from src.toolchain.msx.hud_contract import native_values,DIGIT_OFFSETS
 
 
 def snapshot():

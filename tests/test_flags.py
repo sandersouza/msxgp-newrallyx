@@ -1,7 +1,7 @@
 """Synthetic flag pointer/order and compact atlas ownership contracts."""
 import unittest
-from scripts.msx.flags import records,encode_owners
-from scripts.msx.flags_verify import analyze
+from src.toolchain.msx.flags import records,encode_owners
+from src.toolchain.msx.flags_verify import analyze
 
 
 class FlagTests(unittest.TestCase):

@@ -1,6 +1,6 @@
 """Synthetic topology and gameplay contracts for the MSX navigation policy."""
 import unittest
-from scripts.msx.enemy_navigation import exits,choose,DIRECTIONS
+from src.toolchain.msx.enemy_navigation import exits,choose,DIRECTIONS
 
 
 class EnemyNavigationTests(unittest.TestCase):

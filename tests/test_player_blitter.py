@@ -1,6 +1,6 @@
 """Safety boundaries for opaque copies over certified uniform road tiles."""
 import unittest
-from scripts.msx.player_blitter import road_tiles,opaque_atlas
+from src.toolchain.msx.player_blitter import road_tiles,opaque_atlas
 
 
 class PlayerBlitterTests(unittest.TestCase):
@@ -29,7 +29,7 @@ class PlayerBlitterTests(unittest.TestCase):
                          [0,0,0,0,0,2,2,2,0,2,2,2,0,2,2,2])
 
     def test_flag_presentation_has_a_strict_one_refresh_bound_and_resets_cleanly(self):
-        from scripts.msx.flags import verify_display_snapshots
+        from src.toolchain.msx.flags import verify_display_snapshots
         active=bytes((0,))+bytes([1])*10
         collected=bytes((0,0))+bytes([1])*9
         verify_display_snapshots(active+collected+collected+active,active+active+collected+active,[1,2,3,0])

@@ -58,7 +58,7 @@ does not claim a renewed eight-round qualification or physical hardware pass.
 ```sh
 gnumake build
 ROM=references/build/latest.rom
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-effects --rounds 2 --avoid-enemies --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 8 --maximum-packet-miss-percent 2.5 --maximum-packet-gap-ms 67
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --output references/build/my-effects --rounds 2 --avoid-enemies --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 8 --maximum-packet-miss-percent 2.5 --maximum-packet-gap-ms 67
 .venv/bin/python -B scripts/full_game_evidence.py --rom "$ROM" --capture references/build/my-effects --output references/build/my-effects-pixels
 ```
 

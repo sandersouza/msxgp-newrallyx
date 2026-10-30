@@ -1,7 +1,7 @@
 import unittest
 
-from scripts.msx.native_sprites import planes, compile_actors, ACTOR_PATTERN_BASE
-from scripts.msx.native_contract import Snapshot
+from src.toolchain.msx.native_sprites import planes, compile_actors, ACTOR_PATTERN_BASE
+from src.toolchain.msx.native_contract import Snapshot
 
 
 class NativeSpritePlanesTests(unittest.TestCase):

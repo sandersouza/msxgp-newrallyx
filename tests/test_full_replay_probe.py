@@ -5,8 +5,8 @@ from tempfile import TemporaryDirectory
 import unittest
 import xml.etree.ElementTree as ET
 
-from scripts.full_replay_probe import verify_replay_rom,replay_keyboard,bind_replay_rom
-from scripts.msx.emulator import retain_cartridge
+from src.toolchain.legacy.full_replay_probe import verify_replay_rom,replay_keyboard,bind_replay_rom
+from src.toolchain.msx.emulator import retain_cartridge
 
 
 class ReplayCartridgeTests(unittest.TestCase):

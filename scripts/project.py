@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Build the default development ROM or launch it in an isolated openMSX session."""
 import argparse
+import hashlib
 from pathlib import Path
 import shutil
 import subprocess
@@ -10,17 +11,19 @@ from uuid import uuid4
 if __package__ in (None, ''):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.msx.build import destination
-from scripts.msx.raster_scroll import build as build_rom
-from scripts.msx.emulator import run as run_emulator
-from scripts.scenes.storage import require_ignored
-from scripts.msx.checkpoints import inventory, resolve, publish_latest, resolve_latest
+from src.toolchain.msx.build import destination
+from src.toolchain.msx.raster_scroll import build as build_rom
+from src.toolchain.msx.emulator import run as run_emulator
+from src.toolchain.scenes.storage import require_ignored, json_write
+from src.toolchain.msx.checkpoints import inventory, resolve, publish_latest, resolve_latest
 
 
-ROM = Path('references/build/newrallyx.rom')
+ROM = Path('dist/newrallyx.rom')
 
 
 def build_renderer(root, output, *, no_hud=False, stage=0, player_blitter=False,radar_blitter=False,hz=50,sprite_flicker=False,flicker_stress=False,outline_flicker=False,enemies=None,full_game=False,audio=False,no_flag_popups=False):
+    from src.toolchain.graphics.canonical import promote
+    promote(root)
     args = argparse.Namespace(
         output=output, hz=hz, no_hud=no_hud, stage=stage,
         player_blitter=player_blitter,radar_blitter=radar_blitter,
@@ -28,10 +31,10 @@ def build_renderer(root, output, *, no_hud=False, stage=0, player_blitter=False,
         outline_flicker=outline_flicker,
         enemies=enemies,full_game=full_game,audio=audio,no_flag_popups=no_flag_popups,
         cache_columns=48 if player_blitter else None,
-        assets=root/'references/assets/nrallyx',
-        captures=root/'references/scenes/review-fixed-v3',
-        normal=root/'references/scenes/rom-input/normal',
-        overlap=root/'references/scenes/rom-input/overlap',
+        assets=root/'assets/arcade/nrallyx',
+        captures=root/'assets/arcade/scenes/captures',
+        normal=root/'assets/arcade/scenes/normal',
+        overlap=root/'assets/arcade/scenes/overlap',
         assembler=root/'.tools/sjasmplus/1.24.0/sjasmplus',
     )
     return build_rom(root, args)
@@ -44,7 +47,9 @@ def build(root, *, no_hud=False, native=False, stage=12,player_blitter=False,rad
     """
     if hz is None:hz=60 if full_game else 50
     output = destination(root, root/'references/build'/f'default-{uuid4().hex}')
-    rom = root/ROM
+    output.parent.mkdir(parents=True,exist_ok=True)
+    rom = root/'dist/legacy/newrallyx.rom'
+    rom.parent.mkdir(parents=True,exist_ok=True)
     if rom.is_symlink() or (rom.exists() and not rom.is_file()):
         raise ValueError(f'Default ROM must be a regular file: {rom}')
     pending = output.with_suffix('.rom.tmp')
@@ -58,7 +63,13 @@ def build(root, *, no_hud=False, native=False, stage=12,player_blitter=False,rad
         pending.replace(rom)
     finally:
         pending.unlink(missing_ok=True)
+    from src.toolchain.msx.resource_assets import publish as publish_resources
+    publish_resources(root,rom,'legacy')
     latest = publish_latest(root, built_rom)
+    json_write(rom.parent/'manifest.json',dict(rom=rom.relative_to(root).as_posix(),
+        rom_sha256=hashlib.sha256(rom.read_bytes()).hexdigest(),bytes=rom.stat().st_size,
+        mapper='ASCII16',presenter='Preserved legacy SCREEN5',minimum_mapper_ram_kib=128,
+        source_bundle=str(built_rom.parent),status='Legacy comparison cartridge'))
     print(f'Default ROM: {rom.relative_to(root)}')
     print(f'Stage {stage:02d} (HUD {"off" if no_hud else "on"}); latest: {latest.relative_to(root)}')
     return built_rom
@@ -73,7 +84,7 @@ def run(root, rom=ROM, checkpoint=None, latest=False):
         rom, entry = resolve(root, checkpoint)
         print(f'Checkpoint: {checkpoint} ({entry["kind"]}) - {entry["description"]}', flush=True)
     args = argparse.Namespace(
-        rom=root/rom, output=root/'references/build'/f'run-{uuid4().hex}',
+        rom=root/rom, output=root/'references/sessions'/f'openmsx-{uuid4().hex}',
         bios=root/'references/msxbios', machine='Panasonic_FS-A1WSX', openmsx='openmsx',
     )
     print(f'Running ROM: {args.rom}', flush=True)

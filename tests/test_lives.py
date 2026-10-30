@@ -1,8 +1,8 @@
 """Synthetic life-boundary fixtures, linker guards and keyboard-route isolation."""
 import unittest
-from scripts.msx.lives_verify import cases_for
-from scripts.msx.lives_route_verify import paths_for
-from scripts.msx.player import relocate
+from src.toolchain.msx.lives_verify import cases_for
+from src.toolchain.msx.lives_route_verify import paths_for
+from src.toolchain.msx.player import relocate
 
 
 class LivesTests(unittest.TestCase):

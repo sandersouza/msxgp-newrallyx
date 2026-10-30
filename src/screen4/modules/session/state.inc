@@ -1,3 +1,17 @@
+; Reuse contract: session-state (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: Session_State, GameSession_MainSegment, GameSession_MapSegments,
+;   GameSession_FlagSegment, Popup_Active
+; Inputs: Include before the native full-session resident/cold bindings.
+; Outputs: Existing EQU aliases only; no reservation or initialization is emitted.
+; Registers: Not executable.
+; Interrupts: Not executable.
+; Memory / hardware: Authoritative alias map for C0D0..C0F7, C7xx, DFxx and Page0 cache keys.
+;   Shared UI/game fields retain their mode-dependent lifetimes.
+; Reuse boundary: Native adapter contract. Other hosts provide equivalent aliases or replace
+;   this file at assembly time; no allocator is implied.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: State aliases only; no allocation or executable instructions.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 ; Full sessions share native rules with the audio branch. This file contains

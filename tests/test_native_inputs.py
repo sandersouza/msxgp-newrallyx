@@ -3,7 +3,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.msx.native_inputs import analyze_keyboard, analyze_joystick
+from src.toolchain.msx.native_inputs import analyze_keyboard, analyze_joystick
 
 
 class PhysicalInputEvidenceTests(unittest.TestCase):

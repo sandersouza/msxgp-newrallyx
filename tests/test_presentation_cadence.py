@@ -1,7 +1,7 @@
 import tempfile
 from pathlib import Path
 import unittest
-from scripts.msx.presentation_cadence import analyze
+from src.toolchain.msx.presentation_cadence import analyze
 
 
 class PresentationCadenceTests(unittest.TestCase):

@@ -3,7 +3,7 @@ from tempfile import TemporaryDirectory
 import unittest
 from unittest.mock import patch
 
-from scripts.msx.terrain_live import analyze, camera_bounds, STATE, POINTS
+from src.toolchain.msx.terrain_live import analyze, camera_bounds, STATE, POINTS
 
 
 class LiveTerrainTests(unittest.TestCase):
@@ -43,10 +43,10 @@ class LiveTerrainTests(unittest.TestCase):
             x,y=POINTS[100]
             state[0x1300+((256+y)//8%32)*64+((1+x)//8%64)]=1
         (root/'samples').write_bytes(good+state+samples+good)
-        with patch('scripts.msx.stage_one.acquire',return_value=(b'',None)), \
-             patch('scripts.scenes.bundle.load_assets',return_value={}), \
-             patch('scripts.full_game_probe.world',return_value=b''), \
-             patch('scripts.msx.player.padded_world',return_value=(bytes([6])*1024**2,1024,1024)):
+        with patch('src.toolchain.msx.stage_one.acquire',return_value=(b'',None)), \
+             patch('src.toolchain.scenes.bundle.load_assets',return_value={}), \
+             patch('src.toolchain.legacy.full_game_probe.world',return_value=b''), \
+             patch('src.toolchain.msx.player.padded_world',return_value=(bytes([6])*1024**2,1024,1024)):
             return analyze(root,root,root/'samples')
 
     def test_a_transient_corrupt_middle_frame_is_retained(self):

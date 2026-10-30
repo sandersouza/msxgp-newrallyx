@@ -39,7 +39,7 @@ rendering budgets remain required. See the amendment in the approved design.
 
 ## File and interface map
 
-New Python modules under `scripts/msx/` have these responsibilities:
+New Python modules under `src/toolchain/msx/` have these responsibilities:
 
 | File | Responsibility |
 | --- | --- |
@@ -58,15 +58,15 @@ Use existing HUD/raster includes; do not copy the entire diagnostic into a secon
 unmaintainable renderer. Modify `src/stage-one-stream.inc` to expose live tile
 source/cache invalidation while retaining its diagnostic producer.
 
-`scripts/msx/native_verify.tcl` and `scripts/msx/native_reference.lua` are authored
-emulator harnesses. `scripts/native_runtime.py` exposes native CLI commands.
+`src/toolchain/msx/native_verify.tcl` and `src/toolchain/msx/native_reference.lua` are authored
+emulator harnesses. `src/toolchain/legacy/native_runtime.py` exposes native CLI commands.
 Keep generated configs, symbols, bytes and raw reports in fresh ignored outputs.
 
 ## Task 1: Guarded patching and complete allocation validation
 
-**Files:** Create `scripts/msx/native_patch.py`, `scripts/msx/native_layout.py`,
+**Files:** Create `src/toolchain/msx/native_patch.py`, `src/toolchain/msx/native_layout.py`,
 `tests/test_native_patch.py`, `tests/test_native_layout.py`; extend
-`scripts/z80_hooks.json` only when new spans have actual reference evidence.
+`src/toolchain/legacy/z80_hooks.json` only when new spans have actual reference evidence.
 
 **Interfaces:**
 - `Patch(address: int, expected_sha256: str, replacement: bytes, continuation: int)` is a frozen record. Replacement length equals the guarded span length.
@@ -88,7 +88,7 @@ review/delivery; no native gameplay or final linked asset-fit claim is made.
 
 ## Task 2: Exact clock, inputs and differential-record contracts
 
-**Files:** Create `scripts/msx/native_contract.py`, `tests/test_native_contract.py`.
+**Files:** Create `src/toolchain/msx/native_contract.py`, `tests/test_native_contract.py`.
 
 **Interfaces:**
 - `advance_clock(remainder: int, elapsed_cycles: int) -> tuple[int, int]` returns `(due_ticks, remainder)` with `total = remainder + elapsed_cycles * 2000` and division by `3579545 * 33`; reject negative values and a remainder outside the divisor.
@@ -109,10 +109,10 @@ acquisition phase proof remain Tasks 4–5 gates. See `docs/native-runtime-contr
 
 ## Task 3: Native cartridge loader and isolated memory proof
 
-**Files:** Create `scripts/msx/native_build.py`, `src/native.asm`,
+**Files:** Create `src/toolchain/msx/native_build.py`, `src/native.asm`,
 `src/native-loader.inc`, `src/native-state.inc`, `tests/test_native_build.py`,
 `tests/fixtures/native-loader.asm`;
-reuse `scripts/msx/emulator.py`, `mapper_reference.tcl` and storage helpers.
+reuse `src/toolchain/msx/emulator.py`, `mapper_reference.tcl` and storage helpers.
 
 **Interfaces:**
 - `build(root: Path, args: argparse.Namespace) -> Path` accepts `output`, `assets`, `captures`, `normal`, `overlap`, `assembler`, `hz`, `logic_only`; produces `native.rom`, generated includes, symbols, allocation/patch metadata and a sealed manifest in a fresh `references/build/` directory.
@@ -134,8 +134,8 @@ stage-3 builds are explicitly loader probes until Task 4 supplies original reset
 
 ## Task 4: Original reset, foreground execution and logical IRQs
 
-**Files:** Create `src/native-runtime.inc`, `scripts/msx/native_reference.lua`,
-`scripts/msx/native_verify.tcl`, `scripts/msx/native_verify.py`,
+**Files:** Create `src/native-runtime.inc`, `src/toolchain/msx/native_reference.lua`,
+`src/toolchain/msx/native_verify.tcl`, `src/toolchain/msx/native_verify.py`,
 `tests/test_native_runtime.py`; extend `native_build.py` and guarded metadata.
 
 **Interfaces:**
@@ -209,7 +209,7 @@ See `docs/native-runtime.md` for evidence and the fresh-launch reset limitation.
 
 ## Task 6: Mutable scenery, actor composition and live HUD
 
-**Files:** Create `scripts/msx/native_scene.py`, `src/native-video.inc`,
+**Files:** Create `src/toolchain/msx/native_scene.py`, `src/native-video.inc`,
 `tests/test_native_scene.py`; modify `src/stage-one-stream.inc`,
 `native_build.py`, `native-runtime.inc` and `native_verify.py`; reuse HUD API.
 
@@ -228,14 +228,14 @@ See `docs/native-runtime.md` for evidence and the fresh-launch reset limitation.
 
 ## Task 7: Commands, acceptance scenarios and delivery evidence
 
-**Files:** Create `scripts/native_runtime.py`, `docs/native-playable-slice.md`,
+**Files:** Create `src/toolchain/legacy/native_runtime.py`, `docs/native-playable-slice.md`,
 `tests/test_native_cli.py`; modify `scripts/project.py`, `Makefile`, `README.md`,
 `.github/issues/native-z80-playable-slice.md` and `native_verify.py`.
 
 **Interfaces and reproducible entry points:**
-- `python -B scripts/native_runtime.py build --output <fresh-build-dir> --hz {50,60} [--logic-only]` uses existing repository defaults for local assets/assembler; explicit path overrides follow the existing renderer CLI conventions.
-- `python -B scripts/native_runtime.py run --rom <sealed-bundle>/native.rom --output <fresh-run-dir>` reuses the isolated emulator launcher; keyboard `5` coin, `1` start, arrows steer, Space smoke; joystick 1 direction/trigger A steer/smoke.
-- `python -B scripts/native_runtime.py verify --rom <sealed-bundle>/native.rom --reference <reference-dir> --replay <input-json> --frames 3200 --output <fresh-verify-dir> [--headless]` executes Task 5 and render/timing gates. Validate required paths/options; headless runs cannot claim RGB verification.
+- `python -B src/toolchain/legacy/native_runtime.py build --output <fresh-build-dir> --hz {50,60} [--logic-only]` uses existing repository defaults for local assets/assembler; explicit path overrides follow the existing renderer CLI conventions.
+- `python -B src/toolchain/legacy/native_runtime.py run --rom <sealed-bundle>/native.rom --output <fresh-run-dir>` reuses the isolated emulator launcher; keyboard `5` coin, `1` start, arrows steer, Space smoke; joystick 1 direction/trigger A steer/smoke.
+- `python -B src/toolchain/legacy/native_runtime.py verify --rom <sealed-bundle>/native.rom --reference <reference-dir> --replay <input-json> --frames 3200 --output <fresh-verify-dir> [--headless]` executes Task 5 and render/timing gates. Validate required paths/options; headless runs cannot claim RGB verification.
 - All commands default to contributor BIOS under `references/msxbios/` and the session-local reference machine; expose explicit BIOS/machine overrides.
 
 - [ ] Test CLI error status, unsafe paths, unsupported Hz, missing ROM/BIOS/reference and headless report limits. Test that native publication is atomic and any failed build leaves the old default byte-identical. Observe failures before implementing wiring.

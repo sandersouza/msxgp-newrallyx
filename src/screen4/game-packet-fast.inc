@@ -5,6 +5,8 @@ GamePacketFast_Transfer:
     cp 16
     jr c,.tail
 .burst:
+    ; Unroll the frequent full16-byte burst, then use OTIR only for1..15 bytes.
+    ; Entering with B=0 would mean256 writes in OTIR, so callers must reject it.
     REPT 16
     outi
     ENDR

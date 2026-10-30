@@ -1,3 +1,20 @@
+; Reuse contract: audio-session (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: GameAudio_Init, GameAudio_Tick, GameAudio_Event, Full_TurboOn, Full_TurboOff
+; Inputs: Main Page0. Tick derives elapsed ticks from clock_ticks/Audio_LastUI, not an A bank
+;   argument. Event only handles the established background request; native request RAM drives
+;   other sounds.
+; Outputs: Pinned PSG worker runs at elapsed 30 Hz cadence; worker calls restore
+;   GAME_NATIVE_BANK. Turbo entries remain no-op RETs.
+; Registers: Common caller-saved ABI across mapped Audio_RuntimeStep; Event AF scratch.
+; Interrupts: No new DI/EI; IRQ must not write PSG or change Page2 mapping while the worker
+;   runs.
+; Memory / hardware: Existing D150 audio timing state and E9xx native audio requests/caches;
+;   score bytes in AUDIO_BANK.
+; Reuse boundary: Native WSG-to-PSG binding. Mutually exclusive with audio-first-stage; these
+;   public label names have different input/event semantics.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: Pinned native PSG adapter; elapsed ticks, original request RAM, native bank restored.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 GameAudio_Init:

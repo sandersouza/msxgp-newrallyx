@@ -29,6 +29,10 @@ def role(path):
     if parts[0] == 'tests' or (path.suffix == '.py' and
             (path.name.startswith('test_') or 'verify' in path.stem or 'probe' in path.stem)):
         return 'maintained-regression'
+    if parts[:2] == ('src','toolchain'):
+        return 'host-toolchain'
+    if parts[0] == 'scripts':
+        return 'public-cli'
     if path.suffix == '.md':
         return 'historical-evidence'
     if path.suffix in ('.asm', '.inc'):

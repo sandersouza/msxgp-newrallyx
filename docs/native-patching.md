@@ -5,7 +5,7 @@ the original program or establish combined logic/render feasibility.
 
 ## Transactional program patches
 
-`scripts/msx/native_patch.py` exposes frozen `Patch` records and
+`src/toolchain/msx/native_patch.py` exposes frozen `Patch` records and
 `apply_patches(image, expected_sha256, patches, boundaries)`. Supply a complete
 16 KB image reconstructed from contributor ROMs after the pinned inventory has
 been validated. The expected full-program digest must come from the reviewed
@@ -28,7 +28,7 @@ The current hook inventory is a candidate map, not a native patch recipe.
 
 ## CPU and asset allocations
 
-`scripts/msx/native_layout.py` exposes frozen half-open `Region(name, start,
+`src/toolchain/msx/native_layout.py` exposes frozen half-open `Region(name, start,
 end)` records, `validate_layout(regions)` and `pack_assets(resources,
 capacity=65536)`.
 

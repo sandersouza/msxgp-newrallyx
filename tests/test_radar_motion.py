@@ -2,8 +2,8 @@
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from scripts.msx.radar_motion import displayed_anchors,duplicated,analyze,unattributed_bits
-from scripts.msx.sprite_radar import bitmap,patterns
+from src.toolchain.msx.radar_motion import displayed_anchors,duplicated,analyze,unattributed_bits
+from src.toolchain.msx.sprite_radar import bitmap,patterns
 
 
 class RadarMotionTests(unittest.TestCase):

@@ -8,24 +8,24 @@ from PIL import ImageChops
 if __package__ in (None,''):
     sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 
-from scripts.scenes.bundle import load_assets, load_capture
-from scripts.scenes.compare import compare
-from scripts.scenes.record import capture_gameplay
-from scripts.scenes.render import render
-from scripts.scenes.storage import json_write, publish_bundle
-from scripts.scenes.bundle import digest
-from scripts.scenes.layout import compose
-from scripts.scenes.analyze import analyze
+from src.toolchain.scenes.bundle import load_assets, load_capture
+from src.toolchain.scenes.compare import compare
+from src.toolchain.scenes.record import capture_gameplay
+from src.toolchain.scenes.render import render
+from src.toolchain.scenes.storage import json_write, publish_bundle
+from src.toolchain.scenes.bundle import digest
+from src.toolchain.scenes.layout import compose
+from src.toolchain.scenes.analyze import analyze
 
 
 def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('command',choices=['capture','reconstruct','preview','analyze'])
     parser.add_argument('--root',type=Path,default=Path(__file__).resolve().parents[1])
-    parser.add_argument('--assets',type=Path,default=Path('references/assets/nrallyx'))
+    parser.add_argument('--assets',type=Path,default=Path('assets/arcade/nrallyx'))
     parser.add_argument('--capture',type=Path)
     parser.add_argument('--output',type=Path,required=True)
-    parser.add_argument('--replay',type=Path,default=Path('scripts/scenes/gameplay-inputs.json'))
+    parser.add_argument('--replay',type=Path,default=Path('src/toolchain/scenes/gameplay-inputs.json'))
     parser.add_argument('--frames',type=int,nargs='+',default=[2200,2410,2411,2760,2761])
     parser.add_argument('--overwrite',action='store_true',
         help='Replace only an unchanged complete bundle with the same payload inventory')

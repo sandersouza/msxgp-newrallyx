@@ -1,3 +1,6 @@
+; Maintained legacy host; its config/includes define a different renderer ABI
+; from SCREEN4. Reuse the mechanisms through explicit adapters, not by combining
+; both hosts' VRAM layouts, state aliases or IRQ schedules in one cartridge.
 ; SCREEN 5 hardware-scroll ring, fixed radar/fuel and one outlined car plus a life digit.
     OUTPUT "raster-scroll.rom"
     INCLUDE "config.inc"

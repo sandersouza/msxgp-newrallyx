@@ -169,7 +169,7 @@ Current local ignored evidence uses `issue12-qualified-*-v308` and
 local and ignored.
 
 ```sh
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-retained-seven --rounds 1 --fixture-enemies 7 --avoid-enemies --steering-margin 8 --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --minimum-native-hz 57 --maximum-packet-miss-percent 3.5 --maximum-packet-gap-ms 67 --maximum-owed-repeat-ms 100 --maximum-scroll-step 8
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --output references/build/my-retained-seven --rounds 1 --fixture-enemies 7 --avoid-enemies --steering-margin 8 --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --minimum-native-hz 57 --maximum-packet-miss-percent 3.5 --maximum-packet-gap-ms 67 --maximum-owed-repeat-ms 100 --maximum-scroll-step 8
 .venv/bin/python -B scripts/full_startup_probe.py --rom "$ROM" --output references/build/my-startup-entries
 .venv/bin/python -B scripts/full_radar_irq_probe.py --rom "$ROM" --output references/build/my-radar-irq
 ```
@@ -352,15 +352,15 @@ Use fresh ignored output directories and contributor-supplied inputs. Set
 `ROM` to a sealed build's `raster-scroll.rom`.
 
 ```sh
-.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --full-game --hz 60 --output references/build/my-30hz
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-natural --rounds 8 --avoid-enemies --allow-game-over --profile --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 8
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-seven --rounds 1 --fixture-enemies 7 --avoid-enemies --allow-game-over --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-round-eight --rounds 1 --fixture-first-round 8 --avoid-enemies --allow-game-over --radar-trace
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py build --stage 12 --full-game --hz 60 --output references/build/my-30hz
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --output references/build/my-natural --rounds 8 --avoid-enemies --allow-game-over --profile --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 8
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --output references/build/my-seven --rounds 1 --fixture-enemies 7 --avoid-enemies --allow-game-over --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --output references/build/my-round-eight --rounds 1 --fixture-first-round 8 --avoid-enemies --allow-game-over --radar-trace
 .venv/bin/python -B scripts/full_game_evidence.py --rom "$ROM" --capture references/build/my-natural --output references/build/my-pixels
 .venv/bin/python -B scripts/full_msx_enemy_probe.py --rom "$ROM" --output references/build/my-enemy-contracts
 .venv/bin/python -B scripts/full_enemy_probe.py --rom "$ROM" --output references/build/my-complete-cars
 .venv/bin/python -B scripts/full_terrain_probe.py --rom "$ROM" --output references/build/my-terrain
-.venv/bin/python -B scripts/full_clock_probe.py --rom "$ROM" --output references/build/my-clock
+.venv/bin/python -B src/toolchain/legacy/full_clock_probe.py --rom "$ROM" --output references/build/my-clock
 .venv/bin/python -B scripts/full_tick_cost.py --rom "$ROM" --output references/build/my-tick-cost
 .venv/bin/python -B -m unittest discover -s tests
 ```

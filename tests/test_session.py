@@ -3,13 +3,13 @@ from types import SimpleNamespace
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from scripts.msx.session import resources,CODE_OFFSET
-from scripts.msx.screen5 import packed
+from src.toolchain.msx.session import resources,CODE_OFFSET
+from src.toolchain.msx.screen5 import packed
 
 
 class SessionResourceTests(unittest.TestCase):
     def test_lucky_restore_oracle_rejects_a_gauge_starved_after_native_refill(self):
-        from scripts.msx.completion_route_verify import verify_fuel_restoration
+        from src.toolchain.msx.completion_route_verify import verify_fuel_restoration
         with TemporaryDirectory() as folder:
             path=Path(folder)/'fuel.tsv'
             rows=['0 0.0 3 0 0 0 0 3']
@@ -22,7 +22,7 @@ class SessionResourceTests(unittest.TestCase):
             self.assertEqual(verify_fuel_restoration(path)['latency_refreshes'],1)
 
     def test_blink_oracle_requires_both_s_phases_and_steady_ordinary_flags(self):
-        from scripts.msx.hud_alerts_verify import verify_blink
+        from src.toolchain.msx.hud_alerts_verify import verify_blink
         flags=[(3,3),(20,3)]
         rows=[]
         for age in range(1,129):
@@ -38,7 +38,7 @@ class SessionResourceTests(unittest.TestCase):
             verify_blink([(age,clock,'010100000000000000000000') for age,clock,_ in rows],[(0,0)],flags,0,32)
 
     def test_header_trace_rejects_the_lucky_bonus_missed_frame(self):
-        from scripts.msx.completion_route_verify import verify_header_reservations
+        from src.toolchain.msx.completion_route_verify import verify_header_reservations
         with TemporaryDirectory() as folder:
             path=Path(folder)/'raster.tsv'
             path.write_text('2 50 navigate 19.3203 0 0\n4 50 navigate 19.3466 0 0\n')

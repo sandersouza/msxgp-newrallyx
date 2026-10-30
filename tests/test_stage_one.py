@@ -1,6 +1,6 @@
 """Synthetic map-selector tests: no original ROM bytes or extracted fixtures."""
 import unittest
-from scripts.msx import stage_one as stage
+from src.toolchain.msx import stage_one as stage
 
 
 class StageOneTests(unittest.TestCase):

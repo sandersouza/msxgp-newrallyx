@@ -1,6 +1,6 @@
 """Synthetic original-pointer validation; no original game data."""
 import unittest
-from scripts.msx.rocks import cells_from_placement
+from src.toolchain.msx.rocks import cells_from_placement
 
 
 def placement(addresses=(0x9821,0x9842)):
@@ -31,3 +31,20 @@ class RockTests(unittest.TestCase):
         for offset,value in ((0x251,0),(0x28f,0x31),(0x997,0x7f)):
             data=bytearray(placement());data[offset]=value
             with self.assertRaises(ValueError):cells_from_placement(bytes(1792),bytes(data))
+
+class RockAcquisitionTests(unittest.TestCase):
+    def test_first_acquisition_creates_a_new_bundle(self):
+        from pathlib import Path
+        import tempfile
+        from unittest.mock import patch
+        from src.toolchain.msx import rocks
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            def emulate(command,**kwargs):
+                pending=Path(kwargs['env']['ROCKS_OUTPUT'])
+                (pending/'complete').write_text('ok')
+            with patch.object(rocks,'validate_roms',return_value={}),patch.object(rocks,'input_records',return_value=[]),patch.object(rocks,'require_ignored'),patch.object(rocks,'digest',return_value='synthetic'),patch.object(rocks,'verify_capture',return_value=(b'cells',[],42)),patch.object(rocks,'seal'),patch.object(rocks.subprocess,'check_output',return_value='0.289 synthetic'),patch.object(rocks.subprocess,'run',side_effect=emulate):
+                cells,positions,checked,cache=rocks.acquire(root,b'',b'')
+            self.assertEqual((cells,positions,checked),(b'cells',[],42))
+            self.assertEqual(cache,root/'assets/arcade/native/rocks-v1')
+            self.assertTrue((cache/'capture.json').is_file())

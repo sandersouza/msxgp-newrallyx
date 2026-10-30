@@ -21,6 +21,8 @@ class ToolchainTests(unittest.TestCase):
         self.repo = self.root / "repo with spaces"
         self.repo.mkdir()
         shutil.copytree(ROOT / "scripts", self.repo / "scripts")
+        (self.repo / "src/toolchain").mkdir(parents=True, exist_ok=True)
+        shutil.copytree(ROOT / "src/toolchain/environment", self.repo / "src/toolchain/environment")
         self.prefix = self.root / "brew prefix"
         self.bin = self.root / "bin"
         self.bin.mkdir()
@@ -30,7 +32,7 @@ class ToolchainTests(unittest.TestCase):
         create_tools(self.repo, self.prefix, self.bin, self.env)
 
     def run_toolchain(self, mode):
-        return subprocess.run([sys.executable, "-I", "-B", str(self.repo / "scripts/environment/toolchain.py"),
+        return subprocess.run([sys.executable, "-I", "-B", str(self.repo / "src/toolchain/environment/toolchain.py"),
                                "--mode", mode, "--root", str(self.repo), "--prefix", str(self.prefix),
                                "--make", str(self.bin / "make"), "--cxx", str(self.bin / "clang++")],
                               capture_output=True, text=True, env=self.env)

@@ -1,6 +1,6 @@
 # Native clock, input and replay-state contracts
 
-`scripts/msx/native_contract.py` implements #18. These are reference contracts
+`src/toolchain/msx/native_contract.py` implements #18. These are reference contracts
 for the forthcoming Z80 adapter and acquisition harness, not proof of native
 boot, phase alignment or game equivalence.
 

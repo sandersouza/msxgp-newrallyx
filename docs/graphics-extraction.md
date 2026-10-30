@@ -13,13 +13,17 @@ make environment
 make extract-graphics
 ```
 
+The default target verifies and reuses valid output when already present.
+`make extract-all` prepares every required build input; `make build` and normal
+`make run` do this automatically. See [first build](building.md).
+
 The Make target uses `references/roms/nrallyx` as input and
-`references/assets/nrallyx` as output. Use `make extract-graphics OVERWRITE=1`
+`assets/arcade/nrallyx` as output. Use `make extract-graphics OVERWRITE=1`
 to replace an unchanged complete extraction. Override paths with
 `GRAPHICS_INPUT` and `GRAPHICS_OUTPUT`, for example:
 
 ```sh
-make extract-graphics GRAPHICS_OUTPUT="references/assets/nrallyx-other"
+make extract-graphics GRAPHICS_OUTPUT="assets/arcade/nrallyx-other"
 ```
 
 Both `--input` and `--output` are required. Existing output is protected by
@@ -29,7 +33,7 @@ Choose another output path to preserve earlier results:
 ```sh
 .venv/bin/python -B scripts/extract_graphics.py \
   --input references/roms/nrallyx \
-  --output references/assets/nrallyx-other
+  --output assets/arcade/nrallyx-other
 ```
 
 For the standard input and output paths:
@@ -37,7 +41,7 @@ For the standard input and output paths:
 ```sh
 .venv/bin/python -B scripts/extract_graphics.py \
   --input references/roms/nrallyx \
-  --output references/assets/nrallyx
+  --output assets/arcade/nrallyx
 ```
 
 For the extractor alone, install Python 3.14, then from the repository root:
@@ -53,7 +57,7 @@ to verify that outputs are ignored and untracked. MAME is needed for reference
 validation, rather than normal extraction. No global Python packages are needed.
 
 Both CLI paths are required. Relative paths use the caller's working directory;
-output must be strictly below this checkout's `references/assets/`. An absolute
+output must be strictly below this checkout's ignored `assets/arcade/` (or temporary `references/assets/`). An absolute
 script invocation works from another working directory. Run `--help` for options.
 Missing, corrupt, wrong-size and unsupported ROMs fail before creating output.
 Messages identify the affected filename and expected checksum or size. Required
@@ -64,7 +68,7 @@ not decoded. Source files are opened read-only and never modified.
 ## Source inventory and provenance
 
 The exact filenames, physical sizes, CRC32, SHA-1, region roles and load segments
-are recorded in [nrallyx.json](../scripts/graphics/nrallyx.json). Four program
+are recorded in [nrallyx.json](../src/toolchain/graphics/nrallyx.json). Four program
 ROMs are 4096 bytes each, two graphics ROMs are 2048 bytes each, the dot PROM is
 256 bytes, the palette PROM is 32 bytes and the lookup PROM is 256 bytes. The
 remaining two video PROMs are 32 bytes each and two sound PROMs 256 bytes each.
@@ -188,7 +192,7 @@ git check-ignore references/mame-validation/tiles-1.png
 NRALLYX_REFERENCE_DIR="$PWD/references/mame-validation" \
 mame nrallyx -rompath references/roms -video none -sound none -nothrottle \
   -skip_gameinfo -autoboot_delay 0 \
-  -autoboot_script scripts/graphics/mame_reference.lua -seconds_to_run 8 \
+  -autoboot_script src/toolchain/graphics/mame_reference.lua -seconds_to_run 8 \
   -cfg_directory references/mame-validation/cfg \
   -nvram_directory references/mame-validation/nvram \
   -snapshot_directory references/mame-validation \

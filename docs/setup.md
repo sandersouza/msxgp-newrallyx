@@ -1,3 +1,5 @@
+For a first build, follow [Build your first MSX ROM](building.md). Missing arcade assets are prepared automatically by `make build` and `make run`.
+
 # Development environment
 
 From the repository root, run:
@@ -14,12 +16,12 @@ make/shell prerequisites and provisioning belong to a future implementation.
 
 ## Current build and launch selection
 
-After supplying the ROM/BIOS/assets below, run commands from the intended checkout:
+After supplying the original arcade ROMs (and BIOS for openMSX), run commands from the intended checkout:
 
 | Command | Selection |
 | --- | --- |
 | `make build` / `make run` | Default integrated SCREEN 4 gameplay, SCREEN 5 menus, HUD and PSG enabled |
-| `make build MAPPER=1` / `make run MAPPER=1` | Preserved128 KiB mapper-RAM cartridge; run selects128 KiB emulator RAM |
+| `make build MAPPER=1` / `make run MAPPER=1` | Same automatic ROM; run selects128 KiB emulator RAM |
 | `make build TEST_MODE=1` / `make run TEST_MODE=1` | Separate optimized test ROM; Enter advances a round, equals toggles collision invulnerability; walls remain solid |
 | `make build LEGACY=1` / `make run LEGACY=1` | Maintained SCREEN 5 sprite-HUD/PSG build; `legacy=1` is an alias |
 | `make run ROM=<path>` | Existing cartridge, no rebuild |
@@ -187,7 +189,7 @@ nonzero code while printing the shell's code as `Error N`.
 | Shell static analysis | Homebrew ShellCheck, executed by setup/check |
 | Extraction and ROM-processing scripts | Local Python/Pillow environment |
 
-`scripts/environment/toolchain-lock.json` pins sjasmplus version 1.24.0 to upstream
+`src/toolchain/environment/toolchain-lock.json` pins sjasmplus version 1.24.0 to upstream
 commit `d379eeac9ad3857fb48fd3a3929175d0a56038ce`. Setup clones the official release
 tag and verifies the commit before running GNU Make with `USE_LUA=0`. The
 [upstream installation instructions](https://github.com/z00m128/sjasmplus/blob/v1.24.0/INSTALL.md)

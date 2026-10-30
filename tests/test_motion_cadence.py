@@ -2,7 +2,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from scripts.msx.motion_cadence import analyze
+from src.toolchain.msx.motion_cadence import analyze
 
 
 class PhysicalMotionTests(unittest.TestCase):

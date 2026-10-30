@@ -1,7 +1,7 @@
 """Synthetic projection, transparent composition and mode-2 sprite limits."""
 import unittest
-from scripts.msx import sprite_radar as radar
-from scripts.msx.raster_scroll import BODY_TOP, LIFE_SPLIT, MASK_ROWS, sprite_attributes
+from src.toolchain.msx import sprite_radar as radar
+from src.toolchain.msx.raster_scroll import BODY_TOP, LIFE_SPLIT, MASK_ROWS, sprite_attributes
 
 
 def decode(raw):

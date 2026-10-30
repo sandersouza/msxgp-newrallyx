@@ -1,0 +1,2142 @@
+{
+  "schema_version": 1,
+  "moves": [
+    {
+      "old": "src/screen4/session_workbook.mjs",
+      "new": "src/toolchain/screen4/session_workbook.mjs",
+      "before_sha256": "4472c2c17a286201c3c75f5626d7da3e2849e10ffbc4c5d7cd16b5a60776f73d",
+      "after_sha256": "8ca2c31c2dbbdbc4cfe8fb7011e8d09f5be0dba93151d4ad7f913cb7b6ca5942"
+    },
+    {
+      "old": "src/screen4/build.py",
+      "new": "src/toolchain/screen4/build.py",
+      "before_sha256": "d4dc5d09de4d577b1c635f306f3f7a48297500e64fbb85169d599a51d6b9dd7b",
+      "after_sha256": "22436e3f92982c183158343f63aa73ca632b85ec580110547aede41b60bccba7"
+    },
+    {
+      "old": "src/screen4/session_boot_module_verify.py",
+      "new": "src/toolchain/screen4/session_boot_module_verify.py",
+      "before_sha256": "1aae2dfb52bb64880e8eab2989b02583a3b3c87db87cbb490f020eff5cdf17c0",
+      "after_sha256": "d9dc31f2c3d62dddab8c54436ac94cd9758bc1e9dfd55e723e687cadb43ecdb2"
+    },
+    {
+      "old": "src/screen4/arcade_clear_reference.py",
+      "new": "src/toolchain/screen4/arcade_clear_reference.py",
+      "before_sha256": "b8304c28c93fb85f76a4f70b07326093a29bb2ed7144f01bdba068264657ea29",
+      "after_sha256": "fbc3ce2af5eff6d4a3d7850939b581093a28cdab35c7961d153343b5a3e82d17"
+    },
+    {
+      "old": "src/screen4/game_phase_cache.py",
+      "new": "src/toolchain/screen4/game_phase_cache.py",
+      "before_sha256": "336104ca0a5de0258f4a2ced4f8362c7a5a17429c373554327e10b69ac2246a4",
+      "after_sha256": "4f8b571f7ef8b4dfe1a493574235ea3a242269ca029472fb6feafcd9637e37ca"
+    },
+    {
+      "old": "src/screen4/game_sprites.py",
+      "new": "src/toolchain/screen4/game_sprites.py",
+      "before_sha256": "923d8e79f5ced4c54ae10654bf8e8cf53ffe4b3504a1795258734d3788fbe949",
+      "after_sha256": "64014318cf734d2c9ca88761bbbcaca6ddaf17fdf4d728f35fecde4f7a5adb8d"
+    },
+    {
+      "old": "src/screen4/test_game_dirty.py",
+      "new": "src/toolchain/screen4/test_game_dirty.py",
+      "before_sha256": "f0a34a15a78643ee159a073fbcc58f1ce08fda76e0048dc6a274737d0ab4042e",
+      "after_sha256": "b1880fb0e15f38d4550e81583df80e364adcaff0388bccf46dee3a3e0c1cd516"
+    },
+    {
+      "old": "src/screen4/test_session_boot.py",
+      "new": "src/toolchain/screen4/test_session_boot.py",
+      "before_sha256": "d6b8763a98dcaa32bcb32d92ce457c407db57b31f6d6ca68731cf7201aa21dd6",
+      "after_sha256": "da641da47555427349f2a5cc28d56651e1d4d726c83155c81e31e5b860c60d76"
+    },
+    {
+      "old": "src/screen4/test_game_effects.py",
+      "new": "src/toolchain/screen4/test_game_effects.py",
+      "before_sha256": "82f69be549546b0edcac2460d0e2c92276bbd4a729bfbcc1c5cae016362f10f7",
+      "after_sha256": "fd7192d6a7d1bc70892e6e5e0fb0ad49f0cc98ebe82d042df7afd43b0bff5abc"
+    },
+    {
+      "old": "src/screen4/game_smoke_cache.py",
+      "new": "src/toolchain/screen4/game_smoke_cache.py",
+      "before_sha256": "2540a125c98a4f4db24f4404769edd667ac36115bbfae368a47c4ce6bab5dc49",
+      "after_sha256": "8274e601a52266ab0099a6ab6e9dced40d06b4d3d1ee3197b492058b42462f09"
+    },
+    {
+      "old": "src/screen4/game_core.py",
+      "new": "src/toolchain/screen4/game_core.py",
+      "before_sha256": "173683f587fdb42049537ecebbef090b12a6b854c2bcf0b95fcf601af36ba158",
+      "after_sha256": "9e379b8d538bf0101077b8dedb6e6b8131e6ff3f75cf1982ebe3943baaea63e6"
+    },
+    {
+      "old": "src/screen4/test_session_title.py",
+      "new": "src/toolchain/screen4/test_session_title.py",
+      "before_sha256": "9135815321ea0715fa3328cfee5ce86c987186f4bffc479b9a051868a4f0bef2",
+      "after_sha256": "48eecd97c16ccf97403307706b366760e38ac58c817ea18e35f681a5cb2f6015"
+    },
+    {
+      "old": "src/screen4/turbo_report.py",
+      "new": "src/toolchain/screen4/turbo_report.py",
+      "before_sha256": "40e9c7857a4f7e1ce2009309195155cbfd44dd534cda67a36d9a685fa3274d7b",
+      "after_sha256": "8fa37d92865614c231d5c3b33828f5a9cefd69b44f1ff958753893f3d256610a"
+    },
+    {
+      "old": "src/screen4/session_steering_verify.py",
+      "new": "src/toolchain/screen4/session_steering_verify.py",
+      "before_sha256": "5f35458b69d1240098dfcbf91e1c0641c54770e08a4f1dc46b024af5b6d2ce11",
+      "after_sha256": "903b57e238111867093ef89d76855cc281abe5c3447c99fba7a48eff0407c274"
+    },
+    {
+      "old": "src/screen4/session_audio_assets.py",
+      "new": "src/toolchain/screen4/session_audio_assets.py",
+      "before_sha256": "665e275a4e616923fa0a120236b7d214ce3b6e0b8bbbf421b95b0c593a9c9172",
+      "after_sha256": "5608ce873c71fa223cb88745be841ca8fd94e1f796769cd7ef125cd7570c829a"
+    },
+    {
+      "old": "src/screen4/test_hud_tile_layout.py",
+      "new": "src/toolchain/screen4/test_hud_tile_layout.py",
+      "before_sha256": "e0c414f5af00b47a08a2d2aa1799d0f82a45d14bf44493ad095b4baabfb8a905",
+      "after_sha256": "c4aa126a771130a883fe71cb74a0cef2bee66d7bdace3cfb93a5be44bf772f1b"
+    },
+    {
+      "old": "src/screen4/session_motion_verify.py",
+      "new": "src/toolchain/screen4/session_motion_verify.py",
+      "before_sha256": "c5eb1ae5176364eb743d74340dfde8d3cea2157bf2c35505a69ab04d8d108aa5",
+      "after_sha256": "3e0d24e9977dead637983c83db8cf7354a55397ab89dd76ed7e80c435e1e196f"
+    },
+    {
+      "old": "src/screen4/session_boot_skip_verify.py",
+      "new": "src/toolchain/screen4/session_boot_skip_verify.py",
+      "before_sha256": "b0299f407c8e4f6cbbefd34c2256f9b9d9e0c94a0b842e2f377299b18a7e0153",
+      "after_sha256": "e67fd1137a96f068a6d706a4cc50df498b65bff9ae3af0460ecf304cd5a0eddb"
+    },
+    {
+      "old": "src/screen4/game_boundary_stable.py",
+      "new": "src/toolchain/screen4/game_boundary_stable.py",
+      "before_sha256": "5b1301fa2353c3abcb5f59e7e6ca1137fecd4bd7a41ccb7b457cea0ae8370d5b",
+      "after_sha256": "c6c9725da8c98f9acc8147dcaa9fc6a9c82e542869c07d8343ce8413086356c1"
+    },
+    {
+      "old": "src/screen4/session_title.py",
+      "new": "src/toolchain/screen4/session_title.py",
+      "before_sha256": "532642ec5cd28d132fab3147169be922faba8b75bcd3affb29e49b08df4d592c",
+      "after_sha256": "93efac3b87fc64cbc4e1d98f4d6f64eb7513d970e5737816d8a05cf8a6138953"
+    },
+    {
+      "old": "src/screen4/game_verify.py",
+      "new": "src/toolchain/screen4/game_verify.py",
+      "before_sha256": "97b776d728edebab7a419982a380492a7491526caf0455bb3d8950f838e273c2",
+      "after_sha256": "d217bb4cf6875c3e6024619ffb66137a616fccbffbc60c27579e4d7c47a2bbcc"
+    },
+    {
+      "old": "src/screen4/test_game_ring.py",
+      "new": "src/toolchain/screen4/test_game_ring.py",
+      "before_sha256": "7d326cac0b3d692fce782c60ac8e83d77b456069a765af75630cf9ba98d92454",
+      "after_sha256": "b9be4d8f86f920defb2f775c99d3b31b659e1101b7b6f9b163ad713f1216eb09"
+    },
+    {
+      "old": "src/screen4/edge.py",
+      "new": "src/toolchain/screen4/edge.py",
+      "before_sha256": "269806b7a2529a9945ca20db8502b5dcc1ce970e48e6b82876526b9389ce1c31",
+      "after_sha256": "3ea715412217e02f6d8d135e46c92044860505c26393bd701513996b1cb7629c"
+    },
+    {
+      "old": "src/screen4/game_radar_source_cache.py",
+      "new": "src/toolchain/screen4/game_radar_source_cache.py",
+      "before_sha256": "c0fe956fe883ead7fed59b6aefd1b1474a32f811437ef8bc3017f403b032f12a",
+      "after_sha256": "27a0c21cf4ea6cedb7bcd5388aed9da7eaca075146bcd327250c74359a9a0f77"
+    },
+    {
+      "old": "src/screen4/session_contracts.py",
+      "new": "src/toolchain/screen4/session_contracts.py",
+      "before_sha256": "bbabe78cc23c85fa325c46ccc9c3807b7b3cd60dac45e061f128a6e3260f670c",
+      "after_sha256": "716604612f141ad0797512c5e51635938e14e1efd4eb40cb7fe451d556f6b39b"
+    },
+    {
+      "old": "src/screen4/game_analyze.py",
+      "new": "src/toolchain/screen4/game_analyze.py",
+      "before_sha256": "80f07f085059ff63b87a5eb42316992dd768657970c3807604c5b451e58f559c",
+      "after_sha256": "f4b473c933478a979b016794ac4f2ba1661e3ce59e7eab18a223e5109582201c"
+    },
+    {
+      "old": "src/screen4/radar_variants.py",
+      "new": "src/toolchain/screen4/radar_variants.py",
+      "before_sha256": "aca34ab47f0dec3d38f61d86ebf8762e8568955ba3bc95e65291d8e6b2aa1f14",
+      "after_sha256": "f0557eff4f79e4397c0d7b4dedfd57948de318d868725bd4497e1b54475e3dec"
+    },
+    {
+      "old": "src/screen4/test_rom_pack.py",
+      "new": "src/toolchain/screen4/test_rom_pack.py",
+      "before_sha256": "ef573bf3acdb0e3b11e0e89057e8eeb7f4b076b555162892d5c9975f52bea401",
+      "after_sha256": "f98584ddb8ad029925806b018eee415b5248c063b3748be4197f213e74cc0a96"
+    },
+    {
+      "old": "src/screen4/game_audio.py",
+      "new": "src/toolchain/screen4/game_audio.py",
+      "before_sha256": "96cd37bd5208930a2d11b3171b9fee49287c46f5773fa25687e5b47700118a43",
+      "after_sha256": "434f02677cedcbb49a3a10a06b61441561a29194ec18a63297f75b190aca9e49"
+    },
+    {
+      "old": "src/screen4/session_reference.py",
+      "new": "src/toolchain/screen4/session_reference.py",
+      "before_sha256": "b1f084c09405703d30d1546ab9e05b0cac6d6cd0d9ba98c1e12e388f09fe60af",
+      "after_sha256": "dbf9741044af507a4a80b004a8bfc8c0d9f652823650913cb6ce569e56df0ea2"
+    },
+    {
+      "old": "src/screen4/game_smoke_fast.py",
+      "new": "src/toolchain/screen4/game_smoke_fast.py",
+      "before_sha256": "2b9c7679505bbd1f212963a4aa5b95b3f25fa71aeaf4cb87182b7b30963811bc",
+      "after_sha256": "9353f03bd38592ad855bd25702ae804e0f7a312b6314ad2a578e6f3f1290edbe"
+    },
+    {
+      "old": "src/screen4/session_profile_adapter.py",
+      "new": "src/toolchain/screen4/session_profile_adapter.py",
+      "before_sha256": "f7098c96c7e7d4a48fa765fdeaa5b24bc78fb2d115b7befff6c02bbd538f698f",
+      "after_sha256": "10235b7e4c08fcb6e6128479711c3f5fa0cd542422f199cf4eb1a8c418c4b842"
+    },
+    {
+      "old": "src/screen4/edge_contract.py",
+      "new": "src/toolchain/screen4/edge_contract.py",
+      "before_sha256": "24a1e1131f772fcc25bd035a236e036ca815840f72c849235dbacb338785930c",
+      "after_sha256": "3ac99d22396de1693118b61be151743cee8165a378aa48c1a5e8e8f066c9e714"
+    },
+    {
+      "old": "src/screen4/arcade-enemy-rock.lua",
+      "new": "src/toolchain/screen4/arcade-enemy-rock.lua",
+      "before_sha256": "ca7d7e7542d68da552665d63a9a91e8ba8a76831cf0af8505ef887dc20833706",
+      "after_sha256": "ca7d7e7542d68da552665d63a9a91e8ba8a76831cf0af8505ef887dc20833706"
+    },
+    {
+      "old": "src/screen4/session_rocks_verify.py",
+      "new": "src/toolchain/screen4/session_rocks_verify.py",
+      "before_sha256": "1988454f919387a1b0023022962b10e2d2447a3bf31a452207429fb83418d7bf",
+      "after_sha256": "0694a152fbf2d7ceb147df4372bd33d08118d83a187f8606763ca17063b7f2b6"
+    },
+    {
+      "old": "src/screen4/component_profile.py",
+      "new": "src/toolchain/screen4/component_profile.py",
+      "before_sha256": "cfb9fecf91224fca4f58d2179f5e9e637e30173b35339ece05ba2be6b7697874",
+      "after_sha256": "bd8876dc7a46680c77502ca5d049b473b970f76f25f8732ee2ef79b53fdb6813"
+    },
+    {
+      "old": "src/screen4/test_game_name_stream.py",
+      "new": "src/toolchain/screen4/test_game_name_stream.py",
+      "before_sha256": "e64af1543f1378bae6f4557c300f23694d66c51e919538ceca34d5eda81e93be",
+      "after_sha256": "8e7b39a7096adb98c94f3d087a64d209e4e7bcc3316d1407f5f929f3453bfac6"
+    },
+    {
+      "old": "src/screen4/game_phase_verify.py",
+      "new": "src/toolchain/screen4/game_phase_verify.py",
+      "before_sha256": "dfd4c4980ab142a136481007a21049d076365e1b057e3469cd12890d237edb3c",
+      "after_sha256": "5c0e2c936be0b467fcf4b99548a3f4ef3c2005048104f5f2db1bd5e2490b9e9b"
+    },
+    {
+      "old": "src/screen4/hud_programs.py",
+      "new": "src/toolchain/screen4/hud_programs.py",
+      "before_sha256": "82f8ac01b51d77e553110395f242155d6d7f25e5c61dea5c373c7a763b02ddee",
+      "after_sha256": "4970040fba6eee16ab33a1c0d2e1dd9aff2dc49258e88b35ccb467d6af77237a"
+    },
+    {
+      "old": "src/screen4/game_ring_refresh.py",
+      "new": "src/toolchain/screen4/game_ring_refresh.py",
+      "before_sha256": "546432bcb4d2afc9e3d48b80d2ebc31052c7dc584eacc5eb4ffa09cf416329ce",
+      "after_sha256": "6f085ac5b4cc69129674d2638c79deff58d8f4bbc76d3e894fc36630034bf718"
+    },
+    {
+      "old": "src/screen4/session_cosmetics.py",
+      "new": "src/toolchain/screen4/session_cosmetics.py",
+      "before_sha256": "e9a03a88464aba23461199d5e8a5cea2a8ebaa0344e5c89bcfabfc8d5006a503",
+      "after_sha256": "885320138248d29c7b16ab1e51f944492d697c0b43d82fcc66c554cb85abf831"
+    },
+    {
+      "old": "src/screen4/profile.py",
+      "new": "src/toolchain/screen4/profile.py",
+      "before_sha256": "b62a4f2cc3716197ddde350935280451e6a4f975d38172d424d4a27e076af453",
+      "after_sha256": "9afe8e497d7c25c19158c48c10d0ceee762142f877684f9c77a787b13463405b"
+    },
+    {
+      "old": "src/screen4/module_contracts.py",
+      "new": "src/toolchain/screen4/module_contracts.py",
+      "before_sha256": "82a000112fd5d75746b6a5b1c1a51246fcddb6c61d4150d4cfd1dfc1b3c77d59",
+      "after_sha256": "67b4fe8ccbfb70a2f4aaaa8e57da96f134cd6c666fc5dd7935f50f9db6397dda"
+    },
+    {
+      "old": "src/screen4/test_game_radar_source_cache.py",
+      "new": "src/toolchain/screen4/test_game_radar_source_cache.py",
+      "before_sha256": "8593445feffaa394c23f84292bb57817b6a57550ee4dea7ce1d99f8d4e92e308",
+      "after_sha256": "a0504ddb6068eddf59280b40c7c326134acf623fda3fe6afcece52b90275ca55"
+    },
+    {
+      "old": "src/screen4/test_rom_audit.py",
+      "new": "src/toolchain/screen4/test_rom_audit.py",
+      "before_sha256": "3a94d589db3aa172b99a97981fb169ce76446ff0eb1f8bd83b80a901bc307197",
+      "after_sha256": "26fa700cf4cea4ad58c8c1f065a5bafb3b168d98c3980fb6b0d7d8e6a06e2e45"
+    },
+    {
+      "old": "src/screen4/component_actor_profile.py",
+      "new": "src/toolchain/screen4/component_actor_profile.py",
+      "before_sha256": "86ce731cc38936a42eac43145aa966bc2252a5683bfe24cc133f016ec45c474b",
+      "after_sha256": "1e860ce1eb625eca2f5591bd73ddf5804854d4cd8f52a240078f8a4af8636a35"
+    },
+    {
+      "old": "src/screen4/session-controls.tcl",
+      "new": "src/toolchain/screen4/session-controls.tcl",
+      "before_sha256": "1761b20ab907d097ac4724d93b8a68ee1cef9f74924ac8be48f7f23313ba5753",
+      "after_sha256": "1761b20ab907d097ac4724d93b8a68ee1cef9f74924ac8be48f7f23313ba5753"
+    },
+    {
+      "old": "src/screen4/session_auto.py",
+      "new": "src/toolchain/screen4/session_auto.py",
+      "before_sha256": "0e622d893fa1218038117dde4894dbaf0d6c845ea17eb3ce93d3406dd7f535a6",
+      "after_sha256": "80b9c021a09275f637c83de23a9a65b26c4e031a9f4da781c56582c1f41ccba4"
+    },
+    {
+      "old": "src/screen4/session_flag_cache_verify.py",
+      "new": "src/toolchain/screen4/session_flag_cache_verify.py",
+      "before_sha256": "7f557c903d96573a18eb91d382e5b019f4e693d52134176375bfe9c0de730c82",
+      "after_sha256": "0b82965b6ebf7d93b63b458397108ae6d3957dc6bd786a3d81d00f61988bce5f"
+    },
+    {
+      "old": "src/screen4/test_game_boundary_fast.py",
+      "new": "src/toolchain/screen4/test_game_boundary_fast.py",
+      "before_sha256": "83c8429c2cef834f7eea805a4d46a91ee742df41c90643e12d9a80dbcb6ed7f0",
+      "after_sha256": "4588e2da6c519594791cdb257c49c5c8c53083bd320cef860051950d17043faf"
+    },
+    {
+      "old": "src/screen4/session_audio_verify.py",
+      "new": "src/toolchain/screen4/session_audio_verify.py",
+      "before_sha256": "7dbeeabbb8d1e3f92effe5895c15734cfc95bc6b43776bf87efe593af2fe6c18",
+      "after_sha256": "a8c2dd178e2a0b1aeaf31f514a6bf4b72a0850b6864a9b256862568b83244de9"
+    },
+    {
+      "old": "src/screen4/test_game_multi.py",
+      "new": "src/toolchain/screen4/test_game_multi.py",
+      "before_sha256": "56df146adbc0aa454868af37f88f52f4f09f8fd916587720e8c7a6a8442e3934",
+      "after_sha256": "a41c7cadaab3a9f00375ac40faaa8b60fd37dca97239a0bb781607209ceda230"
+    },
+    {
+      "old": "src/screen4/rom_pack.py",
+      "new": "src/toolchain/screen4/rom_pack.py",
+      "before_sha256": "3d679205f705caa065a98ae6bb16320bd2e6de43275316e21bc57ae3400a9546",
+      "after_sha256": "b9bb777cbaa5bef30c639726e0e016bb098a8c93b2b4fe543e51e234e878d31b"
+    },
+    {
+      "old": "src/screen4/hud_module.py",
+      "new": "src/toolchain/screen4/hud_module.py",
+      "before_sha256": "ffaecfc6d6e58af3c34511580c2ee8beec647cf1d77191ea9429768ad9072c5d",
+      "after_sha256": "18e9a796d4b542ab508a2f4f3e5a1db41d67a718fe2b21240182245f4a6c2303"
+    },
+    {
+      "old": "src/screen4/test_game_actors.py",
+      "new": "src/toolchain/screen4/test_game_actors.py",
+      "before_sha256": "96d4e5d9ee0cba241d6649a6310e39ad7e6e9ce926989b0827f76599a87fc7da",
+      "after_sha256": "0dfe9d41c94847573ccc83731234507b4f6ea826abb04155382c93cdd38ef71e"
+    },
+    {
+      "old": "src/screen4/test_game_radar.py",
+      "new": "src/toolchain/screen4/test_game_radar.py",
+      "before_sha256": "1a5e7596508ef43730114cf70bf87710dd5deedfd50f6b346021058a31e94a53",
+      "after_sha256": "3eb1d9c9993ab21419bc6630e3e504f6ccace77e2797b994813c8e41805d7e7a"
+    },
+    {
+      "old": "src/screen4/test_game_boundary_stable.py",
+      "new": "src/toolchain/screen4/test_game_boundary_stable.py",
+      "before_sha256": "d1cf96346692e6a5ac6cf3f16c96d5d2d7ad08eed8f20e4c7456218870201e8c",
+      "after_sha256": "062032b95fd588635ccfc2191fd265c66263b6876755e51e05266ffda978425e"
+    },
+    {
+      "old": "src/screen4/game_hud.py",
+      "new": "src/toolchain/screen4/game_hud.py",
+      "before_sha256": "263ed794a6ec80cbeaff6096af7a8456127adc0c4caf10012090e390eae9bcf8",
+      "after_sha256": "389e2a72c7c4b48c4c649240cc66d9bd4dff9649fc3e68ada00f9da5f8ec76a1"
+    },
+    {
+      "old": "src/screen4/session_speed_verify.py",
+      "new": "src/toolchain/screen4/session_speed_verify.py",
+      "before_sha256": "b38595b1a6b9f7cfb00b290171ccdac4909237ff8d1b5a8b7cfd64b283099e32",
+      "after_sha256": "c0cb72871debd4d02404b7c105716263d916137af4d0429343a8ece8ece11588"
+    },
+    {
+      "old": "src/screen4/test_module_contracts.py",
+      "new": "src/toolchain/screen4/test_module_contracts.py",
+      "before_sha256": "c01e99aff674e80e9083e0690e73f22682af4e37d1cbf2dfdffb9fc09448a3cd",
+      "after_sha256": "539e75799a44a0a4445804eb095e57df3489e31efcffcf26ef6581d36050de04"
+    },
+    {
+      "old": "src/screen4/game_profile.py",
+      "new": "src/toolchain/screen4/game_profile.py",
+      "before_sha256": "4bc309f4c74a06f9173dc2fe87aaedb51a78c9494f38bc2cd5545f5ff900977c",
+      "after_sha256": "987269527f38bdf6ba6e1d8c3ee17391009bafa55a8a88a05ea924147fa21e22"
+    },
+    {
+      "old": "src/screen4/test_hud_programs.py",
+      "new": "src/toolchain/screen4/test_hud_programs.py",
+      "before_sha256": "ff472f2c0a53e62aac202ded044065405158290013719bdd83f23c91fe612f07",
+      "after_sha256": "2e2439bf54c464d45371452eaf86f2f117edb3a310b9e1ef5580c5df51dea0b7"
+    },
+    {
+      "old": "src/screen4/targets.mk",
+      "new": "src/toolchain/screen4/targets.mk",
+      "before_sha256": "faa61f5a02ae5b888a7f291685d760954169c43b918b045482a153b3c428ae5e",
+      "after_sha256": "d1ff59ae588f19b9f1e84bd74dca06abcbad6f57a6d0f8ecdd1f2fc05846bd9a"
+    },
+    {
+      "old": "src/screen4/phase_cache_report.py",
+      "new": "src/toolchain/screen4/phase_cache_report.py",
+      "before_sha256": "6d0dc4dd394842822a180eb648321076936995ca7c1ec37a11799fe1b0f6f8d2",
+      "after_sha256": "c572fddbde961fd85f80333f55e2845b9457052e9d4712930269974fe431fb9f"
+    },
+    {
+      "old": "src/screen4/test_game_smoke_fast.py",
+      "new": "src/toolchain/screen4/test_game_smoke_fast.py",
+      "before_sha256": "2121bed8d47aa38d1bbdb3c7268579226cf841fe815e6eca21840f663eb2cf43",
+      "after_sha256": "3de0cb0025d51bdd93e8ce5ffa2ced23c99ef08b7c1bb9b2004bc93e23148bde"
+    },
+    {
+      "old": "src/screen4/title_reference.py",
+      "new": "src/toolchain/screen4/title_reference.py",
+      "before_sha256": "c938ea573cf35d416308a9a2615311eeb5e26be84e367d2095dd21609520ea78",
+      "after_sha256": "f7bcd4eb4bdbc4c19597ef635ba985f382419efd44555dcb4c50f69c0d52e766"
+    },
+    {
+      "old": "src/screen4/session_ram64.py",
+      "new": "src/toolchain/screen4/session_ram64.py",
+      "before_sha256": "ad84896b7a0d6a7e106432500ee5b87400524854db78646b2f768c6bcbc17a5b",
+      "after_sha256": "3017f89bbe53a02fe44ea4d9e0b87e6fc7686186dbd59250c90418348b06b695"
+    },
+    {
+      "old": "src/screen4/rom_pack_verify.py",
+      "new": "src/toolchain/screen4/rom_pack_verify.py",
+      "before_sha256": "a2b26fc17437f028416afe6688f653a3d21f5dd3855babd06809a832479a78b5",
+      "after_sha256": "e2b4002ee4401233f653252d58e9873dbde076ce93cd4f7082713df4691c4bd7"
+    },
+    {
+      "old": "src/screen4/game_route.py",
+      "new": "src/toolchain/screen4/game_route.py",
+      "before_sha256": "844c85ae001af5ecda828c02a93dbb73b692b957111601646f18647931451df2",
+      "after_sha256": "801bf1cdff277b53a5d6e31e20babfa15a5192d4dd0225bd574ac03505cb404c"
+    },
+    {
+      "old": "src/screen4/test_game_core.py",
+      "new": "src/toolchain/screen4/test_game_core.py",
+      "before_sha256": "d0aeeef518725c3f84ae709ce3c7ce139a99f35159f739f147f2d11fe8ae017d",
+      "after_sha256": "da0df40004b7655e1dc9fdb590e7af03c174e1ffc8ba8bce92bc42348df01a4b"
+    },
+    {
+      "old": "src/screen4/session_auto_contract.py",
+      "new": "src/toolchain/screen4/session_auto_contract.py",
+      "before_sha256": "2bdddd57f4a414ac87c148fffe37421f87d7b1b5a207762496fc640230c8cdcc",
+      "after_sha256": "0f7e282bf5425b0879c0eae469e01af6a19e2823d94571c48a1cb36e12e824b7"
+    },
+    {
+      "old": "src/screen4/session_boot_verify.py",
+      "new": "src/toolchain/screen4/session_boot_verify.py",
+      "before_sha256": "b7f74dd05ebf4b53aac6a20e7768596f7ec6cfd66aab10c449a18dd8891efa88",
+      "after_sha256": "64ccef32faf390ea32ab41f14fa6cbf6e1e0241c4c59f5915a77ef87aa899882"
+    },
+    {
+      "old": "src/screen4/game_multi.py",
+      "new": "src/toolchain/screen4/game_multi.py",
+      "before_sha256": "bf267f9fec12fbbbe9cf069cef795f598f9f994044fe3f56f58fe86c2c5cda83",
+      "after_sha256": "c9a370f933472fb9e10100c9d2d547ecc82d6258df30b7ae7e2f1fa80b2d045a"
+    },
+    {
+      "old": "src/screen4/arcade-audio-feedback.lua",
+      "new": "src/toolchain/screen4/arcade-audio-feedback.lua",
+      "before_sha256": "dc4dcb7c9caef867685f403b325f7812d0a01365719a625650660ac2156e9b85",
+      "after_sha256": "dc4dcb7c9caef867685f403b325f7812d0a01365719a625650660ac2156e9b85"
+    },
+    {
+      "old": "src/screen4/game_boundary_fast.py",
+      "new": "src/toolchain/screen4/game_boundary_fast.py",
+      "before_sha256": "f332b91e951d9e4d76cb9cb76ae2af733daec2a54796c990872be9ccb26269f5",
+      "after_sha256": "762cf24c3544df488a28ebcc31daaaebbced06112755d9ef02c28a26155497b0"
+    },
+    {
+      "old": "src/screen4/session_turbo.py",
+      "new": "src/toolchain/screen4/session_turbo.py",
+      "before_sha256": "cc0f4505732fc53835b8ccfa1e8e37b82ea7184b01ed5b22d94cfe8c6cd43937",
+      "after_sha256": "39bfb6bd39a9adb06f12cbc5c5ccdc04bb61fdb3c31b9f923b2ec9232bdc5a31"
+    },
+    {
+      "old": "src/screen4/game_logic_profile.py",
+      "new": "src/toolchain/screen4/game_logic_profile.py",
+      "before_sha256": "5ef2652edb41c76f76c613db2f9b949eb628673ce7271b74e37752654dd549fd",
+      "after_sha256": "f56a1018daec4be63dfc5aef1d315c67ad94f7456326e103e583cf57b23c0698"
+    },
+    {
+      "old": "src/screen4/test_session_reference.py",
+      "new": "src/toolchain/screen4/test_session_reference.py",
+      "before_sha256": "8bbbcd96abe935c98db5db1c30b041d4ed99d626d26cbe3a67f706d88dd256c4",
+      "after_sha256": "8272fe1bf5dd5c08cb8d401b23129447b25b29a98d3eb4d3a6e8b90a361da7f3"
+    },
+    {
+      "old": "src/screen4/effect_codec.py",
+      "new": "src/toolchain/screen4/effect_codec.py",
+      "before_sha256": "01cddaf384063b9127113ee4b03e8e5c26c9788d45d01d673f8f5e28b02ee4f0",
+      "after_sha256": "b324fce4a3b9c6fd1fcc401bb38cbc105104e725a9ce83941789b7fe4f263265"
+    },
+    {
+      "old": "src/screen4/game_multi_verify.py",
+      "new": "src/toolchain/screen4/game_multi_verify.py",
+      "before_sha256": "4772c999f1d236d515f658614774c7194b9f8a03bcf1f73d8fd99fcdbfeb2ca2",
+      "after_sha256": "8f9af534f6359af8827009be371f36feeeb4a63d3b5c949e245bc9c15c0323b9"
+    },
+    {
+      "old": "src/screen4/session-scenarios.tcl",
+      "new": "src/toolchain/screen4/session-scenarios.tcl",
+      "before_sha256": "cbef59d5fdd587c245a99b9adadd85157c6cef52458148ae0ec0db3bfb23b242",
+      "after_sha256": "cbef59d5fdd587c245a99b9adadd85157c6cef52458148ae0ec0db3bfb23b242"
+    },
+    {
+      "old": "src/screen4/hud_tile_layout.py",
+      "new": "src/toolchain/screen4/hud_tile_layout.py",
+      "before_sha256": "e6774a8c5191e5ed72601aaa0be2a506cb340411321ec2ec3daba76935e6c770",
+      "after_sha256": "c000e6ea5f251a03ce84f526e0ed2dfd75fd276bac83a0ae01433703ebf40b7c"
+    },
+    {
+      "old": "src/screen4/session_turbo_contract.py",
+      "new": "src/toolchain/screen4/session_turbo_contract.py",
+      "before_sha256": "b6ec328320aa9d9d0b701d617f18ed7864aa6bc2a6366e0e41baebfb7f48dfc7",
+      "after_sha256": "fcc1eb177c89830b049aedc0102d4e86ce9d61a568520e8cc5f3137cdb6901dc"
+    },
+    {
+      "old": "src/screen4/hud.py",
+      "new": "src/toolchain/screen4/hud.py",
+      "before_sha256": "e16dc4bbd3a64b65e09d7cd71eb1d864fdf18d51bcd71a6d23ddfb553b02417b",
+      "after_sha256": "d134e2274a674fdb5fab1c4524abafbb5084f3dba6802b7c7ec1acfbf5028005"
+    },
+    {
+      "old": "src/screen4/game_dirty_probe.py",
+      "new": "src/toolchain/screen4/game_dirty_probe.py",
+      "before_sha256": "17221b8e1773fa88941ba087952d8fa510b6e446a2be55b82665c0b84b93433c",
+      "after_sha256": "42bf674534b6bc5366819732b3b5208ae1ef2b6fa32100f60c00a0225d3fb717"
+    },
+    {
+      "old": "src/screen4/scanout.py",
+      "new": "src/toolchain/screen4/scanout.py",
+      "before_sha256": "0c27c7cb0f35c073e1e31ae882323626b84c2bdaf205d046b81083adfe74b1d4",
+      "after_sha256": "172fb07f8fa7678253e8e202fc9cb5eacf6674105fc50ad4d1865682e36c2783"
+    },
+    {
+      "old": "src/screen4/turbo_workbook.mjs",
+      "new": "src/toolchain/screen4/turbo_workbook.mjs",
+      "before_sha256": "78a5256009f52f693f1153e2d73a12870387f823366d2e4c88451e020fbdb8bd",
+      "after_sha256": "3b1d578244b0c328d53eacbea761d3548d5a84fbe3724729845fda8160beafa2"
+    },
+    {
+      "old": "src/screen4/session_boot.py",
+      "new": "src/toolchain/screen4/session_boot.py",
+      "before_sha256": "044ee65beb3bcbdcbf7a2afe35e657b6bf5e1f12f8062accd72764417d8166ed",
+      "after_sha256": "a8a062ea319de592ced277ae88ba503910642154d1154fa113a264ad095a5137"
+    },
+    {
+      "old": "src/screen4/verify.py",
+      "new": "src/toolchain/screen4/verify.py",
+      "before_sha256": "a8ff2ebed7de5a51f64345218f24b4387540e961c4eb3146a3ce11744c03eb0c",
+      "after_sha256": "a34e972851de05f5d29205312ffe0a46c8b2cba8b2ca2f71ccb70a283f1b2196"
+    },
+    {
+      "old": "src/screen4/test_game_sprites.py",
+      "new": "src/toolchain/screen4/test_game_sprites.py",
+      "before_sha256": "adaba2c870a36a5290921b4fc80c13e6845a98e9265e4006045943b5888ec831",
+      "after_sha256": "f37feb21bb5f1cae6940306165503ec32121c4e34236afac97987897ea26f1e7"
+    },
+    {
+      "old": "src/screen4/test_game_hud.py",
+      "new": "src/toolchain/screen4/test_game_hud.py",
+      "before_sha256": "0cd0e68a6bf5d2459657e247897df51bfb62df7361c6074129e0d11a8d434951",
+      "after_sha256": "aa217766f01ca0fe21c6c94cc9b884f99c92d9f393f647f80472255d099b26cf"
+    },
+    {
+      "old": "src/screen4/session_report.py",
+      "new": "src/toolchain/screen4/session_report.py",
+      "before_sha256": "c60085affced90cf4496e39e7c9e52a0b43d86fde8fd6ddc0411843714eb28ef",
+      "after_sha256": "2a37eaf6d7d469822bed494e42428b198d10bc6c98c9c425bb32c90b14fa8626"
+    },
+    {
+      "old": "src/screen4/arcade-clear-audio.lua",
+      "new": "src/toolchain/screen4/arcade-clear-audio.lua",
+      "before_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+      "after_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a"
+    },
+    {
+      "old": "src/screen4/arcade-challenge-speed.lua",
+      "new": "src/toolchain/screen4/arcade-challenge-speed.lua",
+      "before_sha256": "f1328ff90cb4accdbc511a50e7afe584a425977c76397b39ea840645cfaa2680",
+      "after_sha256": "f1328ff90cb4accdbc511a50e7afe584a425977c76397b39ea840645cfaa2680"
+    },
+    {
+      "old": "src/screen4/arcade-motion-audio.lua",
+      "new": "src/toolchain/screen4/arcade-motion-audio.lua",
+      "before_sha256": "49c121c253d8fed556ae9e2d00806a335647f460b9f9162995bc7448784869d7",
+      "after_sha256": "49c121c253d8fed556ae9e2d00806a335647f460b9f9162995bc7448784869d7"
+    },
+    {
+      "old": "src/screen4/session_build.py",
+      "new": "src/toolchain/screen4/session_build.py",
+      "before_sha256": "161a2acc20668bdacfd5dcbe64b4ee64ab27825dc2ba2fc4a75c7da1f3ae8e01",
+      "after_sha256": "56a30b6c7c969f9fc40f632e6ded74199cbfa160189009c67eded301f21b2e83"
+    },
+    {
+      "old": "src/screen4/test_session_cosmetics.py",
+      "new": "src/toolchain/screen4/test_session_cosmetics.py",
+      "before_sha256": "1cbfd381fd7a096c902916e36fcf47a80cdccd6bc80c792f57892c44cc00832c",
+      "after_sha256": "6823de0df89d06fbf9c9ac73caff60894229c43e938ef5017a24c2ebe5347f9f"
+    },
+    {
+      "old": "src/screen4/build_profiles.py",
+      "new": "src/toolchain/screen4/build_profiles.py",
+      "before_sha256": "ff22dd9f05a7e7cbad9881a06eaff27e3d9de3c95edd32133985201f46c23dff",
+      "after_sha256": "cdc9f3045e22d3e803c4c3a659806c7e61132ccc5a03879dbce4865d5d529473"
+    },
+    {
+      "old": "src/screen4/arcade_motion_reference.py",
+      "new": "src/toolchain/screen4/arcade_motion_reference.py",
+      "before_sha256": "15f04b2a1164caf7452b7428da5dac8be0910343e5c35bf3a0d819527994a2b5",
+      "after_sha256": "b3695a8ead49e8fc197a646b8a04dc90247dcc427d8904450ca5510e61260893"
+    },
+    {
+      "old": "src/screen4/test_game_smoke_cache.py",
+      "new": "src/toolchain/screen4/test_game_smoke_cache.py",
+      "before_sha256": "5c9bb211b7de223a9191758e42fe6e82ce4a014efb3bcc1e80abde9f2fb8cd43",
+      "after_sha256": "cfada1ffc3349700a31665f189e1b91179156aa1627d99c3ecba31a1334ab0e9"
+    },
+    {
+      "old": "src/screen4/session_phase.py",
+      "new": "src/toolchain/screen4/session_phase.py",
+      "before_sha256": "a9f900f7525b1dffea534d3b4ea32a421f2315097d45128e74946aeae2fc8a70",
+      "after_sha256": "d8c3637e5aeeddb4393e9427975656070bdfc461c415339491b0b1afc931c26f"
+    },
+    {
+      "old": "src/screen4/session_profile.py",
+      "new": "src/toolchain/screen4/session_profile.py",
+      "before_sha256": "66f2d7d2255a3e24f7148f8bd8ea593a5633f63ffd2a3b0737a6b387841fb74c",
+      "after_sha256": "a18d897e61b4b7e23b6352317ac7a574430755bf3a3e2da694f7712a6866a81d"
+    },
+    {
+      "old": "src/screen4/session_sprite_verify.py",
+      "new": "src/toolchain/screen4/session_sprite_verify.py",
+      "before_sha256": "c6fa3b662927ea4eb672de65d3814085f82b67f3a45efdc3584c7a2bfdc98306",
+      "after_sha256": "4e1138c221d2a5a3027514f439bf8379efe80bdf8b399213e58976cd078b89d7"
+    },
+    {
+      "old": "src/screen4/test_game_radar_fast.py",
+      "new": "src/toolchain/screen4/test_game_radar_fast.py",
+      "before_sha256": "6c992b2ac56307d3b883204f05b3b8a8ce0ecf9d583ffafbe5e51bf818e09ee0",
+      "after_sha256": "00cd3f8fd7ba253e823da42dbf8cea4aa7aafeba6b17533a64505d8fc750900f"
+    },
+    {
+      "old": "src/screen4/session_completion.py",
+      "new": "src/toolchain/screen4/session_completion.py",
+      "before_sha256": "0911d4c8b343a81f6f1c7ee1d7772fb679ba3f8b30df7bd7c3de774319874620",
+      "after_sha256": "11ac4900874681e87b3c0d7b6e6775a030f8abf3522948536e62214a744e9896"
+    },
+    {
+      "old": "src/screen4/test_game_audio.py",
+      "new": "src/toolchain/screen4/test_game_audio.py",
+      "before_sha256": "28d876f96618544927ee13da2df4bb196dca4843b99b04b9ab483341d8fc4740",
+      "after_sha256": "392e23f8da9a8c03e4244071225a38236d937cdd09c481a2bb9f724bb1d01373"
+    },
+    {
+      "old": "src/screen4/rom_audit.py",
+      "new": "src/toolchain/screen4/rom_audit.py",
+      "before_sha256": "e64df2a3f3512b6ca15e44f8f683945d0f9fbd221cf740d650569fcb1cb452ec",
+      "after_sha256": "8bbb4804fa70ef8857fa06bb1879643b4e07be8ff92449a81d05b56d928492bf"
+    },
+    {
+      "old": "src/screen4/prepare.py",
+      "new": "src/toolchain/screen4/prepare.py",
+      "before_sha256": "0410b298c4229ea41544b53f142dd007019f2e8a67f45b38fb4937f988e4560e",
+      "after_sha256": "d2c2aea80918cb8eb0410f194ad56e2de1ea3e674599ce9a9022186e8f3f5df5"
+    },
+    {
+      "old": "src/screen4/session_audio_compare.py",
+      "new": "src/toolchain/screen4/session_audio_compare.py",
+      "before_sha256": "56aa5fe89b86c0443f5757ba448fceedf8a4d9b528e624dcaf9e409e20e60e38",
+      "after_sha256": "2980e6c809064ac415648b1732b50f775216b127a5ffe23f7eaabc799c9e3335"
+    },
+    {
+      "old": "src/screen4/session_verify.py",
+      "new": "src/toolchain/screen4/session_verify.py",
+      "before_sha256": "2b00d53baa894bdb7c910e146237fea118bf6893555d17b93f6734495561b6df",
+      "after_sha256": "80b9c302d79d5b251da8f87ca28491882c04bf8a2f0f10a673e67e87e11f2bd7"
+    },
+    {
+      "old": "src/screen4/analyze.py",
+      "new": "src/toolchain/screen4/analyze.py",
+      "before_sha256": "7e629924795e9946b95dce96eaf628d65cf80616350f64f8c128ca5927ceaeb9",
+      "after_sha256": "d372334c374d03a5812ae682c2d47fafa36f4132069efb806bda0fe9af2c8f07"
+    },
+    {
+      "old": "src/screen4/test_game_packet_fast.py",
+      "new": "src/toolchain/screen4/test_game_packet_fast.py",
+      "before_sha256": "830f0a46bca2e66f6733884ad95a9b832d5b42e56f1b7c467cd0af818b45e4f8",
+      "after_sha256": "491f96db2fa9871075ab0f3246bc0124055279747ea4e786cd70a2c016a87e23"
+    },
+    {
+      "old": "src/screen4/test_game_sprite_mask_fast.py",
+      "new": "src/toolchain/screen4/test_game_sprite_mask_fast.py",
+      "before_sha256": "31704a404d5cd45c7c319351c954c6841b4fc868ebf5ce62403df72375687aec",
+      "after_sha256": "11fccd6ad179c9d54480ca41edced393f5306f18845663753db95dac3440e410"
+    },
+    {
+      "old": "src/screen4/session_flag_clone_verify.py",
+      "new": "src/toolchain/screen4/session_flag_clone_verify.py",
+      "before_sha256": "44f2a4279db75753f3f136fd479a5e52b2c4630c32ac8b5342a3f2e14193a2b4",
+      "after_sha256": "1b8c77565285f8b28b0bad136412d77178138e36759078dc19feed33614e828c"
+    },
+    {
+      "old": "src/screen4/test_hud.py",
+      "new": "src/toolchain/screen4/test_hud.py",
+      "before_sha256": "88a4fc60acef2e29e81f8598e6c101aa82bbbec81343c8b09d92f5b898034bcc",
+      "after_sha256": "d5f547015cf3881fc442ab00bec3f6c123d306f57cae508073441571c40eecaf"
+    },
+    {
+      "old": "src/screen4/auto_report.py",
+      "new": "src/toolchain/screen4/auto_report.py",
+      "before_sha256": "67395ba956bd22b203e06f0424b88914077f5521994c3255292572ad7b0eec74",
+      "after_sha256": "4e53448d87c08b8be53bbede6fa64d6b0c7650058ac6baf2dd920e27d4578eb5"
+    },
+    {
+      "old": "src/screen4/turbo_matrix.py",
+      "new": "src/toolchain/screen4/turbo_matrix.py",
+      "before_sha256": "d433b5252fefa009ed3bc239f29550247cd000ebd1230f34abfee756d6e12a62",
+      "after_sha256": "d6149cf6d7cb41589d5a927a010e10fefd74cfe2aab389baa2f49488912e746d"
+    },
+    {
+      "old": "src/screen4/game_build.py",
+      "new": "src/toolchain/screen4/game_build.py",
+      "before_sha256": "f1b4ccc56e8f94d51184a705a48a23fe608f4b57f2c52e17ca249b94eba6a5e5",
+      "after_sha256": "7d5e41ae406d4b8e26f48ca4ad40fcbfa7ba53a333b23a918715f76a578e8404"
+    },
+    {
+      "old": "scripts/native_runtime.py",
+      "new": "src/toolchain/legacy/native_runtime.py",
+      "before_sha256": "3c2fa5ad7f17fd687f03514de61aa02ed97773e626bbe2f5327e77b2b874aa99",
+      "after_sha256": "28ea6338b356322f9751dc877158edf33ec261e458ff9ee95e557ac1e85e51f9"
+    },
+    {
+      "old": "scripts/full_game_probe.py",
+      "new": "src/toolchain/legacy/full_game_probe.py",
+      "before_sha256": "b50f4b7471ad01e188d18c7a49ef488d1c5518d4579dae3ef72f5a1c20d1e2d1",
+      "after_sha256": "a363f9386d5dec2af5cd2fbf54720a923375f1c0e3b84debe45b1ad0f3f88961"
+    },
+    {
+      "old": "scripts/z80_hooks.json",
+      "new": "src/toolchain/legacy/z80_hooks.json",
+      "before_sha256": "4e2d03de9c6bfa0c169edc9811de57ea50756a6138109b7dd56a25acfa26dd01",
+      "after_sha256": "4e2d03de9c6bfa0c169edc9811de57ea50756a6138109b7dd56a25acfa26dd01"
+    },
+    {
+      "old": "scripts/full_replay_probe.py",
+      "new": "src/toolchain/legacy/full_replay_probe.py",
+      "before_sha256": "9c76bbc337a3d6a4303c88f5c2427bea780abcebb82066a84fb635f2f3ee7e33",
+      "after_sha256": "1072e66a5e28396e997846f873a027f38a1e85c14ea2cf0f6c51ac63e2af1ae6"
+    },
+    {
+      "old": "scripts/z80_analysis.py",
+      "new": "src/toolchain/legacy/z80_analysis.py",
+      "before_sha256": "064a84bc411922fa024e45a781890e58ae1626c550aec8a2def6b342eddbb52b",
+      "after_sha256": "0c0db7763e95a9d068682927a27539c34f8152686d59279da19da2e4760ef917"
+    },
+    {
+      "old": "scripts/restore_probe_artifacts.py",
+      "new": "src/toolchain/legacy/restore_probe_artifacts.py",
+      "before_sha256": "eaa685200ac43e92573d956290046b9257351738c18ec0b86d337b78485922d1",
+      "after_sha256": "8015f29d213cb04c3b22ea1f30efa6430f0c8dcaa921ce8fa4fa035b8e69511d"
+    },
+    {
+      "old": "scripts/full_clock_probe.py",
+      "new": "src/toolchain/legacy/full_clock_probe.py",
+      "before_sha256": "1a5a739d744e53fb11adbbc296ba3709154ee86c4bbad282f1149449c1f68c95",
+      "after_sha256": "82021db20c84c0ba9e4f571c0fecf5640bc04bcc952ee5b71c772458d36ed73e"
+    },
+    {
+      "old": "scripts/z80_reference.lua",
+      "new": "src/toolchain/legacy/z80_reference.lua",
+      "before_sha256": "b8679618ff12ab5a4a765e2b0fd8846e1a8944d039805c1e7b467f8e4ccbbaa0",
+      "after_sha256": "b8679618ff12ab5a4a765e2b0fd8846e1a8944d039805c1e7b467f8e4ccbbaa0"
+    },
+    {
+      "old": "scripts/full_game_route.py",
+      "new": "src/toolchain/legacy/full_game_route.py",
+      "before_sha256": "8110274b99762c7b7d16b393ef929ebbb97738421f0474602d0417bec0791a24",
+      "after_sha256": "20948147d9298c22712be953d69172db190837e4e61d86e3032d8f6fa66995b9"
+    },
+    {
+      "old": "scripts/raster_scroll.py",
+      "new": "src/toolchain/legacy/raster_scroll.py",
+      "before_sha256": "08e3b569775e4f10152c3757d813a68907f21175d20ba5ffcdb8d9dc94a3c174",
+      "after_sha256": "c60d9abf83f365f7c4f5c5fa55a035c0223d2371b7968e7776ac1f3ac5cc2718"
+    },
+    {
+      "old": "scripts/scenes/bundle.py",
+      "new": "src/toolchain/scenes/bundle.py",
+      "before_sha256": "8106436333eed30e4057748fc292843a59957e254961baf80b61c69930840746",
+      "after_sha256": "66afc8e80848faf02ce68c409c20faf94c45645bef2153ec857c2353c825c7b5"
+    },
+    {
+      "old": "scripts/scenes/render.py",
+      "new": "src/toolchain/scenes/render.py",
+      "before_sha256": "c14835daff75ea93f01eeb38c865536b69cb422f21cd7b4cb904f9e5b05b70af",
+      "after_sha256": "c14835daff75ea93f01eeb38c865536b69cb422f21cd7b4cb904f9e5b05b70af"
+    },
+    {
+      "old": "scripts/scenes/layout.py",
+      "new": "src/toolchain/scenes/layout.py",
+      "before_sha256": "db0eda5a14fd09c1f243de1eeba5c7cf6551abd7f24f5c8368a2213675076792",
+      "after_sha256": "db0eda5a14fd09c1f243de1eeba5c7cf6551abd7f24f5c8368a2213675076792"
+    },
+    {
+      "old": "scripts/scenes/compact.py",
+      "new": "src/toolchain/scenes/compact.py",
+      "before_sha256": "bbe2c8d15cb8dc3a87855fde836aac5a721cb6d3a1c97a1a6107dbb73f4e5572",
+      "after_sha256": "bbe2c8d15cb8dc3a87855fde836aac5a721cb6d3a1c97a1a6107dbb73f4e5572"
+    },
+    {
+      "old": "scripts/scenes/__init__.py",
+      "new": "src/toolchain/scenes/__init__.py",
+      "before_sha256": "2eb5be36020456cd857246a0f9658ab6ae61100fe78f907bd650a6fa8f78cc12",
+      "after_sha256": "2eb5be36020456cd857246a0f9658ab6ae61100fe78f907bd650a6fa8f78cc12"
+    },
+    {
+      "old": "scripts/scenes/storage.py",
+      "new": "src/toolchain/scenes/storage.py",
+      "before_sha256": "5046d4c07e83977987528af135d249a7959d6131a1ecb28638ccf79c04a29bae",
+      "after_sha256": "fcc19f8d6db0c77bd1cdb4354953de8cd288edd9b6ade80ed55aa5c0aa2a788c"
+    },
+    {
+      "old": "scripts/scenes/record.py",
+      "new": "src/toolchain/scenes/record.py",
+      "before_sha256": "c084f46652f16ba66e8aaa424efe2df4394d0d1f5e055676dc7e10e5588dd79d",
+      "after_sha256": "2c74a2346fd857b16d6efcae7729d0bcbe5b35b7e7ca3ea26a648c9ab650a3c7"
+    },
+    {
+      "old": "scripts/scenes/capture.lua",
+      "new": "src/toolchain/scenes/capture.lua",
+      "before_sha256": "73d17ae1f71745479b0a47b49fa7ae563da9bebbc0d6b82cf060deba0decd8cc",
+      "after_sha256": "73d17ae1f71745479b0a47b49fa7ae563da9bebbc0d6b82cf060deba0decd8cc"
+    },
+    {
+      "old": "scripts/scenes/gameplay-inputs.json",
+      "new": "src/toolchain/scenes/gameplay-inputs.json",
+      "before_sha256": "5063fef9c88eebb86a9cf68f57d54b3795973eeb09e1196da4f49868ad30fb6d",
+      "after_sha256": "5063fef9c88eebb86a9cf68f57d54b3795973eeb09e1196da4f49868ad30fb6d"
+    },
+    {
+      "old": "scripts/scenes/compare.py",
+      "new": "src/toolchain/scenes/compare.py",
+      "before_sha256": "cadacae5ab57fc6b435ad225fd234ac6ecf189416607d2de4b9721b1a45e5b75",
+      "after_sha256": "cadacae5ab57fc6b435ad225fd234ac6ecf189416607d2de4b9721b1a45e5b75"
+    },
+    {
+      "old": "scripts/scenes/analyze.py",
+      "new": "src/toolchain/scenes/analyze.py",
+      "before_sha256": "89d2899d9599793b175675f0c0a757f2b35805cd153ae6c61e974a8d31d14027",
+      "after_sha256": "89d2899d9599793b175675f0c0a757f2b35805cd153ae6c61e974a8d31d14027"
+    },
+    {
+      "old": "scripts/environment/verify_python.py",
+      "new": "src/toolchain/environment/verify_python.py",
+      "before_sha256": "6960f3051a7db750623153dcbbde0b7bae8f8eda23db3bc1db1d1be567c813eb",
+      "after_sha256": "6960f3051a7db750623153dcbbde0b7bae8f8eda23db3bc1db1d1be567c813eb"
+    },
+    {
+      "old": "scripts/environment/toolchain-lock.json",
+      "new": "src/toolchain/environment/toolchain-lock.json",
+      "before_sha256": "1f4014ee119834cad6ad94c6a2092dfe916ef9e0239488df7c03a96c95343a35",
+      "after_sha256": "1f4014ee119834cad6ad94c6a2092dfe916ef9e0239488df7c03a96c95343a35"
+    },
+    {
+      "old": "scripts/environment/macos.sh",
+      "new": "src/toolchain/environment/macos.sh",
+      "before_sha256": "f8e8e1950e96de9956c7811814a66cdee7a163717f0e438e97dabc5bda7f5974",
+      "after_sha256": "ee5d70861fc11b447bb48126cd655f663e3580d456b1b00fe391f3549be82fcf"
+    },
+    {
+      "old": "scripts/environment/toolchain.py",
+      "new": "src/toolchain/environment/toolchain.py",
+      "before_sha256": "8343a4f45771274575b29de7fa0aa733b730febfe0783da2419603c960b644dc",
+      "after_sha256": "5ad3af5e3487a57d07bfd3086f3b3e7bfe341363f443477206eca8f763401a04"
+    },
+    {
+      "old": "scripts/msx/hud_contract.py",
+      "new": "src/toolchain/msx/hud_contract.py",
+      "before_sha256": "b97518c1f2cec9146480643e17ee03fccb2a06755643ff509d3b51ec9df8ab87",
+      "after_sha256": "b97518c1f2cec9146480643e17ee03fccb2a06755643ff509d3b51ec9df8ab87"
+    },
+    {
+      "old": "scripts/msx/round_scenery.py",
+      "new": "src/toolchain/msx/round_scenery.py",
+      "before_sha256": "f9940825b5cd6d447afddf44497530d29ef080963fe9b64559471a9a69a74d50",
+      "after_sha256": "f9940825b5cd6d447afddf44497530d29ef080963fe9b64559471a9a69a74d50"
+    },
+    {
+      "old": "scripts/msx/build.py",
+      "new": "src/toolchain/msx/build.py",
+      "before_sha256": "1736801b14dc954bc853478eb0a1ed2f1b1072c4c26656d7f91282cd2f038dc8",
+      "after_sha256": "1736801b14dc954bc853478eb0a1ed2f1b1072c4c26656d7f91282cd2f038dc8"
+    },
+    {
+      "old": "scripts/msx/rocks_capture.lua",
+      "new": "src/toolchain/msx/rocks_capture.lua",
+      "before_sha256": "fcd393fb12849800912d7ecb9fe70a1d8b1917de060b8db8c43acd43f5346cbc",
+      "after_sha256": "fcd393fb12849800912d7ecb9fe70a1d8b1917de060b8db8c43acd43f5346cbc"
+    },
+    {
+      "old": "scripts/msx/native_logic_hooks.json",
+      "new": "src/toolchain/msx/native_logic_hooks.json",
+      "before_sha256": "3b82ad373c80d44792042e6c7d4f6c20f96d54f9b2ced195ba58cbd90706fe33",
+      "after_sha256": "3b82ad373c80d44792042e6c7d4f6c20f96d54f9b2ced195ba58cbd90706fe33"
+    },
+    {
+      "old": "scripts/msx/lives_route_verify.py",
+      "new": "src/toolchain/msx/lives_route_verify.py",
+      "before_sha256": "dbdb77054e8a6b1a5f320e1dc80dec73881ac05f101d0417ec2f1c36cbcbc49a",
+      "after_sha256": "4e7aec5820aba4c8d006a558652334384372e88fdd96386ab721604472e40e0e"
+    },
+    {
+      "old": "scripts/msx/fuel_native.lua",
+      "new": "src/toolchain/msx/fuel_native.lua",
+      "before_sha256": "7d861298b6bfa4d897759cfadcaa1f2370170abb66bab61cdd1bbb2d0195be30",
+      "after_sha256": "7d861298b6bfa4d897759cfadcaa1f2370170abb66bab61cdd1bbb2d0195be30"
+    },
+    {
+      "old": "scripts/msx/native_patch.py",
+      "new": "src/toolchain/msx/native_patch.py",
+      "before_sha256": "20f572909cc69ae3b400649d1820449917d034edacb4049017db788ceac896b7",
+      "after_sha256": "81784637b328b382e9b7d2835b9b89b447ad76261539f35b11834b163dadc3b6"
+    },
+    {
+      "old": "scripts/msx/native_build.py",
+      "new": "src/toolchain/msx/native_build.py",
+      "before_sha256": "45ba7a627bb2927e06c8b52cee737ebe497b91b8e8d8c11b02e1a5e84a9db7b5",
+      "after_sha256": "6d9d103b6817d4eff9ccf73e1f1cbd76d7061737ce40b968c7387e5320198ada"
+    },
+    {
+      "old": "scripts/msx/tile_strips.py",
+      "new": "src/toolchain/msx/tile_strips.py",
+      "before_sha256": "e2543cf557cdc68807c2306b6a980327900ca4ec47db93b9fe03675f0a63ccf1",
+      "after_sha256": "e2543cf557cdc68807c2306b6a980327900ca4ec47db93b9fe03675f0a63ccf1"
+    },
+    {
+      "old": "scripts/msx/parameters_native.lua",
+      "new": "src/toolchain/msx/parameters_native.lua",
+      "before_sha256": "1dbd2af07cea04f10187d3b1b0fb254eb25a2a8d17988825e0b0e47763316514",
+      "after_sha256": "1dbd2af07cea04f10187d3b1b0fb254eb25a2a8d17988825e0b0e47763316514"
+    },
+    {
+      "old": "scripts/msx/death_verify.py",
+      "new": "src/toolchain/msx/death_verify.py",
+      "before_sha256": "f1120bd787d20db4cb5d7694fa17dbdbf38009c035e0313e6204fb6af5f28be6",
+      "after_sha256": "f8e5f7c530291e54a6b44e43eb7a203de13a0b8c8e3f200e268d99ccd1453dd7"
+    },
+    {
+      "old": "scripts/msx/smoke_verify.py",
+      "new": "src/toolchain/msx/smoke_verify.py",
+      "before_sha256": "dcdf35e342fff90242d855920d406a2280d2bd048fb60bc275fc1e5fdc8c017d",
+      "after_sha256": "873d3154e1270e0007e258f3a36299da99b2ef04e996b8fd8e1b1fca417430b8"
+    },
+    {
+      "old": "scripts/msx/tile_strip_verify.py",
+      "new": "src/toolchain/msx/tile_strip_verify.py",
+      "before_sha256": "9b8f04e4e2ff73c7dfcb89d0aa60d91582c1151b507f281545320f58670efeb5",
+      "after_sha256": "ba98b4eff75057f5c0dc65385cbb60b357eb49c8c0e6960282247aa709b5dcd8"
+    },
+    {
+      "old": "scripts/msx/round_inventory.lua",
+      "new": "src/toolchain/msx/round_inventory.lua",
+      "before_sha256": "1bea25c821dd39f71af5335de5e603fbcc0a1c1097da330f53483171e1c1d8c6",
+      "after_sha256": "1bea25c821dd39f71af5335de5e603fbcc0a1c1097da330f53483171e1c1d8c6"
+    },
+    {
+      "old": "scripts/msx/full_hud.py",
+      "new": "src/toolchain/msx/full_hud.py",
+      "before_sha256": "7f20207f4527aaf12e3ecbcd375195d3a2fc01173e7f71ac00fb4e88546c9d1c",
+      "after_sha256": "7f20207f4527aaf12e3ecbcd375195d3a2fc01173e7f71ac00fb4e88546c9d1c"
+    },
+    {
+      "old": "scripts/msx/native_reference.lua",
+      "new": "src/toolchain/msx/native_reference.lua",
+      "before_sha256": "4c3d44d0dedf6176d66b2acce0feb6b1729f01b44c77a6a6016105183aae5547",
+      "after_sha256": "4c3d44d0dedf6176d66b2acce0feb6b1729f01b44c77a6a6016105183aae5547"
+    },
+    {
+      "old": "scripts/msx/sprite_flicker.py",
+      "new": "src/toolchain/msx/sprite_flicker.py",
+      "before_sha256": "523540c470b14de542528a406cff1a117ec861f8049ee018c6add821c1223749",
+      "after_sha256": "523540c470b14de542528a406cff1a117ec861f8049ee018c6add821c1223749"
+    },
+    {
+      "old": "scripts/msx/flag_route_verify.py",
+      "new": "src/toolchain/msx/flag_route_verify.py",
+      "before_sha256": "6fe25519b805802816fed2ea185960f2d524288c1110750da78986a0975d20bd",
+      "after_sha256": "74d7dcb713a7c193d22bf0682410f31f82c4b7287d5c1f6171f6f9c0c7118e30"
+    },
+    {
+      "old": "scripts/msx/radar_cells.py",
+      "new": "src/toolchain/msx/radar_cells.py",
+      "before_sha256": "5a1860ce0749ec9810e235a92d3fbbb712ed82fcc2c8e3647fb68dc3bee3a38f",
+      "after_sha256": "5a1860ce0749ec9810e235a92d3fbbb712ed82fcc2c8e3647fb68dc3bee3a38f"
+    },
+    {
+      "old": "scripts/msx/sprite_upload_verify.py",
+      "new": "src/toolchain/msx/sprite_upload_verify.py",
+      "before_sha256": "6a1eb1aa0dfd3ba3c87de8b93474925e4db658fda0661cd92631944b49fceeda",
+      "after_sha256": "e0be8bb8fb7ae31fadd7e9009f81f83d952a584f4c861aba308b578753aea0f8"
+    },
+    {
+      "old": "scripts/msx/audio_psg.py",
+      "new": "src/toolchain/msx/audio_psg.py",
+      "before_sha256": "d133f4c9ffca4d51254ad77691a61f46f6f63a9d7dec7ee93e99b30923f0ae10",
+      "after_sha256": "d133f4c9ffca4d51254ad77691a61f46f6f63a9d7dec7ee93e99b30923f0ae10"
+    },
+    {
+      "old": "scripts/msx/rocks.py",
+      "new": "src/toolchain/msx/rocks.py",
+      "before_sha256": "63acdb92822caae009fcd45801b607775e050e790e407da64b02eb51e1a9c5af",
+      "after_sha256": "5ad8f379de33138636c6e9cb26b5f4691150c52458114109462b59e03383de77"
+    },
+    {
+      "old": "scripts/msx/full_enemy.py",
+      "new": "src/toolchain/msx/full_enemy.py",
+      "before_sha256": "e7b9c0ff8e1de319938530209c53be19c1e921bff350e0ca74bc58fe66c3c911",
+      "after_sha256": "e7b9c0ff8e1de319938530209c53be19c1e921bff350e0ca74bc58fe66c3c911"
+    },
+    {
+      "old": "scripts/msx/full_memory.py",
+      "new": "src/toolchain/msx/full_memory.py",
+      "before_sha256": "82bd62da7eda87d8a8363ac5290663dba9be5ff0db9ce7a424f28387a5c736d8",
+      "after_sha256": "82bd62da7eda87d8a8363ac5290663dba9be5ff0db9ce7a424f28387a5c736d8"
+    },
+    {
+      "old": "scripts/msx/tilemap.py",
+      "new": "src/toolchain/msx/tilemap.py",
+      "before_sha256": "d629f1806fc310ce9cea122db2eaeb5144042cca72d1955380b98c8d5fdd7333",
+      "after_sha256": "d629f1806fc310ce9cea122db2eaeb5144042cca72d1955380b98c8d5fdd7333"
+    },
+    {
+      "old": "scripts/msx/enemy_route_verify.py",
+      "new": "src/toolchain/msx/enemy_route_verify.py",
+      "before_sha256": "f0688c42b62fc218225db7be4f9c5619186fb690d1aacf6a8c328a2e31d72297",
+      "after_sha256": "4113934e33b1f6a18c84c13df78c82669f6ce1b55f0b39328d00499f2f274055"
+    },
+    {
+      "old": "scripts/msx/bitmap_blitter_verify.py",
+      "new": "src/toolchain/msx/bitmap_blitter_verify.py",
+      "before_sha256": "04082e4d9d90c7084275a6bdd5eb2e22ad2f24d804f6fbb010e147ff0ca94c02",
+      "after_sha256": "59a60b71a67eeff7f0ae3039a2b6fcf97fb69d64f2082fd9bbe922c370668a35"
+    },
+    {
+      "old": "scripts/msx/native_profile.tcl",
+      "new": "src/toolchain/msx/native_profile.tcl",
+      "before_sha256": "6af284ef21c3fd1f1fdfb9c543660d289fecaa61628102f72ffd626437e75515",
+      "after_sha256": "6af284ef21c3fd1f1fdfb9c543660d289fecaa61628102f72ffd626437e75515"
+    },
+    {
+      "old": "scripts/msx/death.py",
+      "new": "src/toolchain/msx/death.py",
+      "before_sha256": "1bbaa79741789ef28b6034994554a4d772e28ac44c541d88074c22388a74b451",
+      "after_sha256": "ed20c25794b52ea04298a7e53ad2bd73f6767711268e0e34801e099936d21eec"
+    },
+    {
+      "old": "scripts/msx/flags_native.lua",
+      "new": "src/toolchain/msx/flags_native.lua",
+      "before_sha256": "f187ca32c89620478ba6d126e40ccb33cf02231f9b50a9a60b86d04b6bf7ea9c",
+      "after_sha256": "f187ca32c89620478ba6d126e40ccb33cf02231f9b50a9a60b86d04b6bf7ea9c"
+    },
+    {
+      "old": "scripts/msx/emulator.py",
+      "new": "src/toolchain/msx/emulator.py",
+      "before_sha256": "1bb1d1f6e1441bc41350a6c1c490d930474558c86cc64edfc27b907f9401197a",
+      "after_sha256": "f279faaa2e0ffc9e74ae70b7dc9124d73d5dfda4972fb34f0fcd88bba62634c1"
+    },
+    {
+      "old": "scripts/msx/rock_collision_native.lua",
+      "new": "src/toolchain/msx/rock_collision_native.lua",
+      "before_sha256": "96e5ab6727eeacf0e868b5b86c8254b2d4be62a55e2de35a8bd2707ee87b56f5",
+      "after_sha256": "96e5ab6727eeacf0e868b5b86c8254b2d4be62a55e2de35a8bd2707ee87b56f5"
+    },
+    {
+      "old": "scripts/msx/player_blitter.py",
+      "new": "src/toolchain/msx/player_blitter.py",
+      "before_sha256": "b5060a6449d19692c9338545619658fcc0b5a684ed65d5f6b116672872981777",
+      "after_sha256": "b5060a6449d19692c9338545619658fcc0b5a684ed65d5f6b116672872981777"
+    },
+    {
+      "old": "scripts/msx/axis_timing.py",
+      "new": "src/toolchain/msx/axis_timing.py",
+      "before_sha256": "37265ff827c473cd27dbf065ef53738703e996a548409899528173d73cc16906",
+      "after_sha256": "37265ff827c473cd27dbf065ef53738703e996a548409899528173d73cc16906"
+    },
+    {
+      "old": "scripts/msx/native_irq_probe.tcl",
+      "new": "src/toolchain/msx/native_irq_probe.tcl",
+      "before_sha256": "11133a8ce4f5d568492e8f6c859abaf58375d05625737ecaf5069e422df3b9e0",
+      "after_sha256": "11133a8ce4f5d568492e8f6c859abaf58375d05625737ecaf5069e422df3b9e0"
+    },
+    {
+      "old": "scripts/msx/fuel_verify.py",
+      "new": "src/toolchain/msx/fuel_verify.py",
+      "before_sha256": "32163a6804574d216629a6595433f969e985115b7a3f244a98c703f1ed3a1e1f",
+      "after_sha256": "cb8fe911607cde6a853472847869aa6d78092f842da4dbebca3a9a5083929088"
+    },
+    {
+      "old": "scripts/msx/raster_verify.py",
+      "new": "src/toolchain/msx/raster_verify.py",
+      "before_sha256": "c0f0adbb6ef3e5430ae3806744b4c4f0f75de4f1e6739f272300eb4716b9c0ab",
+      "after_sha256": "1ba4a8b068a7696b058c22eccdbe6621fba6e7cf2251c240ff093b21cec3071b"
+    },
+    {
+      "old": "scripts/msx/shared_sprite_cache.py",
+      "new": "src/toolchain/msx/shared_sprite_cache.py",
+      "before_sha256": "af6e5adff7694111e66267626d3348bc3a95f89099e2a365870c97e229e3e141",
+      "after_sha256": "af6e5adff7694111e66267626d3348bc3a95f89099e2a365870c97e229e3e141"
+    },
+    {
+      "old": "scripts/msx/death_copy_verify.py",
+      "new": "src/toolchain/msx/death_copy_verify.py",
+      "before_sha256": "7b0a19c89ba26febc4d57bd7dc00ed54f447be83a428e6367221866b15a7ba5d",
+      "after_sha256": "ce21229c21fcb12b6df57417a339277796483909ad7af780c130ac383b7c7b27"
+    },
+    {
+      "old": "scripts/msx/rock_collision_verify.py",
+      "new": "src/toolchain/msx/rock_collision_verify.py",
+      "before_sha256": "7daf5e6134bcdd4df098b90fb17b1ca04b509b14aa05c1c15f0494b643548a71",
+      "after_sha256": "cc9c740421710133b9046c5e8f82df82e14e8f07923f7942e70d66e47f9629d3"
+    },
+    {
+      "old": "scripts/msx/native_scene.py",
+      "new": "src/toolchain/msx/native_scene.py",
+      "before_sha256": "c62588a4f354cbf61533dd7fbd9d91bcde05abf93eb5ae568f4ca3e807e6f3b0",
+      "after_sha256": "c62588a4f354cbf61533dd7fbd9d91bcde05abf93eb5ae568f4ca3e807e6f3b0"
+    },
+    {
+      "old": "scripts/msx/smoke_route_verify.py",
+      "new": "src/toolchain/msx/smoke_route_verify.py",
+      "before_sha256": "5de675cdf47d638771b82971eb42510fb90abbc7b7e16240fa77f48820d249bb",
+      "after_sha256": "cf20ecb1dc31ed63ffa39fea6d2f81c8442a6c24724c5db17f172d981206076a"
+    },
+    {
+      "old": "scripts/msx/round_prepare_verify.py",
+      "new": "src/toolchain/msx/round_prepare_verify.py",
+      "before_sha256": "425bbf7e3516a9c8cceae2f2c416798039b99cd2bfdc6ad898d0159a64e749d7",
+      "after_sha256": "2a5fef77812201f20c98693fefbf7f8e24c467c8af6ef532895dd10f8c75890b"
+    },
+    {
+      "old": "scripts/msx/flags.py",
+      "new": "src/toolchain/msx/flags.py",
+      "before_sha256": "3dec68d86360d2e213dc61c7dc853cbd8f7327e67f697bf4b927f7df3cca87ce",
+      "after_sha256": "3dec68d86360d2e213dc61c7dc853cbd8f7327e67f697bf4b927f7df3cca87ce"
+    },
+    {
+      "old": "scripts/msx/native_video_verify.py",
+      "new": "src/toolchain/msx/native_video_verify.py",
+      "before_sha256": "0ea143df77f1673d4b70d2e6c85d9e509dbbf260c406f8bbf52f140ee2299270",
+      "after_sha256": "0ea143df77f1673d4b70d2e6c85d9e509dbbf260c406f8bbf52f140ee2299270"
+    },
+    {
+      "old": "scripts/msx/full-route-probe.tcl",
+      "new": "src/toolchain/msx/full-route-probe.tcl",
+      "before_sha256": "3ee1ad0123c1fb938ef307078cc27347ba61ee871be17b322e537dae795d715e",
+      "after_sha256": "3ee1ad0123c1fb938ef307078cc27347ba61ee871be17b322e537dae795d715e"
+    },
+    {
+      "old": "scripts/msx/audio_native.py",
+      "new": "src/toolchain/msx/audio_native.py",
+      "before_sha256": "4b68e9d1a262e87427fdcf508340dc0c921ebf16d6739ec906c84a43701ffece",
+      "after_sha256": "4b68e9d1a262e87427fdcf508340dc0c921ebf16d6739ec906c84a43701ffece"
+    },
+    {
+      "old": "scripts/msx/native_sprite_probe.tcl",
+      "new": "src/toolchain/msx/native_sprite_probe.tcl",
+      "before_sha256": "961b4d9ff979b69880dd633ade8932ca04282a3e22369bd27bb02edfb8b89ba4",
+      "after_sha256": "961b4d9ff979b69880dd633ade8932ca04282a3e22369bd27bb02edfb8b89ba4"
+    },
+    {
+      "old": "scripts/msx/mapper_reference.tcl",
+      "new": "src/toolchain/msx/mapper_reference.tcl",
+      "before_sha256": "ca27b93b53da0da2b4f04d6019ec1af1b124f5b10d877b400e082db0b0178b20",
+      "after_sha256": "ca27b93b53da0da2b4f04d6019ec1af1b124f5b10d877b400e082db0b0178b20"
+    },
+    {
+      "old": "scripts/msx/native_logic.py",
+      "new": "src/toolchain/msx/native_logic.py",
+      "before_sha256": "5b3e415f9fc7b93b9df1195f4434106dadcec56c8fbeb71d4a9f6ca62c1b7fea",
+      "after_sha256": "5b3e415f9fc7b93b9df1195f4434106dadcec56c8fbeb71d4a9f6ca62c1b7fea"
+    },
+    {
+      "old": "scripts/msx/native_sprite_probe.py",
+      "new": "src/toolchain/msx/native_sprite_probe.py",
+      "before_sha256": "16dfcb9aa432c66d4d64c2bd68ba5395bb61915a3f325a81854098426087da47",
+      "after_sha256": "d9868dc9a52eb26e0d5ab16abbd8c15696445453df7bc6f3e8b12f0a0b5a84b3"
+    },
+    {
+      "old": "scripts/msx/sprite_lives.py",
+      "new": "src/toolchain/msx/sprite_lives.py",
+      "before_sha256": "85d789d95164c2c4c99889dc95ffdbe1af5f0ec7b2d547322328f17be6df2cac",
+      "after_sha256": "85d789d95164c2c4c99889dc95ffdbe1af5f0ec7b2d547322328f17be6df2cac"
+    },
+    {
+      "old": "scripts/msx/enemy_population_verify.py",
+      "new": "src/toolchain/msx/enemy_population_verify.py",
+      "before_sha256": "40182989a4d59db36cb8312e1b3f3eed778607b2adbca3cfd66ab9ad8b402a99",
+      "after_sha256": "70d2552450d4fa624182bb6c7d85466e7128398db588d3ac89fb5dc861f3aa7f"
+    },
+    {
+      "old": "scripts/msx/outline_flicker.py",
+      "new": "src/toolchain/msx/outline_flicker.py",
+      "before_sha256": "e1d1dfdcc4f7608d061b23fd3bcf0bf97b856b4cee5d83078e43dade1764ca1e",
+      "after_sha256": "e1d1dfdcc4f7608d061b23fd3bcf0bf97b856b4cee5d83078e43dade1764ca1e"
+    },
+    {
+      "old": "scripts/msx/rock_route_verify.py",
+      "new": "src/toolchain/msx/rock_route_verify.py",
+      "before_sha256": "79ae81c4b706b6e2b51da51b17e79b029adbb3ae97ea55d4f1386b438a27f657",
+      "after_sha256": "1aa0fa63c6b0e1e41eb8a08e78ee5227536708a1c9b35a73b29aa53babfad6d7"
+    },
+    {
+      "old": "scripts/msx/full_effects.py",
+      "new": "src/toolchain/msx/full_effects.py",
+      "before_sha256": "8b624b3f76c42d680167d6da5d32a6c94b2c7b1d90c80704f9fa9c9755979d42",
+      "after_sha256": "8b624b3f76c42d680167d6da5d32a6c94b2c7b1d90c80704f9fa9c9755979d42"
+    },
+    {
+      "old": "scripts/msx/full_ui.py",
+      "new": "src/toolchain/msx/full_ui.py",
+      "before_sha256": "7d9b2057190f61e3509595ad8aabb607e02ebf7380674f61a742817312907206",
+      "after_sha256": "7d9b2057190f61e3509595ad8aabb607e02ebf7380674f61a742817312907206"
+    },
+    {
+      "old": "scripts/msx/sprite_flicker_verify.py",
+      "new": "src/toolchain/msx/sprite_flicker_verify.py",
+      "before_sha256": "4d7a1c6397c9c38a40be781fd6225a80fd6174516bb96b05b7f651f583ae321c",
+      "after_sha256": "1abdfccda0d9d28dced8c9603c6f7e0c5d8acafd21570ff8859b36814fe046ff"
+    },
+    {
+      "old": "scripts/msx/session.py",
+      "new": "src/toolchain/msx/session.py",
+      "before_sha256": "133cdd7ccb004eead740ab401ec73e965e6098f980e2a117615ba1b5bc5319c5",
+      "after_sha256": "133cdd7ccb004eead740ab401ec73e965e6098f980e2a117615ba1b5bc5319c5"
+    },
+    {
+      "old": "scripts/msx/parameters_verify.py",
+      "new": "src/toolchain/msx/parameters_verify.py",
+      "before_sha256": "76061d28bc50ba9aae8f611954ee53f574df10904fb3005f13f1a0e522d8f2d2",
+      "after_sha256": "8fc4c6c75014eb2ec99bb347e26499a4a15e1aab3ef5e97984f7069fdb4ed3f0"
+    },
+    {
+      "old": "scripts/msx/native_verify.tcl",
+      "new": "src/toolchain/msx/native_verify.tcl",
+      "before_sha256": "59e59b11845dd9a99de00380caa9a216b8591b807cfd56330ad84890d525a16c",
+      "after_sha256": "59e59b11845dd9a99de00380caa9a216b8591b807cfd56330ad84890d525a16c"
+    },
+    {
+      "old": "scripts/msx/hud_coordinates_verify.py",
+      "new": "src/toolchain/msx/hud_coordinates_verify.py",
+      "before_sha256": "5bb99b63ff6d4a24991a469f8257fc4bc6f87c15a964277745dcc787f889c7aa",
+      "after_sha256": "b25dea5f61a8b3926073e97e156681869ae2b667f83ecd671f2014910f5b07d6"
+    },
+    {
+      "old": "scripts/msx/sprite_fuel.py",
+      "new": "src/toolchain/msx/sprite_fuel.py",
+      "before_sha256": "40d9ef0a2cd26af817f45bd2fd0d5e93ac91a655d6823e28105af3cdf03ada5b",
+      "after_sha256": "40d9ef0a2cd26af817f45bd2fd0d5e93ac91a655d6823e28105af3cdf03ada5b"
+    },
+    {
+      "old": "scripts/msx/enemy_native.lua",
+      "new": "src/toolchain/msx/enemy_native.lua",
+      "before_sha256": "fc8ea6e5422471fee63926206982b54bddbcc8afa6173e9a454b11d2b2006077",
+      "after_sha256": "fc8ea6e5422471fee63926206982b54bddbcc8afa6173e9a454b11d2b2006077"
+    },
+    {
+      "old": "scripts/msx/__init__.py",
+      "new": "src/toolchain/msx/__init__.py",
+      "before_sha256": "e5db971c18d202b3ab766eb8a67586edd546b719fa1bad10e4adc94fa09fef56",
+      "after_sha256": "e5db971c18d202b3ab766eb8a67586edd546b719fa1bad10e4adc94fa09fef56"
+    },
+    {
+      "old": "scripts/msx/attract_inventory.lua",
+      "new": "src/toolchain/msx/attract_inventory.lua",
+      "before_sha256": "c514f878e2b6a5ff3f301f7b5292f51ef54b92f126064d5b2cbd7e3728b8aec1",
+      "after_sha256": "c514f878e2b6a5ff3f301f7b5292f51ef54b92f126064d5b2cbd7e3728b8aec1"
+    },
+    {
+      "old": "scripts/msx/screen5.py",
+      "new": "src/toolchain/msx/screen5.py",
+      "before_sha256": "497644f2ded59299343f49bf0b5842cf76adbc9fda8eed37cd7e99f4b67eed45",
+      "after_sha256": "497644f2ded59299343f49bf0b5842cf76adbc9fda8eed37cd7e99f4b67eed45"
+    },
+    {
+      "old": "scripts/msx/native_layout.py",
+      "new": "src/toolchain/msx/native_layout.py",
+      "before_sha256": "1a0223ed84dedd49b48ce4f1835f53ddfdf1db8cc75f3ce9d9d926a507d9369f",
+      "after_sha256": "1a0223ed84dedd49b48ce4f1835f53ddfdf1db8cc75f3ce9d9d926a507d9369f"
+    },
+    {
+      "old": "scripts/msx/steering_probe.tcl",
+      "new": "src/toolchain/msx/steering_probe.tcl",
+      "before_sha256": "832fa65e791b26d7b5d68921be8cd4eb790b58d4af6990beaa437a4b51ee5014",
+      "after_sha256": "832fa65e791b26d7b5d68921be8cd4eb790b58d4af6990beaa437a4b51ee5014"
+    },
+    {
+      "old": "scripts/msx/enemy_navigation.py",
+      "new": "src/toolchain/msx/enemy_navigation.py",
+      "before_sha256": "175f231d6465b69b8b73687c8984961bd9af83c1ffc14b0a70b28bbfd67183a4",
+      "after_sha256": "175f231d6465b69b8b73687c8984961bd9af83c1ffc14b0a70b28bbfd67183a4"
+    },
+    {
+      "old": "scripts/msx/hud_verify.py",
+      "new": "src/toolchain/msx/hud_verify.py",
+      "before_sha256": "3c6ec1132eab0767d0a8bfcf82b64018895265527da6a06a9a40bf0581bbb0e8",
+      "after_sha256": "c6813980da0b7a099c6cabc32e76c7508d35d7ad32cf57ee49f987be13a78023"
+    },
+    {
+      "old": "scripts/msx/smoke_queue_verify.py",
+      "new": "src/toolchain/msx/smoke_queue_verify.py",
+      "before_sha256": "8457e8e4a35ab4b31072edc626f06ef7ae2d57201d479c835e16e1493387969b",
+      "after_sha256": "8457e8e4a35ab4b31072edc626f06ef7ae2d57201d479c835e16e1493387969b"
+    },
+    {
+      "old": "scripts/msx/enemy_presentation_verify.py",
+      "new": "src/toolchain/msx/enemy_presentation_verify.py",
+      "before_sha256": "e4db06079b88a6b0808d5e4c13679aab2ff6c77d7db76fce3f04d7a532272d0d",
+      "after_sha256": "44fabb2c83b6af47d94918a1fe42fb9273457a8a1739a08b7f02354fa9ecdaa3"
+    },
+    {
+      "old": "scripts/msx/smoke_replay.py",
+      "new": "src/toolchain/msx/smoke_replay.py",
+      "before_sha256": "c754871735b82ba7c340691dcad5426cf620f210c60dc9996de678b0bbab7874",
+      "after_sha256": "bcb569acac0d7699a6c81eb9d12c56de06f91d0e0eaa14e54b9cf9fe1595ca3c"
+    },
+    {
+      "old": "scripts/msx/display.py",
+      "new": "src/toolchain/msx/display.py",
+      "before_sha256": "21f862e55907763e80347bf9fd82dbe25c9ea467291640e484adc7b3b422f52b",
+      "after_sha256": "21f862e55907763e80347bf9fd82dbe25c9ea467291640e484adc7b3b422f52b"
+    },
+    {
+      "old": "scripts/msx/native_reset.py",
+      "new": "src/toolchain/msx/native_reset.py",
+      "before_sha256": "55a1dfe33af2f262d4d33aad11d3d5cca1bcb877d47b463b38c008ff9ab9a872",
+      "after_sha256": "55a1dfe33af2f262d4d33aad11d3d5cca1bcb877d47b463b38c008ff9ab9a872"
+    },
+    {
+      "old": "scripts/msx/checkpoints.py",
+      "new": "src/toolchain/msx/checkpoints.py",
+      "before_sha256": "2308ab2350b2e3bef583b63c1020c40dac56ee2cdff551618c016e7902c4f8c2",
+      "after_sha256": "4ee22239ed5eeb46e2821632fbea844c6c3e80c76b8db9ba63ca73e61874a5c7"
+    },
+    {
+      "old": "scripts/msx/native_input_probe.tcl",
+      "new": "src/toolchain/msx/native_input_probe.tcl",
+      "before_sha256": "a7058a502e6c374e2559da6195fe4a0f25389602866c54c6509a5af5e02312ab",
+      "after_sha256": "a7058a502e6c374e2559da6195fe4a0f25389602866c54c6509a5af5e02312ab"
+    },
+    {
+      "old": "scripts/msx/native_compare.py",
+      "new": "src/toolchain/msx/native_compare.py",
+      "before_sha256": "3446b3aa59d53633598538b7c0087e82511c68ecf3d93185226d444025f7927e",
+      "after_sha256": "0dba9c41b94049a508acae1d1ea97cb1d6e0fac19b14467cf810bec24d80a2dc"
+    },
+    {
+      "old": "scripts/msx/smoke_flag_verify.py",
+      "new": "src/toolchain/msx/smoke_flag_verify.py",
+      "before_sha256": "fbc48c7fdd24dc50aa4c6d8fabe26bc0f2c2ef5fc5aa2a8e93caf3f2f2f6979e",
+      "after_sha256": "73aced24cc34fd3a748cfb1cbdd912d8ea65b1667278db4905c3617fc13acd6f"
+    },
+    {
+      "old": "scripts/msx/player_verify.py",
+      "new": "src/toolchain/msx/player_verify.py",
+      "before_sha256": "7b0b426bac77a8399d57c77337830dfdd46c96efbcd5abfa8a984d25185de5c4",
+      "after_sha256": "5979c6b19e93b02f486dacf1e536e52ca8aee7b341d25f50888e979bce5045c1"
+    },
+    {
+      "old": "scripts/msx/flags_verify.py",
+      "new": "src/toolchain/msx/flags_verify.py",
+      "before_sha256": "14d98bc7fff633045122a35a54dd57c781f4ca6e621a399c4cd4e0497c217433",
+      "after_sha256": "0083bbe20d4637909aa32555f43eb5a62603e06d794dbd0c835bc3e0464797c9"
+    },
+    {
+      "old": "scripts/msx/terrain_live.py",
+      "new": "src/toolchain/msx/terrain_live.py",
+      "before_sha256": "48d678e6f103374bd99e72cb3f8470377d482fe030d4247cc0697e5f9db6d2f8",
+      "after_sha256": "6f3ecf16256ab7e48ab411776ed03a019bd82c95873f2542c8f863c799ff0fda"
+    },
+    {
+      "old": "scripts/msx/maze_capture.py",
+      "new": "src/toolchain/msx/maze_capture.py",
+      "before_sha256": "5d1fa983517ccaf217dd375f8a9c7b1d78b3d06d1439dd4c4513b68605ec43a8",
+      "after_sha256": "5d1fa983517ccaf217dd375f8a9c7b1d78b3d06d1439dd4c4513b68605ec43a8"
+    },
+    {
+      "old": "scripts/msx/native_probe.py",
+      "new": "src/toolchain/msx/native_probe.py",
+      "before_sha256": "ee7183568e919402a9f505841c22071e22d2c664005dc081e30cf7e966fde72a",
+      "after_sha256": "1ec0017a0f34a426a73bfafd5c9c75756b9c3ce54527a271fe61519b94049ee6"
+    },
+    {
+      "old": "scripts/msx/native_video_hooks.py",
+      "new": "src/toolchain/msx/native_video_hooks.py",
+      "before_sha256": "4f2cc7a1fa0e56537c4ed70955ce7c9f5e219fb10b712b54beb155d7570d1154",
+      "after_sha256": "4f2cc7a1fa0e56537c4ed70955ce7c9f5e219fb10b712b54beb155d7570d1154"
+    },
+    {
+      "old": "scripts/msx/presentation_cadence.py",
+      "new": "src/toolchain/msx/presentation_cadence.py",
+      "before_sha256": "0aeaba89d23af48a54163e86a5ec51c7f931cd806cc351154029677e5a527283",
+      "after_sha256": "0aeaba89d23af48a54163e86a5ec51c7f931cd806cc351154029677e5a527283"
+    },
+    {
+      "old": "scripts/msx/score_native.lua",
+      "new": "src/toolchain/msx/score_native.lua",
+      "before_sha256": "724766456934cdd9fe30a8d7cbf92b9b97d76515342459439a91a6c223e4560c",
+      "after_sha256": "724766456934cdd9fe30a8d7cbf92b9b97d76515342459439a91a6c223e4560c"
+    },
+    {
+      "old": "scripts/msx/full_round_build.py",
+      "new": "src/toolchain/msx/full_round_build.py",
+      "before_sha256": "78bfb3b98852239744584b123dcf156d15a450dfb76a2d391041822f07cf5564",
+      "after_sha256": "1228baf9657fadc0cb7033669766e06f9f602159c613da0ca108336306d9e026"
+    },
+    {
+      "old": "scripts/msx/inputs.py",
+      "new": "src/toolchain/msx/inputs.py",
+      "before_sha256": "dbeec61e4326c143fc1cac1847c98aa89a955c507aefb2bba3c28f9f404d9c8f",
+      "after_sha256": "b921f7bf4bbb77e677b0ca9dc729c8a0c996196b0d485bc13d268e982a5ef443"
+    },
+    {
+      "old": "scripts/msx/death_capture.lua",
+      "new": "src/toolchain/msx/death_capture.lua",
+      "before_sha256": "cff72911f47605431ed583e44d284c820b1e49666769bc5dede6685f1130010c",
+      "after_sha256": "cff72911f47605431ed583e44d284c820b1e49666769bc5dede6685f1130010c"
+    },
+    {
+      "old": "scripts/msx/player_blitter_verify.py",
+      "new": "src/toolchain/msx/player_blitter_verify.py",
+      "before_sha256": "31987262fdd9db8fc2f0e15700d6edfa8394daba2efb185d72c4996fe20461bb",
+      "after_sha256": "545a1df6d61d8fabda5a75937af7fb002430c2a6c7fb0b03ed4b067c400770a0"
+    },
+    {
+      "old": "scripts/msx/stage_one.py",
+      "new": "src/toolchain/msx/stage_one.py",
+      "before_sha256": "453a0bc36bdeb4a1c9c9a3a97be703a615ddd1f1260ae5240ff5101c5fd758ce",
+      "after_sha256": "19e32faf782486de816226d248835438b415a31c0a464ecd1a79e56a532f3bde"
+    },
+    {
+      "old": "scripts/msx/player.py",
+      "new": "src/toolchain/msx/player.py",
+      "before_sha256": "72cf8a41d6e2fac8432dcea39190a63b57ac27d1301c7f3004db6e5fc58e64d8",
+      "after_sha256": "0a0e49516a81caa1041a7dabfeeb223567b5c054094d7d3185b37942ec6d58c4"
+    },
+    {
+      "old": "scripts/msx/native_acquire.tcl",
+      "new": "src/toolchain/msx/native_acquire.tcl",
+      "before_sha256": "74bd8f08306e98418bc2f3c30ab6e4489b653444e542070262a4280eb0589918",
+      "after_sha256": "74bd8f08306e98418bc2f3c30ab6e4489b653444e542070262a4280eb0589918"
+    },
+    {
+      "old": "scripts/msx/round_prepare_native.lua",
+      "new": "src/toolchain/msx/round_prepare_native.lua",
+      "before_sha256": "4ffd87117c337cb18f0371d33e3e73a1513deba9f8d53019e2832ac5b8610a4f",
+      "after_sha256": "4ffd87117c337cb18f0371d33e3e73a1513deba9f8d53019e2832ac5b8610a4f"
+    },
+    {
+      "old": "scripts/msx/native_scanout.py",
+      "new": "src/toolchain/msx/native_scanout.py",
+      "before_sha256": "5b42ecd6860f50ba8bc0a819bb84f981c1c9d8f88fb6dd96af3497f8c80d6faf",
+      "after_sha256": "2b13a222053ab13080a509e9b8ebd5d78db9a8c97c6c69e0085a42c8139ae7a5"
+    },
+    {
+      "old": "scripts/msx/smoke_native.lua",
+      "new": "src/toolchain/msx/smoke_native.lua",
+      "before_sha256": "162a1f418d834668047563072b15a0ed1368a8d94d925a8b4a0faabe6b707a20",
+      "after_sha256": "162a1f418d834668047563072b15a0ed1368a8d94d925a8b4a0faabe6b707a20"
+    },
+    {
+      "old": "scripts/msx/sprite_radar.py",
+      "new": "src/toolchain/msx/sprite_radar.py",
+      "before_sha256": "92deea002fc26af5a0a442d691edfea5a4ed66186cfeca71d0a30fb988ac8ca8",
+      "after_sha256": "43bb6efc2f3b8055644855684f1dc54f66f17610c24aa6ec50da19fa7d9a3b9d"
+    },
+    {
+      "old": "scripts/msx/audio_reference.py",
+      "new": "src/toolchain/msx/audio_reference.py",
+      "before_sha256": "41103d2e1f0518cc93fdc70ecf5deb87f6898128a8c7eb5ef83ecf84057495cf",
+      "after_sha256": "41103d2e1f0518cc93fdc70ecf5deb87f6898128a8c7eb5ef83ecf84057495cf"
+    },
+    {
+      "old": "scripts/msx/native_deadline.py",
+      "new": "src/toolchain/msx/native_deadline.py",
+      "before_sha256": "431ff03f543e2a85cd811885e45f6117fd8b711edb62c25e7fb51e28e1049475",
+      "after_sha256": "431ff03f543e2a85cd811885e45f6117fd8b711edb62c25e7fb51e28e1049475"
+    },
+    {
+      "old": "scripts/msx/solid_run_verify.py",
+      "new": "src/toolchain/msx/solid_run_verify.py",
+      "before_sha256": "5bedc82a5307004ff97629b13e36a689f9abc794636a2ee869c1c3d91445ebea",
+      "after_sha256": "1b246d0f7ebd1d494f8f60158dfbafb2221cb83168bb3309a2062f0ac82c153f"
+    },
+    {
+      "old": "scripts/msx/round_objects.py",
+      "new": "src/toolchain/msx/round_objects.py",
+      "before_sha256": "d8058cda604028e0e5d3119606f2b7508f263199c8d304be0b429a4c4e7c7544",
+      "after_sha256": "d8058cda604028e0e5d3119606f2b7508f263199c8d304be0b429a4c4e7c7544"
+    },
+    {
+      "old": "scripts/msx/hud_alerts_verify.py",
+      "new": "src/toolchain/msx/hud_alerts_verify.py",
+      "before_sha256": "ab727c97cdb7e8f065d29ed2e877e42452765fdc9e9b678b428578cc131c97f3",
+      "after_sha256": "72961185c5e3f343d615061bb36bade5cd102ee00b376951dccbc7433d71ba6a"
+    },
+    {
+      "old": "scripts/msx/cadence.py",
+      "new": "src/toolchain/msx/cadence.py",
+      "before_sha256": "c21d7b85e561d613b5b6e7039b6c43a28cdd1577a0cd5c878c52f2ef30284f81",
+      "after_sha256": "c21d7b85e561d613b5b6e7039b6c43a28cdd1577a0cd5c878c52f2ef30284f81"
+    },
+    {
+      "old": "scripts/msx/native_contract.py",
+      "new": "src/toolchain/msx/native_contract.py",
+      "before_sha256": "908be13323f48ec722326e939c0195e06f7e8954f017658de3f12a86d17a6a55",
+      "after_sha256": "908be13323f48ec722326e939c0195e06f7e8954f017658de3f12a86d17a6a55"
+    },
+    {
+      "old": "scripts/msx/outline_flicker_verify.py",
+      "new": "src/toolchain/msx/outline_flicker_verify.py",
+      "before_sha256": "4eab8f61f10a42c9504d601ae5cd0f57371f8d502db97c668012d94d59843d88",
+      "after_sha256": "a1c1cd88c0886c192c8179bf33a530ed624c57892ce1b8908a9751c2823bf479"
+    },
+    {
+      "old": "scripts/msx/audio_cycles.py",
+      "new": "src/toolchain/msx/audio_cycles.py",
+      "before_sha256": "d3fdfb44a1a4f192f68dd7880fae0f3e674c38989a180154d8ee8352540b5995",
+      "after_sha256": "d3fdfb44a1a4f192f68dd7880fae0f3e674c38989a180154d8ee8352540b5995"
+    },
+    {
+      "old": "scripts/msx/radar_cells_verify.py",
+      "new": "src/toolchain/msx/radar_cells_verify.py",
+      "before_sha256": "d64e149bd78a9b1a81573c0830260715156bc620472318dbd1dda3f47f33f57b",
+      "after_sha256": "8954617f12f2056104c2fcaa421d3c403889ff7e79570a1da42563f60ef4755e"
+    },
+    {
+      "old": "scripts/msx/native_inputs.py",
+      "new": "src/toolchain/msx/native_inputs.py",
+      "before_sha256": "61787f10694544456b4858e4b1b8c8957e6ddbad900e6352be08843ea9f84f7c",
+      "after_sha256": "fab37455aa9179af5dea9bd826bd05c69b97520c6bed05425be97d93017a8c9a"
+    },
+    {
+      "old": "scripts/msx/native_sprites.py",
+      "new": "src/toolchain/msx/native_sprites.py",
+      "before_sha256": "e2e6f38d40540b264e2e13ac4b537d971ba185d588b3abd25b73af21d8494c57",
+      "after_sha256": "e2e6f38d40540b264e2e13ac4b537d971ba185d588b3abd25b73af21d8494c57"
+    },
+    {
+      "old": "scripts/msx/presentation_clock_verify.py",
+      "new": "src/toolchain/msx/presentation_clock_verify.py",
+      "before_sha256": "d26c38439dc0c3b043308f36d9cc1c23029d9ac5a776c3b69b5809a2f1260018",
+      "after_sha256": "d26c38439dc0c3b043308f36d9cc1c23029d9ac5a776c3b69b5809a2f1260018"
+    },
+    {
+      "old": "scripts/msx/native_video.py",
+      "new": "src/toolchain/msx/native_video.py",
+      "before_sha256": "c925ed2a3103565235b1f1a605b1c1182cd3651809b6477656d16813805a5ffd",
+      "after_sha256": "9c9e583508c76c1e14a7270b58c91a749a5220bc5e7136ee56bbb0cb3439fb6b"
+    },
+    {
+      "old": "scripts/msx/turbo_probe.py",
+      "new": "src/toolchain/msx/turbo_probe.py",
+      "before_sha256": "cc56ac60a76972f93fdfc98e5b14c04b315d7d56ea53d10c89c80bb9c573342d",
+      "after_sha256": "9823870912e77e70e0f25a84ea98cf050d7374ec80a511ba4fe0dbd079573edc"
+    },
+    {
+      "old": "scripts/msx/artifacts.py",
+      "new": "src/toolchain/msx/artifacts.py",
+      "before_sha256": "414aedfe1b65595222d5f736605bce8ca91620f0251bbfc3b6449687a050cb2d",
+      "after_sha256": "414aedfe1b65595222d5f736605bce8ca91620f0251bbfc3b6449687a050cb2d"
+    },
+    {
+      "old": "scripts/msx/flag_popup.py",
+      "new": "src/toolchain/msx/flag_popup.py",
+      "before_sha256": "8e17ee5f13395aa572d98ff02304f6c59144128e59e9f10e1fcf860d32514d1f",
+      "after_sha256": "8e17ee5f13395aa572d98ff02304f6c59144128e59e9f10e1fcf860d32514d1f"
+    },
+    {
+      "old": "scripts/msx/enemy_verify.py",
+      "new": "src/toolchain/msx/enemy_verify.py",
+      "before_sha256": "cc517a8d59f78064a46dcc96c77e4a1dc6736695f73a97b3cf1c7fbfad117689",
+      "after_sha256": "1407f4a2b908e26789c2efe9ace00ae6a46d26f554e1096ef30e7ae0c4c5da19"
+    },
+    {
+      "old": "scripts/msx/session_inputs_verify.py",
+      "new": "src/toolchain/msx/session_inputs_verify.py",
+      "before_sha256": "431f852c932d8dfe9d2bed9797ccbbb3fb43be0872e794deefa9690fa553ce55",
+      "after_sha256": "5d9e18bd3b4aaab9bd7dc90d49c0240e8d1a0e893250101df2f9056b13495e2b"
+    },
+    {
+      "old": "scripts/msx/completion_route_verify.py",
+      "new": "src/toolchain/msx/completion_route_verify.py",
+      "before_sha256": "41b1068d59d17308fd23e0cf2386684533d2631cae04f349ac30d4cbbd49b3c5",
+      "after_sha256": "570a3f7593c503aa71a9c65ee7e5fac10d17e728e2ae3d0e7cec534ffd5cd454"
+    },
+    {
+      "old": "scripts/msx/attract.py",
+      "new": "src/toolchain/msx/attract.py",
+      "before_sha256": "1e769ed8057417b757025ad592c58d36454f71bc023a565430e8c7d35d089bb5",
+      "after_sha256": "2959a7bdec1728d7910c28d83081e0a39c0d27c3061329265a76b91ae2e073ea"
+    },
+    {
+      "old": "scripts/msx/stage_one_capture.lua",
+      "new": "src/toolchain/msx/stage_one_capture.lua",
+      "before_sha256": "e67a00b58859cb07f0368f9ab88a5a3b2ab44cb8a5489c6789bfc4ef7afc6799",
+      "after_sha256": "e67a00b58859cb07f0368f9ab88a5a3b2ab44cb8a5489c6789bfc4ef7afc6799"
+    },
+    {
+      "old": "scripts/msx/raster_scroll.py",
+      "new": "src/toolchain/msx/raster_scroll.py",
+      "before_sha256": "cdbfc0532351f60ab57a4d2a9e9af07d7123f4fc5b70975f829e5d12b7d17b07",
+      "after_sha256": "4b3d53f11dd47a9fe2597d170f650df62d53c305884640d8688e73e3b540af9e"
+    },
+    {
+      "old": "scripts/msx/radar_pair_verify.py",
+      "new": "src/toolchain/msx/radar_pair_verify.py",
+      "before_sha256": "ec30eaf1a62ae60243a976e4dfa43278329bd7ddea726bf789b93072528e13cd",
+      "after_sha256": "38ece59f70e600edd571a54ebeb8be7d97aacb84698959ed2a53f347f4395aad"
+    },
+    {
+      "old": "scripts/msx/steering_verify.py",
+      "new": "src/toolchain/msx/steering_verify.py",
+      "before_sha256": "0226b3fb568989ccb6c7a9b462d03e519ac928579a9fbe81dd7e8b47259bd7a7",
+      "after_sha256": "8cfd4db59e3e904b646483bca78810d28357dbd619e030ca9dd4f284913e6037"
+    },
+    {
+      "old": "scripts/msx/motion_cadence.py",
+      "new": "src/toolchain/msx/motion_cadence.py",
+      "before_sha256": "f9a6ec3d2b23ec4e601b22e352f0a681dc365a17e58d7ed4ea5ae2c0cf413f96",
+      "after_sha256": "f9a6ec3d2b23ec4e601b22e352f0a681dc365a17e58d7ed4ea5ae2c0cf413f96"
+    },
+    {
+      "old": "scripts/msx/audio_score.py",
+      "new": "src/toolchain/msx/audio_score.py",
+      "before_sha256": "a99c2c4edb56339fd94115fc75d2cd624fb52274139ef0a7ab78b4131dab4274",
+      "after_sha256": "a99c2c4edb56339fd94115fc75d2cd624fb52274139ef0a7ab78b4131dab4274"
+    },
+    {
+      "old": "scripts/msx/score_verify.py",
+      "new": "src/toolchain/msx/score_verify.py",
+      "before_sha256": "982ce457050ded9728dc7f34759006e15e4bb18d57b2e617c515e7d87a7e7029",
+      "after_sha256": "e91223a5f61b8f6c1806176b7ce0a344fb7b12be6fa80f77a271d1a636510ab1"
+    },
+    {
+      "old": "scripts/msx/native_verify.py",
+      "new": "src/toolchain/msx/native_verify.py",
+      "before_sha256": "36b617afb4dd68a0e4d9437aea180390081e802092a9947b4bd17ea5213ea6fb",
+      "after_sha256": "9df4fe190e98833b84246bf2087659465f17c7aed7bdccf9a7c1a121facf8758"
+    },
+    {
+      "old": "scripts/msx/round_inventory.py",
+      "new": "src/toolchain/msx/round_inventory.py",
+      "before_sha256": "5c2bf4b7feb493c8946345874f0ca0138a1b14873bbc851074672f6dd211fb6a",
+      "after_sha256": "4b38185cb8d32fe63922d5ef92cf37da65fdb8bd3a0c8a60d31c3d865871a426"
+    },
+    {
+      "old": "scripts/msx/lives_native.lua",
+      "new": "src/toolchain/msx/lives_native.lua",
+      "before_sha256": "1efc0d54b435b7224a37cfac5945dfb67284de129351ed7fe6d3f3b90e35b101",
+      "after_sha256": "1efc0d54b435b7224a37cfac5945dfb67284de129351ed7fe6d3f3b90e35b101"
+    },
+    {
+      "old": "scripts/msx/player_native.lua",
+      "new": "src/toolchain/msx/player_native.lua",
+      "before_sha256": "dc3a513429e55e3f098e46d5cb5591ee19e42e7818c2d07e116dc8857b9de297",
+      "after_sha256": "dc3a513429e55e3f098e46d5cb5591ee19e42e7818c2d07e116dc8857b9de297"
+    },
+    {
+      "old": "scripts/msx/flicker_stress_verify.py",
+      "new": "src/toolchain/msx/flicker_stress_verify.py",
+      "before_sha256": "83f673048bddb31b1d47cad4dda358e388aeb65b84df2e10d6d9749a468684e5",
+      "after_sha256": "d0d2620ceac34cfce90df41b03bf4492b0531922c07805cb2174a6faf399c8d2"
+    },
+    {
+      "old": "scripts/msx/lives_verify.py",
+      "new": "src/toolchain/msx/lives_verify.py",
+      "before_sha256": "30635763109798d41528c317fe5eabef9192c0883678383ccc17cfa04fe37dac",
+      "after_sha256": "0d1a85c790971f561a3500ca52355b956aa9eb6f60bc265900aeb9175d804526"
+    },
+    {
+      "old": "scripts/msx/session_verify.py",
+      "new": "src/toolchain/msx/session_verify.py",
+      "before_sha256": "69e1d05ff5db963a7f75526635a0de0f6b705737a348f2b15e50207d9e97982b",
+      "after_sha256": "2af2be9065e102792e2f0a43524583becfe5a59945cbb967fcd2ae5b6aa08abe"
+    },
+    {
+      "old": "scripts/msx/cartridge_size.py",
+      "new": "src/toolchain/msx/cartridge_size.py",
+      "before_sha256": "7c20d3e23776d2097987027a26d3a82570b7f85ee99d878c83e4b0f420eb6a17",
+      "after_sha256": "7c20d3e23776d2097987027a26d3a82570b7f85ee99d878c83e4b0f420eb6a17"
+    },
+    {
+      "old": "scripts/msx/enemy_population.py",
+      "new": "src/toolchain/msx/enemy_population.py",
+      "before_sha256": "6ea3d2396ce3cfbc09a9575fd04cd4b8cf6fe4081848e4d045eb29c7c22238c6",
+      "after_sha256": "6ea3d2396ce3cfbc09a9575fd04cd4b8cf6fe4081848e4d045eb29c7c22238c6"
+    },
+    {
+      "old": "scripts/msx/smoke.py",
+      "new": "src/toolchain/msx/smoke.py",
+      "before_sha256": "afc7cb4583ba517e4d33c71def239c41b93ca0b1c8d66610ed8505638c385bd1",
+      "after_sha256": "afc7cb4583ba517e4d33c71def239c41b93ca0b1c8d66610ed8505638c385bd1"
+    },
+    {
+      "old": "scripts/msx/radar_motion.py",
+      "new": "src/toolchain/msx/radar_motion.py",
+      "before_sha256": "e06f45eea89b66816e0594a45d135fdd7809c3de636643a8b20d7f4572ad9e65",
+      "after_sha256": "e06f45eea89b66816e0594a45d135fdd7809c3de636643a8b20d7f4572ad9e65"
+    },
+    {
+      "old": "scripts/graphics/roms.py",
+      "new": "src/toolchain/graphics/roms.py",
+      "before_sha256": "b8746450f353cef8fe55d218f825b020d5649853c832f63e94c06ced6e556d97",
+      "after_sha256": "b8746450f353cef8fe55d218f825b020d5649853c832f63e94c06ced6e556d97"
+    },
+    {
+      "old": "scripts/graphics/__init__.py",
+      "new": "src/toolchain/graphics/__init__.py",
+      "before_sha256": "f07f86f23d1be1841a8893db91ff59630ba036a355d0214b38d35df164389e5f",
+      "after_sha256": "f07f86f23d1be1841a8893db91ff59630ba036a355d0214b38d35df164389e5f"
+    },
+    {
+      "old": "scripts/graphics/export.py",
+      "new": "src/toolchain/graphics/export.py",
+      "before_sha256": "0e0809ea5189a861c040446586979ae4fc580fe09dbc44bd170cb756d072761f",
+      "after_sha256": "6c781f2da6260a08f10ed5237cf327f2d6fb69ddf6e852cd4b30bdf3def24f5e"
+    },
+    {
+      "old": "scripts/graphics/decode.py",
+      "new": "src/toolchain/graphics/decode.py",
+      "before_sha256": "ae3992e7c811a25f1c37bf00a6bff35c5449005923c980abf465ae5b335b1930",
+      "after_sha256": "ae3992e7c811a25f1c37bf00a6bff35c5449005923c980abf465ae5b335b1930"
+    },
+    {
+      "old": "scripts/graphics/nrallyx.json",
+      "new": "src/toolchain/graphics/nrallyx.json",
+      "before_sha256": "b032dcb879b6be8eda17d2a1df9e1be1903e718c97f2cd81d58b30a7d5ae29f7",
+      "after_sha256": "b032dcb879b6be8eda17d2a1df9e1be1903e718c97f2cd81d58b30a7d5ae29f7"
+    }
+  ],
+  "removed": [
+    {
+      "path": "scripts/audio_audition_probe.py",
+      "sha256": "9b9f68381d31a58a39d3c09e87b98ad4ab2e5b6526c61570a58837acf25d09a0",
+      "purpose": "Record a timed production-PSG audition with explicitly seeded sound events.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/audio_gameplay_probe.py",
+      "sha256": "4761201253c1c5118156688de7913f3d0f91ce750b17c92dbd149fae47f9125d",
+      "purpose": "Replay identical logical inputs in live HUD gameplay, with sound on/muted.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/audio_inventory.py",
+      "sha256": "fe2b0d992a04da8a5050f10eb1959a3e7442f1675575c9c364178f5050018beb",
+      "purpose": "Acquire ordered original sound commands/WSG writes without changing gameplay.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/audio_psg_probe.py",
+      "sha256": "3bad1a8bc21bcb6b5ca129e1e083768812baa479c6bd6c005409901cbaf53755",
+      "purpose": "Execute integrated PSG conversion and mute against original sound evidence.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/audio_runtime_probe.py",
+      "sha256": "0e1fef972f2fabc4780575758a7505531c79d928bc795ce6f0ca379c6aa3f22c",
+      "purpose": "Execute production music/noise scheduling, transient mailboxes and mute.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/audio_score_probe.py",
+      "sha256": "cbb5096a1f675c2416ece00499752f0a88ad9aa0c64ac3ce4f73594f9289fc64",
+      "purpose": "Check compiled Start duration against captured original sound-call endings.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/audio_sequencer_probe.py",
+      "sha256": "0130784de6903d3dc51a456a4143c50c9abf311525dacdbab69fc373c060a9de",
+      "purpose": "Execute relocated sound calls against unmodified arcade entry/exit evidence.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/audio_session_probe.py",
+      "sha256": "21479d7dd9e56b20708464ba553c232f5e4c43be81d998a54e0dc78f0bcd1fe5",
+      "purpose": "Check real keyboard title/select/start audio ordering and a debug round load.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_ai_probe.py",
+      "sha256": "95bd3fbbe02e340ce813314abc9d52ac4dcdd1b8a5b357990d7175d3ac031c06",
+      "purpose": "Compare guarded AI transform reuse with three unmodified original calls.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_arcade_ui_probe.py",
+      "sha256": "24c62395b482799aeb5c99d325dfdf35f32e2b044fd179b747576fe001f2f7e3",
+      "purpose": "Exercise typed cast, credit selection, Start, pause and challenge presentation.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_attract_probe.py",
+      "sha256": "226ad782cb0a70fc8108e6039647765fa4706c71abfba6c62835a7508956ea83",
+      "purpose": "Observe original cast pixels, autonomous demonstration and credit interruption.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_bonus_lives_probe.py",
+      "sha256": "95c6a230b670b70e9ef7e42adc76e852925973940f0df5bdf3d0f3e399b1f132",
+      "purpose": "Execute score crossings and require immediate native and HUD extra lives.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_debug_probe.py",
+      "sha256": "8031da00ab4782ce329629720ab0fa788a269a8a7ef38ec6bf782ee912ef4409",
+      "purpose": "Exercise the real F5 debug key, held-key protection and normal preparation.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_enemy_probe.py",
+      "sha256": "96a186a4f1bdb8d2c4ae82ab45df81e096a7b13b0c04dc710cc02645fcbe08a2",
+      "purpose": "Execute all seven complete-car caches over facings and clipping boundaries.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_flag_popup_probe.py",
+      "sha256": "ef3ae459f70316e7e2f333fe7aa10d5fe222256801fd98d61ad3ad549eefc838",
+      "purpose": "Execute flag labels, torus boundaries and authoritative erasure on Z80.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_game_evidence.py",
+      "sha256": "4b8997550d332c9ddc0f12dfabf11c7920b1a95194400161448a17e09587e097",
+      "purpose": "Check dynamic natural-route VRAM against independent source-pixel oracles.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_msx_enemy_probe.py",
+      "sha256": "a6024f020085e7fdf72cd2d633e99446539a85a34a3a3dad01c7e35e335fad75",
+      "purpose": "Execute MSX steering, smoke, contact, speed and fractional motion on Z80.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_radar_irq_probe.py",
+      "sha256": "3f0aa90fec8e06e55fdaf47d97026f43d7caacb2bf452d0290dc37774dc87814",
+      "purpose": "Execute bounded radar publication independently of gameplay packets.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_rules_probe.py",
+      "sha256": "2f73f225b75174ec69d4af9a43cc1e332d00e2ff38a162d932bc1b447063f8f2",
+      "purpose": "Compare original phase/speed thresholds against the linked native routines.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_scroll_probe.py",
+      "sha256": "847dadb6029acfdcfefe5691415b169b4d7e9f51f990d3d52a07273ddb5bd942",
+      "purpose": "Execute every circular scroll transition and initial scene latch.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_session_probe.py",
+      "sha256": "8acb756f91777e8593451dc33404f2c2e83ea6026877156d8e6e0eaf726277fd",
+      "purpose": "Exercise two-player credit, alternating deaths and game over through keys.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_startup_probe.py",
+      "sha256": "169c0c66c2010eb736182edcb66dd7f51b459d2952eda23f9ca3e28735ad7902",
+      "purpose": "Verify normal startup pass-through and solid challenge cars through keys.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_state_probe.py",
+      "sha256": "08159a8d3f5c02af0e26ac4f7998605634a4723bfabef9de61da85a85015f9d5",
+      "purpose": "Seed distinct player boards, then execute real death/restore transitions.\n\nThese are explicit component fixtures, separate from the no-write session replay.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_terrain_probe.py",
+      "sha256": "095d17aa5cc489192167423334144dc73bf2bb1c5e9d79f92137563cc67e9979",
+      "purpose": "Execute terrain ownership and contiguous cell fragments across buffer seams.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/full_tick_cost.py",
+      "sha256": "681335429013e86fece56f0c3ca9101da5b76422a539eb27612b1d0e5a920814",
+      "purpose": "Measure fixed native-tick workloads, separating actual raster IRQ time.\n\nExplicit actor fixtures isolate CPU scaling; these are not natural gameplay.\nThe complete HUD and real VDP limits remain enabled. Original data stays ignored.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/gameplay_inventory.py",
+      "sha256": "19a61a2c59533dd960dc0061f026b2ca74666481a67e98866e1331b0ff85f362",
+      "purpose": "Inventory original New Rally-X round preparation from local contributor ROMs.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/graphics/mame_reference.lua",
+      "sha256": "8f2f4be8ad76a0c0a27e350a1c70c0fe19a21ed28c413e6c61c9cfa43d80abb0",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/maze_debug.py",
+      "sha256": "2cebe483fe745f98e0ef93260ccf900e1e93540b850e7be922f51f096eddfd00",
+      "purpose": "Run the game with F6 capturing a replay and machine state for transient bugs.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/msx/audio_inventory.lua",
+      "sha256": "9a6f3959de13f1ef539083541601391bd6d81cf7bcd0e967f1a2636a8a6f2c26",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/msx/full_ai_native.lua",
+      "sha256": "de2d02ccb3378c8e2e7bd7a434276087166baa3562be2f66bdb51e18c979ccd6",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/msx/full_rules_native.lua",
+      "sha256": "bd1d30cd109647a4dde5635d5fd3f00fdcfbb2f104531806ca870f9e3ef365df",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/msx/radar_motion_verify.py",
+      "sha256": "ffad34a95f2c6cb0e9359a1f8b4ca1dffbf3cc58cee946d81708e69db56173cd",
+      "purpose": "Execute synthetic radar departure/queue cases with the actual full-game Z80.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/msx/session_inventory.lua",
+      "sha256": "fffe5c4273343d7366bd43755296288e1cbc4830e77c48b84e88ea08ac570d12",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/round_preparation.py",
+      "sha256": "584e998f424b980eced5980d5df6cde260a56c428e67922254fdc7ddcd68c1a4",
+      "purpose": "Compare isolated original and MSX round preparation using contributor inputs.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/scenes/native-collision-inputs.json",
+      "sha256": "6f7c6cb54301c0384c85b3e2c11a65b748e9b122c037cc23f36817b678bdd8e8",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "scripts/session_inventory.py",
+      "sha256": "8d6572f4b72094ab0731df5075c32e188a8a26a51d2d09dfa41f292b587b0907",
+      "purpose": "Acquire the unmodified arcade's two-player turns through real input ports.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/arcade-bang.lua",
+      "sha256": "e4d68ce1a0fab552a15909e0b66d226d766432bb74f22baf49dc957b11e0ba77",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/component_report.py",
+      "sha256": "16e061aedf5ff039343ec0ed74ba9dee78a99c7d00f2c4280e998d5e503d58ee",
+      "purpose": "Build inspectable component/frame aggregates from immutable profiler traces.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/component_workbook.mjs",
+      "sha256": "ebd9cf7abddccb930dca30045b57bafdd73adb7721cd27867e077036b352392e",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/effect_proposal.py",
+      "sha256": "13e7b9d7a1454ad09237c67608977d6493824dfdd67aa96f089b92e7315fe31e",
+      "purpose": "Preview an additional SCREEN4 concession without changing active builds.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/game_core_probe.py",
+      "sha256": "5750bdb696edae91e3fa8920194147b5160735ba5b64e9daeb397377f3ce0d94",
+      "purpose": "Execute contributor-native gameplay and PSG independently of SCREEN4 effects.\n\nRun: .venv/bin/python src/screen4/game_core_probe.py\nAll generated native bytes, ROMs and observations stay under references/.\nThis uses explicit elapsed ticks, with interrupts disabled: it does not validate\nVRAM, presented graphics, perceptual audio, or physical gameplay cadence.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/game_position_proof.py",
+      "sha256": "c04a219a106d94459476e4adaaabb5392af402ac3c302cef19e69f6986527163",
+      "purpose": "Execute exact-ROM Game_Position once/twice through Game_Actors in openMSX.\n\nThis is an isolated callable-boundary equivalence proof, not gameplay timing.\nThe contributor-derived ROM is read only. Generated harness/evidence stay ignored.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/patch_square_probe.py",
+      "sha256": "e938917b4582aab2ede566d057861ba12410e78628362417140454e1ea161c63",
+      "purpose": "Compare compiled terrain-overlay workers on identical synthetic RAM inputs.\n\nContributor cartridges are read only and stay in ignored references. No game\nassets are embedded here. Compare the complete name ring, boundary IDs, both\ndirty queues and native RAM guards, including modulo wrap and clipped squares.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/performance_report.py",
+      "sha256": "98f6f35be15aab040fa6b8afb3cd7617504195791379cbdd9447266db940a14f",
+      "purpose": "Bind cycle, gameplay, graphics and real multi-car evidence to current ROMs.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/raster_phase_profile.py",
+      "sha256": "67ad300f58969222548ed4b6e21d4f27590f4fb03061ac716a753170619be10c",
+      "purpose": "Observe native VDP raster phase at matched PC/SP routine endpoints.\n\nRuns an immutable cartridge snapshot and a keyboard-only route twice, with\nand without routine breakpoints. All generated evidence remains ignored.",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    },
+    {
+      "path": "src/screen4/workbook.mjs",
+      "sha256": "c8a4cf0c4bfd9dc6db6e18f24734bab7aa2a035713a7292ce5ba9fbd5019a595",
+      "purpose": "",
+      "reason": "Historical standalone driver/report, unreferenced by maintained Make targets, unit tests and the retained build/validation closure."
+    }
+  ],
+  "policy": "Runtime assembly stays in src/screen4 and src/screen5. Host tools live in src/toolchain. Public human/Make entry points stay in scripts. Retained optional legacy route/clock and listening aid are documented validation tools.",
+  "validation": {
+    "rom_variants": [
+      {
+        "mode": "default",
+        "args": [],
+        "path": "dist/newrallyx.rom",
+        "bytes": 2048000,
+        "sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+        "byte_identical": true
+      },
+      {
+        "mode": "test",
+        "args": [
+          "TEST_MODE=1"
+        ],
+        "path": "dist/test/newrallyx.rom",
+        "bytes": 2048000,
+        "sha256": "87620f454b2164bb39103b9927b910fb039e82c07357fb1c5598c2057e38ebc5",
+        "byte_identical": true
+      },
+      {
+        "mode": "base-cpu",
+        "args": [
+          "TURBO=0"
+        ],
+        "path": "dist/diagnostic/base-cpu/newrallyx.rom",
+        "bytes": 2048000,
+        "sha256": "c197d4003081fd44e1efb4428c11297bb465001622fc4b83ffdce44bb2c42066",
+        "byte_identical": true
+      },
+      {
+        "mode": "no-check",
+        "args": [
+          "HARDWARE_CHECK=0"
+        ],
+        "path": "dist/diagnostic/no-check/newrallyx.rom",
+        "bytes": 2048000,
+        "sha256": "9e0b927a888449f334b679c792a65e83e8a618f0d575e113ceba7b0f0ec14e8f",
+        "byte_identical": true
+      },
+      {
+        "mode": "classic",
+        "args": [
+          "HUD_VARIANT=classic"
+        ],
+        "path": "dist/diagnostic/classic-hud/newrallyx.rom",
+        "bytes": 2048000,
+        "sha256": "e012892fd74fb9ff2700386e6469973dbfdf7978e7c135ad80dde155431d59a2",
+        "byte_identical": true
+      },
+      {
+        "mode": "legacy",
+        "args": [
+          "LEGACY=1"
+        ],
+        "path": "dist/legacy/newrallyx.rom",
+        "bytes": 2097152,
+        "sha256": "e95a4a803c0ac3d0096b7021c877a56086d09d6ba8ed307dde7a8d039198537c",
+        "byte_identical": true
+      }
+    ],
+    "emulator_scenarios": [
+      {
+        "scenario": "controls",
+        "passed": true,
+        "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+      },
+      {
+        "scenario": "two-player",
+        "passed": true,
+        "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+      },
+      {
+        "scenario": "flags",
+        "passed": true,
+        "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+      },
+      {
+        "scenario": "attract",
+        "passed": true,
+        "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+      },
+      {
+        "scenario": "radar",
+        "passed": true,
+        "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+      },
+      {
+        "scenario": "smoke",
+        "passed": true,
+        "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+      }
+    ],
+    "additional_emulator_checks": [
+      {
+        "scenario": "start",
+        "ram_kib": 64,
+        "passed": true
+      },
+      {
+        "scenario": "integration",
+        "ram_kib": 128,
+        "passed": true
+      },
+      {
+        "scenario": "boot-module-and-skip",
+        "passed": true
+      }
+    ],
+    "module_layout": {
+      "passed": true,
+      "unchanged_symbol_count": 1589,
+      "runtime_overhead": 0
+    },
+    "note": "Emulator qualification and byte identity establish reorganization equivalence, not new physical-hardware or final perceptual acceptance.",
+    "unit_tests": {
+      "host": 457,
+      "component": 93,
+      "skipped_component": 1,
+      "passed": true
+    },
+    "fresh_cache_rebuild": {
+      "passed": true,
+      "sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+    },
+    "runtime_assembly_instructions_unchanged": true,
+    "environment_check_passed": true,
+    "timing_workbook_regenerated": true,
+    "public_extraction_canonical_path_passed": true,
+    "cleanup": {
+      "references_bytes": 52636823,
+      "scenes_removed": true,
+      "stage_one_removed": true,
+      "temporary_assets_payload_removed": true
+    }
+  }
+}

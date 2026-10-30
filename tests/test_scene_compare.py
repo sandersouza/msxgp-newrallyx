@@ -1,6 +1,6 @@
 import unittest
 from PIL import Image
-from scripts.scenes.compare import compare
+from src.toolchain.scenes.compare import compare
 
 
 class CompareTests(unittest.TestCase):

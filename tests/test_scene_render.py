@@ -1,7 +1,7 @@
 import unittest
 from PIL import Image
-from scripts.scenes.bundle import Assets, Capture
-from scripts.scenes.render import render
+from src.toolchain.scenes.bundle import Assets, Capture
+from src.toolchain.scenes.render import render
 
 
 def scene():

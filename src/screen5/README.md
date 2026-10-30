@@ -20,8 +20,8 @@ default full-game legacy build. TEST_MODE=1 belongs to SCREEN 4 and is rejected
 with LEGACY=1. Maintained bounded-stage flags also require LEGACY=1.
 
 The legacy build/launch owners remain `scripts/project.py` and
-`scripts/msx/raster_scroll.py`. Native diagnostic builders remain in
-`scripts/msx/native_build.py`. Shared Python asset/reference tools and their
+`src/toolchain/msx/raster_scroll.py`. Native diagnostic builders remain in
+`src/toolchain/msx/native_build.py`. Shared Python asset/reference tools and their
 tests stay in `scripts/` and `tests/`; they serve both presenters.
 
 ## Source ownership

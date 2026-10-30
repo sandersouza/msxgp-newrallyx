@@ -1,7 +1,7 @@
 import unittest
 
-from scripts.msx.audio_score import encode, melody, pair_frames, voice_frames, dictionary_encode, effect_frames
-from scripts.msx.audio_psg import period
+from src.toolchain.msx.audio_score import encode, melody, pair_frames, voice_frames, dictionary_encode, effect_frames
+from src.toolchain.msx.audio_psg import period
 
 
 class AudioScoreTests(unittest.TestCase):

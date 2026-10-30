@@ -23,15 +23,22 @@ default SCREEN 4 presenter integrating the original Z80 gameplay routines with
 dynamic rounds, enemies, smoke, PSG audio and one/two-player sessions. The earlier
 SCREEN 5 presenter with sprite HUD remains available as an independent build.
 
-The default port targets **64 KiB system RAM and 128 KiB VRAM**. Use `MAPPER=1`
-for the preserved version requiring at least 128 KiB mapper RAM. The openMSX
-launcher configures the selected RAM capacity in a private FS-A1WSX definition,
-with cartridge type ASCII16.
+The default port requires **64 KiB mapper RAM and 128 KiB VRAM**. One ROM
+automatically selects the faster radar cache when at least128 KiB RAM is
+available, and factory CPU acceleration on supported Panasonic machines.
+The first hardware-check screen reports `MAPPER <size>K` and `TURBO ON/OFF`.
+The cartridge remains below the mandatory **2 MiB** limit. The openMSX launcher
+uses a private FS-A1WSX definition with cartridge type ASCII16.
 See the [current architecture](docs/architecture.md) for source ownership and
 [maintenance guide](docs/maintenance.md) for dependency/retention decisions,
 baseline ROM hashes and cycle-ledger reproduction.
 
 ## Port direction
+
+Developer handoff: [guide and code map](docs/developer-guide.md),
+[engineering lessons](docs/engineering-lessons.md) and
+[include/API contracts](src/screen4/modules/README.md). These preserve the
+techniques and their reuse limits; raw experiment directories are disposable.
 
 - Preserve original graphics at **1:1 pixel scale**, including 8x8 tiles and
   16x16 sprites.
@@ -48,9 +55,10 @@ baseline ROM hashes and cycle-ledger reproduction.
 ### Build and launch modes
 
 ```sh
-make run                     # optimized SCREEN 4, HUD enabled
+make run                     # one automatic ROM;64KiB emulator, HUD enabled
+make run MAPPER=1            # same ROM;128KiB emulator
 make run TEST_MODE=1         # Enter: next round; =: toggle invulnerability
-make run MAPPER=1            # preserved 128 KiB mapper-RAM profile
+make run TURBO=0             # automatic RAM detection; base-CPU diagnostic
 make run LEGACY=1            # original SCREEN 5 / sprite HUD / PSG baseline
 ```
 
@@ -58,22 +66,37 @@ The lowercase spelling `legacy=1` is also accepted. Test mode keeps walls solid;
 it prevents collision deaths and advances rounds without the fuel bonus. It is
 an optimized-presenter option; it is not added to the preserved legacy build.
 `make build` uses the same selection without opening the emulator.
-The default ROM is `references/experiments/full-session-64k/fixed-hud.rom`, or
-`full-session-test-64k/fixed-hud.rom` with test mode. `MAPPER=1` selects the same
-bundle names without `-64k`. The legacy ROM remains
-`references/build/newrallyx.rom`. Unqualified `make run` rebuilds before launch;
+The default ROM is **`dist/newrallyx.rom`**, or `dist/test/newrallyx.rom` with
+test mode. Both use ASCII16; select that cartridge type when loading in WebMSX.
+`dist/manifest.json` records the exact ROM hash, size and configuration.
+`MAPPER=1` selects128KiB in the emulator; the default and `MAPPER=0` select64KiB.
+All select the same automatic ROM, build options and exported filename.
+The legacy ROM remains
+`dist/legacy/newrallyx.rom`. Unqualified `make run` rebuilds before launch;
 an explicit `ROM=...`, `CHECKPOINT=...` or `LATEST=1` selects an existing artifact.
 `make run-experiments` remains an alias for the optimized build.
+See the [artifact layout](docs/artifact-layout.md) for generated intermediates,
+diagnostic variants, emulator sessions and cleanup. Raw development data is
+disposable; compact results and hashes remain in `docs/`.
 
-The default selects the [64 KiB profile](docs/ram64-variant.md). `MAPPER=1`
-selects the 128 KiB version for both build and emulator. `TEST_MODE=1` combines
-with either profile. Both retain the same graphics, 128 KiB VRAM and ASCII16
-cartridge requirements. See the [validation and timing audit](docs/ram-profile-validation.md).
+The [automatic hardware selection](docs/issue39-software-turbo.md) defaults to
+`MAPPER=auto TURBO=1`. Supported machines use Panasonic factory Z80 turbo or
+turboR R800 ROM for measured CPU-only scopes; other machines use base Z80.
+`TURBO ON` reports the available acceleration backend; hardware transfers,
+audio, menus and synchronization run at base timing. No separate user builds
+are needed for different machines. Stock turboR tests use, for example,
+`NRX_REFERENCE_MACHINE=Panasonic_FS-A1ST make run` (256KiB).
+
+The [64 KiB cache strategy](docs/ram64-variant.md) remains the fallback.
+`MAPPER` controls emulated RAM only; `TURBO=0` retains a base-CPU diagnostic build. Original graphics,
+128 KiB VRAM and ASCII16 requirements remain. Emulator results and pending user
+audio/perceptual acceptance are separate from physical-hardware qualification.
 
 Original game ROMs and MSX BIOS must be supplied locally as described in
 [setup](docs/setup.md). The original 56x8 `namco` title artwork is extracted from
 those ROMs and checked against its native pixel digest.
-The optional MSX logo source is contributor-supplied artwork in `assets/`.
+The optional MSX logo uses [`assets/msxlogo.bmp`](assets/msxlogo.bmp), the supplied
+54x20 one-bit artwork, copied at1:1 without resizing or color reduction.
 
 The following historical renderer details and diagnostic flags describe
 `LEGACY=1`. For the optimized presenter and measured limits see
@@ -125,7 +148,7 @@ arcade sound. See the [audio contract and validation](docs/issue13-audio-interfa
 `make build LEGACY=1 AUDIO=0` reconstructs the accepted silent full-game baseline.
 
 Builds use fresh sealed directories under `references/build/default-*/` and
-publish `references/build/newrallyx.rom` only after success in legacy mode.
+publish `dist/legacy/newrallyx.rom` only after success in legacy mode.
 `make run LATEST=1` launches the most recent sealed build; named historical
 cartridges remain available through `make checkpoints` and
 `make run CHECKPOINT=<name>`. An explicit `ROM=<path>` selects another cartridge.
@@ -149,8 +172,10 @@ natural routes and controlled population fixtures. Physical hardware and full
 human gameplay/culling acceptance remain review items.
 
 Use `python3 -B scripts/clean.py --dry-run` to inspect generated build contents.
-`make clean` removes local ROMs, checkpoints, reports and emulator sessions under
-`references/build/`; preserve evidence you need before cleaning.
+`make clean` deletes generated builds, caches, raw measurements, sessions,
+archives and per-issue working data. It preserves the playable `dist/` ROM,
+contributor inputs and compact documented results. Required caches regenerate
+on the next build; raw historical traces are not retained.
 
 ## Quick start
 
@@ -186,63 +211,32 @@ references/roms/nrallyx/
 ```
 
 The supported set is pinned to MAME 0.289. All 13 files must match the names,
-sizes and checksums in the [ROM inventory](scripts/graphics/nrallyx.json),
+sizes and checksums in the [ROM inventory](src/toolchain/graphics/nrallyx.json),
 including program and sound ROMs that the graphics extractor does not decode.
 Other revisions and ZIP input are not supported by this extractor.
 
-### 3. Extract the graphics
+### 3. Build or run
 
 ```sh
-make extract-graphics
+make build                   # Creates dist/newrallyx.rom (ASCII16)
+make run                     # Builds, then launches openMSX (your BIOS required)
 ```
 
-Output is written to `references/assets/nrallyx/`. It includes original pixel
-indices, indexed atlases, color previews, palette and layout metadata, and a
-manifest recording source and output hashes. Original dimensions are preserved.
+Both commands automatically check and prepare missing graphics, arcade captures,
+reconstructed scenes and original native-state inputs under `assets/arcade/`.
+The first build runs headless MAME; later builds verify and reuse valid bundles.
+You do not need to copy generated assets from another developer or an old build.
 
-Existing output is protected. To replace a complete, unchanged extraction:
+To prepare all inputs explicitly before compiling, run `make extract-all`.
+Individual stages are `make extract-graphics`, `make extract-scenes` and
+`make extract-native`; `make extract-grafics` is also accepted. Default extraction
+commands are safe to repeat. Edited or incompatible bundles cause an error;
+they are preserved for inspection.
 
-```sh
-make extract-graphics OVERWRITE=1
-```
-
-To keep an earlier extraction, choose a different destination below
-`references/assets/`:
-
-```sh
-make extract-graphics GRAPHICS_OUTPUT="references/assets/nrallyx-other"
-```
-
-See [graphics extraction](docs/graphics-extraction.md) for input overrides,
-output formats, overwrite checks, recovery and optional MAME comparisons.
-
-### 4. Prepare scenes and run the game
-
-Follow the [scene guide](docs/arcade-scenes.md) to capture the reference scenes,
-then analyze the normal and overlap captures to generate the approved bundles at `references/scenes/rom-input/normal` and
-`references/scenes/rom-input/overlap`. The default build reads captures from
-`references/scenes/review-fixed-v3/`; use that path when capturing:
-
-```sh
-make prepare-scenes
-```
-
-This captures the reference frames first, then analyzes the normal and overlap
-frames in order. To run the steps separately, use `make capture-scenes` and
-`make analyze-scenes`. Existing destinations are protected by default. Use
-`make prepare-scenes OVERWRITE=1` to replace complete, unchanged capture and
-analysis bundles with matching payload inventories. Modified bundles, unknown
-files, directories or symlinks are preserved and cause an error. Override `SCENES_CAPTURE`,
-`SCENES_NORMAL` and `SCENES_OVERLAP` for a fresh run; `GRAPHICS_OUTPUT` selects
-the extracted assets. The default build expects the standard paths above.
-
-Reuse existing verified captures and input bundles if present: run only
-`make analyze-scenes` if captures already exist, or proceed to `make run` if
-both bundles are ready. Supply the compatible BIOS locally, then:
-
-```sh
-make run
-```
+**First time here?** Follow [Build your first MSX ROM](docs/building.md), including
+all 13 required filenames, emulator BIOS requirements and simple recovery steps.
+The [graphics guide](docs/graphics-extraction.md) documents custom destinations
+and guarded overwrite behavior for advanced use.
 
 ## Commands
 
@@ -250,10 +244,12 @@ make run
 | --- | --- |
 | `make environment` | Install dependencies and prepare or verify the local environment |
 | `make environment-check` | Verify the environment without installing or rebuilding |
-| `make extract-graphics` | Extract original arcade graphics into `references/assets/nrallyx/` |
+| `make extract-all` | Prepare every arcade input required by the build |
+| `make extract-scenes` / `make extract-native` | Prepare and verify individual capture/native stages |
+| `make extract-graphics` | Extract original arcade graphics into `assets/arcade/nrallyx/` |
 | `make capture-scenes` | Capture the arcade reference frames with MAME |
 | `make analyze-scenes` | Analyze normal and overlap captures into build input bundles |
-| `make prepare-scenes` | Capture scenes, then analyze both input bundles in order |
+| `make prepare-scenes` | Alias for idempotent `make extract-scenes` |
 | `make build` | Rebuild optimized SCREEN 4 and export the normal/ASCII16 cartridge copies |
 | `make build TEST_MODE=1` | Rebuild a separate optimized test-mode cartridge |
 | `make build LEGACY=1` | Rebuild SCREEN 5 and publish `references/build/newrallyx.rom` |
@@ -273,7 +269,8 @@ script CLIs.
 | --- | --- |
 | `docs/architecture.md` | Current SCREEN 4/5 source, memory, mapper and IRQ ownership |
 | `docs/maintenance.md` | Inventory, generated-output retention and cycle-ledger reproduction |
-| `src/screen4/` | Default SCREEN 4 presenter, integration adapters and maintained laboratory workloads |
+| `src/screen4/` | Optimized Z80 presenter and assembly adapters |
+| `src/toolchain/` | Host conversion/build tools, emulator contracts and maintained workloads |
 | `src/screen5/` | Maintained SCREEN 5 legacy sources and shared Z80 helpers |
 | `docs/setup.md` | Environment prerequisites, toolchain, troubleshooting and validation evidence |
 | `docs/graphics-extraction.md` | ROM requirements, extraction schema, provenance and reference checks |
@@ -282,14 +279,14 @@ script CLIs.
 | `docs/hud.md` | Reusable HUD API, initialization, scheduling and original-game adapter |
 | `docs/player.md` | Original player movement, driving controls, sprites and raster integration |
 | `docs/stage-one-map.md` | Exact first-stage reconstruction, native checks and hidden-tile streaming |
-| `scripts/environment/` | macOS provisioning support and toolchain verification |
-| `scripts/graphics/` | ROM inventory, graphics decoding/export and MAME reference harness |
+| `src/toolchain/environment/` | macOS provisioning support and toolchain verification |
+| `src/toolchain/graphics/` | ROM inventory, graphics decoding/export and MAME reference harness |
 | `scripts/extract_graphics.py` | Graphics-extraction CLI |
 | `tests/` | Automated tests and synthetic fixtures |
-| `outputs/` | Local generated cartridges, reports, workbooks and emulator evidence; ignored by Git |
+| `dist/` | Delivered cartridges and manifests; ignored by Git |
 | `docs/measurements/audio/` | Retained historical metadata used by audio regression checks |
 | `references/roms/` | Local contributor-supplied ROMs; ignored by Git |
-| `references/assets/` | Local extracted graphics; ignored by Git |
+| `assets/arcade/` | Canonical extracted inputs and exact converted ROM resources; ignored by Git |
 | `references/disassembly/` | Local disassembly material; ignored by Git |
 | `.venv/`, `.tools/` | Generated environment, managed tools and smoke-test cache; ignored by Git |
 
@@ -331,3 +328,5 @@ game data, including data embedded in test fixtures.
 Contributors supply their own ROMs. Project tools must not download or
 redistribute game ROMs or proprietary BIOS images. No permission to redistribute
 original game data is granted by this repository.
+
+See [resource ownership and port scaffold](docs/repository-layout.md) for extraction, conversion, tool placement and retention rules.

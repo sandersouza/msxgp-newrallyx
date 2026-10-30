@@ -55,8 +55,8 @@ from game-state equivalence.
 - Dependencies #1, #2, #6, #9 and #10 are closed; the checkout includes the #9
   and #10 delivery merges.
 - `make test` passed 157 tests before this work.
-- All 13 contributor ROM files validate against `scripts/graphics/nrallyx.json`;
-  all 11 candidate hook digests in `scripts/z80_hooks.json` match.
+- All 13 contributor ROM files validate against `src/toolchain/graphics/nrallyx.json`;
+  all 11 candidate hook digests in `src/toolchain/legacy/z80_hooks.json` match.
 - The managed assembler and local BIOS directory exist. This is not a new BIOS
   boot verification.
 - `docs/z80-native-analysis.md` records 1,402 repeatable arcade snapshots,

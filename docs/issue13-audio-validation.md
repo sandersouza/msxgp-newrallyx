@@ -631,7 +631,7 @@ gnumake build
 .venv/bin/python -B scripts/audio_runtime_probe.py --rom references/build/issue13-timing-v33/raster-scroll.rom --output references/build/my-runtime-proof
 .venv/bin/python -B scripts/audio_session_probe.py --rom references/build/issue13-timing-v33/raster-scroll.rom --output references/build/my-session-proof
 .venv/bin/python -B scripts/audio_gameplay_probe.py --rom references/build/issue13-timing-v33/raster-scroll.rom --output references/build/my-live-mute
-.venv/bin/python -B scripts/full_game_route.py --rom references/build/issue13-timing-v33/raster-scroll.rom --rounds 1 --steering-margin 8 --fixture-enemies 6 --fixture-first-round 6 --avoid-enemies --allow-game-over --minimum-native-hz 59 --require-retained-native-ticks --maximum-packet-miss-percent 4 --maximum-packet-gap-ms 68 --radar-trace --require-stable-fuel --require-stable-player --output references/build/my-six-car-route
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom references/build/issue13-timing-v33/raster-scroll.rom --rounds 1 --steering-margin 8 --fixture-enemies 6 --fixture-first-round 6 --avoid-enemies --allow-game-over --minimum-native-hz 59 --require-retained-native-ticks --maximum-packet-miss-percent 4 --maximum-packet-gap-ms 68 --radar-trace --require-stable-fuel --require-stable-player --output references/build/my-six-car-route
 ```
 
 Use a fresh ignored output directory. Each successful acquisition/probe seals

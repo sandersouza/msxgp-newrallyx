@@ -2,7 +2,7 @@
 from dataclasses import FrozenInstanceError, replace
 import unittest
 
-from scripts.msx.native_contract import (
+from src.toolchain.msx.native_contract import (
     Exclusion, Snapshot, advance_clock, first_difference, input_bytes,
 )
 

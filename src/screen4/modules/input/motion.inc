@@ -1,3 +1,22 @@
+; Reuse contract: input-motion (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: GameSession_DisplayRound, GameSession_ValidateMotion, GameSession_ContactWall,
+;   Session_SaveMotion, Session_RestoreMotion
+; Inputs: Native player/movement/wall fields, Session_GuardActive and the established pre-step
+;   snapshot. Save before native motion; Validate after motion.
+; Outputs: Preserves accepted primary movement or restores the previous native motion
+;   snapshot; no wall bypass. DisplayRound is a display-only accessor and never advances the
+;   round.
+; Registers: Common caller-saved ABI across native calls; DisplayRound preserves BC/DE/HL and
+;   returns its existing biased/capped value in A.
+; Interrupts: Foreground only, no added synchronization; native motion and input sampling
+;   order remain required.
+; Memory / hardware: Existing D200..D222 motion snapshot and native E0xx fields; no extra
+;   input or movement buffer.
+; Reuse boundary: Native gameplay policy. Keep original native movement/wall entry points and
+;   snapshot encoding; use another compile-time adapter for another game.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: Display-round accessor and native corner rollback; original input/motion consistency.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 GameSession_DisplayRound:

@@ -269,9 +269,9 @@ Use fresh ignored output directories and contributor-supplied ROMs/BIOS.
 ```sh
 make build
 make run
-.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --full-game --hz 60 --output references/build/my-build
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py build --stage 12 --full-game --hz 60 --output references/build/my-build
 ROM=references/build/my-build/raster-scroll.rom
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-route --rounds 8 --avoid-enemies --steering-margin 5 --profile --record-round 6 --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 4 --minimum-native-hz 57 --minimum-vertical-update-hz 40 --maximum-p95-loop-ms 39 --maximum-over40-percent 3
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --output references/build/my-route --rounds 8 --avoid-enemies --steering-margin 5 --profile --record-round 6 --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 4 --minimum-native-hz 57 --minimum-vertical-update-hz 40 --maximum-p95-loop-ms 39 --maximum-over40-percent 3
 .venv/bin/python -B scripts/full_game_evidence.py --rom "$ROM" --capture references/build/my-route --output references/build/my-evidence
 .venv/bin/python -B scripts/full_scroll_probe.py --rom "$ROM" --output references/build/my-scroll
 .venv/bin/python -B scripts/full_terrain_probe.py --rom "$ROM" --output references/build/my-rows

@@ -1,5 +1,7 @@
-; Standalone V9958 SCREEN 4 probe. No sprites and no VDP commands.
-    OUTPUT "fixed-hud.rom"
+; Base SCREEN4 host and stable transform anchors, not the final session source.
+; build.py/game_build.py/session_build.py bind native rules, sprites, audio and
+; packed caches before assembly. Inspect that generated view when tracing a ROM.
+    OUTPUT "newrallyx.rom"
     MACRO reg number,value
     ld a,value
     out ($99),a
@@ -49,6 +51,8 @@ dotpat EQU $c900
     db "AB"
     dw boot,0,0,0,0,0,0
 boot:
+    ; BIOS is still visible here. Later Page0 RAM mapping makes direct BIOS
+    ; addresses unsafe; hardware services then need an explicitly owned bridge.
     di
     ld sp,$f380
     call $0138
@@ -177,11 +181,15 @@ frame_done:
 
 ; Wake at a fresh VBlank, then commit the complete prepared table set.
 wait_blank:
+    ; Synchronization is measured separately from useful foreground work.
+    ; The full-session view retains physical ticks even after a late frame.
     ei
     halt
     ret
 
 commit:
+    ; Publish the prepared display state at the host's blanking boundary.
+    ; Foreground preparation must never partially modify the visible snapshot.
     di
     ld a,(back)
     or a
@@ -307,6 +315,8 @@ clamp:
     ret
 
 render:
+    ; Prepare inactive names/patterns and overlays. The full-session generator
+    ; replaces probe bindings; cache geometry belongs to that selected profile.
     ld hl,(cx)
     ld a,l
     and 7

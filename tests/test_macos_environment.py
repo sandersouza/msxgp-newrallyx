@@ -23,6 +23,8 @@ class MacOSEnvironmentTests(unittest.TestCase):
         self.repo.mkdir()
         self.bin.mkdir()
         shutil.copytree(ROOT / "scripts", self.repo / "scripts")
+        (self.repo / "src/toolchain").mkdir(parents=True, exist_ok=True)
+        shutil.copytree(ROOT / "src/toolchain/environment", self.repo / "src/toolchain/environment")
         for name in ["Brewfile", "requirements.txt"]:
             if (ROOT / name).exists():
                 shutil.copy(ROOT / name, self.repo)

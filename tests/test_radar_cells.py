@@ -1,6 +1,6 @@
 """Independent capture checks for explicitly quantized radar markers."""
 import unittest
-from scripts.msx.radar_cells import published_cells
+from src.toolchain.msx.radar_cells import published_cells
 
 
 class RadarMarkerCaptureTests(unittest.TestCase):

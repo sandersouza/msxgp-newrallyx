@@ -4,11 +4,11 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.msx.native_compare import compare_series, compare_acquisition
-from scripts.msx.native_contract import Snapshot, Exclusion
-from scripts.msx.native_reset import PROGRAM_SHA256
-from scripts.scenes.storage import seal
-from scripts.scenes.bundle import digest
+from src.toolchain.msx.native_compare import compare_series, compare_acquisition
+from src.toolchain.msx.native_contract import Snapshot, Exclusion
+from src.toolchain.msx.native_reset import PROGRAM_SHA256
+from src.toolchain.scenes.storage import seal
+from src.toolchain.scenes.bundle import digest
 
 
 class NativeComparisonTests(unittest.TestCase):
@@ -82,8 +82,8 @@ class NativeComparisonTests(unittest.TestCase):
         # Exercise the pure evidence path without requiring a contributor checkout.
         from unittest.mock import patch
         out = self.root/'report'
-        with patch('scripts.msx.native_compare.destination',return_value=out), \
-             patch('scripts.msx.native_compare.require_ignored'):
+        with patch('src.toolchain.msx.native_compare.destination',return_value=out), \
+             patch('src.toolchain.msx.native_compare.require_ignored'):
             self.assertTrue(compare_acquisition(self.root,b,c,r,out)['state_equivalence'])
         self.assertTrue((out/'manifest.json').is_file())
 

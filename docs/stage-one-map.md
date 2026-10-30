@@ -45,7 +45,7 @@ map-acquisition cache remain intact.
 
 ## Exact reconstruction and native check
 
-[`stage_one.py`](../scripts/msx/stage_one.py) validates the contributor's complete
+[`stage_one.py`](../src/toolchain/msx/stage_one.py) validates the contributor's complete
 supported `nrallyx` ROM set before reading any tables. It reconstructs the
 32x56 layout from the original program's first-stage bitmap and neighbor masks,
 then checks it against untouched first-stage game RAM. Original tile selection
@@ -58,7 +58,7 @@ one lucky L flag, with no rocks. Their positions come from a deterministic fresh
 including the original initialization of object placement. The background does
 not include moving cars, smoke or shadows: those are separate arcade objects.
 
-On first build, [`stage_one_capture.lua`](../scripts/msx/stage_one_capture.lua)
+On first build, [`stage_one_capture.lua`](../src/toolchain/msx/stage_one_capture.lua)
 launches MAME 0.289 with isolated settings, inserts a coin and starts a one-player
 game through real input fields. It captures video RAM and board RAM at frame
 2200. The first-stage snapshot is taken **before** installing a separate RAM
@@ -70,7 +70,7 @@ entire maze and its exterior. All **28,672 tile code/attribute pairs** must matc
 the Python reconstruction, including all ten flags, wall junctions and flowers.
 The check executes the original renderer; it does not merely compare two Python
 implementations of the same formulas. The captured board and generated native
-windows are sealed in `references/stage-one/native-v1/` and verified before reuse.
+windows are sealed in `assets/arcade/native/native-v1/` and verified before reuse.
 This cache is original-derived data and must never be committed.
 
 A fresh acquisition needs the contributor ROMs and MAME 0.289. Builds also need

@@ -4,8 +4,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.msx.native_verify import analyze_fine_clock, analyze_fine_math
-from scripts.msx.native_deadline import deadline_state, analyze_deadline_math, analyze_deadlines
+from src.toolchain.msx.native_verify import analyze_fine_clock, analyze_fine_math
+from src.toolchain.msx.native_deadline import deadline_state, analyze_deadline_math, analyze_deadlines
 
 
 class NativeFineClockTests(unittest.TestCase):

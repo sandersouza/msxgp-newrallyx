@@ -3,9 +3,9 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 from graphics_fixtures import temporary_repo
-from scripts.scenes.storage import publish_bundle
-from scripts.scenes.storage import seal
-from scripts.scenes.bundle import verify_manifest
+from src.toolchain.scenes.storage import publish_bundle
+from src.toolchain.scenes.storage import seal
+from src.toolchain.scenes.bundle import verify_manifest
 
 
 class StorageTests(unittest.TestCase):
