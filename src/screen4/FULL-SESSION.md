@@ -21,8 +21,9 @@ make run-first-stage ENEMIES=3 # Earlier three-enemy benchmark, unchanged
 
 From another directory, use `make -C <intended-checkout> run` so the source/ROM
 selection is explicit.
-The full cartridge is `references/experiments/full-session/fixed-hud.rom`; the
-delivered copy is `outputs/test-roms/newrallyx-screen4-full-game.rom`.
+The default cartridge is `references/experiments/full-session-64k/fixed-hud.rom`;
+the export is `outputs/test-roms/newrallyx-screen4-full-game-64k.rom`.
+`MAPPER=1` selects `full-session/` and the export without `-64k`.
 Each export also creates a byte-identical copy ending in ` [ASCII16].rom`.
 Use that filename when loading through WebMSX AUTO: its
 [documented filename hint](https://github.com/ppeccin/WebMSX/blob/master/doc/README.md#rom-format-or-mapper-type)
@@ -31,8 +32,13 @@ universal internal cartridge signature; preserve the bracketed suffix. The
 canonical ROM/hash and measured cycle budgets are unchanged. Normal, test,
 classic and no-logo exports all include this copy, recorded as `webmsx_rom` in
 their build manifest.
-Use an MSX2+ V9958 with at least 128 KiB mapper RAM; the verified configuration is
-Panasonic FS-A1WSX_NR128 in openMSX 21.0. Real sprite limits remain enabled.
+The default profile uses 64 KiB system RAM; `MAPPER=1` selects the preserved
+version requiring at least 128 KiB mapper RAM. Both require 128 KiB VRAM/V9958,
+ASCII16 and the standard RAM-mapper page interface. Reference machines are stock
+FS-A1FX (64 KiB) and private FS-A1WSX_NR64/NR128 in openMSX 21.0, with real sprite limits.
+See the [profile validation](../../docs/ram-profile-validation.md) for current
+hashes, timing, regression coverage and limits; older timing sections below
+remain historical and retain their original ROM/configuration identities.
 
 Controls: 5 inserts a credit; 1/2 start one/two players. Arrows or joystick 1 steer;
 Space/Ctrl or trigger A release smoke. P pauses, F4 toggles mute, F5 advances a
@@ -61,9 +67,11 @@ See [the HUD module contract](hud/README.md) for include selection, API,
 memory/register ownership, hardware limits and verification. `classic` is the
 preceding RND/gauge appearance, not a second version of the new symmetric
 gauge. Its separate export has the suffix `-hud-classic`. Include selection is
-assembly-time only. Broader modularization is deferred to
-[issue #32](https://github.com/sandersouza/msxgp-newrallyx/issues/32), with a strict
-zero-additional-resource/timing gate; it is not implemented by this delivery.
+assembly-time only. The user subsequently authorized the
+[renderer/session/module extraction](modules/README.md) within issue #36,
+coordinated with [issue #32](https://github.com/sandersouza/msxgp-newrallyx/issues/32).
+Its complete ROM and symbol-map identity gate forbids any new runtime or storage
+cost. This does not establish compatibility with another game's native state.
 
 Cold startup inspects every refresh of the untouched arcade recording, then
 replays71 lossless states on the original timeline (about12.53s, no1.5x speedup).
@@ -172,8 +180,9 @@ Cars are complete; physical eight-sprites-per-line limits may cull whole sprite
 layers when many cars share a line. Final visual/timing acceptance is the user's.
 
 Four native world maps are combined with runtime native flag/stone placement.
-Four additional RAM segments hold the world and normal/S-hidden flag caches.
-The extra S-hidden segment costs 16 KiB; the minimum mapper remains 128 KiB.
+In the preserved `MAPPER=1` profile, four additional RAM segments hold the world
+and normal/S-hidden flag caches; its minimum remains 128 KiB. The default
+64 KiB profile uses the [VRAM/CPU cache layout](../../docs/ram64-variant.md).
 Flag radar dots are built for 64 phases on scene load, then cleared in both
 caches on capture. Capture generations and the blink bit are separate keys,
 avoiding time-based generation wrap. Only actor radar characters change during
@@ -386,7 +395,7 @@ costs include waits/IRQs as documented and are excluded from active FPS.
 
 ROM SHA256:
 `70d6335163a702045b4a6da5cc3ac4eba1dd5e5b48e1aeda3cb628a81887a3c4`.
-The archived ledger is `outputs/full-session/baseline-70d633/cycle-budget.xlsx`, with machine-readable
+The archived workbook is [baseline-70d633/cycle-budget.xlsx](../../docs/measurements/timing/archive/full-session/baseline-70d633/cycle-budget.xlsx), with local machine-readable
 `cycle-ledger.json` and `routines.csv`. Its profile contains 356 intervals, of
 which 246 have active endpoints, three native enemies, no death/bonus and RND4.
 The active duration is8.225605 seconds:29.906615 presented FPS,22.954263ms mean

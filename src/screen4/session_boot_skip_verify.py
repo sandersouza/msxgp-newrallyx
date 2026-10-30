@@ -6,6 +6,8 @@ ROOT=Path(__file__).resolve().parents[2];sys.path.insert(0,str(ROOT))
 from scripts.msx.emulator import reference_machine,tcl
 
 def verify(bundle):
+    from session_reference import configure
+    configure(bundle)
     bundle=Path(bundle).resolve();out=Path(tempfile.mkdtemp(prefix='boot-skip-proof-',dir=bundle))
     shutil.copyfile(bundle/'fixed-hud.rom',out/'measured.rom')
     s={n:int(v,16) for n,v in re.findall(r'(?m)^([\w.]+): EQU 0x([\da-fA-F]+)',(bundle/'lab.sym').read_text())}
@@ -80,4 +82,4 @@ after time 140 {{puts stderr "Boot skip timeout case=$::index PC=[reg PC]";exit 
     (out/'report.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result,indent=2));return result
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session');a=p.parse_args();verify(a.bundle)
+    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session-64k');a=p.parse_args();verify(a.bundle)

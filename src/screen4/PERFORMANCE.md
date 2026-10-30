@@ -11,7 +11,7 @@ graphical reductions in active gameplay.
 `make profile-experiments` now profiles the complete keyboard-only first stage.
 The original camera-only profile below remains available as `profile-hud-lab`.
 The current comparison is recorded in `references/experiments/stage-one/optimization-comparison.json`
-and `outputs/first-stage/cycle-budget.xlsx`, including active-only FPS and tails.
+and `docs/measurements/timing/archive/first-stage/cycle-budget.xlsx`, including active-only FPS and tails.
 See [FIRST-STAGE.md](FIRST-STAGE.md) for scope and remaining limits.
 
 ## Reproduce the free-camera measurements

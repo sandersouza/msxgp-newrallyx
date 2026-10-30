@@ -5,7 +5,15 @@ TEST_MODE ?= 0
 HUD_VARIANT ?= compact
 MSX_LOGO ?= 1
 HARDWARE_CHECK ?= 1
-FULL_SESSION_BUNDLE = references/experiments/full-session$(if $(filter 1,$(TEST_MODE)),-test,)$(if $(filter classic,$(HUD_VARIANT)),-hud-classic,)$(if $(filter 0,$(MSX_LOGO)),-no-logo,)$(if $(filter 0,$(HARDWARE_CHECK)),-no-check,)
+MAPPER ?= 0
+ifneq ($(MAPPER),$(filter 0 1,$(MAPPER)))
+$(error MAPPER must be 0 or 1)
+endif
+ifneq ($(origin RAM_KB),undefined)
+$(error RAM_KB was replaced: use MAPPER=1 for 128 KiB or omit it for 64 KiB)
+endif
+SESSION_RAM_KIB = $(if $(filter 1,$(MAPPER)),128,64)
+FULL_SESSION_BUNDLE = references/experiments/full-session$(if $(filter 1,$(TEST_MODE)),-test,)$(if $(filter classic,$(HUD_VARIANT)),-hud-classic,)$(if $(filter 0,$(MSX_LOGO)),-no-logo,)$(if $(filter 0,$(HARDWARE_CHECK)),-no-check,)$(if $(filter 64,$(SESSION_RAM_KIB)),-64k,)
 
 HUD_HIGH_SCORE ?= 20000
 HUD_SCORE ?= 0
@@ -61,11 +69,14 @@ test-experiments: test-full-session
 
 .PHONY: build-full-session run-full-session test-full-session profile-full-session
 build-full-session: build-audio-reference
-	@NRX_HARDWARE_CHECK="$(HARDWARE_CHECK)" NRX_MSX_LOGO="$(MSX_LOGO)" NRX_HUD_VARIANT="$(HUD_VARIANT)" NRX_TEST_MODE="$(TEST_MODE)" $(PYTHON) -B src/screen4/build.py --full-session
+	@NRX_RAM_KIB="$(SESSION_RAM_KIB)" NRX_HARDWARE_CHECK="$(HARDWARE_CHECK)" NRX_MSX_LOGO="$(MSX_LOGO)" NRX_HUD_VARIANT="$(HUD_VARIANT)" NRX_TEST_MODE="$(TEST_MODE)" $(PYTHON) -B src/screen4/build.py --full-session
 	@$(PYTHON) -B src/screen4/session_build.py --export "$(FULL_SESSION_BUNDLE)"
 
 run-full-session: build-full-session
 	@$(PYTHON) -B scripts/project.py run --rom "$(FULL_SESSION_BUNDLE)/fixed-hud.rom"
+
+run: export NRX_REFERENCE_RAM_KIB = $(if $(or $(filter 1,$(LEGACY)),$(filter 1,$(LATEST)),$(strip $(CHECKPOINT))),128,$(SESSION_RAM_KIB))
+run-full-session test-full-session profile-full-session: export NRX_REFERENCE_RAM_KIB = $(SESSION_RAM_KIB)
 
 test-full-session: build-full-session
 	@$(PYTHON) -B src/screen4/session_boot_module_verify.py --bundle "$(FULL_SESSION_BUNDLE)"
@@ -87,6 +98,16 @@ test-full-session: build-full-session
 profile-full-session: build-full-session
 	@$(PYTHON) -B src/screen4/session_profile.py --bundle "$(FULL_SESSION_BUNDLE)"
 	@$(PYTHON) -B src/screen4/session_report.py --bundle "$(FULL_SESSION_BUNDLE)"
+
+.PHONY: timing-workbook
+timing-workbook:
+	@$(PYTHON) -B src/screen4/session_report.py --bundle "$(FULL_SESSION_BUNDLE)" --out references/experiments/timing-report
+	@node src/screen4/session_workbook.mjs references/experiments/timing-report/cycle-ledger.json references/experiments/timing-workbook docs
+
+MODULE_PROFILE ?= $(if $(filter 1,$(TEST_MODE)),test,$(if $(filter classic,$(HUD_VARIANT)),classic,$(if $(filter 0,$(HARDWARE_CHECK)),no_check,default)))
+.PHONY: verify-module-layout
+verify-module-layout:
+	@$(PYTHON) -B src/screen4/module_contracts.py --profile "$(MODULE_PROFILE)" --bundle "$(patsubst %-64k,%,$(FULL_SESSION_BUNDLE))" --output "$(patsubst %-64k,%,$(FULL_SESSION_BUNDLE))/module-contract-proof.json"
 
 .PHONY: test-performance-adapters
 test-performance-adapters:

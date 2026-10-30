@@ -4,6 +4,8 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 
 def verify(bundle):
+    from session_reference import configure
+    configure(bundle)
     bundle=Path(bundle).resolve()
     meta=json.loads((bundle/'session-boot.json').read_text())
     if meta['enabled']:
@@ -24,4 +26,4 @@ def verify(bundle):
     (bundle/'startup-module-proof.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session');verify(p.parse_args().bundle)
+    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session-64k');verify(p.parse_args().bundle)

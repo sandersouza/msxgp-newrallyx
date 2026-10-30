@@ -36,11 +36,26 @@ def writes(packet):
     assert at+3 == len(packet)
 
 
-def compile_packet(packet, origin, *, back_address=0xc006, packed8=False):
+def compile_packet(packet, origin, *, back_address=0xc006, packed8=False, source_tables=None):
+    """Compile inline literals, or alias byte-verified tables in the same bank.
+
+    source_tables contains (unpacked VDP destination, CPU ROM address, bytes).
+    Alias mode emits exactly the same instructions; only LD HL operands change.
+    """
     code = bytearray((0x0e, 0x98))  # LD C,98; preserved by every transfer.
     sources, relocations = [], []
     prior_page = None
     for destination, data in writes(packet):
+        source = None
+        if source_tables is not None:
+            matches = [(address+destination-base, raw[destination-base:destination-base+len(data)])
+                       for base,address,raw in source_tables
+                       if base <= destination and destination+len(data) <= base+len(raw)]
+            if len(matches) != 1 or matches[0][1] != data:
+                raise ValueError('Transfer does not match exactly one source table')
+            source = matches[0][0]
+            if not 0x8000 <= source or source+len(data) > 0xc000:
+                raise ValueError('Transfer source crosses the mapped ROM page')
         if packed8:
             destination=(destination&0x7ff)|(0x2000 if destination&0x4000 else 0)
         page = destination >> 14
@@ -54,8 +69,9 @@ def compile_packet(packet, origin, *, back_address=0xc006, packed8=False):
         code.extend((0x3e,destination&255,0xd3,0x99))
         code.extend((0x3e,(destination>>8)|0x40))
         code.extend((0xd3,0x99,0xfb,0x21))
-        sources.append((len(code), data))
-        code.extend((0, 0))
+        if source is None:
+            sources.append((len(code), data))
+        code.extend((0, 0) if source is None else source.to_bytes(2,'little'))
         if len(data) <= 15:
             code.extend((0xed, 0xa3)*len(data))
         else:
@@ -70,6 +86,8 @@ def compile_packet(packet, origin, *, back_address=0xc006, packed8=False):
         assert address+len(data) <= 0xc000
         code[at:at+2] = address.to_bytes(2, 'little')
         code.extend(data)
+    if not 0x8000 <= origin or origin+len(code) > 0xc000:
+        raise ValueError('Compiled transfer crosses the mapped ROM page')
     return bytes(code), relocations
 
 

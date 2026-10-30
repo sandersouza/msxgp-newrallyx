@@ -1,8 +1,11 @@
 # Current port architecture
 
 This describes the tree stabilized after PR #33 and the original-wordmark
-restoration in `1695c5a`. It is an ownership map, not a new module API. Include
-extraction and reusable zero-overhead APIs belong to [issue #32](https://github.com/sandersouza/msxgp-newrallyx/issues/32).
+restoration in `1695c5a`, with the subsequent packed cartridge and source-only
+module extraction. The user authorized the module work as a subtask of issue 36,
+coordinated with [issue #32](https://github.com/sandersouza/msxgp-newrallyx/issues/32).
+The [assembly module contracts](../src/screen4/modules/README.md) describe public
+entry points, reuse limits and the mandatory identical-ROM/map gate.
 See [maintenance](maintenance.md) for the file inventory, baseline hashes and
 verification scope. The remaining visual/audio acceptance stays with issue #13.
 
@@ -41,6 +44,11 @@ There is no implicit fallback from missing current sources to historical files.
 Changing only `AUDIO_REFERENCE_REVISION` changes the independent comparison;
 the integration pin also lives in `session_build.py`. Update both deliberately,
 with adapter and gameplay validation, when changing that contract.
+
+The full-session generator now packs transfer code beside its existing graphics
+tables and places cold replay into remaining bank gaps. See the
+[2,048,000-byte cartridge layout and verification](issue36-size-reduction.md)
+for ownership, protected ranges, capacity gates and performance evidence.
 
 `build_profiles.py` verifies cached authored exports against `git archive` and
 rejects local modifications. Its build metadata identifies a manifest-verified
@@ -115,7 +123,7 @@ bank numbers, range ends and optional-module sizes come from each generated
 | Resource | Owner and constraint |
 | --- | --- |
 | ASCII16 ROM | Resident code starts at 4000; worker/resource banks are selected through 7000. `session_build.py` checks 16 KiB page capacity and bank range. Helpers must restore the mapping required by their caller/IRQ. |
-| Page 0 RAM mapper | Session cold code, maps and flag/radar caches use private segments allocated by `GameSession_ColdBoot`. Resident mapping helpers restore the foreground segment before returning. Requires at least 128 KiB mapper RAM. |
+| Page 0 RAM mapper | Session cold code and maps use private segments allocated by `GameSession_ColdBoot`. Resident helpers restore the foreground segment. The default [64 KiB profile](ram64-variant.md) stores immutable radar records in VRAM and keeps eight CPU records; `MAPPER=1` retains separate flag-cache segments and requires at least 128 KiB mapper RAM. |
 | C000 state | Renderer/clock/ring state originates in `lab.asm`; gameplay/session state is declared in `game-core.inc`, `game-main.inc` and `session-resident.inc`. Generated transformations can adjust layout; use the final symbols. |
 | E000 native state | Relocated original seed/game state; boot and round preparation restore it before native execution. |
 | D300 startup scratch | Hardware-check descriptors and transient bitmap state. `GameSession_Boot` clears D300..F2FF before restoring native/audio state. |

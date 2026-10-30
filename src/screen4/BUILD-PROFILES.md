@@ -6,10 +6,11 @@ historical evidence; those branch names are not build prerequisites.
 
 | Command | Cartridge | Scope |
 | --- | --- | --- |
-| `make build` / `make run` | `references/experiments/full-session/fixed-hud.rom` | Current default, optimized SCREEN 4 gameplay with shared SCREEN 5 UI |
-| `make build TEST_MODE=1` / `make run TEST_MODE=1` | `references/experiments/full-session-test/fixed-hud.rom` | Separate Enter/equals developer controls; solid walls |
+| `make build` / `make run` | `references/experiments/full-session-64k/fixed-hud.rom` | Default64 KiB optimized SCREEN4 gameplay with shared SCREEN5 UI; emulator RAM=64 KiB |
+| `make build MAPPER=1` / `make run MAPPER=1` | `references/experiments/full-session/fixed-hud.rom` | Preserved128 KiB mapper-RAM profile; emulator RAM=128 KiB |
+| `make build TEST_MODE=1` / `make run TEST_MODE=1` | `references/experiments/full-session-test-64k/fixed-hud.rom` | Separate Enter/equals developer controls; solid walls; add `MAPPER=1` for128 KiB |
 | `make build LEGACY=1` / `make run LEGACY=1` | `references/build/newrallyx.rom` | Maintained SCREEN 5 presenter built from `src/screen5/`; lowercase `legacy=1` is accepted |
-| `make build-experiments` / `make run-experiments` | `references/experiments/full-session/fixed-hud.rom` | Shared sessions and native round progression with the optimized SCREEN4 presenter |
+| `make build-experiments` / `make run-experiments` | `references/experiments/full-session-64k/fixed-hud.rom` | Aliases of the default 64 KiB full session; `MAPPER=1` selects the 128 KiB counterpart |
 | `make build-audio-reference` / `make run-audio-reference` | `references/experiments/audio-reference/newrallyx-audio.rom` | Independent production SCREEN5 presenter, audio and point inscriptions enabled |
 | `make build-first-stage` / `make run-first-stage` | `references/experiments/stage-one-3-enemies/fixed-hud.rom` | Preserved isolated first-stage performance workload |
 | `make run-hud-lab` | `references/experiments/fixed-hud/fixed-hud.rom` | Earlier free-camera renderer probe |
@@ -27,6 +28,14 @@ contributor inputs are linked locally and private build output stays under
 `references/experiments/`. No ROM is downloaded or added to version control.
 
 ## Shared rules, separate presenters
+
+The [64 KiB profile](../../docs/ram64-variant.md) is the default; `MAPPER=1`
+selects the preserved128 KiB version. The functional64 KiB
+storage adaptation is outside the frozen module-layout profile: do not relabel
+its changed bytes/symbols as a structural-only modularization.
+`make verify-module-layout` checks the frozen128 KiB counterpart, including its
+matching test/classic/hardware-check configuration. Both cartridges use ASCII16.
+The old `RAM_KB` flag is replaced by `MAPPER`; obsolete use fails with guidance.
 
 The optimized build reuses the selected revision's UI, session/turn management,
 four-way input policy, native round/object preparation and PSG worker. Generated
@@ -54,4 +63,6 @@ retains native population progression. Invalid `LEGACY=1 TEST_MODE=1` is rejecte
 
 See [FULL-SESSION.md](FULL-SESSION.md) for coverage, memory requirements, timing
 scope and remaining acceptance. The first-stage workbooks still refer to their
-own cartridge; the integrated ledger is `outputs/full-session/cycle-budget.xlsx`.
+own cartridge; the maintained integrated workbook is [docs/cycle-budget.xlsx](../../docs/cycle-budget.xlsx).
+Update it with `make timing-workbook` after matching timing measurements; older
+workbooks remain under `docs/measurements/timing/archive/`.

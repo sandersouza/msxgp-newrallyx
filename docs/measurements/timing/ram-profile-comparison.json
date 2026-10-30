@@ -1,0 +1,810 @@
+{
+  "cpu_hz": 3579545,
+  "profiles": [
+    {
+      "key": "before64",
+      "label": "64 KiB before",
+      "enemies": 3,
+      "native_round": 5,
+      "scripted_presentations": 360,
+      "mapper_ram_kib": 64,
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "cpu_hz": 3579545,
+      "rom_sha256": "428a775d5edf04dc2b197eb928069c0c11ee6fe64f6017969489fe59fd692235",
+      "rom_bytes": 2048000,
+      "profile_path": "references/issue36/ram-optimization/baseline-64/profile-_x4pjvu7",
+      "summary_sha256": "7e0a24aa6896e76406ca9e5e12805bd990eb2d12c893dc71dee696deda2d6663",
+      "active_frames": 238,
+      "presented_fps": 29.10252671856848,
+      "late_frames": 14,
+      "cadence": {
+        "2": 224,
+        "3": 14
+      },
+      "work": {
+        "min": 61604.0,
+        "mean": 84939.85714285827,
+        "p95": 121446.0000000149,
+        "max": 151219.9999999851
+      }
+    },
+    {
+      "key": "current64",
+      "label": "64 KiB current",
+      "enemies": 3,
+      "native_round": 5,
+      "scripted_presentations": 360,
+      "mapper_ram_kib": 64,
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "cpu_hz": 3579545,
+      "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+      "rom_bytes": 2048000,
+      "profile_path": "references/experiments/full-session-64k/profile-2z1fn1ll",
+      "summary_sha256": "ff5223828201bb9a3e8e3d6af09ab93eef213a0d2dc4349b82d9a6f3c2dc6766",
+      "active_frames": 238,
+      "presented_fps": 29.46772117911465,
+      "late_frames": 8,
+      "cadence": {
+        "2": 230,
+        "3": 8
+      },
+      "work": {
+        "min": 62655.0,
+        "mean": 83783.00000000095,
+        "p95": 115844.0000000298,
+        "max": 149316.0
+      }
+    },
+    {
+      "key": "mapper128",
+      "label": "MAPPER=1",
+      "enemies": 3,
+      "native_round": 5,
+      "scripted_presentations": 360,
+      "mapper_ram_kib": 128,
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "cpu_hz": 3579545,
+      "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "rom_bytes": 2048000,
+      "profile_path": "references/experiments/full-session/profile-nm3wv4sc",
+      "summary_sha256": "292da8172d16789c134ecde3c0d5ca9770cc3c12acc3970810dcdabf2cf161fc",
+      "active_frames": 238,
+      "presented_fps": 29.903148853906842,
+      "late_frames": 1,
+      "cadence": {
+        "2": 237,
+        "3": 1
+      },
+      "work": {
+        "min": 64633.0,
+        "mean": 81013.56302520927,
+        "p95": 109982.9999999851,
+        "max": 127374.9999999851
+      }
+    },
+    {
+      "key": "before64",
+      "label": "64 KiB before",
+      "enemies": 5,
+      "native_round": 10,
+      "scripted_presentations": 240,
+      "mapper_ram_kib": 64,
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "cpu_hz": 3579545,
+      "rom_sha256": "428a775d5edf04dc2b197eb928069c0c11ee6fe64f6017969489fe59fd692235",
+      "rom_bytes": 2048000,
+      "profile_path": "references/issue36/ram-optimization/baseline-64/profile-1qeexxzy",
+      "summary_sha256": "f33e26bdef5c323fc0f4e3b3ce9c50dec59436aec2edbabbd12a2c914bc8d0d2",
+      "active_frames": 236,
+      "presented_fps": 27.67724676382278,
+      "late_frames": 39,
+      "cadence": {
+        "2": 197,
+        "3": 39
+      },
+      "work": {
+        "min": 73309.9999999702,
+        "mean": 99123.16101694877,
+        "p95": 144601.0,
+        "max": 176219.0
+      }
+    },
+    {
+      "key": "current64",
+      "label": "64 KiB current",
+      "enemies": 5,
+      "native_round": 10,
+      "scripted_presentations": 240,
+      "mapper_ram_kib": 64,
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "cpu_hz": 3579545,
+      "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+      "rom_bytes": 2048000,
+      "profile_path": "references/experiments/full-session-64k/profile-16m3vzer",
+      "summary_sha256": "183145701e88464306b7333c081107dbb4a41c5ba9490d887235a755a82d22ef",
+      "active_frames": 236,
+      "presented_fps": 27.84071025113807,
+      "late_frames": 36,
+      "cadence": {
+        "2": 200,
+        "3": 36
+      },
+      "work": {
+        "min": 73127.0,
+        "mean": 98015.96610169517,
+        "p95": 141104.9999999702,
+        "max": 173073.0
+      }
+    },
+    {
+      "key": "mapper128",
+      "label": "MAPPER=1",
+      "enemies": 5,
+      "native_round": 10,
+      "scripted_presentations": 240,
+      "mapper_ram_kib": 128,
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "cpu_hz": 3579545,
+      "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "rom_bytes": 2048000,
+      "profile_path": "references/experiments/full-session/profile-o55p0vey",
+      "summary_sha256": "10571a6266ec2702a0f88b7268096953b6ec3ddd278027afa10239493ed10a7c",
+      "active_frames": 175,
+      "presented_fps": 28.49952709339256,
+      "late_frames": 18,
+      "cadence": {
+        "2": 157,
+        "3": 18
+      },
+      "work": {
+        "min": 72696.0000000298,
+        "mean": 97408.3828571437,
+        "p95": 136726.0000000298,
+        "max": 176782.0
+      }
+    },
+    {
+      "key": "before64",
+      "label": "64 KiB before",
+      "enemies": 6,
+      "native_round": 13,
+      "scripted_presentations": 240,
+      "mapper_ram_kib": 64,
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "cpu_hz": 3579545,
+      "rom_sha256": "428a775d5edf04dc2b197eb928069c0c11ee6fe64f6017969489fe59fd692235",
+      "rom_bytes": 2048000,
+      "profile_path": "references/issue36/ram-optimization/baseline-64/profile-xetd0nsk",
+      "summary_sha256": "1d7cc426a3b3bad68feaa3f2204f490258467a3bf529931dedf92043a1e8539c",
+      "active_frames": 150,
+      "presented_fps": 26.592934780536073,
+      "late_frames": 38,
+      "cadence": {
+        "2": 112,
+        "3": 38
+      },
+      "work": {
+        "min": 77352.0,
+        "mean": 105321.71333333134,
+        "p95": 159772.9999999702,
+        "max": 172666.9999999404
+      }
+    },
+    {
+      "key": "current64",
+      "label": "64 KiB current",
+      "enemies": 6,
+      "native_round": 13,
+      "scripted_presentations": 240,
+      "mapper_ram_kib": 64,
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "cpu_hz": 3579545,
+      "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+      "rom_bytes": 2048000,
+      "profile_path": "references/experiments/full-session-64k/profile-l8fd8uh3",
+      "summary_sha256": "77beb83baeaa8bfd9d908d77ff871aa028253d537b18efad5f8d08a166960035",
+      "active_frames": 152,
+      "presented_fps": 26.79271123559763,
+      "late_frames": 36,
+      "cadence": {
+        "2": 116,
+        "3": 36
+      },
+      "work": {
+        "min": 77233.0,
+        "mean": 103945.8947368425,
+        "p95": 154961.0,
+        "max": 178813.0000000298
+      }
+    },
+    {
+      "key": "mapper128",
+      "label": "MAPPER=1",
+      "enemies": 6,
+      "native_round": 13,
+      "scripted_presentations": 240,
+      "mapper_ram_kib": 128,
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "cpu_hz": 3579545,
+      "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "rom_bytes": 2048000,
+      "profile_path": "references/experiments/full-session/profile-eqexxlfc",
+      "summary_sha256": "a640e41be1724ad796bdb6b43ae02a89aaeed7862b2dbc37af94329b06d605b0",
+      "active_frames": 156,
+      "presented_fps": 27.66051271478841,
+      "late_frames": 26,
+      "cadence": {
+        "2": 130,
+        "3": 26
+      },
+      "work": {
+        "min": 77267.0000000298,
+        "mean": 101234.69230769403,
+        "p95": 151450.0,
+        "max": 174410.0
+      }
+    }
+  ],
+  "component_comparisons": [
+    {
+      "name": "Cache cold path",
+      "before_cycles": 11727.93263244623,
+      "after_cycles": 10272.461242675561,
+      "scope": "Mean non-overlapping fixture stub; CALL/RET, IRQ and common setup included. Not active-frame cost."
+    },
+    {
+      "name": "Cache reload",
+      "before_cycles": 8576.411231994844,
+      "after_cycles": 6480.798820495753,
+      "scope": "Mean non-overlapping fixture stub; CALL/RET, IRQ and common setup included. Not active-frame cost."
+    },
+    {
+      "name": "Cache warm path",
+      "before_cycles": 4242.7524261473045,
+      "after_cycles": 4151.531600952221,
+      "scope": "Mean non-overlapping fixture stub; CALL/RET, IRQ and common setup included. Not active-frame cost."
+    },
+    {
+      "name": "Cache cold prewarm",
+      "before_cycles": 2730364.999999998,
+      "after_cycles": 2730813.000000003,
+      "scope": "Mean non-overlapping fixture stub; CALL/RET, IRQ and common setup included. Not active-frame cost."
+    },
+    {
+      "name": "Motion snapshot (risk=8)",
+      "before_cycles": 1141.000000000003,
+      "after_cycles": 919.9999999999944,
+      "scope": "Common risk=8 path, actual entry-through-RET, IRQ disabled; exact44 bytes and ABI checked."
+    },
+    {
+      "name": "Motion restore (risk=8)",
+      "before_cycles": 1269.000000000004,
+      "after_cycles": 1047.9999999999955,
+      "scope": "Common risk=8 path, actual entry-through-RET, IRQ disabled; exact44 bytes and ABI checked."
+    },
+    {
+      "name": "Actor/flag glyph clone",
+      "before_cycles": 987.0000000000111,
+      "after_cycles": 470.000000000029,
+      "scope": "Actual entry-through-RET, IRQ disabled;640 source/record/actor cases, complete buffers/stack/index registers checked. No frame-frequency claim."
+    }
+  ],
+  "component_baseline": {
+    "passed": true,
+    "states": 262144,
+    "phases": 64,
+    "masks": 1024,
+    "blink_states": 2,
+    "cache_paths": [
+      "cold",
+      "warm after native RemoveFlag"
+    ],
+    "layout": "scattered",
+    "rom_sha256": "428a775d5edf04dc2b197eb928069c0c11ee6fe64f6017969489fe59fd692235",
+    "baseline": null,
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/issue36/ram-optimization/baseline-64/flag-cache-scattered-up985dui",
+    "scope": "Explicit synthetic position/mask fixtures. Active name program, every used glyph byte and all1024 name RAM bytes compared; strict real VDP callback. Not natural gameplay or physical hardware.",
+    "costs": {
+      "init": {
+        "calls": 1,
+        "min": 2730364.999999998,
+        "mean": 2730364.999999998,
+        "p95": 2730364.999999998,
+        "max": 2730364.999999998
+      },
+      "cold": {
+        "calls": 131072,
+        "min": 10931.999999722226,
+        "mean": 11727.93263244623,
+        "p95": 12106.000000218091,
+        "max": 12646.000000161934
+      },
+      "reload": {
+        "calls": 131072,
+        "min": 8485.999999810807,
+        "mean": 8576.411231994844,
+        "p95": 8809.999999980586,
+        "max": 8810.00000018406
+      },
+      "warm": {
+        "calls": 131072,
+        "min": 759.9999998606745,
+        "mean": 4242.7524261473045,
+        "p95": 6295.9999999820375,
+        "max": 7908.00000003671
+      }
+    },
+    "cost_scope": "Guest elapsed inclusive cycles for each non-overlapping fixture stub, including CALL/RET/IRQ and common setup; init is a cold64-phase build. These controlled component fixtures are not active-frame costs."
+  },
+  "component_current": {
+    "passed": true,
+    "states": 262144,
+    "phases": 64,
+    "masks": 1024,
+    "blink_states": 2,
+    "cache_paths": [
+      "cold",
+      "warm after native RemoveFlag"
+    ],
+    "layout": "scattered",
+    "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+    "baseline": "references/issue36/ram-optimization/baseline-64/flag-cache-scattered-pbuozkzr",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/flag-cache-scattered-6c9undrm",
+    "scope": "Explicit synthetic position/mask fixtures. Active name program, every used glyph byte and all1024 name RAM bytes compared; strict real VDP callback. Not natural gameplay or physical hardware.",
+    "costs": {
+      "init": {
+        "calls": 1,
+        "min": 2730813.000000003,
+        "mean": 2730813.000000003,
+        "p95": 2730813.000000003,
+        "max": 2730813.000000003
+      },
+      "cold": {
+        "calls": 131072,
+        "min": 8844.999999856369,
+        "mean": 10272.461242675561,
+        "p95": 10664.99999990825,
+        "max": 11138.000000258471
+      },
+      "reload": {
+        "calls": 131072,
+        "min": 6398.99999994495,
+        "mean": 6480.798820495753,
+        "p95": 6719.99999975331,
+        "max": 6720.000000160257
+      },
+      "warm": {
+        "calls": 131072,
+        "min": 573.9999998348014,
+        "mean": 4151.531600952221,
+        "p95": 6261.999999989342,
+        "max": 7912.000000382952
+      }
+    },
+    "cost_scope": "Guest elapsed inclusive cycles for each non-overlapping fixture stub, including CALL/RET/IRQ and common setup; init is a cold64-phase build. These controlled component fixtures are not active-frame costs."
+  },
+  "cache_clustered": {
+    "passed": true,
+    "states": 262144,
+    "phases": 64,
+    "masks": 1024,
+    "blink_states": 2,
+    "cache_paths": [
+      "cold",
+      "warm after native RemoveFlag"
+    ],
+    "layout": "clustered",
+    "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+    "baseline": "references/issue36/ram-optimization/baseline-64/flag-cache-clustered-8o7i9mqx",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/flag-cache-clustered-9kcx4ivr",
+    "scope": "Explicit synthetic position/mask fixtures. Active name program, every used glyph byte and all1024 name RAM bytes compared; strict real VDP callback. Not natural gameplay or physical hardware.",
+    "costs": {
+      "init": {
+        "calls": 1,
+        "min": 2230845.000000006,
+        "mean": 2230845.000000006,
+        "p95": 2230845.000000006,
+        "max": 2230845.000000006
+      },
+      "cold": {
+        "calls": 131072,
+        "min": 8668.999999882208,
+        "mean": 10118.011924743398,
+        "p95": 10489.000000035825,
+        "max": 11006.000000023509
+      },
+      "reload": {
+        "calls": 131072,
+        "min": 6222.999999767316,
+        "mean": 6326.245223999095,
+        "p95": 6543.999999982623,
+        "max": 6588.000000128768
+      },
+      "warm": {
+        "calls": 131072,
+        "min": 397.9999996571672,
+        "mean": 3996.974937439146,
+        "p95": 6086.000000015181,
+        "max": 7753.000000049061
+      }
+    },
+    "cost_scope": "Guest elapsed inclusive cycles for each non-overlapping fixture stub, including CALL/RET/IRQ and common setup; init is a cold64-phase build. These controlled component fixtures are not active-frame costs."
+  },
+  "motion_baseline": {
+    "passed": false,
+    "cases": 9604,
+    "unprotected_reachable_corners": 1920,
+    "counterexamples": [
+      [
+        -7.0,
+        -24.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        -6.0,
+        -24.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        -5.0,
+        -24.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        -4.0,
+        -24.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        -3.0,
+        -24.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        -2.0,
+        -24.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        2.0,
+        -24.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        3.0,
+        -24.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "rom_sha256": "428a775d5edf04dc2b197eb928069c0c11ee6fe64f6017969489fe59fd692235",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/issue36/ram-optimization/baseline-64/motion-predicate-yyp5icr7",
+    "bounded_contact_margin_units": 6,
+    "axes": 2,
+    "costs": {
+      "0": {
+        "calls": 2490,
+        "mean": 120.73895582334626,
+        "max": 160.00000000078776
+      },
+      "1": {
+        "calls": 7114,
+        "mean": 1171.2243463592904,
+        "max": 1244.000000005807
+      }
+    },
+    "shared_risk_snapshot_mean": 1141.000000000003,
+    "restore": {
+      "cases": 7114,
+      "shared_risk_mean": 1269.000000000004,
+      "bytes_heading_velocity_counter_checked": true
+    },
+    "scope": "Actual ROM SaveMotion/RestoreMotion entry-through-RET, IRQ disabled; synthetic signed fine coordinates/risk flags. All44 snapshot/restore bytes, preserved new heading/velocity/centering, counter wrap, SP, BC and IX/IY checked. Component safety/cost, not presented FPS."
+  },
+  "motion_current": {
+    "passed": true,
+    "cases": 9604,
+    "unprotected_reachable_corners": 0,
+    "counterexamples": [],
+    "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/motion-predicate-fmaw3hgy",
+    "bounded_contact_margin_units": 6,
+    "axes": 2,
+    "costs": {
+      "0": {
+        "calls": 570,
+        "mean": 123.05964912266772,
+        "max": 160.00000000078776
+      },
+      "1": {
+        "calls": 9034,
+        "mean": 963.5660836836812,
+        "max": 1023.0000000024138
+      }
+    },
+    "shared_risk_snapshot_mean": 919.9999999999944,
+    "restore": {
+      "cases": 9034,
+      "shared_risk_mean": 1047.9999999999955,
+      "bytes_heading_velocity_counter_checked": true
+    },
+    "scope": "Actual ROM SaveMotion/RestoreMotion entry-through-RET, IRQ disabled; synthetic signed fine coordinates/risk flags. All44 snapshot/restore bytes, preserved new heading/velocity/centering, counter wrap, SP, BC and IX/IY checked. Component safety/cost, not presented FPS."
+  },
+  "scope": "Emulator workload comparison; timing changes trajectories and active/death partitions. Native population asserted, never overridden; real sprite limits, HUD and audio enabled. Inclusive costs overlap; components are separate synthetic fixtures. No physical hardware, full-course or human-audio acceptance.",
+  "tail_analysis": {
+    "rows": [
+      {
+        "profile": "before64",
+        "peak_frame": {
+          "frame": 76,
+          "cycles": 180758.9999999702,
+          "cx": 331,
+          "cy": 823,
+          "elapsed_ticks": 3,
+          "Game_Prepare": 73547.0,
+          "render": 94912.0000000298,
+          "wait_blank": 8092.000000029802,
+          "commit": 4102.0,
+          "start_x": 323,
+          "start_y": 824,
+          "command": "continuous",
+          "speed": 0,
+          "active_gameplay": true,
+          "loop_overhead": 105.99999991059303,
+          "standalone_hook_cycles": 0,
+          "untracked_loop_overhead": 105.99999991059303,
+          "work": 172666.9999999404,
+          "dx": 8,
+          "dy": -1,
+          "phase_x": 3,
+          "phase_y": 7,
+          "tile_crossing": true,
+          "Ring_Prepare_cycles": 18586.0,
+          "Ring_Prepare_calls": 1,
+          "hud_upload_cycles": 11491.0,
+          "hud_upload_calls": 1,
+          "Ring_UploadNames_cycles": 20438.0,
+          "Ring_UploadNames_calls": 1,
+          "Ring_LoadColumns_cycles": 0,
+          "Ring_LoadColumns_calls": 0,
+          "Ring_UploadColumn_cycles": 0,
+          "Ring_UploadColumn_calls": 0,
+          "Ring_UploadRow_cycles": 0,
+          "Ring_UploadRow_calls": 0
+        },
+        "frame14": {
+          "frame": 14,
+          "cycles": 179208.9999999702,
+          "cx": 292,
+          "cy": 1067,
+          "elapsed_ticks": 3,
+          "Game_Prepare": 98577.0,
+          "render": 33452.0000000298,
+          "wait_blank": 42972.0,
+          "commit": 4102.0,
+          "start_x": 292,
+          "start_y": 1071,
+          "command": "continuous",
+          "speed": 0,
+          "active_gameplay": true,
+          "loop_overhead": 105.99999994039536,
+          "standalone_hook_cycles": 0,
+          "untracked_loop_overhead": 105.99999994039536,
+          "work": 136236.9999999702,
+          "dx": 0,
+          "dy": -4,
+          "phase_x": 4,
+          "phase_y": 3,
+          "tile_crossing": false,
+          "Ring_Prepare_cycles": 211.99999997019768,
+          "Ring_Prepare_calls": 1,
+          "hud_upload_cycles": 355.9999999701977,
+          "hud_upload_calls": 1,
+          "Ring_UploadNames_cycles": 14500.0,
+          "Ring_UploadNames_calls": 1,
+          "Ring_LoadColumns_cycles": 0,
+          "Ring_LoadColumns_calls": 0,
+          "Ring_UploadColumn_cycles": 0,
+          "Ring_UploadColumn_calls": 0,
+          "Ring_UploadRow_cycles": 0,
+          "Ring_UploadRow_calls": 0
+        }
+      },
+      {
+        "profile": "current64",
+        "peak_frame": {
+          "frame": 14,
+          "cycles": 179210.0,
+          "cx": 292,
+          "cy": 1071,
+          "elapsed_ticks": 3,
+          "Game_Prepare": 107066.9999999702,
+          "render": 67538.0,
+          "wait_blank": 396.9999999701977,
+          "commit": 4102.0,
+          "start_x": 292,
+          "start_y": 1079,
+          "command": "continuous",
+          "speed": 0,
+          "active_gameplay": true,
+          "loop_overhead": 106.00000005960464,
+          "standalone_hook_cycles": 0,
+          "untracked_loop_overhead": 106.00000005960464,
+          "work": 178813.0000000298,
+          "dx": 0,
+          "dy": -8,
+          "phase_x": 4,
+          "phase_y": 7,
+          "tile_crossing": true,
+          "Ring_Prepare_cycles": 11005.0,
+          "Ring_Prepare_calls": 1,
+          "hud_upload_cycles": 9923.0,
+          "hud_upload_calls": 1,
+          "Ring_UploadNames_cycles": 16127.000000029802,
+          "Ring_UploadNames_calls": 1,
+          "Ring_LoadColumns_cycles": 0,
+          "Ring_LoadColumns_calls": 0,
+          "Ring_UploadColumn_cycles": 0,
+          "Ring_UploadColumn_calls": 0,
+          "Ring_UploadRow_cycles": 0,
+          "Ring_UploadRow_calls": 0
+        },
+        "frame14": {
+          "frame": 14,
+          "cycles": 179210.0,
+          "cx": 292,
+          "cy": 1071,
+          "elapsed_ticks": 3,
+          "Game_Prepare": 107066.9999999702,
+          "render": 67538.0,
+          "wait_blank": 396.9999999701977,
+          "commit": 4102.0,
+          "start_x": 292,
+          "start_y": 1079,
+          "command": "continuous",
+          "speed": 0,
+          "active_gameplay": true,
+          "loop_overhead": 106.00000005960464,
+          "standalone_hook_cycles": 0,
+          "untracked_loop_overhead": 106.00000005960464,
+          "work": 178813.0000000298,
+          "dx": 0,
+          "dy": -8,
+          "phase_x": 4,
+          "phase_y": 7,
+          "tile_crossing": true,
+          "Ring_Prepare_cycles": 11005.0,
+          "Ring_Prepare_calls": 1,
+          "hud_upload_cycles": 9923.0,
+          "hud_upload_calls": 1,
+          "Ring_UploadNames_cycles": 16127.000000029802,
+          "Ring_UploadNames_calls": 1,
+          "Ring_LoadColumns_cycles": 0,
+          "Ring_LoadColumns_calls": 0,
+          "Ring_UploadColumn_cycles": 0,
+          "Ring_UploadColumn_calls": 0,
+          "Ring_UploadRow_cycles": 0,
+          "Ring_UploadRow_calls": 0
+        }
+      },
+      {
+        "profile": "mapper128",
+        "peak_frame": {
+          "frame": 14,
+          "cycles": 179207.0,
+          "cx": 292,
+          "cy": 1071,
+          "elapsed_ticks": 3,
+          "Game_Prepare": 107067.0000000298,
+          "render": 63134.9999999702,
+          "wait_blank": 4797.0,
+          "commit": 4102.0,
+          "start_x": 292,
+          "start_y": 1079,
+          "command": "continuous",
+          "speed": 0,
+          "active_gameplay": true,
+          "loop_overhead": 106.0,
+          "standalone_hook_cycles": 0,
+          "untracked_loop_overhead": 106.0,
+          "work": 174410.0,
+          "dx": 0,
+          "dy": -8,
+          "phase_x": 4,
+          "phase_y": 7,
+          "tile_crossing": true,
+          "Ring_Prepare_cycles": 11005.0,
+          "Ring_Prepare_calls": 1,
+          "hud_upload_cycles": 9923.0,
+          "hud_upload_calls": 1,
+          "Ring_UploadNames_cycles": 16127.0,
+          "Ring_UploadNames_calls": 1,
+          "Ring_LoadColumns_cycles": 0,
+          "Ring_LoadColumns_calls": 0,
+          "Ring_UploadColumn_cycles": 0,
+          "Ring_UploadColumn_calls": 0,
+          "Ring_UploadRow_cycles": 0,
+          "Ring_UploadRow_calls": 0
+        },
+        "frame14": {
+          "frame": 14,
+          "cycles": 179207.0,
+          "cx": 292,
+          "cy": 1071,
+          "elapsed_ticks": 3,
+          "Game_Prepare": 107067.0000000298,
+          "render": 63134.9999999702,
+          "wait_blank": 4797.0,
+          "commit": 4102.0,
+          "start_x": 292,
+          "start_y": 1079,
+          "command": "continuous",
+          "speed": 0,
+          "active_gameplay": true,
+          "loop_overhead": 106.0,
+          "standalone_hook_cycles": 0,
+          "untracked_loop_overhead": 106.0,
+          "work": 174410.0,
+          "dx": 0,
+          "dy": -8,
+          "phase_x": 4,
+          "phase_y": 7,
+          "tile_crossing": true,
+          "Ring_Prepare_cycles": 11005.0,
+          "Ring_Prepare_calls": 1,
+          "hud_upload_cycles": 9923.0,
+          "hud_upload_calls": 1,
+          "Ring_UploadNames_cycles": 16127.0,
+          "Ring_UploadNames_calls": 1,
+          "Ring_LoadColumns_cycles": 0,
+          "Ring_LoadColumns_calls": 0,
+          "Ring_UploadColumn_cycles": 0,
+          "Ring_UploadColumn_calls": 0,
+          "Ring_UploadRow_cycles": 0,
+          "Ring_UploadRow_calls": 0
+        }
+      }
+    ],
+    "scope": "Six-enemy current peak: large dirty-sprite preparation; current64 and mapper128 share the same107067-cycle Game_Prepare span and pose. Prior64 has a different pose/step. Current maximum work is higher than prior64 despite improved mean/p95/FPS; all samples use only two/three-refresh intervals. No universal tail improvement claim."
+  },
+  "provenance_note": "For the retained five/six-enemy captures, the generic archived limitations sentence still says three enemies. The actual generated Tcl guard, profile_enemy_count, profile_native_round and workload identify and assert the real five/six-enemy population. The future generator label is corrected; retained captures are not rewritten.",
+  "clone_baseline": {
+    "passed": true,
+    "cases": 640,
+    "rom_sha256": "428a775d5edf04dc2b197eb928069c0c11ee6fe64f6017969489fe59fd692235",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/issue36/ram-optimization/baseline-64/flag-clone-hakyg1og",
+    "cycles": {
+      "mean": 987.0000000000111,
+      "min": 986.9999999892016,
+      "max": 987.0000000019187
+    },
+    "scope": "Actual CloneFlag entry-through-RET, IRQ disabled; eight CPU records x ten source glyphs x eight actor slots. Complete destination512 bytes, unchanged source2048 bytes, SP and IX/IY verified. AF/BC/DE/HL are caller-clobbered; the real caller restores BC. Synthetic data, not active FPS."
+  },
+  "clone_current": {
+    "passed": true,
+    "cases": 640,
+    "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+    "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/flag-clone-tj559ef4",
+    "cycles": {
+      "mean": 470.000000000029,
+      "min": 469.99999998880213,
+      "max": 470.00000000151925
+    },
+    "scope": "Actual CloneFlag entry-through-RET, IRQ disabled; eight CPU records x ten source glyphs x eight actor slots. Complete destination512 bytes, unchanged source2048 bytes, SP and IX/IY verified. AF/BC/DE/HL are caller-clobbered; the real caller restores BC. Synthetic data, not active FPS."
+  }
+}

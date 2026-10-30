@@ -19,6 +19,7 @@ After supplying the ROM/BIOS/assets below, run commands from the intended checko
 | Command | Selection |
 | --- | --- |
 | `make build` / `make run` | Default integrated SCREEN 4 gameplay, SCREEN 5 menus, HUD and PSG enabled |
+| `make build MAPPER=1` / `make run MAPPER=1` | Preserved128 KiB mapper-RAM cartridge; run selects128 KiB emulator RAM |
 | `make build TEST_MODE=1` / `make run TEST_MODE=1` | Separate optimized test ROM; Enter advances a round, equals toggles collision invulnerability; walls remain solid |
 | `make build LEGACY=1` / `make run LEGACY=1` | Maintained SCREEN 5 sprite-HUD/PSG build; `legacy=1` is an alias |
 | `make run ROM=<path>` | Existing cartridge, no rebuild |
@@ -32,8 +33,9 @@ progression; `ENEMIES=3` selects the earlier first-stage benchmark, not a comple
 session population override. `make run-experiments` remains a default-presenter
 alias; see [all build profiles](../src/screen4/BUILD-PROFILES.md).
 
-The optimized artifact is `references/experiments/full-session/fixed-hud.rom`
-(or `full-session-test/` for test mode). Exports in `outputs/test-roms/` include
+The default optimized artifact is `references/experiments/full-session-64k/fixed-hud.rom`
+(or `full-session-test-64k/` for test mode). `MAPPER=1` selects `full-session/`
+or `full-session-test/`. Exports in `outputs/test-roms/` include
 an identical copy ending in ` [ASCII16].rom`; retain that filename hint when
 loading through WebMSX AUTO, or explicitly select ASCII16. Export manifests
 record both names and the SHA-256. Legacy builds publish
@@ -50,11 +52,21 @@ inputs only; setup does not obtain game ROMs or BIOS.
 
 ## macOS prerequisites
 
-The port's emulator reference requires at least **128 KB RAM mapper and 128 KB
-VRAM**. Run and verification scripts derive a private FS-A1WSX machine with a
-128 KB main mapper inside each session's ignored output directory. They do not
-edit the installed openMSX machine XML or global settings. Other selected machine
-profiles must also provide a mapper of at least 128 KB.
+The default requires **64 KiB system RAM and128 KiB VRAM**; `MAPPER=1` requires
+**at least128 KiB mapper RAM**. Run and verification tools use private FS-A1WSX
+definitions with exactly the selected capacity. Installed machine XML/global
+settings stay untouched. Probes bind RAM capacity to `session-build.json` and
+reject conflicting overrides, so a64 KiB claim cannot silently use128 KiB.
+
+Both profiles require the standard RAM-mapper page interface; the64 KiB profile
+is verified on stock Panasonic FS-A1FX and a private64 KiB FS-A1WSX. ASCII16
+cartridge Flash does not add system RAM. The [original start failure](fs-a1fx-ram-start.md)
+describes the unchanged128 KiB image on an unexpanded machine.
+
+The default export is `outputs/test-roms/newrallyx-screen4-full-game-64k.rom`;
+`MAPPER=1` exports `newrallyx-screen4-full-game.rom`. Both use ASCII16 and128 KiB
+VRAM. Set `NRX_REFERENCE_MACHINE=Panasonic_FS-A1FX` to use the stock FX definition
+with the default64 KiB build. See the [profile validation](ram-profile-validation.md).
 
 Use a native Apple Silicon or Intel terminal and stock Bash 3.2 or newer. Install
 [Xcode Command Line Tools](https://developer.apple.com/xcode/resources/) manually
@@ -216,10 +228,11 @@ OS/architecture. C/SDCC compilation is not required for this Z80 Assembly workfl
 
 ## Machine and contributor-supplied BIOS
 
-Local validation uses openMSX **21.0**, a session-local `Panasonic_FS-A1WSX_NR128`
-configuration, V9958 with 128 KB VRAM and a 128 KB main RAM mapper. The launcher
-derives this configuration from `Panasonic_FS-A1WSX`; the standard 64 KB machine
-does not meet the established loader's mapper requirement. The launcher follows
+Local validation uses openMSX **21.0**, session-local `Panasonic_FS-A1WSX_NR64`
+and `Panasonic_FS-A1WSX_NR128` configurations, V9958 with 128 KiB VRAM and the
+selected 64/128 KiB main RAM mapper. The launcher derives these configurations
+from `Panasonic_FS-A1WSX`; the stock FS-A1FX is also checked for the 64 KiB build.
+The launcher follows
 the machine's CPU clock, sets emulator speed 100%, firmware off and a 212-line
 display. The full game detects factory Panasonic turbo and uses **5,369,318 Hz
 for pure CPU work, 3,579,545 Hz for VDP access and raster IRQs**. Unsupported

@@ -44,7 +44,7 @@ class MapperReferenceTests(unittest.TestCase):
     def test_other_machine_with_small_mapper_is_rejected(self):
         result,generated=self.run_helper('OtherMachine',65536,'<msxconfig/>')
         self.assertEqual(result.returncode,2)
-        self.assertIn('requires at least 128 KB',result.stderr)
+        self.assertIn('requires at least 128 KiB',result.stderr)
         self.assertIsNone(generated)
 
     def test_unrecognized_machine_xml_is_rejected(self):

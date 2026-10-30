@@ -1,7 +1,21 @@
+[![Buy me a coffee!](docs/bymeacoffee.png)](https://link.mercadopago.com.br/buymecoke)
+
+**Help bring more projects to the community.** This is a passion project with
+no profit motive, no sponsors and no outside funding so far. Every piece of
+equipment, all materials and every hour of development have been paid for or
+contributed personally, without reimbursement.
+
+Your contribution helps sustain New Rally-X for MSX2+ and makes room for new
+projects, with the code always freely available to the community. More financial
+support means more resources and time to build, test and share. If you enjoy
+this work and want to see more of it, please consider buying me a coffee.
+Every contribution helps keep these projects moving. Thank you for being part
+of what comes next!
+
 # New Rally-X for MSX2+
 ![](docs/image03.png)
 
-A work-in-progress port of the New Rally-X arcade game to MSX2+, focused on
+MSX2+ port of the New Rally-X arcade game, focused on
 preserving the original graphics and core game rules within a measured MSX timing budget.
 
 The repository provides environment setup, original-graphics tools and a
@@ -9,8 +23,10 @@ default SCREEN 4 presenter integrating the original Z80 gameplay routines with
 dynamic rounds, enemies, smoke, PSG audio and one/two-player sessions. The earlier
 SCREEN 5 presenter with sprite HUD remains available as an independent build.
 
-The port targets **at least 128 KB of RAM mapper and 128 KB VRAM**. The openMSX
-launchers use a session-local FS-A1WSX configuration with a 128 KB main mapper.
+The default port targets **64 KiB system RAM and 128 KiB VRAM**. Use `MAPPER=1`
+for the preserved version requiring at least 128 KiB mapper RAM. The openMSX
+launcher configures the selected RAM capacity in a private FS-A1WSX definition,
+with cartridge type ASCII16.
 See the [current architecture](docs/architecture.md) for source ownership and
 [maintenance guide](docs/maintenance.md) for dependency/retention decisions,
 baseline ROM hashes and cycle-ledger reproduction.
@@ -34,6 +50,7 @@ baseline ROM hashes and cycle-ledger reproduction.
 ```sh
 make run                     # optimized SCREEN 4, HUD enabled
 make run TEST_MODE=1         # Enter: next round; =: toggle invulnerability
+make run MAPPER=1            # preserved 128 KiB mapper-RAM profile
 make run LEGACY=1            # original SCREEN 5 / sprite HUD / PSG baseline
 ```
 
@@ -41,11 +58,17 @@ The lowercase spelling `legacy=1` is also accepted. Test mode keeps walls solid;
 it prevents collision deaths and advances rounds without the fuel bonus. It is
 an optimized-presenter option; it is not added to the preserved legacy build.
 `make build` uses the same selection without opening the emulator.
-The optimized ROM is `references/experiments/full-session/fixed-hud.rom`, or
-`full-session-test/fixed-hud.rom` with test mode. The legacy ROM remains
+The default ROM is `references/experiments/full-session-64k/fixed-hud.rom`, or
+`full-session-test-64k/fixed-hud.rom` with test mode. `MAPPER=1` selects the same
+bundle names without `-64k`. The legacy ROM remains
 `references/build/newrallyx.rom`. Unqualified `make run` rebuilds before launch;
 an explicit `ROM=...`, `CHECKPOINT=...` or `LATEST=1` selects an existing artifact.
 `make run-experiments` remains an alias for the optimized build.
+
+The default selects the [64 KiB profile](docs/ram64-variant.md). `MAPPER=1`
+selects the 128 KiB version for both build and emulator. `TEST_MODE=1` combines
+with either profile. Both retain the same graphics, 128 KiB VRAM and ASCII16
+cartridge requirements. See the [validation and timing audit](docs/ram-profile-validation.md).
 
 Original game ROMs and MSX BIOS must be supplied locally as described in
 [setup](docs/setup.md). The original 56x8 `namco` title artwork is extracted from

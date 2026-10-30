@@ -1,0 +1,68 @@
+{
+  "issue": 36,
+  "date": "2026-10-29",
+  "user_report": "Panasonic FS-FX, original RAM without expansion, RBSC MultiMapper v3.0 selected ASCII16; title/coin work, start turns black and stops.",
+  "machine_model_tested": "Panasonic_FS-A1FX",
+  "machine_definition_sha256": "d609dbded6c34401ca545c46f43a075713dfbeefa96bb29ca00ee72e94fd1389",
+  "machine_definition_source": "https://raw.githubusercontent.com/openMSX/openMSX/master/share/machines/Panasonic_FS-A1FX.xml",
+  "bios_inventory_sha256": {
+    "fs-a1fx_EPROM.rom": "61d42e32586c316627170cb78797ddad6ffdc7f13c1b6a33b49a60fe7fde57de",
+    "fs-a1fx_basic-bios2p.rom": "ca45b50d49a8199a2b8f74300556367a776df1bb28bf8af24d33e65f0fe37a99",
+    "fs-a1fx_cockpit.rom": "04c4c9019c1a2799fb58128041b33fb9fecfd29cea39788bec3f8044d5eea884",
+    "fs-a1fx_disk.rom": "445e39b2d8644885d9b8ce79566ad3678b60c35e00fb1d6a1c65495aa15a8f73",
+    "fs-a1fx_kanjibasic.rom": "01f43988d825d48a46915199b6cd42ae1505bdf83d642511204c50ecdf95c741",
+    "fs-a1fx_kanjifont.rom": "5b72a604bb8a1dfdd13b042c5ef3aa41333f032ea1b79d1aab984eb0c312bd94",
+    "fs-a1fx_msx2psub.rom": "36000685128f95ff515a128973f8d439116c1a1a8e38c1777293a428894434a2"
+  },
+  "rom_bytes": 2048000,
+  "minimum_mapper_ram_kib": 128,
+  "vram_kib": 128,
+  "cpu_hz": 3579545,
+  "mapper": "ASCII16",
+  "cases": [
+    {
+      "machine": "Panasonic_FS-A1FX",
+      "ram_kib": 64,
+      "start_passed": false,
+      "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "snapshots": [
+        "cast",
+        "intro",
+        "select"
+      ],
+      "trace": [
+        "ROUND_LOAD main=5 map0=0 map1=1 flag=2 hidden=3 page0=253 page3=252 SP=62332",
+        "RAM_ALIAS_IRQ_VECTOR_OVERWRITE logical=0x1000 aliases=0xD000 page0=252 page3=252 value=6 PC=31996 SP=62326",
+        "Session timeout phase=start PC=56 SP=52682 state=255 ready=255"
+      ],
+      "scope": "Real keymatrix coin/start/arrows/Space; no guest RAM/code/register injection. Native FS-A1FX definition; 128 KiB variant changes only mapper capacity/readback bits. Existing start harness with read-only trace breakpoints."
+    },
+    {
+      "machine": "Panasonic_FS-A1FX",
+      "ram_kib": 128,
+      "start_passed": true,
+      "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "snapshots": [
+        "cast",
+        "gameplay",
+        "intro",
+        "moving",
+        "select"
+      ],
+      "trace": [
+        "ROUND_LOAD main=1 map0=2 map1=3 flag=4 hidden=5 page0=249 page3=248 SP=62332",
+        "FLAG_BUILD main=1 map0=2 map1=3 flag=4 hidden=5 page3=248 SP=62330"
+      ],
+      "scope": "Real keymatrix coin/start/arrows/Space; no guest RAM/code/register injection. Native FS-A1FX definition; 128 KiB variant changes only mapper capacity/readback bits. Existing start harness with read-only trace breakpoints."
+    }
+  ],
+  "mechanism": "64 KiB provides four physical 16 KiB RAM segments. The current startup assumes at least eight and masks readback with 7. Its selected logical map segment 0 aliases the physical Page3 segment: the first map copy overwrites D000 interrupt vectors and the stack. Display was disabled for cold loading and is never restored. In the matched 128 KiB case all selected segments are distinct and start/movement succeed.",
+  "production_rom_modified": false,
+  "original_rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+  "limitations": [
+    "Reproduction in openMSX 21.0 with contributor-supplied BIOS, not a readback of the actual multicart or a physical test with RAM expansion.",
+    "The user reported FS-FX; FS-A1FX is the assumed equivalent model used for reproduction. The confirmed 64 KiB original RAM is insufficient independently of exact model naming.",
+    "No claim of 64 KiB compatibility. Cartridge Flash capacity and ASCII16 bank selection do not provide the system RAM mapper required by this build.",
+    "The production ROM has no minimum-RAM refusal screen; the host launcher rejects insufficient RAM, but direct cartridge startup currently does not."
+  ]
+}

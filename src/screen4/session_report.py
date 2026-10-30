@@ -8,7 +8,7 @@ def distribution(values):
     return dict(min=a[0],mean=statistics.mean(a),p95=a[math.ceil(.95*len(a))-1],max=a[-1])
 
 
-def report(bundle,out,profile=None):
+def report(bundle,out,profile=None,comparison=None):
     profile=Path(profile or (bundle/'last-profile.txt').read_text().strip())
     data=json.loads((profile/'summary.json').read_text())
     assert hashlib.sha256((bundle/'fixed-hud.rom').read_bytes()).hexdigest()==data['rom_sha256']
@@ -63,7 +63,7 @@ def report(bundle,out,profile=None):
             render_cycles=f['render'],wait_cycles=f['wait_blank'],commit_cycles=f['commit'],
             untracked_cycles=f['untracked_loop_overhead'],cx=f['cx'],cy=f['cy'],dx=f['dx'],dy=f['dy']))
     positions=[]
-    for actor in range(3):
+    for actor in range(data.get('profile_enemy_count',3)):
         positions.append(len({bytes.fromhex(s['enemy_positions'])[actor*32+8:actor*32+11] for s in states if int(s['frame']) in ids}))
     assert min(positions)>1,'Stationary enemy workload'
     movement=[]
@@ -71,7 +71,8 @@ def report(bundle,out,profile=None):
         rows=[f for f in active['frames'] if ('horizontal' if f['dx'] else 'vertical' if f['dy'] else 'stationary')==axis]
         if rows:movement.append(dict(axis=axis,frames=len(rows),work=distribution([f['work'] for f in rows])))
     result=dict(rom_sha256=data['rom_sha256'],source_revision=json.loads((bundle/'session-build.json').read_text())['revision'],
-        cpu_hz=hz,machine=data['machine'],emulator=data['emulator'],workload=data['workload'],
+        cpu_hz=hz,machine=data['machine'],mapper_ram_kib=data.get('mapper_ram_kib',128),emulator=data['emulator'],workload=data['workload'],
+        native_round=data.get('profile_native_round',5),enemy_count=data.get('profile_enemy_count',3),
         profile_path=str(profile.resolve()),method=data['method'],control=data['control_check'],
         limitsprites=True,hud=True,audio=True,total_intervals=len(states),active_frames=len(ids),
         active_seconds=sum(f['cycles'] for f in active['frames'])/hz,presented_fps=active['presented_fps'],
@@ -84,7 +85,7 @@ def report(bundle,out,profile=None):
             vblank_end_line=(blank_end%(period*6))//1368,vblank_end_cycle=(blank_end%1368)/6,
             reserve_planning_cycles=5000,all_status2_and_duration_checks_passed=True),
         routines=active['routines'],raster=raster,frames=samples,movement=movement,
-        limitations=f'Short directional workload, not a complete phase. Active endpoints require native round5, three enemies, no death/bonus and active session. Excludes{len(states)-len(ids)} stopped/death intervals. UI/cold and capture costs use separate controlled event ledgers; never mix their samples with active FPS. Inclusive parents overlap children; never sum them. IRQ spans exclude hardware entry/vector. No physical hardware measurement.')
+        limitations=f'Short directional workload, not a complete phase. Active endpoints require native round{data.get("profile_native_round",5)}, {data.get("profile_enemy_count",3)} enemies, no death/bonus and active session. Excludes{len(states)-len(ids)} stopped/death intervals. UI/cold and capture costs use separate controlled event ledgers; never mix their samples with active FPS. Inclusive parents overlap children; never sum them. IRQ spans exclude hardware entry/vector. No physical hardware measurement.')
     scenarios=[]
     for kind in ('start','integration','two-player','flags','attract','radar','smoke'):
         matches=[]
@@ -114,7 +115,7 @@ def report(bundle,out,profile=None):
                     result['flag_event']=dict(calls=len(flag_hooks),inclusive=distribution([float(h['inclusive_cycles']) for h in flag_hooks]),
                         own=distribution([float(h['self_cycles']) for h in flag_hooks]),
                         source=str((file.parent/'cold-hooks.tsv').resolve()),method=value['cold_hook_method'],
-                        scope='Controlled real flag contact handler,10 captures; clears the normal and S-hidden caches. No recurring overload is hidden as a capture pause.')
+                        scope=('Controlled real flag contact handler,10 captures; clears eight valid CPU records; immutable VRAM records receive the captured mask when loaded.' if result['mapper_ram_kib']==64 else 'Controlled real flag contact handler,10 captures; clears the normal and S-hidden caches.')+' No recurring overload is hidden as a capture pause.')
     result['verification']=dict(scenarios=scenarios,stable_graphics_snapshots=sum(s['active_snapshots'] for s in scenarios),
         cold_silence_checks=sum(s['silence_checks'] for s in scenarios))
     for kind,key in (('steering-proof-*','steering'),('audio-proof-*','audio'),('sprite-clip-proof-*','sprite_clip'),('speed-proof-*','challenge_speed'),('rocks-proof-*','enemy_rocks'),('boot-skip-proof-*','boot_skip')):
@@ -154,10 +155,11 @@ def report(bundle,out,profile=None):
         value['cycle_scope']='One startup call only. Elapsed cycles include IRQs, decode/upload and synchronization waits; self/CPU-only/wait costs are not separated. Never add to active-frame work.'
         result['verification']['boot']=value
     controls=[]
-    for path in (bundle,bundle.with_name('full-session-test'),bundle.with_name('full-session-hud-classic')):
+    variant_suffix='-64k' if result['mapper_ram_kib']==64 else ''
+    for path in (bundle,bundle.with_name('full-session-test'+variant_suffix),bundle.with_name('full-session-hud-classic'+variant_suffix)):
         if not (path/'fixed-hud.rom').exists():continue
         sha=hashlib.sha256((path/'fixed-hud.rom').read_bytes()).hexdigest()
-        for kind in ('controls','start') if path.name.endswith('-hud-classic') else ('controls',):
+        for kind in ('controls','start') if '-hud-classic' in path.name else ('controls',):
             matches=[]
             for file in path.glob('session-start-*/result.json'):
                 value=json.loads(file.read_text());graphics=file.parent/'graphics-contracts.json'
@@ -166,7 +168,7 @@ def report(bundle,out,profile=None):
                     if checked.get('passed') and checked['rom_sha256']==sha:matches.append((file.stat().st_mtime,value))
             if matches:controls.append(max(matches,key=lambda row:row[0])[1])
     result['verification']['build_variants']=controls
-    no_logo=bundle.with_name('full-session-no-logo')
+    no_logo=bundle.with_name('full-session-no-logo'+variant_suffix)
     if (no_logo/'fixed-hud.rom').exists():
         sha=hashlib.sha256((no_logo/'fixed-hud.rom').read_bytes()).hexdigest();matches=[]
         for file in no_logo.glob('boot-proof-*/report.json'):
@@ -189,6 +191,12 @@ def report(bundle,out,profile=None):
             presented_fps=prior['presented_fps'],late_frames=prior['late_frames'],active_frames=prior['active_frames'],
             mean_work_ms=prior['work']['mean']/hz*1000,cold_video_mean_ms=video['inclusive']['mean']/hz*1000,rom_bytes=prior_rom.stat().st_size if prior_rom.exists() else None,
             scope='Same machine, source revision and scripted input; execution timing changes trajectories and active/death partitions. Not a matched marginal speedup or a full course.')
+    if comparison and Path(comparison).exists():
+        compared=json.loads(Path(comparison).read_text())
+        # A retained comparison must never be silently attached to a new ROM.
+        matching=[r for r in compared['profiles'] if r['rom_sha256']==data['rom_sha256']]
+        if matching:
+            result['ram_profile_comparison']=compared
     out.mkdir(parents=True,exist_ok=True)
     (out/'cycle-ledger.json').write_text(json.dumps(result,indent=2)+'\n')
     with (out/'routines.csv').open('w') as f:
@@ -199,5 +207,6 @@ def report(bundle,out,profile=None):
 
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=Path('references/experiments/full-session'));p.add_argument('--out',type=Path,default=Path('outputs/full-session'));p.add_argument('--profile',type=Path)
-    a=p.parse_args();report(a.bundle,a.out,a.profile)
+    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=Path('references/experiments/full-session-64k'));p.add_argument('--out',type=Path,default=Path('outputs/full-session'));p.add_argument('--profile',type=Path)
+    p.add_argument('--comparison',type=Path,default=Path('docs/measurements/timing/ram-profile-comparison.json'))
+    a=p.parse_args();report(a.bundle,a.out,a.profile,a.comparison)

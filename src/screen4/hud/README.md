@@ -1,9 +1,10 @@
 # Fixed HUD module contract
 
-This is the experimental full-session SCREEN4 HUD. Interface extraction is
-limited to the HUD already requested by the user. Broader rendering, scrolling,
-viewport, transfer and profiling extraction is deferred to
-[issue #32](https://github.com/sandersouza/msxgp-newrallyx/issues/32).
+This is the full-session SCREEN4 HUD contract. The subsequent
+[assembly module catalog](../modules/README.md) applies the same include-time
+composition and strict zero-runtime-cost model to renderer, mapper, actors,
+audio, input and session bindings under the user-authorized issue #36 subtask,
+coordinated with issue #32.
 
 ## Compile-time selection
 
@@ -96,7 +97,7 @@ dynamic pattern, together with world/boundary pixels. Unit cases cover all61
 fuel values, display saturation, gauge reflection and compact text placement.
 `classic` is separately built and checked through the same oracle.
 
-Use the ROM-bound cycle ledger/workbook under `outputs/full-session` for current
+Use the ROM-bound [current workbook](../../../docs/cycle-budget.xlsx) for current
 costs. Prepare is foreground work and Commit is part of synchronized
 publication; neither implies that all logic fits inside VBlank. Inclusive HUD
 costs already contain the font worker; do not add them together. The short

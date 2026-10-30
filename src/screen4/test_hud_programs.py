@@ -51,7 +51,10 @@ def verify(bundle, out):
     active=json.loads(layout.read_text())['active_slots'] if layout.exists() else [list(range(table[n*1281])) for n in range(64)]
     pattern_back=syms.get("pattern_back",syms["back"])
     phase_base=syms.get("pattern_phases",syms["loaded_phase"])
-    sets=4 if "pattern_back" in syms else 2
+    packed=(bundle/'session-build.json').exists()
+    sets=8 if packed else 4 if "pattern_back" in syms else 2
+    stride=16384 if packed else 32768
+    targets='1 768 513 8960' if packed else '1 768 513 17152'
     # All directed transitions and cold starts, every physical R14 set.
     cases=[(back,old,new) for back in range(sets) for old in list(range(64))+[255] for new in range(64)]
     lines=['set save_settings_on_exit false','set renderer none','set sound_driver null',
@@ -64,14 +67,15 @@ def verify(bundle, out):
            'set cases {'+' '.join('{'+f'{b} {a} {c}'+'}' for b,a,c in cases)+'}',
            'set started 0;set index 0;set fast 0;set irqs 0',
            'set active {'+' '.join('{'+ ' '.join(map(str,row))+'}' for row in active)+'}',
+           f'set stride {stride};set targets {{{targets}}}',
            'proc fail {message} {puts stderr $message;exit 3}',
            'set timing [open [file join $out cycles.txt] w]',
            'set VDP.too_fast_vram_access_callback {if {$::started} {incr ::fast}}',
            'proc place {memory phase back} {',
            ' set at [expr {$phase*1281}];binary scan [string index $::phases $at] cu count',
            ' set length [expr {$count*8}]',
-           ' foreach {source target} {1 768 513 17152} {',
-           '  set dest [expr {$back*32768+$target}]',
+           ' foreach {source target} $::targets {',
+           '  set dest [expr {$back*$::stride+$target}]',
            '  set data [string range $::phases [expr {$at+$source}] [expr {$at+$source+$length-1}]]',
            '  for {set slot 0} {$slot<$count} {incr slot} {if {$slot ni [lindex $::active $phase]} {set data [string replace $data [expr {$slot*8}] [expr {$slot*8+7}] [string repeat "\xee" 8]]}}',
            '  set memory [string replace $memory $dest [expr {$dest+$length-1}] $data]',
@@ -96,8 +100,8 @@ def verify(bundle, out):
            ' lassign [lindex $::cases $::index] back previous current',
            ' set actual [debug read_block VRAM 0 131072];set expected $::initial',
            ' set phase_base [expr {$current*1281}];binary scan [string index $::phases $phase_base] cu count;set length [expr {$count*8}]',
-           ' foreach {source target} {1 768 513 17152} {',
-           '  set at [expr {$back*32768+$target}];set data [string range $::phases [expr {$phase_base+$source}] [expr {$phase_base+$source+$length-1}]]',
+           ' foreach {source target} $::targets {',
+           '  set at [expr {$back*$::stride+$target}];set data [string range $::phases [expr {$phase_base+$source}] [expr {$phase_base+$source+$length-1}]]',
            '  for {set slot 0} {$slot<$count} {incr slot} {if {$slot ni [lindex $::active $current]} {',
            '   set offset [expr {$slot*8}];set physical [expr {$at+$offset}]',
            '   binary scan [string range $actual $physical [expr {$physical+7}]] cu* values',
@@ -123,7 +127,7 @@ def verify(bundle, out):
     cycles=[int(v) for v in (out/'cycles.txt').read_text().split()]
     assert len(cycles)==len(cases)
     assert min(cycles)>0 and max(cycles)<100000, 'Invalid isolated wrapper timing'
-    report=dict(complete=True,cases=len(cases),rom_sha256=hashlib.sha256(rom).hexdigest(),checks=checks,
+    report=dict(complete=True,cases=len(cases),physical_sets=sets,packed8=packed,rom_sha256=hashlib.sha256(rom).hexdigest(),checks=checks,
                 cpu_hz=3579545,machine='Panasonic_FS-A1WSX_NR128',screen4_display_on=True,
                 mean_cycles=statistics.mean(cycles),max_cycles=max(cycles),
                 scope='All64x64 known transitions and64 cold starts, all physical pattern sets. Previous inactive slots seeded unknown. Exact current active glyph bytes and full128KiB VRAM guards; inactive HUD bytes may retain old or receive current source during gap merging. Current phase mapping/IFF preserved. IRQs enabled/exercised across probe, not inside every call. Wrapper timing includes IRQs; no gameplay FPS claim.')

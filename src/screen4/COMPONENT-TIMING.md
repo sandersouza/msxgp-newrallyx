@@ -1,6 +1,6 @@
 # Component and raster timing, 2026-10-28
 
-The focused workbook is `outputs/component-timing/component-timing.xlsx`, with
+The focused workbook is `docs/measurements/timing/archive/component-timing/component-timing.xlsx`, with
 inspectable inputs in the adjacent `summary.json`. This supplements the existing
 cycle-budget workbook. It does not replace its earlier optimization evidence.
 

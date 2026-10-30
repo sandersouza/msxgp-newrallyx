@@ -8,12 +8,17 @@ from scripts.msx.stage_one import acquire,cells_from_rom
 
 
 def verify(bundle,frames):
+    from session_reference import configure
+    configure(bundle)
     bundle=Path(bundle).resolve();out=Path(tempfile.mkdtemp(prefix='steering-proof-',dir=bundle))
     rom=(bundle/'fixed-hud.rom').read_bytes();(out/'measured.rom').write_bytes(rom)
     syms={n:int(v,16) for n,v in re.findall(r'(?m)^([\w.]+): EQU 0x([\da-fA-F]+)',(bundle/'lab.sym').read_text())}
     program,_=acquire(ROOT)
     board=b''.join(cells_from_rom(program,0x30+i) for i in range(4));(out/'board.bin').write_bytes(board)
     script=(ROOT/'scripts/msx/steering_probe.tcl').read_text()
+    seed=int(os.environ.get('NRX_STEERING_SEED','12345'))
+    script=script.replace('set seed 12345',f'set seed {seed}')
+    script=script.replace('after time 600',f'after time {max(600,round(frames/59.92*2))}')
     script=script.replace('source @MAPPER@\nnrallyx_reference_machine "Panasonic_FS-A1WSX"',reference_machine(ROOT,'Panasonic_FS-A1WSX'))
     script=script.replace('set z80_freq_locked false','set z80_freq_locked true')
     # The SCREEN4 loop does not expose the production present-state byte.
@@ -34,7 +39,7 @@ def verify(bundle,frames):
         run=subprocess.run(['openmsx','-script',str(out/'steering.tcl')],timeout=150,stdout=log,stderr=subprocess.STDOUT,
             env=dict(os.environ,OPENMSX_HOME=str(out/'home'),OPENMSX_USER_DATA=str(out/'userdata')))
     complete=out/'summary.tsv'
-    report=dict(passed=run.returncode==0 and complete.exists(),requested_active_refreshes=frames,rom_sha256=hashlib.sha256(rom).hexdigest(),path=str(out),
+    report=dict(passed=run.returncode==0 and complete.exists(),requested_active_refreshes=frames,input_seed=seed,rom_sha256=hashlib.sha256(rom).hexdigest(),path=str(out),
         scope='Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze')
     if complete.exists():
         report['observed']=list(map(int,complete.read_text().split()))
@@ -46,5 +51,5 @@ def verify(bundle,frames):
     return 0 if report['passed'] else (run.returncode or 2)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session');p.add_argument('--frames',type=int,default=16000)
+    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session-64k');p.add_argument('--frames',type=int,default=16000)
     a=p.parse_args();raise SystemExit(verify(a.bundle,a.frames))

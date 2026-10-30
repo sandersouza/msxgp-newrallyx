@@ -127,7 +127,7 @@ def plan_frames(frames,end):
         pages[(len(records)-1)%2]=new;last=new;last_tick=tick
     return records
 
-def append(root,out,page):
+def append(root,out,page,*,image=None,holes=None):
     if not enabled():
         for name in ('data','palette'):(out/f'session-boot-{name}.inc').write_text('; Hardware-check module omitted.\n')
         (out/'session-boot.json').write_text(json.dumps(dict(enabled=False,frame_count=0,compressed_bytes=0,scope='Module omitted at build time; shared HUD/test workers remain independent.'),indent=2)+'\n')
@@ -151,32 +151,41 @@ def append(root,out,page):
         frames.append(bytes(a*16+b for a,b in zip(pix[::2],pix[1::2])))
     assert grids and all(b==a+1 for a,b in zip(grids,grids[1:])),grids
     end=grids[-1]+1;records=plan_frames(frames,end)
-    # Commands never cross a bank boundary. Opcode3 chains to the following
-    # bank; allocate backwards so every embedded physical bank is already known.
-    chunks=[];storage=bytearray();locations={};literals={}
-    for i,r in enumerate(records):
-        data=r['data'];at=0;first=True
-        while at<len(data):
-            op=data[at]
-            size=1 if op==0 else 5 if op==2 else 4+(data[at+3] or 256)
-            raw=data[at+4:at+size] if op==1 else None
-            reused=raw is not None and len(raw)>2 and raw in literals
-            wire_size=6 if reused else size
-            if len(storage)+wire_size+4>16384:
-                chunks.append(storage);storage=bytearray();literals={};reused=False
-            if first:locations[i]=(len(chunks),0x8000+len(storage));first=False
-            if reused:
-                pointer=literals[raw]
-                storage.extend((4,data[at+1],data[at+2],data[at+3],pointer&255,pointer>>8))
-            else:
-                if raw is not None:literals.setdefault(raw,0x8000+len(storage)+4)
-                storage.extend(data[at:at+size])
-            at+=size
-    chunks.append(storage);physical={}
-    for i in range(len(chunks)-1,-1,-1):
-        if i+1<len(chunks):chunks[i].extend((3,physical[i+1],0,128))
-        physical[i]=page(chunks[i])
-    pointers={i:(physical[k],address) for i,(k,address) in locations.items()}
+    # Existing opcodes support arbitrary bank/address chains. Reuse only
+    # explicitly reserved graphics-bank holes; no new decoder or RAM buffer.
+    if image is not None:
+        from rom_pack import pack_replay
+        pointers,packing=pack_replay(records,image,holes)
+        compressed_bytes=packing['encoded_bytes']
+        report=json.loads((out/'rom-packing.json').read_text())
+        report['boot']=packing
+        (out/'rom-packing.json').write_text(json.dumps(report,indent=2)+'\n')
+    else:
+        chunks=[];storage=bytearray();locations={};literals={}
+        for i,r in enumerate(records):
+            data=r['data'];at=0;first=True
+            while at<len(data):
+                op=data[at]
+                size=1 if op==0 else 5 if op==2 else 4+(data[at+3] or 256)
+                raw=data[at+4:at+size] if op==1 else None
+                reused=raw is not None and len(raw)>2 and raw in literals
+                wire_size=6 if reused else size
+                if len(storage)+wire_size+4>16384:
+                    chunks.append(storage);storage=bytearray();literals={};reused=False
+                if first:locations[i]=(len(chunks),0x8000+len(storage));first=False
+                if reused:
+                    pointer=literals[raw]
+                    storage.extend((4,data[at+1],data[at+2],data[at+3],pointer&255,pointer>>8))
+                else:
+                    if raw is not None:literals.setdefault(raw,0x8000+len(storage)+4)
+                    storage.extend(data[at:at+size])
+                at+=size
+        chunks.append(storage);physical={}
+        for i in range(len(chunks)-1,-1,-1):
+            if i+1<len(chunks):chunks[i].extend((3,physical[i+1],0,128))
+            physical[i]=page(chunks[i])
+        pointers={i:(physical[k],address) for i,(k,address) in locations.items()}
+        compressed_bytes=sum(len(chunk) for chunk in chunks)
     rgb=[rgb333(c) for c in colors]
     palette=bytes(v for r,g,b in rgb for v in ((r<<4)|b,g)).ljust(32,b'\0')
     lines=['GameSession_BootPalette:','    db '+','.join(map(str,palette))]
@@ -189,7 +198,7 @@ def append(root,out,page):
     (out/'session-boot-data.inc').write_text('\n'.join(lines)+'\n')
     meta.update(enabled=True,border_color_index=0,border_rgb=[0,0,0],native_end_frame=end,matrix_frame=grids[0],sample_frames=[r['native_frame'] for r in records],
         frame_paths=[str(paths[r['native_frame']].resolve()) for r in records],speed_multiplier=1.0,
-        physical_deadline_ticks=ticks,seconds=ticks*REFRESH_CYCLES/CPU_HZ,compressed_bytes=sum(len(chunk) for chunk in chunks),unshared_stream_bytes=sum(len(r['data']) for r in records),
+        physical_deadline_ticks=ticks,seconds=ticks*REFRESH_CYCLES/CPU_HZ,compressed_bytes=compressed_bytes,unshared_stream_bytes=sum(len(r['data']) for r in records),
         frame_count=len(records),native_changed_states=1+sum(a!=b for a,b in zip(frames[:end-1],frames[1:end])),
         planned_cycles=[r['planned_cycles'] for r in records],publication_ticks=[r['tick'] for r in records],
         geometry='1:1 pixels; original columns0..199 and232..287, rows0..211; no scaling',palette=colors,

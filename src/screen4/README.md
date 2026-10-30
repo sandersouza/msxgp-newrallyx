@@ -11,6 +11,18 @@ The former top-level `experiments/` directory has been removed. Historical
 benchmark/free-camera commands and their ignored `references/experiments/`
 artifact paths remain supported. This is a path migration, not module extraction.
 See [FULL-SESSION.md](FULL-SESSION.md) for current scope, tests and timing.
+The default requires 64 KiB system RAM; `MAPPER=1` selects the preserved 128 KiB
+profile. Both require 128 KiB VRAM and ASCII16. See the current
+[paired validation](../../docs/ram-profile-validation.md).
+The [module catalog](modules/README.md) defines assembly-time renderer, native,
+sprite, audio, mapper, input, interface and session boundaries. Structural
+changes must pass `make verify-module-layout`: complete ROM and symbol values
+remain identical for frozen 128 KiB profiles, with no runtime dispatch or additional
+allocation. The functional 64 KiB adapter is validated separately.
+The complete default cartridge is 2,048,000 bytes after same-bank graphics-table
+reuse and cold-stream packing; see the [size reduction report](../../docs/issue36-size-reduction.md)
+for hashes, capacity gates and matched runtime evidence. Earlier laboratory size
+figures below describe their historical profiles.
 See [the architecture](../../docs/architecture.md) and
 [maintenance procedure](../../docs/maintenance.md) for ownership and retention.
 The previous benchmark is retained as `make run-first-stage` and documented in
