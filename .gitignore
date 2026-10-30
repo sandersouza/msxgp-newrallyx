@@ -28,3 +28,4 @@ __pycache__/
 
 # Contributor-owned original pixels and converted ROM resources.
 /assets/arcade/**
+/assets/namco-title-56x8.png
