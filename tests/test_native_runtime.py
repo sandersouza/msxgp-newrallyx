@@ -5,12 +5,12 @@ import json
 import tempfile
 import unittest
 
-from scripts.msx.native_verify import capture_reference, control_hits, analyze_reference, analyze_reset, load_input_levels, analyze_acquisition, analyze_function, analyze_profile, analyze_boot_registers
-from scripts.msx.native_reset import patch_reset
-from scripts.msx.native_contract import Snapshot, first_difference
-from scripts.scenes.storage import seal
-from scripts.scenes.bundle import digest
-from scripts.msx.native_logic import patch_logic, coordinate_deltas
+from src.toolchain.msx.native_verify import capture_reference, control_hits, analyze_reference, analyze_reset, load_input_levels, analyze_acquisition, analyze_function, analyze_profile, analyze_boot_registers
+from src.toolchain.msx.native_reset import patch_reset
+from src.toolchain.msx.native_contract import Snapshot, first_difference
+from src.toolchain.scenes.storage import seal
+from src.toolchain.scenes.bundle import digest
+from src.toolchain.msx.native_logic import patch_logic, coordinate_deltas
 
 
 class NativeRuntimeReferenceTests(unittest.TestCase):

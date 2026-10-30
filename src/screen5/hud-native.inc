@@ -1,5 +1,5 @@
 ; Read-only adapter for a stable 4KB copy of native $8000..$8fff RAM.
-; NRALLYX version is fixed by scripts/graphics/nrallyx.json.
+; NRALLYX version is fixed by src/toolchain/graphics/nrallyx.json.
 ; Retain native scoring/bonus/fuel routines; call this AFTER they finish.
 ; HL=snapshot base. Preserves BC/DE/HL/IX/IY and alternate registers. AF scratch.
 ; C=1 rejects invalid pointers/digits before publishing any of these four values.

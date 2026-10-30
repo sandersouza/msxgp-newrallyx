@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from PIL import Image
-from scripts.graphics import export
+from src.toolchain.graphics import export
 from graphics_fixtures import synthetic_payload, temporary_repo
 
 
@@ -22,6 +22,12 @@ class ExportTests(unittest.TestCase):
     def publish(self, overwrite=False, output=None, writer=None):
         return export.publish_output(self.root, self.inputs, output or self.output,
                                      overwrite, writer or self.writer)
+
+    def test_canonical_arcade_output(self):
+        output=self.root/'assets/arcade/nrallyx'
+        manifest=self.publish(output=output)
+        self.assertEqual((output/'tiles/indices.bin').read_bytes(),self.pixels['tiles'])
+        self.assertEqual(len(manifest['outputs']),137)
 
     def test_all_outputs_indices_positions_colors_and_hashes(self):
         manifest = self.publish()
@@ -84,7 +90,7 @@ class ExportTests(unittest.TestCase):
                         str(self.output/'keep')], check=True)
         with self.assertRaisesRegex(ValueError, 'tracked'):
             self.publish(overwrite=True)
-        with patch('scripts.graphics.export.subprocess.run', side_effect=FileNotFoundError('git')):
+        with patch('src.toolchain.graphics.export.subprocess.run', side_effect=FileNotFoundError('git')):
             with self.assertRaisesRegex(ValueError, 'Git'):
                 self.publish()
 

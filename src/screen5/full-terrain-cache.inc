@@ -1,3 +1,6 @@
+; Legacy SCREEN5 cache/state ownership. D2xx aliases below belong to this engine
+; and overlap newer SCREEN4 bridge/state reservations. Do not co-include the two
+; engines or transplant their constants without a complete lifetime/mapping audit.
 ; Exact world-tile ownership in a spare 16KB mapper segment. Page0 is
 ; mapped only while executing this RAM-only overlay; BIOS mapping is restored.
 Full_CachePrimary EQU $d2e1

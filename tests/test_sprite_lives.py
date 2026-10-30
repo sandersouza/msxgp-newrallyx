@@ -1,7 +1,7 @@
 """One outlined portrait and one fixed slot regenerated from native digit assets."""
 import unittest
-from scripts.msx import sprite_lives as counter
-from scripts.msx.raster_scroll import outlined_life
+from src.toolchain.msx import sprite_lives as counter
+from src.toolchain.msx.raster_scroll import outlined_life
 from tests.test_raster_scroll import fixture
 
 

@@ -2,8 +2,8 @@
 import copy
 import unittest
 from PIL import Image
-from scripts.scenes.layout import compose
-from scripts.scenes.render import Frame, Object
+from src.toolchain.scenes.layout import compose
+from src.toolchain.scenes.render import Frame, Object
 from test_scene_render import scene
 
 
@@ -74,7 +74,7 @@ class CompactTests(unittest.TestCase):
         self.assertTrue(radar['new_mobile_overlap_pairs'])
         # Later hardware dot wins in the overlap, without shrinking either marker.
         self.assertEqual(preview.indices[124*256+217],18)
-        from scripts.scenes.analyze import analyze
+        from src.toolchain.scenes.analyze import analyze
         report=analyze(preview,assets)
         self.assertEqual(report['radar_projection']['projected_mobile_overlap_pixels'],
                          radar['projected_mobile_overlap_pixels'])

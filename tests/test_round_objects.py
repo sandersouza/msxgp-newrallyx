@@ -1,6 +1,6 @@
 """Authored object-placement fixtures; no original payloads."""
 import unittest
-from scripts.msx.round_objects import owners, at
+from src.toolchain.msx.round_objects import owners, at
 
 
 class RoundObjectsTests(unittest.TestCase):

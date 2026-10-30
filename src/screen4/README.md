@@ -67,15 +67,15 @@ Verification requires the existing openMSX/BIOS setup and FFmpeg for video decod
 Individual commands used by these targets:
 
 ```sh
-.venv/bin/python src/screen4/build.py
-.venv/bin/python src/screen4/verify.py
-.venv/bin/python src/screen4/analyze.py
-.venv/bin/python src/screen4/verify.py --matrix
-.venv/bin/python src/screen4/analyze.py
-.venv/bin/python src/screen4/edge_contract.py
-.venv/bin/python src/screen4/verify.py --continuous
-.venv/bin/python src/screen4/analyze.py
-.venv/bin/python src/screen4/scanout.py
+.venv/bin/python src/toolchain/screen4/build.py
+.venv/bin/python src/toolchain/screen4/verify.py
+.venv/bin/python src/toolchain/screen4/analyze.py
+.venv/bin/python src/toolchain/screen4/verify.py --matrix
+.venv/bin/python src/toolchain/screen4/analyze.py
+.venv/bin/python src/toolchain/screen4/edge_contract.py
+.venv/bin/python src/toolchain/screen4/verify.py --continuous
+.venv/bin/python src/toolchain/screen4/analyze.py
+.venv/bin/python src/toolchain/screen4/scanout.py
 .venv/bin/python scripts/project.py run --rom references/experiments/fixed-hud/fixed-hud.rom
 ```
 

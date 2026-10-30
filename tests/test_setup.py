@@ -22,8 +22,8 @@ class DispatcherTests(unittest.TestCase):
             shutil.copytree(ROOT / "scripts", self.repo / "scripts")
         if (ROOT / "Makefile").exists():
             shutil.copy(ROOT / "Makefile", self.repo)
-        (self.repo / "scripts/environment").mkdir(parents=True, exist_ok=True)
-        self.executable(self.repo / "scripts/environment/macos.sh",
+        (self.repo / "src/toolchain/environment").mkdir(parents=True, exist_ok=True)
+        self.executable(self.repo / "src/toolchain/environment/macos.sh",
                         '#!/bin/bash\nprintf "macos-mode:%s\\n" "$*"\n')
         self.env = dict(os.environ, PATH=f"{self.bin}:/usr/bin:/bin")
         self.env.pop("OS", None)

@@ -1,7 +1,7 @@
 """Authored gauge pixels, footprint and lossless sprite-Y compensation."""
 import unittest
-from scripts.msx import sprite_fuel as fuel, sprite_radar as radar
-from scripts.msx.raster_scroll import BODY_TOP
+from src.toolchain.msx import sprite_fuel as fuel, sprite_radar as radar
+from src.toolchain.msx.raster_scroll import BODY_TOP
 from tests.test_sprite_radar import decode
 
 

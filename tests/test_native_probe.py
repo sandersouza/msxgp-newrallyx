@@ -4,9 +4,9 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.msx.native_probe import analyze_probe, analyze_increment, analyze_schedule, analyze_waits
-from scripts.msx.native_contract import advance_clock
-from scripts.scenes.storage import seal
+from src.toolchain.msx.native_probe import analyze_probe, analyze_increment, analyze_schedule, analyze_waits
+from src.toolchain.msx.native_contract import advance_clock
+from src.toolchain.scenes.storage import seal
 
 
 class NativeProbeEvidenceTests(unittest.TestCase):

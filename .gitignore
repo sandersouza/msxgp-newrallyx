@@ -1,4 +1,4 @@
-# Keep reference directories while ignoring their contents.
+# Keep the reference tree through empty .gitkeep markers only. All payloads stay local.
 /references/**
 !/references/**/
 !/references/**/.gitkeep
@@ -22,5 +22,10 @@ __pycache__/
 .tools/
 
 # Generated cartridges, reports, workbooks and private emulator state.
-# Keep local evidence; maintained timing workbooks and curated metadata live in docs/.
-/outputs/
+# Disposable intermediates stay local; maintained workbooks and curated results live in docs/.
+/outputs/**
+/dist/**
+
+# Contributor-owned original pixels and converted ROM resources.
+/assets/arcade/**
+/assets/namco-title-56x8.png

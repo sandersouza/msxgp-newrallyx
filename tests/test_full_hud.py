@@ -1,8 +1,8 @@
 """Display boundaries for the compact full-game HUD, using synthetic glyphs."""
 import unittest
 from tests.test_raster_scroll import fixture
-from scripts.msx.raster_scroll import header,index_for,player_label_patterns
-from scripts.msx.full_hud import (HEADER_LEFT,ROUND_X,score_text,round_text,
+from src.toolchain.msx.raster_scroll import header,index_for,player_label_patterns
+from src.toolchain.msx.full_hud import (HEADER_LEFT,ROUND_X,score_text,round_text,
     credit_digit,infinity_pixels)
 
 
@@ -30,7 +30,7 @@ class FullHUDTests(unittest.TestCase):
         self.assertEqual(len(player_label_patterns(assets,palette,full_game=True)),64)
 
     def test_number_cells_immediately_follow_the_label_colons(self):
-        from scripts.msx.full_hud import HIGH_FIELD_X,SCORE_FIELD_X,PLAYER_LABEL_X
+        from src.toolchain.msx.full_hud import HIGH_FIELD_X,SCORE_FIELD_X,PLAYER_LABEL_X
         self.assertEqual(HIGH_FIELD_X+8,HEADER_LEFT+len('HI:')*8)
         self.assertEqual(SCORE_FIELD_X+8,PLAYER_LABEL_X+len('1UP:')*8)
 

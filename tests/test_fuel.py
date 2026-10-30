@@ -1,8 +1,8 @@
 """Synthetic boundary coverage and evidence integrity for the fuel oracle."""
 import struct
 import unittest
-from scripts.msx.fuel_verify import cases_for,encode_case,compare,RECORD
-from scripts.msx.player import relocate
+from src.toolchain.msx.fuel_verify import cases_for,encode_case,compare,RECORD
+from src.toolchain.msx.player import relocate
 
 
 class FuelTests(unittest.TestCase):

@@ -1,7 +1,7 @@
 import random
 import unittest
-from scripts.msx.shared_sprite_cache import assign
-from scripts.msx.player import projected_masks
+from src.toolchain.msx.shared_sprite_cache import assign
+from src.toolchain.msx.player import projected_masks
 
 
 class SharedSpriteCacheTests(unittest.TestCase):

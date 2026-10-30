@@ -1,0 +1,836 @@
+{
+  "date": "2026-10-30",
+  "authorization": "User explicitly requested deleting raw builds, logs, analyses, archives and issue artifacts to reclaim disk; retain compact documented results.",
+  "policy": "Contributor ROMs, BIOS, extracted input assets, scene inputs and base native acquisitions retained. Raw runtime evidence is deleted, not archived again.",
+  "protected_inputs": {
+    "assets": {
+      "files": 277,
+      "bytes": 780954,
+      "sha256": "575f77a1c569e1ee2a756effe314a8f4e739ca3b287f96b1c45fa618457e560a"
+    },
+    "msxbios": {
+      "files": 550,
+      "bytes": 52586209,
+      "sha256": "e48dd75d5f2399e4a5a6f97cc75339c592e0878344a2eb589c026e2c6e10da76"
+    },
+    "roms": {
+      "files": 17,
+      "bytes": 42418,
+      "sha256": "d69e25565c75cbf0ff6219649081071710b005480cb80dd92338d12fbf4763a7"
+    },
+    "scenes": {
+      "files": 1278,
+      "bytes": 7405618,
+      "sha256": "076c326b48c5100c72d79a3ffa70a470bc9c9b12dd8f1e06f1803e500a6aa617"
+    },
+    "stage-one": {
+      "files": 237,
+      "bytes": 840484,
+      "sha256": "9e66a096744f164abfeddafd88a2c42b5e08a9a0003bc2bdb9689fc4aa88006f"
+    }
+  },
+  "observed_disk_usage": [
+    "1.2G\treferences/analysis",
+    " 80G\treferences/archive",
+    "708K\treferences/assets",
+    "  0B\treferences/attract",
+    "8.1M\treferences/baselines",
+    "156M\treferences/build",
+    "197M\treferences/cache",
+    "  0B\treferences/disassembly",
+    "4.0K\treferences/exports",
+    "116M\treferences/issue34",
+    "290M\treferences/issue36",
+    "7.0G\treferences/issue39",
+    "4.0K\treferences/issue39-128-guard.log",
+    "4.0K\treferences/issue39-2m-cap-before.log",
+    "4.0K\treferences/issue39-abi-st.log",
+    " 12K\treferences/issue39-audio-guarded.log",
+    "4.0K\treferences/issue39-auto-boot.log",
+    "4.0K\treferences/issue39-auto-boot64-v4.log",
+    "4.0K\treferences/issue39-auto-boot64.log",
+    "4.0K\treferences/issue39-auto-bootGT-v4.log",
+    "4.0K\treferences/issue39-auto-bootST.log",
+    " 12K\treferences/issue39-auto-build-v1.log",
+    " 12K\treferences/issue39-auto-build-v2.log",
+    " 12K\treferences/issue39-auto-build-v3.log",
+    " 12K\treferences/issue39-auto-build-v4.log",
+    "4.0K\treferences/issue39-auto-components-v4.log",
+    "4.0K\treferences/issue39-auto-components.log",
+    " 12K\treferences/issue39-auto-final-build.log",
+    " 72K\treferences/issue39-auto-general-tests-v4.log",
+    "8.0K\treferences/issue39-auto-integration128.log",
+    "4.0K\treferences/issue39-auto-launcher-tests.log",
+    "4.0K\treferences/issue39-auto-long.log",
+    "4.0K\treferences/issue39-auto-module-layout.log",
+    " 12K\treferences/issue39-auto-no-check-build.log",
+    "4.0K\treferences/issue39-auto-no-check-start.log",
+    " 12K\treferences/issue39-auto-no-turbo-build.log",
+    "8.0K\treferences/issue39-auto-profile.log",
+    "4.0K\treferences/issue39-auto-profile128-v4.log",
+    "4.0K\treferences/issue39-auto-profile128.log",
+    "8.0K\treferences/issue39-auto-regression.log",
+    "4.0K\treferences/issue39-auto-start128.log",
+    "4.0K\treferences/issue39-auto-start64.log",
+    "4.0K\treferences/issue39-auto-test-controls128.log",
+    "4.0K\treferences/issue39-auto-test-controls64.log",
+    " 12K\treferences/issue39-auto-test-mode-build-v2.log",
+    " 12K\treferences/issue39-auto-test-mode-build-v3.log",
+    " 12K\treferences/issue39-auto-test-mode-build.log",
+    " 80K\treferences/issue39-auto-tests.log",
+    "4.0K\treferences/issue39-auto-workbook.log",
+    "4.0K\treferences/issue39-base-mode.log",
+    "4.0K\treferences/issue39-baseline64.log",
+    "8.0K\treferences/issue39-boot-module128.log",
+    "8.0K\treferences/issue39-boot-module64.log",
+    " 12K\treferences/issue39-build128.log",
+    " 12K\treferences/issue39-build64.log",
+    "4.0K\treferences/issue39-component-tests.log",
+    "4.0K\treferences/issue39-delivery-component-tests.log",
+    "4.0K\treferences/issue39-fallback-sony.log",
+    " 12K\treferences/issue39-final-build128.log",
+    " 12K\treferences/issue39-final-build64.log",
+    "4.0K\treferences/issue39-final-component-tests.log",
+    "4.0K\treferences/issue39-final-module.log",
+    "4.0K\treferences/issue39-final-smoke-sony.log",
+    "4.0K\treferences/issue39-final-smoke-st.log",
+    "4.0K\treferences/issue39-final-smoke-wx.log",
+    " 72K\treferences/issue39-final-tests.log",
+    "4.0K\treferences/issue39-final-workbook.log",
+    " 12K\treferences/issue39-fresh-base128.log",
+    " 12K\treferences/issue39-fresh-base64.log",
+    "4.0K\treferences/issue39-fresh-module.log",
+    " 12K\treferences/issue39-guard-build128.log",
+    "4.0K\treferences/issue39-im-st.log",
+    "4.0K\treferences/issue39-im2-st.log",
+    "8.0K\treferences/issue39-integration64-st-v2.log",
+    "4.0K\treferences/issue39-integration64-st.log",
+    "4.0K\treferences/issue39-jitter-confirm.log",
+    "4.0K\treferences/issue39-last-component-tests.log",
+    "4.0K\treferences/issue39-long-base-st.log",
+    "4.0K\treferences/issue39-long-turbo-st-v2.log",
+    "4.0K\treferences/issue39-long-v1.log",
+    "8.0K\treferences/issue39-long-v2.log",
+    "4.0K\treferences/issue39-long-v3.log",
+    " 12K\treferences/issue39-mapper-build-128.log",
+    " 12K\treferences/issue39-mapper-build-64.log",
+    "4.0K\treferences/issue39-mapper-build-comparison.json",
+    "8.0K\treferences/issue39-mapper-launcher-before.log",
+    "4.0K\treferences/issue39-module.log",
+    "4.0K\treferences/issue39-motion-Panasonic_FS-A1ST-64k-v2.log",
+    "4.0K\treferences/issue39-motion-Panasonic_FS-A1ST-v2.log",
+    "4.0K\treferences/issue39-motion-Panasonic_FS-A1WSX-64k-v2.log",
+    "4.0K\treferences/issue39-motion-Panasonic_FS-A1WSX-v2.log",
+    " 16K\treferences/issue39-paired-v1.log",
+    "8.0K\treferences/issue39-paired-v2.log",
+    " 24K\treferences/issue39-paired-v3.log",
+    "8.0K\treferences/issue39-paired-v4.log",
+    "4.0K\treferences/issue39-probe-v2.log",
+    "8.0K\treferences/issue39-probe-v3.log",
+    "8.0K\treferences/issue39-probe-v4.log",
+    "8.0K\treferences/issue39-probe-v5.log",
+    "4.0K\treferences/issue39-probe.log",
+    " 12K\treferences/issue39-regression-v1.log",
+    "8.0K\treferences/issue39-regression-v2.log",
+    " 12K\treferences/issue39-regression-v3.log",
+    "8.0K\treferences/issue39-regression-v4.log",
+    "4.0K\treferences/issue39-rocks-Panasonic_FS-A1ST-64k-v2.log",
+    "4.0K\treferences/issue39-rocks-Panasonic_FS-A1ST-v2.log",
+    "4.0K\treferences/issue39-rocks-Panasonic_FS-A1WSX-64k-v2.log",
+    "4.0K\treferences/issue39-rocks-Panasonic_FS-A1WSX-64k.log",
+    "4.0K\treferences/issue39-rocks-Panasonic_FS-A1WSX-v2.log",
+    "4.0K\treferences/issue39-speed-guarded.log",
+    "4.0K\treferences/issue39-speed-recheck.log",
+    "4.0K\treferences/issue39-start64-st.log",
+    "4.0K\treferences/issue39-start64-wsx.log",
+    "4.0K\treferences/issue39-steering128-recheck.log",
+    " 72K\treferences/issue39-tests.log",
+    " 12K\treferences/issue39-turbo-build128-v2.log",
+    " 12K\treferences/issue39-turbo-build128-v3.log",
+    " 12K\treferences/issue39-turbo-build128-v4.log",
+    " 12K\treferences/issue39-turbo-build128.log",
+    " 12K\treferences/issue39-turbo-build64-v2.log",
+    " 12K\treferences/issue39-turbo-build64-v3.log",
+    " 12K\treferences/issue39-turbo-build64-v4.log",
+    " 12K\treferences/issue39-turbo-build64-v5.log",
+    " 12K\treferences/issue39-turbo-build64.log",
+    "4.0K\treferences/issue39-turbo-profile64-st-v2.log",
+    "4.0K\treferences/issue39-turbo-profile64-st.log",
+    "4.0K\treferences/issue39-turbo-profile64-wsx-v2.log",
+    "4.0K\treferences/issue39-turbo-profile64-wsx-v3.log",
+    "4.0K\treferences/issue39-turbo-profile64-wsx.log",
+    "4.0K\treferences/issue39-workbook.log",
+    "  0B\treferences/mame-source",
+    "8.0K\treferences/mame-state",
+    "  0B\treferences/mame-validation",
+    "4.0K\treferences/msxbios",
+    "  0B\treferences/probe",
+    "  0B\treferences/roms",
+    " 28K\treferences/scenes",
+    "  0B\treferences/screenshots",
+    "2.3M\treferences/sessions",
+    "  0B\treferences/stage-one",
+    "  0B\treferences/stage-one-research",
+    "2.1M\treferences/validation"
+  ],
+  "raw_matrix_summaries": [
+    {
+      "source": "references/issue39/auto-boot/result.json",
+      "kind": "boot",
+      "cases": 7,
+      "passed": 5,
+      "rom_hashes": [
+        "def70a346fc628b359fb962c583417408b8148e71617d02b56a49e7cdfb8f0e9"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-boot-v4/result.json",
+      "kind": "boot",
+      "cases": 7,
+      "passed": 7,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-capacity-v4/result.json",
+      "kind": "boot",
+      "cases": 5,
+      "passed": 5,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-long/result.json",
+      "kind": "long",
+      "cases": 20,
+      "passed": 20,
+      "rom_hashes": [
+        "def70a346fc628b359fb962c583417408b8148e71617d02b56a49e7cdfb8f0e9"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-long-v4/result.json",
+      "kind": "long",
+      "cases": 20,
+      "passed": 20,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-no-turbo-boot/result.json",
+      "kind": "boot",
+      "cases": 3,
+      "passed": 3,
+      "rom_hashes": [
+        "58418ec2aa83b6bc51dc48bafd1ea5f0890049ccef805d55bcb31ee1e517b35b"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-no-turbo-regression/result.json",
+      "kind": "regression",
+      "cases": 4,
+      "passed": 4,
+      "rom_hashes": [
+        "58418ec2aa83b6bc51dc48bafd1ea5f0890049ccef805d55bcb31ee1e517b35b"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-profile/result.json",
+      "kind": "profile",
+      "cases": 11,
+      "passed": 9,
+      "rom_hashes": [
+        "def70a346fc628b359fb962c583417408b8148e71617d02b56a49e7cdfb8f0e9"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-profile-control-v4/result.json",
+      "kind": "profile",
+      "cases": 3,
+      "passed": 3,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-profile-r800-v4/result.json",
+      "kind": "profile",
+      "cases": 12,
+      "passed": 12,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-profile-v4/result.json",
+      "kind": "profile",
+      "cases": 14,
+      "passed": 14,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-profile-wsx-v4/result.json",
+      "kind": "profile",
+      "cases": 6,
+      "passed": 6,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-regression/result.json",
+      "kind": "regression",
+      "cases": 49,
+      "passed": 48,
+      "rom_hashes": [
+        "def70a346fc628b359fb962c583417408b8148e71617d02b56a49e7cdfb8f0e9"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-regression-r800-v4/result.json",
+      "kind": "regression",
+      "cases": 40,
+      "passed": 40,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-regression-v4/result.json",
+      "kind": "regression",
+      "cases": 88,
+      "passed": 87,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/auto-two-player-boundary-v4/result.json",
+      "kind": "regression",
+      "cases": 11,
+      "passed": 11,
+      "rom_hashes": [
+        "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+      ]
+    },
+    {
+      "source": "references/issue39/base-mode/result.json",
+      "kind": "regression",
+      "cases": 11,
+      "passed": 11,
+      "rom_hashes": [
+        "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1"
+      ]
+    },
+    {
+      "source": "references/issue39/long-v1/result.json",
+      "kind": "long",
+      "cases": 20,
+      "passed": 16,
+      "rom_hashes": [
+        "356c0e51a1ea35783161863c30703f3179cdc54f15898c6ce25947292772c59b",
+        "5cd5ac03f642af495d52fe8cc8eb8109c7ffe1a54fb893299939ce518de40aab"
+      ]
+    },
+    {
+      "source": "references/issue39/long-v2/result.json",
+      "kind": "long",
+      "cases": 40,
+      "passed": 37,
+      "rom_hashes": [
+        "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "9eb875a1fe71687ede1937292aaf7635a4f34597b718350d214a36e6ad44f427",
+        "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+        "fce6b95c249400cc21e5a6c77b0353c2671dd584f247eceb4aa9e9c6874c6d6f"
+      ]
+    },
+    {
+      "source": "references/issue39/long-v3/result.json",
+      "kind": "long",
+      "cases": 40,
+      "passed": 40,
+      "rom_hashes": [
+        "5c5bfbda65104798a23034f3e13767a1fdad0f8838cb60856965abb3b4c07df1",
+        "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+        "fce6b95c249400cc21e5a6c77b0353c2671dd584f247eceb4aa9e9c6874c6d6f"
+      ]
+    },
+    {
+      "source": "references/issue39/paired-v1/result.json",
+      "kind": "profile",
+      "cases": 34,
+      "passed": 29,
+      "rom_hashes": [
+        "356c0e51a1ea35783161863c30703f3179cdc54f15898c6ce25947292772c59b",
+        "5cd5ac03f642af495d52fe8cc8eb8109c7ffe1a54fb893299939ce518de40aab",
+        "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1"
+      ]
+    },
+    {
+      "source": "references/issue39/paired-v2/result.json",
+      "kind": "profile",
+      "cases": 17,
+      "passed": 17,
+      "rom_hashes": [
+        "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "9eb875a1fe71687ede1937292aaf7635a4f34597b718350d214a36e6ad44f427",
+        "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+        "fce6b95c249400cc21e5a6c77b0353c2671dd584f247eceb4aa9e9c6874c6d6f"
+      ]
+    },
+    {
+      "source": "references/issue39/paired-v3/result.json",
+      "kind": "profile",
+      "cases": 66,
+      "passed": 62,
+      "rom_hashes": [
+        "5c5bfbda65104798a23034f3e13767a1fdad0f8838cb60856965abb3b4c07df1",
+        "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+        "fce6b95c249400cc21e5a6c77b0353c2671dd584f247eceb4aa9e9c6874c6d6f"
+      ]
+    },
+    {
+      "source": "references/issue39/paired-v4/result.json",
+      "kind": "profile",
+      "cases": 66,
+      "passed": 66,
+      "rom_hashes": [
+        "5c5bfbda65104798a23034f3e13767a1fdad0f8838cb60856965abb3b4c07df1",
+        "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+        "fce6b95c249400cc21e5a6c77b0353c2671dd584f247eceb4aa9e9c6874c6d6f"
+      ]
+    },
+    {
+      "source": "references/issue39/regression-v1/result.json",
+      "kind": "regression",
+      "cases": 88,
+      "passed": 53,
+      "rom_hashes": [
+        "356c0e51a1ea35783161863c30703f3179cdc54f15898c6ce25947292772c59b",
+        "5cd5ac03f642af495d52fe8cc8eb8109c7ffe1a54fb893299939ce518de40aab"
+      ]
+    },
+    {
+      "source": "references/issue39/regression-v2/result.json",
+      "kind": "regression",
+      "cases": 41,
+      "passed": 41,
+      "rom_hashes": [
+        "5c5bfbda65104798a23034f3e13767a1fdad0f8838cb60856965abb3b4c07df1",
+        "9eb875a1fe71687ede1937292aaf7635a4f34597b718350d214a36e6ad44f427",
+        "fce6b95c249400cc21e5a6c77b0353c2671dd584f247eceb4aa9e9c6874c6d6f"
+      ]
+    },
+    {
+      "source": "references/issue39/regression-v3/result.json",
+      "kind": "regression",
+      "cases": 88,
+      "passed": 85,
+      "rom_hashes": [
+        "5c5bfbda65104798a23034f3e13767a1fdad0f8838cb60856965abb3b4c07df1",
+        "fce6b95c249400cc21e5a6c77b0353c2671dd584f247eceb4aa9e9c6874c6d6f"
+      ]
+    },
+    {
+      "source": "references/issue39/regression-v4/result.json",
+      "kind": "regression",
+      "cases": 88,
+      "passed": 88,
+      "rom_hashes": [
+        "5c5bfbda65104798a23034f3e13767a1fdad0f8838cb60856965abb3b4c07df1",
+        "fce6b95c249400cc21e5a6c77b0353c2671dd584f247eceb4aa9e9c6874c6d6f"
+      ]
+    }
+  ],
+  "deleted_roots": [
+    "issue39-auto-long.log",
+    "issue39-regression-v1.log",
+    "issue39-probe-v4.log",
+    "issue39-long-turbo-st-v2.log",
+    "disassembly",
+    "issue39-auto-bootST.log",
+    "issue39-boot-module64.log",
+    "issue39-rocks-Panasonic_FS-A1WSX-64k.log",
+    "issue39-long-v2.log",
+    "issue39-long-v3.log",
+    "issue39-boot-module128.log",
+    "issue39-probe-v5.log",
+    "issue39-regression-v2.log",
+    "issue39-integration64-st-v2.log",
+    "issue39-turbo-build128-v4.log",
+    "issue39-long-v1.log",
+    "issue39-auto-boot64-v4.log",
+    "mame-state",
+    "issue39-im-st.log",
+    "issue39-regression-v3.log",
+    "issue39-probe-v2.log",
+    "issue39-workbook.log",
+    "issue39-fallback-sony.log",
+    "issue39-rocks-Panasonic_FS-A1WSX-64k-v2.log",
+    "screenshots",
+    ".DS_Store",
+    "issue39-turbo-build128.log",
+    "stage-one-research",
+    "analysis",
+    "issue39-baseline64.log",
+    "issue39-probe-v3.log",
+    "cache",
+    "issue39-auto-boot.log",
+    "issue39-auto-test-mode-build-v2.log",
+    "issue39-regression-v4.log",
+    "archive",
+    "issue39-auto-components.log",
+    "issue39-auto-integration128.log",
+    "issue39-turbo-build128-v2.log",
+    "issue39-build64.log",
+    "issue39-long-base-st.log",
+    "issue39-turbo-build128-v3.log",
+    "issue39-motion-Panasonic_FS-A1WSX-v2.log",
+    "issue39-auto-test-mode-build.log",
+    "issue39-auto-test-mode-build-v3.log",
+    "issue39-im2-st.log",
+    "mame-validation",
+    "issue39-tests.log",
+    "issue39-motion-Panasonic_FS-A1ST-v2.log",
+    "issue39-paired-v1.log",
+    "issue39-auto-test-controls128.log",
+    "issue39",
+    "issue39-auto-test-controls64.log",
+    "issue39-paired-v2.log",
+    "issue36",
+    "issue39-paired-v3.log",
+    "issue39-auto-workbook.log",
+    "issue39-auto-profile128.log",
+    "issue39-mapper-build-128.log",
+    "issue39-auto-regression.log",
+    "issue39-auto-tests.log",
+    "issue39-auto-start64.log",
+    "issue39-auto-final-build.log",
+    "issue39-build128.log",
+    "issue39-auto-bootGT-v4.log",
+    "issue39-rocks-Panasonic_FS-A1WSX-v2.log",
+    "issue39-auto-no-check-build.log",
+    "issue39-auto-launcher-tests.log",
+    "issue39-turbo-profile64-wsx.log",
+    "issue39-auto-profile.log",
+    "issue39-rocks-Panasonic_FS-A1ST-64k-v2.log",
+    "issue39-paired-v4.log",
+    "issue39-mapper-build-comparison.json",
+    "issue39-auto-boot64.log",
+    "exports",
+    "issue39-guard-build128.log",
+    "issue39-fresh-module.log",
+    "issue39-final-smoke-st.log",
+    "issue39-final-workbook.log",
+    "issue39-delivery-component-tests.log",
+    "issue39-speed-guarded.log",
+    "issue39-mapper-launcher-before.log",
+    "sessions",
+    "issue39-module.log",
+    "issue39-fresh-base128.log",
+    "issue39-jitter-confirm.log",
+    "mame-source",
+    "issue39-base-mode.log",
+    "issue39-probe.log",
+    "issue39-auto-start128.log",
+    "issue39-audio-guarded.log",
+    "issue39-abi-st.log",
+    "issue39-final-module.log",
+    "issue39-auto-no-check-start.log",
+    "issue39-last-component-tests.log",
+    "issue39-turbo-build64-v5.log",
+    "issue39-motion-Panasonic_FS-A1ST-64k-v2.log",
+    "issue39-turbo-profile64-st.log",
+    "issue34",
+    "issue39-speed-recheck.log",
+    "issue39-final-build128.log",
+    "issue39-128-guard.log",
+    "issue39-auto-general-tests-v4.log",
+    "issue39-start64-st.log",
+    "issue39-turbo-build64-v4.log",
+    "build",
+    "issue39-final-component-tests.log",
+    "issue39-turbo-profile64-st-v2.log",
+    "issue39-final-build64.log",
+    "issue39-component-tests.log",
+    "issue39-final-tests.log",
+    "issue39-start64-wsx.log",
+    "issue39-turbo-profile64-wsx-v2.log",
+    "baselines",
+    "issue39-turbo-profile64-wsx-v3.log",
+    "issue39-auto-profile128-v4.log",
+    "issue39-2m-cap-before.log",
+    "issue39-auto-build-v4.log",
+    "issue39-turbo-build64-v3.log",
+    "issue39-auto-no-turbo-build.log",
+    "issue39-final-smoke-wx.log",
+    "issue39-steering128-recheck.log",
+    "issue39-rocks-Panasonic_FS-A1ST-v2.log",
+    "issue39-turbo-build64-v2.log",
+    "issue39-auto-build-v1.log",
+    "issue39-mapper-build-64.log",
+    "issue39-auto-module-layout.log",
+    "attract",
+    "issue39-fresh-base64.log",
+    "probe",
+    "issue39-final-smoke-sony.log",
+    "issue39-auto-build-v3.log",
+    "validation",
+    "issue39-turbo-build64.log",
+    "issue39-auto-components-v4.log",
+    "issue39-integration64-st.log",
+    "issue39-auto-build-v2.log",
+    "issue39-motion-Panasonic_FS-A1WSX-64k-v2.log"
+  ],
+  "checkpoints": {
+    "checkpoints": {
+      "11-flicker-50-v6": {
+        "description": "Paused two-enemy radar-overlap priority rotation, 50 Hz; moving integration pending",
+        "kind": "diagnostic",
+        "manifest_sha256": "20dfbfb8da49e21c7718e534599390382efffdcc37c218c32902a4717f717066",
+        "rom": "references/build/issue11-flicker-stress-50-final-v6/raster-scroll.rom",
+        "rom_sha256": "f6892e74e651e9deb194482a3144ed146fabfa29c798d82e4d23ba59242b187e"
+      },
+      "11-flicker-60-v6": {
+        "description": "Paused two-enemy radar-overlap priority rotation, 60 Hz; moving integration pending",
+        "kind": "diagnostic",
+        "manifest_sha256": "c5f7b49fe682a43beca5879480a779b06d311f2545dafed98be1c77dc7bb1cbc",
+        "rom": "references/build/issue11-flicker-stress-60-final-v6/raster-scroll.rom",
+        "rom_sha256": "f0ee9ce559b3598812c8e47cc304fa73f214c257e4c4d28084d976ebfe336ea5"
+      },
+      "11-outline-flicker-60-v144": {
+        "description": "Controlled 60Hz HUD-on test, sprite radar, body-first independent outlines. Starts paused; 24 SAT/free8. Moving path unaccepted.",
+        "kind": "experimental",
+        "manifest_sha256": "1ab5c24cc2b4a004491b85925c5fdf7bc22b630ca3c191b26bd8c4b1b41d3b52",
+        "rom": "references/build/issue11-outline-flicker-60-v144/raster-scroll.rom",
+        "rom_sha256": "02b6280aea0c96487bea0e7d1f7b8dd6a6a43750ed6cfeef4887006bd4bf48b6"
+      },
+      "11-r08-no-hud-restored-v1": {
+        "description": "Accepted stage08 HUD-off, exact v25 ROM bytes restored after clean",
+        "kind": "reference",
+        "manifest_sha256": "e3fd5d2d517b98bd4ec50da08e2e8413b70a0798f4d27cf7f7c47d1ae059cb81",
+        "rom": "references/build/issue11-r08-reference-no-hud-restored-v1/raster-scroll.rom",
+        "rom_sha256": "38d59eea33d7bd52d236b4095ae79a9562b010ee69490c58caedf023c3c603cd"
+      },
+      "11-r08-restored-v1": {
+        "description": "Accepted stage08 HUD-on, exact v25 ROM bytes restored after clean",
+        "kind": "reference",
+        "manifest_sha256": "cb3f7ae33340a069612dfe4ad2c943c4549a166072be368ee419e5c17bf62050",
+        "rom": "references/build/issue11-r08-reference-restored-v1/raster-scroll.rom",
+        "rom_sha256": "e5b6800659c58b621a1b8ef748d884efad2b983417eca63c9aa81fa73a73623b"
+      },
+      "11-r09-one-60-v61": {
+        "description": "Validated one-enemy driving baseline at60 Hz;1600 cache/44 RGB and493 contact-route states/19 RGB;19 SAT/free13. More enemies remain pending.",
+        "kind": "reference",
+        "manifest_sha256": "aec779443d385f0650cfa4d1dc0a7989e8047a77b7e2417bd4f018f28685b710",
+        "rom": "references/build/issue11-r09-one-status2-v61/raster-scroll.rom",
+        "rom_sha256": "5f54bee1f17c15dec2d264800db38d95d802fcab40f5e8fb47238eecb47af3c6"
+      },
+      "11-r09-one-no-hud-60-v61": {
+        "description": "HUD-off one-enemy60 Hz comparison;1600 cache/35 RGB and493 contact-route states/19 RGB; original tick/rules retained.",
+        "kind": "reference",
+        "manifest_sha256": "04936e906e23b833a78c2a0371141cda1846bc80e3fd3802389435a57fe5cc12",
+        "rom": "references/build/issue11-r09-one-status2-no-hud-v61/raster-scroll.rom",
+        "rom_sha256": "970c703716974fad5ff16f05976b0976fd78ca4e6115239539bf8cc0238c611e"
+      },
+      "11-r09-pipeline-v20": {
+        "description": "Experimental60Hz: one enemy, 12-cell radar, next-refresh death presentation; full route tests underway",
+        "kind": "experimental",
+        "manifest_sha256": "475d0856bc189753b61bee47224d1215e21015a3317c2f58f70a29c4de2e538f",
+        "rom": "references/build/issue11-r09-one-cells-pipeline-v20/raster-scroll.rom",
+        "rom_sha256": "2117a66297f1880d0307d92751044dc784b0739e75ad377116f7c3dea7be7805"
+      },
+      "11-r09-player-blitter-hud-v130": {
+        "description": "EXPERIMENTAL/UNACCEPTED: bitmap player + full HUD/one enemy at 50Hz,18SAT/free14;1138 cache/28RGB pass; timing and radar backlog fail. Same ROM as measured v126.",
+        "kind": "experimental",
+        "manifest_sha256": "3b20b8979a4701c79803cdeb10064b9193e71fdb56e51d9e8f86c96386f32f4e",
+        "rom": "references/build/issue11-r09-player-blitter-hud-v130/raster-scroll.rom",
+        "rom_sha256": "1b6a35edfae207a291c663ef3df87250882377e3238331d7332bee3689f23cb4"
+      },
+      "11-r09-player-dot-50-v115": {
+        "description": "One original enemy/HUD at 50 Hz; twelve dynamic radar cells plus one independent white/black blinking player; 1138 contact/cache states and 1600 movement/cache states pass",
+        "kind": "diagnostic",
+        "manifest_sha256": "b94ccebed8d487edaf54725d68512c5d68c59d6e6534c83328fe28964b4930ea",
+        "rom": "references/build/issue11-r09-player-dot-50-v115/raster-scroll.rom",
+        "rom_sha256": "b2868101cb54555503dd787274b252a952a73ddd5381df5d2d54803a0e45d3d8"
+      },
+      "11-r09-radar-blitter-hud-v138": {
+        "description": "Experimental blue 48x80 bitmap radar, sprite car, independent blinking dot; HUD on, 8 SAT/free24. Known full-copy/raster latency, not performance accepted.",
+        "kind": "experimental",
+        "manifest_sha256": "23a9f9b1481c666f392b86a9d3c3c45f76e60acaf87ac95e4479658ffc880724",
+        "rom": "references/build/issue11-r09-radar-blitter-hud-v138/raster-scroll.rom",
+        "rom_sha256": "b62d64d5e5f33af3cfd17428c3505d5d192a3b7b93b5096cda31c3649ead47fd"
+      },
+      "11-r09-radar-blitter-hud-v139": {
+        "description": "Experimental blue 48x80 bitmap radar, sprite car, independent blinking dot; HUD on, 8 SAT/free24. Known full-copy/raster latency, not performance accepted.",
+        "kind": "experimental",
+        "manifest_sha256": "713ea46d6689f3eb2c55a7fc83e3e85501753fc234fd0d890e04ae892b25349e",
+        "rom": "references/build/issue11-r09-radar-blitter-hud-v139/raster-scroll.rom",
+        "rom_sha256": "eed4eea0a48f7862ffd35854d04edd2dcbedc4fa2db3c1c734ecc982d448021a"
+      },
+      "11-r09-strip-tags-50-v105": {
+        "description": "UNACCEPTED diagnostic: two full-color enemies, HUD on, 50 Hz, exact three-tile candidates; 411 strip and 5120 solid cases pass; moving RGB/cache fail.",
+        "kind": "experimental",
+        "manifest_sha256": "92a26a2c424faa539ef8edf5f1a498ea5e21b0d11c228d88f34d884f01c052cd",
+        "rom": "references/build/issue11-r09-two-strip-tags-50-v105/raster-scroll.rom",
+        "rom_sha256": "27f4e86aba79b95a3831f21ebe7f9294f53c852da9c416b274300f7f68c2e2e5"
+      },
+      "11-r09-three-gameplay-v153": {
+        "description": "Three-enemy diagnostic: native2643/presentation5784 pass, 25SAT/free7. Moving predecessor corrupts bottom maze row; NOT accepted, not latest.",
+        "kind": "diagnostic",
+        "manifest_sha256": "f588ac5de434675401c1c03b0238825894078eb5dda9260889040c14eceb5801",
+        "rom": "references/build/issue11-r09-three-gameplay-v153/raster-scroll.rom",
+        "rom_sha256": "933213fc2f2a0fdbb353e3c70b899f3d3125e665e1b2c2d5cfc48bfd06488a8c"
+      },
+      "11-r09-two-gameplay-v152": {
+        "description": "Two original enemies, complete cars/HUD/radar. 1138 full cache states and 28 RGB pass; peak9 candidates, 22SAT. Median19.937ms, max33.313ms: timing NOT accepted.",
+        "kind": "experimental",
+        "manifest_sha256": "bbdd3d3226adf28937992489cb41e712c1eff4d0f4156ccce136c5ba8c9c5cb2",
+        "rom": "references/build/issue11-r09-two-gameplay-v152/raster-scroll.rom",
+        "rom_sha256": "9989a2de827a1fffe362dd2b0a37e29df8afe1a2b60bf130910247bc619f31b8"
+      },
+      "11-r09-two-no-hud-v80": {
+        "description": "Two original enemies at60Hz, original16.5ms logical clock, HUD disabled with six SAT slots/free26; natural493/19 and long1600/38 RGB/cache/timing gates pass. Stage09 HUD-on remains diagnostic.",
+        "kind": "reference",
+        "manifest_sha256": "6f91803488dd1f0c8079d63ee14cce56825f6b6d48bc7b902cf1ca703d59e58b",
+        "rom": "references/build/issue11-r09-two-tail196-v80/raster-scroll.rom",
+        "rom_sha256": "6c3fdcaf4ddf78ac0bc7bd157ec59753cd97c4157a13db95a843814034525f3a"
+      },
+      "11-r09-window-v51": {
+        "description": "60 Hz one enemy, 12-cell radar; natural route 493 cache/19 RGB/timing passes. Long movement control cache remains an open gate.",
+        "kind": "experimental",
+        "manifest_sha256": "45b4fde32117a8acb4ab1ff9f8a178768a21ef9db76e126c21d7872a8509517d",
+        "rom": "references/build/issue11-r09-one-margin40-v51/raster-scroll.rom",
+        "rom_sha256": "9ee54b65af8c1e433889e8d740b8884d1043ce84cb1b9883d2fa066753f861b8"
+      },
+      "11-r10-coherent-v207": {
+        "description": "Original graphics/HUD, stones and repeated-smoke stress:1812 cache states/59 RGB/1984 exact source smoke calls pass; cache holds2.26% of refreshes. Timing deviations remain.",
+        "kind": "experimental",
+        "manifest_sha256": "761114161f3c85e959fabe4100ca0fe13033478e4c62ee72100f7455897d3bde",
+        "rom": "references/build/issue11-r10-coherent-v207/raster-scroll.rom",
+        "rom_sha256": "f868856d812bcf47a819549c50bc040ce5d91105070ca2eb10d5bad546a0642b"
+      },
+      "11-r10-smoke-v171": {
+        "description": "Ctrl smoke: original three-cloud/fuel/stun/recovery; full HUD and cars, no new sprites. 1452 cache/47 RGB/1712 original calls pass; main max28.147ms, timing unaccepted.",
+        "kind": "experimental",
+        "manifest_sha256": "fe87065ab227722320932975cfd32a34379d9bf7eb8175bbf4143b87971a6643",
+        "rom": "references/build/issue11-r10-smoke-v171/raster-scroll.rom",
+        "rom_sha256": "1a95221238b3ddd501e82d74d6572f696d42b3e463fc45d8d6eb010a79d4c829"
+      },
+      "11-r11-coherent-v207": {
+        "description": "Original graphics/HUD and original tick rate, bounded cache backpressure:3582 first-round cache states/44 RGB/197 source bonus ticks, plus1812 repeated-smoke cache states/59 RGB on the matched stage10 fixture. Credit/start UI pending; timing deviations remain.",
+        "kind": "experimental",
+        "manifest_sha256": "f07bb16d4836c103d0677cb22e4ac70d768a40ffa65df21b2c4dc354fcf5eb76",
+        "rom": "references/build/issue11-r11-coherent-v207/raster-scroll.rom",
+        "rom_sha256": "2d6799cbc4c7dc94a05b0c275b7fb5c78404485146a26496683dfb6fae458d70"
+      },
+      "11-r11-original55-v204": {
+        "description": "Original graphics, full HUD, first-round completion at55 logic Hz (9.25% slower);3918 cache states/45 RGB/197 original bonus ticks pass. Heavy repeated-smoke stress unaccepted; menus pending.",
+        "kind": "experimental",
+        "manifest_sha256": "6788c1356e0cca02f6879a58cea00bae8295e051d04c28ec2c3b8336583295a0",
+        "rom": "references/build/issue11-r11-original55-v204/raster-scroll.rom",
+        "rom_sha256": "e52419e41e46cea012608dd32c0df0078ea953b8392c3d58e469778cbb1dc0cf"
+      },
+      "11-r12-approved-v260": {
+        "description": "User-approved initial single-player round; default Stage12, original graphics and full HUD.",
+        "kind": "reference",
+        "manifest_sha256": "aae7b70a58ea635ae5bd005fc19049a9607b7ea513e74f2b1dc87e6cfc0efda0",
+        "rom": "references/build/issue11-r12-smoke-irq-v260/raster-scroll.rom",
+        "rom_sha256": "9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12"
+      },
+      "11-r12-hud-v242": {
+        "description": "Original graphics, red low-fuel warning, blinking S radar flag, yellow-only life icon; Space smoke/P pause; repaired lucky-bonus header timing. Full HUD and real sprite limits.",
+        "kind": "experimental",
+        "manifest_sha256": "98ec30bad958e34c5923a04f518c7ea54830ce7bd179f5841baef7ba8fefb24c",
+        "rom": "references/build/issue11-r12-hud-lucky-v242/raster-scroll.rom",
+        "rom_sha256": "f8ede8742a87f41094a2936c365f6c20779e50add0de7b517759d82ce2879b53"
+      },
+      "11-r12-input-fuel-v255": {
+        "description": "Four-way newest-direction input, corner escape safety, VBlank fuel restoration and serviceable header interrupts; full HUD and original graphics, 20 sprite entries / 12 free.",
+        "kind": "experimental",
+        "manifest_sha256": "2f8ce79c93abb36ebaef23a38c4337faf8394bd3c155699168ec47f760a8b85c",
+        "rom": "references/build/issue11-r12-input-fuel-v255/raster-scroll.rom",
+        "rom_sha256": "df372f1a2ca35c1d813f3fd8e089c8a06d250910e60e747510b0420097a528f8"
+      },
+      "11-r12-life-outline-v243": {
+        "description": "Restore the black life-icon outline; retain red low fuel, blinking S, Space smoke/P pause and repaired header timing. Complete HUD,20 sprite slots/12 free.",
+        "kind": "experimental",
+        "manifest_sha256": "89493f08b6ad3c3030f576a233c57811fc5ea456fa5ac7cca52d36321ecc87f2",
+        "rom": "references/build/issue11-r12-life-outline-v243/raster-scroll.rom",
+        "rom_sha256": "1af1eef410b24ff5ab0adec26bd7740b5248d0630b0b79ca97d183bf2c049598"
+      },
+      "11-r12-session-v229": {
+        "description": "Original graphics/HUD, credit5/start1, joystick1, native first-round bonus and clear/game-over screens.3576 cache/44 gameplay RGB/2 menus;144 inputs+9 native frame pairs;0.53% cache holds, occasional timing delays. Original round only; silent.",
+        "kind": "experimental",
+        "manifest_sha256": "3734fce30b0361fba77784cbee64456045376dc8cb9fd654f677ab8783072d2f",
+        "rom": "references/build/issue11-r12-delivery-v229/raster-scroll.rom",
+        "rom_sha256": "db1c96881666b54e3ed7fcda39ee8029bbde76aac133b78f1ed27e78ff2e034e"
+      },
+      "11-r12-smoke-irq-v260": {
+        "description": "Repeated Space smoke header fix, explosion copy priority and native corner centering; full HUD and original graphics, 20 sprite entries / 12 free.",
+        "kind": "experimental",
+        "manifest_sha256": "aae7b70a58ea635ae5bd005fc19049a9607b7ea513e74f2b1dc87e6cfc0efda0",
+        "rom": "references/build/issue11-r12-smoke-irq-v260/raster-scroll.rom",
+        "rom_sha256": "9771e72b394f5a3c66018f638318caa5e4e060eed85c2dcc27d5f5328f5efc12"
+      },
+      "11-screen4-rocks-50-v1": {
+        "description": "SCREEN 4 stage01 feasibility: original-size driving/rocks/HUD, two-color tile rows, 6410 adapted pixels; 1600 cache states and 26 RGB images pass; no enemy gameplay",
+        "kind": "experimental",
+        "manifest_sha256": "5b3f58730408a45a80e6a9e580ec0d1fb4a15c3152aece6e2ed9b6a90aa32058",
+        "rom": "references/build/issue11-screen4-rocks-50-v1/raster-scroll.rom",
+        "rom_sha256": "9a3ccec7919a067c5cb83c6bb0a6e0ce5692541ff6b54371e629965a0e897afb"
+      }
+    },
+    "schema_version": 1
+  },
+  "retained_curated_sources": [
+    "docs/measurements/timing",
+    "docs/measurements/hardware",
+    "docs/measurements/audio",
+    "docs/cycle-budget.xlsx"
+  ],
+  "default_rom": {
+    "path": "dist/newrallyx.rom",
+    "bytes": 2048000,
+    "sha256": "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4"
+  },
+  "verification": "454 general tests;92 SCREEN4 components with1 skip; canonical make run MAPPER=1 passed before raw evidence removal. Emulator-only; user visual/audio acceptance remains separate.",
+  "cleanup_complete": true,
+  "protected_inputs_verified_unchanged": true,
+  "default_rom_verified_unchanged": true,
+  "clean_rebuild_passed": true,
+  "regenerated_module_baseline_passed": true,
+  "knowledge_handoff": {
+    "guide": "docs/developer-guide.md",
+    "lessons": "docs/engineering-lessons.md",
+    "inline_module_contracts": 20,
+    "policy": "Keep learning and code contracts; delete raw experiments.",
+    "validation": "Documentation/comments build remained byte-identical; frozen128KiB ROM and complete symbol map passed;92 component tests with1 existing skip.",
+    "final_rom_sha256": "3bd41357067589c1c0a65722426c0c4f3f24fdac1941b6dcbd27e56e83393cf4",
+    "final_rom_bytes": 2048000,
+    "raw_intermediates_removed": true
+  },
+  "latest_asset_update": {
+    "source": "assets/msxlogo.bmp",
+    "dimensions": [
+      54,
+      20
+    ],
+    "bit_depth": 1,
+    "scale": 1,
+    "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+    "rom_bytes": 2048000,
+    "validation": "Exact BMP-to-ROM pixel oracle; complete title/boot emulator proof; start/graphics contracts;93 components with1 skip; WSX64 native3-enemy work and FPS identical to the previous recorded image.",
+    "timing_ledger": "docs/measurements/timing/msx-logo-bmp.json"
+  }
+}

@@ -18,7 +18,7 @@ adaptations may reduce scenery colors or narrow the maze viewport while retainin
 original-size assets, world coordinates and original gameplay logic/rules. Measure
 each change; visual identity must not block a playable port.
 
-Native video builds expose `--no-hud` on `scripts/native_runtime.py build-probe`.
+Native video builds expose `--no-hud` on `src/toolchain/legacy/native_runtime.py build-probe`.
 The default compiles `NATIVE_HUD=1`; `--no-hud` compiles `NATIVE_HUD=0` and records
 `hud_enabled=false` in the sealed build metadata. This removes HUD initialization,
 state translation, scoreboard/flag rendering, bitmap radar, and the fuel/life
@@ -102,7 +102,7 @@ a physical controller or the complete gameplay scenarios. The Python suite
 passes 254 tests at the strip-cache checkpoint.
 
 ```sh
-.venv/bin/python -B scripts/native_runtime.py run \
+.venv/bin/python -B src/toolchain/legacy/native_runtime.py run \
   --rom references/build/native-review-2026-10-22/native.rom \
   --output references/build/native-review-session
 ```

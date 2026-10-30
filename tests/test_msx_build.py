@@ -2,7 +2,7 @@
 from pathlib import Path
 import tempfile
 import unittest
-from scripts.msx.build import destination
+from src.toolchain.msx.build import destination
 
 
 class BuildDestinationTests(unittest.TestCase):

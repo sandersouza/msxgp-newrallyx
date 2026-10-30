@@ -1,8 +1,8 @@
 """Synthetic SCREEN 5 data only; no arcade ROMs or BIOS required."""
 import unittest
 from PIL import Image
-from scripts.msx.screen5 import BITMAP_SIZE, LEVELS, convert, pack
-from scripts.msx.emulator import tcl
+from src.toolchain.msx.screen5 import BITMAP_SIZE, LEVELS, convert, pack
+from src.toolchain.msx.emulator import tcl
 
 
 class Screen5Tests(unittest.TestCase):

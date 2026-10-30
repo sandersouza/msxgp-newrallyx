@@ -16,7 +16,7 @@ class RecorderLifecycleTests(unittest.TestCase):
                 (work/'run.lua').write_text('return {destination='+json.dumps(str(work))+
                     ',frames={2},inputs={},header="{\\\"schema_version\\\":1"}\n')
                 result=subprocess.run(['lua',str(root/'tests/fixtures/scene-capture-harness.lua'),
-                    str(root/'scripts/scenes/capture.lua'),str(work),scenario],capture_output=True,text=True)
+                    str(root/'src/toolchain/scenes/capture.lua'),str(work),scenario],capture_output=True,text=True)
                 self.assertEqual(result.returncode,0,result.stderr)
                 if scenario in ('normal','initial-change','read-change'):
                     self.assertEqual((case/'complete').read_text(),'ok')

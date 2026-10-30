@@ -1,6 +1,6 @@
 """Synthetic allocator contracts for buffers near the IM2 jump and stack."""
 import unittest
-from scripts.msx.full_memory import layout
+from src.toolchain.msx.full_memory import layout
 
 
 class FullMemoryTests(unittest.TestCase):

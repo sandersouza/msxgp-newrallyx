@@ -1,3 +1,18 @@
+; Reuse contract: radar-color-blink (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: GameSession_SpecialFrame, GameSession_RadarColor
+; Inputs: SpecialFrame reads physical clock. RadarColor: HL=pattern byte, adjacent color row,
+;   IX identifies native actor; caller draws player last.
+; Outputs: Latched blink phase and existing yellow-flag/player color priority; returns HL to
+;   the pattern row.
+; Registers: SpecialFrame AF/HL scratch. RadarColor AF/HL scratch with final pattern-row HL,
+;   BC preserved; DE/IX/IY untouched.
+; Interrupts: IFF unchanged; foreground cache edit, no VDP port traffic here.
+; Memory / hardware: Existing GameSession_Blink byte and caller-owned radar pattern/color row.
+; Reuse boundary: Binding to the accepted SCREEN4 colors and native actor identity; not a
+;   general palette compositor.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: Physical-clock blink state and SCREEN4 radar color priority.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 GameSession_SpecialFrame:

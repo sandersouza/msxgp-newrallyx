@@ -1,3 +1,19 @@
+; Reuse contract: session-video (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: GameSession_Video
+; Inputs: Cold mode transition; main Page0, native seed, world/HUD resources and renderer
+;   aliases valid.
+; Outputs: SCREEN4 registers/palette, terrain/cache/HUD/sprite restoration, first commit and
+;   ready latch; returns EI.
+; Registers: Common caller-saved ABI.
+; Interrupts: Owns cold DI/EI and display-enable sequence; must not run concurrently with
+;   active presentation.
+; Memory / hardware: Existing popup invalidation, terrain, eight pattern sets, two name tables
+;   and sprite areas; no new buffers.
+; Reuse boundary: Host-specific mode/palette/restoration policy; replace this binding for
+;   another viewport/resource layout instead of adding a runtime branch.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: Cold SCREEN4 mode/terrain/cache restore; DI then established presentation setup.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 GameSession_Video:

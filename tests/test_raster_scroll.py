@@ -2,10 +2,10 @@
 from types import SimpleNamespace
 import unittest
 
-from scripts.msx.raster_scroll import (BODY_TOP, LIFE_X, LIFE_Y, LIFE_PATTERN, MASK_ROWS, compose, header,
+from src.toolchain.msx.raster_scroll import (BODY_TOP, LIFE_X, LIFE_Y, LIFE_PATTERN, MASK_ROWS, compose, header,
     index_for, outlined_life, palette_rgb, sprite_attributes, sprite_pattern, player_label_patterns)
-from scripts.msx import sprite_lives as counter
-from scripts.msx.screen5 import rgb333
+from src.toolchain.msx import sprite_lives as counter
+from src.toolchain.msx.screen5 import rgb333
 
 
 def fixture():
@@ -21,7 +21,7 @@ def fixture():
 
 class RasterScrollTests(unittest.TestCase):
     def test_slower_native_clock_preserves_elapsed_tick_count_and_rejects_impossible_cadence(self):
-        from scripts.msx.inputs import native_clock,video_timing
+        from src.toolchain.msx.inputs import native_clock,video_timing
         for hz,logic in ((50,None),(60,None),(50,55),(50,60)):
             clock=native_clock(hz,logic);phase=0;ticks=0;frames=10000
             for _ in range(frames):

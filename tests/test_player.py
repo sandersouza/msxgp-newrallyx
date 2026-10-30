@@ -1,8 +1,8 @@
 """Synthetic relocation, color-combination and native coordinate contracts."""
 import unittest
-from scripts.msx.player import palette,relocate,coordinates,atlas,atlas_with_tiles,padded_world
-from scripts.msx.raster_scroll import palette_rgb
-from scripts.msx.screen5 import rgb333
+from src.toolchain.msx.player import palette,relocate,coordinates,atlas,atlas_with_tiles,padded_world
+from src.toolchain.msx.raster_scroll import palette_rgb
+from src.toolchain.msx.screen5 import rgb333
 
 
 class PlayerTests(unittest.TestCase):
@@ -110,7 +110,7 @@ class PlayerTests(unittest.TestCase):
             self.assertEqual(banks[row//64][at:at+2],bytes(((n%32)*8,24)))
 
     def test_uniform_tags_preserve_textures_and_flag_owners(self):
-        from scripts.msx.player import uniform_source_tags
+        from src.toolchain.msx.player import uniform_source_tags
         graphics=bytearray(2048)
         for row in range(8):
             graphics[row*128:row*128+4]=bytes([0x66])*4
@@ -122,7 +122,7 @@ class PlayerTests(unittest.TestCase):
         self.assertEqual(bank,bytes([0,16,8,16,1,16,0,24,0,0]))
 
     def test_scenery_color_merge_retains_original_object_pixels(self):
-        from scripts.msx.player import merge_scenery_color
+        from src.toolchain.msx.player import merge_scenery_color
         world=bytes([10,3,10,10,10,10,10,10,10,10,10,10,10,10,10,10])
         result=merge_scenery_color(world,10,7,[(1,1,2,2)],width=4)
         self.assertEqual(result,bytes([7,3,7,7,7,10,10,7,7,10,10,7,7,7,7,7]))

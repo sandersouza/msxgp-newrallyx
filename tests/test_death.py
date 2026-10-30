@@ -2,7 +2,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from scripts.msx.death import verify_capture
+from src.toolchain.msx.death import verify_capture
 
 
 def synthetic_capture(path):

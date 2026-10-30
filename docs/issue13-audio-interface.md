@@ -34,7 +34,7 @@ full-game build. Bounded stages remain silent. The lower-level builder requires
 
 ## Music and event contract
 
-`scripts/msx/audio_score.py` reads validated original melody pointers, note/octave
+`src/toolchain/msx/audio_score.py` reads validated original melody pointers, note/octave
 values and durations. It arranges the background playlist, challenge accompaniment
 choices, start, completion and game-over songs. Compilation samples boundaries every
 two reference ticks; playback finishes when any original part ends, including

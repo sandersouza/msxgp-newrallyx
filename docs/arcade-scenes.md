@@ -12,7 +12,7 @@ From the repository root:
 ```sh
 .venv/bin/python -B scripts/extract_graphics.py \
   --input references/roms/nrallyx \
-  --output references/assets/nrallyx
+  --output assets/arcade/nrallyx
 .venv/bin/python -B scripts/arcade_scene.py capture \
   --output references/scenes/capture
 .venv/bin/python -B scripts/arcade_scene.py reconstruct \
@@ -55,8 +55,8 @@ Direct CLI equivalents:
 The `preview` and `analyze` commands use the compact reference-input composition.
 The live ROM uses the [raster layout](raster-scroll.md), not this input layout.
 
-`--assets` defaults to `references/assets/nrallyx`; `--replay` defaults to
-`scripts/scenes/gameplay-inputs.json`. Arguments use the caller's working
+`--assets` defaults to `assets/arcade/nrallyx`; `--replay` defaults to
+`src/toolchain/scenes/gameplay-inputs.json`. Arguments use the caller's working
 directory. Exit 0 means exact agreement, 1 means pixel differences (diagnostics
 are retained), and 2 means invalid input or a capture/publication failure.
 Previews are generated only after exact comparison passes.
@@ -114,7 +114,7 @@ not separately edited copies. The palette comes from the verified asset export;
 normal MAME shadow factor 0.6 and pen-table overrides are reproduced.
 
 The source contract is MAME tag `mame0289`, commit
-`f34f02505e32c1993c6a782b6814232cbfc74e36`, matching `scripts/graphics/nrallyx.json`.
+`f34f02505e32c1993c6a782b6814232cbfc74e36`, matching `src/toolchain/graphics/nrallyx.json`.
 Capture frame identities use `screen:frame_number()`; `replay_frame` names the
 reset-relative input schedule. The bundle stores the entire video state, not a
 resumable whole-machine save state. Composition leaves the running simulation,
@@ -264,7 +264,7 @@ different pixels, bounds [14,0,190,224).
 Reproduce the negative control without modifying either bundle:
 
 ```sh
-.venv/bin/python -B -c 'from pathlib import Path; from scripts.scenes.bundle import load_assets,load_capture; from scripts.scenes.render import render; from scripts.scenes.compare import compare; a=load_assets(Path("references/assets/nrallyx")); p=Path("references/scenes/capture"); print(compare(load_capture(p/"frame-02410",a).reference,render(load_capture(p/"frame-02411",a),a).image))'
+.venv/bin/python -B -c 'from pathlib import Path; from scripts.scenes.bundle import load_assets,load_capture; from scripts.scenes.render import render; from scripts.scenes.compare import compare; a=load_assets(Path("assets/arcade/nrallyx")); p=Path("references/scenes/capture"); print(compare(load_capture(p/"frame-02410",a).reference,render(load_capture(p/"frame-02411",a),a).image))'
 ```
 
 Re-run capture and analysis with fresh `--output` paths; never add derived

@@ -7,9 +7,9 @@ import unittest
 from unittest.mock import patch
 
 from scripts import project
-from scripts import native_runtime
-from scripts.msx.checkpoints import inventory, publish, resolve, publish_latest, resolve_latest, LATEST_ROM
-from scripts.scenes.storage import seal
+from src.toolchain.legacy import native_runtime
+from src.toolchain.msx.checkpoints import inventory, publish, resolve, publish_latest, resolve_latest, LATEST_ROM
+from src.toolchain.scenes.storage import seal
 
 
 class CheckpointTests(unittest.TestCase):

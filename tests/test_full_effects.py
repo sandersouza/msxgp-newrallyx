@@ -2,9 +2,9 @@
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from scripts.msx.full_effects import visible_smoke,mask_pixel,analyze
-from scripts.msx.smoke import ring_index
-from scripts.msx.sprite_radar import bitmap,patterns,WIDTH,HEIGHT
+from src.toolchain.msx.full_effects import visible_smoke,mask_pixel,analyze
+from src.toolchain.msx.smoke import ring_index
+from src.toolchain.msx.sprite_radar import bitmap,patterns,WIDTH,HEIGHT
 
 
 class FullEffectsTests(unittest.TestCase):

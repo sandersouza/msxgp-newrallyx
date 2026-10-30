@@ -1,3 +1,22 @@
+; Reuse contract: session-decorations (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: GameSession_AfterFrame, GameSession_EndDemo, GameSession_LabelNames,
+;   GameSession_LabelUpload, GameSession_PopupFrame, GameSession_PopupOverlay,
+;   GameSession_PopupUpload
+; Inputs: Native player/event/camera state, current pattern phase and decor bank. Run
+;   AfterFrame after native simulation; names/overlay/uploads follow the existing renderer
+;   order.
+; Outputs: Exact player label and score inscriptions through existing dirty/lazy caches; demo
+;   completion follows native lifecycle.
+; Registers: Common caller-saved ABI.
+; Interrupts: Foreground only; VDP helpers keep existing latch ownership. No new per-frame
+;   polling or transfer is added.
+; Memory / hardware: Existing DFE4..DFEA popup state, 2880 keys and shared UI/game scratch.
+;   UI/video restoration invalidates stale popup state.
+; Reuse boundary: Game-specific event/label format. Rebind at assembly time; do not reuse UI
+;   scratch while a gameplay popup owns it.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: Round/player labels and point inscriptions; existing phase caches and scratch.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 GameSession_AfterFrame:

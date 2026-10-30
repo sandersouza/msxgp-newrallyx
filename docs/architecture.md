@@ -8,18 +8,22 @@ The [assembly module contracts](../src/screen4/modules/README.md) describe publi
 entry points, reuse limits and the mandatory identical-ROM/map gate.
 See [maintenance](maintenance.md) for the file inventory, baseline hashes and
 verification scope. The remaining visual/audio acceptance stays with issue #13.
+For a new contributor, start with the [developer guide](developer-guide.md) and
+[engineering lessons](engineering-lessons.md). Current artifact paths and the
+policy for deleting raw experiments are in [artifact-layout.md](artifact-layout.md).
 
 The former `experiments/fixed-hud/` component is consolidated in `src/screen4/`.
 All 155 authored files moved together: assembly/includes, generators, verification
 tools, co-located tests and component documentation. The old/new path and hash
 ledger is [screen4-migration.json](screen4-migration.json). Top-level
-`experiments/` is removed; ignored `references/experiments/` artifact paths and
-public Make aliases remain stable. Keeping the same directory depth preserves
+`experiments/` is removed. Later output normalization also retired
+`references/experiments/`; the public ROM is now `dist/newrallyx.rom`.
+Keeping the same source directory depth preserves
 root discovery and sibling imports without changing assembly/module boundaries.
 
 The legacy/shared assembly sources now live in `src/screen5/`, alongside the
 optimized component. All 73 former top-level `src/` files retain their original
-bytes and include basenames. Shared Python generators remain in `scripts/msx/`.
+bytes and include basenames. Shared Python generators remain in `src/toolchain/msx/`.
 [screen5-migration.json](screen5-migration.json) records this subsequent move;
 the SCREEN 4 ledger above describes the preceding migration snapshot.
 
@@ -27,11 +31,11 @@ the SCREEN 4 ledger above describes the preceding migration snapshot.
 
 | Layer | Authored owners | Contract |
 | --- | --- | --- |
-| Public selection | `Makefile`, `src/screen4/targets.mk` | Default SCREEN 4; `LEGACY=1`/`legacy=1` selects SCREEN 5; test mode belongs to SCREEN 4. |
-| Optimized cartridge | `src/screen4/build.py`, `prepare.py`, `game_build.py`, `game_core.py`, `session_build.py` | Prepare resources, transform selected source adapters in an ignored assembly directory, assemble and export ASCII16. |
-| Pinned shared session/UI source | `src/screen4/build_profiles.py` | Verify/export local Git revision `6d562a791b0cc242119a31dd686ff8e93eb94fe0`; link contributor inputs locally and build a separate reference. |
-| Maintained legacy cartridge | `scripts/project.py`, `scripts/msx/raster_scroll.py`, `src/screen5/raster-scroll.asm` | Build `src/screen5/` in a fresh sealed directory; publish `references/build/newrallyx.rom` only on success. |
-| Launch and reference validation | `scripts/msx/emulator.py`, `scripts/scenes/`, `scripts/graphics/` | Verify manifests/inputs, use isolated openMSX state and contributor BIOS; never download game data. |
+| Public selection | `Makefile`, `src/toolchain/screen4/targets.mk` | Default SCREEN 4; `LEGACY=1`/`legacy=1` selects SCREEN 5; test mode belongs to SCREEN 4. |
+| Optimized cartridge | `src/toolchain/screen4/build.py`, `prepare.py`, `game_build.py`, `game_core.py`, `session_build.py` | Prepare resources, transform selected source adapters in an ignored assembly directory, assemble and export ASCII16. |
+| Pinned shared session/UI source | `src/toolchain/screen4/build_profiles.py` | Verify/export local Git revision `6d562a791b0cc242119a31dd686ff8e93eb94fe0`; link contributor inputs locally and build a separate reference. |
+| Maintained legacy cartridge | `scripts/project.py`, `src/toolchain/msx/raster_scroll.py`, `src/screen5/raster-scroll.asm` | Build `src/screen5/` in a fresh sealed directory; publish `dist/legacy/newrallyx.rom` only on success. |
+| Launch and reference validation | `src/toolchain/msx/emulator.py`, `src/toolchain/scenes/`, `src/toolchain/graphics/` | Verify manifests/inputs, use isolated openMSX state and contributor BIOS; never download game data. |
 
 The optimized build is not simply `src/` assembled in SCREEN 4. It combines
 current shared helpers, a verified pinned session source view, generated adapters
@@ -141,7 +145,7 @@ generated IRQ and symbols whenever changing source transformations.
 
 `game-audio.inc` and the session audio adapters reuse compiled original score
 parts with PSG music/effect adaptation. `src/screen5/full-audio*.inc` and
-`scripts/msx/audio*.py` remain shared/legacy dependencies. Deferred publication
+`src/toolchain/msx/audio*.py` remain shared/legacy dependencies. Deferred publication
 keeps audio work separate from the car/camera commit. Start/completion and
 driving use different channel allocation; emulated waveform/event contracts do
 not replace human timbre and transition acceptance.

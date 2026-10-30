@@ -60,7 +60,7 @@ physical hardware are not requalified by this follow-up.
 gnumake build
 ROM=references/build/latest.rom
 .venv/bin/python -B -m scripts.msx.radar_motion_verify --rom "$ROM" --output references/build/my-radar-component
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --output references/build/my-radar-motion --rounds 2 --steering-margin 8 --avoid-enemies --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 8 --maximum-packet-miss-percent 2.5 --maximum-packet-gap-ms 67
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --output references/build/my-radar-motion --rounds 2 --steering-margin 8 --avoid-enemies --effects-trace --radar-trace --require-stable-radar --require-stable-fuel --require-stable-player --maximum-scroll-step 8 --maximum-packet-miss-percent 2.5 --maximum-packet-gap-ms 67
 ```
 
 For the controlled load, use one round, `--fixture-first-round 6`,

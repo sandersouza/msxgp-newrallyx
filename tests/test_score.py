@@ -1,6 +1,6 @@
 """Synthetic input/carry/threshold coverage for the independent score oracle."""
 import unittest
-from scripts.msx.score_verify import packet,cases_for,DIGITS
+from src.toolchain.msx.score_verify import packet,cases_for,DIGITS
 
 
 class ScoreTests(unittest.TestCase):

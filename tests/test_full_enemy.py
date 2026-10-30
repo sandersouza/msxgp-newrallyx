@@ -1,6 +1,6 @@
 """Hardware allocation tests for complete-car population rendering."""
 import unittest
-from scripts.msx.full_enemy import pattern_plan,registration_table,indexed_records,validate_extension_space
+from src.toolchain.msx.full_enemy import pattern_plan,registration_table,indexed_records,validate_extension_space
 
 
 class FullEnemyTests(unittest.TestCase):

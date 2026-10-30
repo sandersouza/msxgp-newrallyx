@@ -9,24 +9,32 @@ import unittest
 from unittest.mock import patch
 
 from scripts import project
-from scripts.msx.checkpoints import resolve_latest
-from scripts.scenes.storage import seal
+from src.toolchain.msx.checkpoints import resolve_latest
+from src.toolchain.scenes.storage import seal
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class ProjectTests(unittest.TestCase):
+    def setUp(self):
+        # Build orchestration fixtures deliberately contain tiny synthetic ROMs.
+        # Exact resource publication has its own complete-bank contract tests.
+        publisher=patch('src.toolchain.msx.resource_assets.publish')
+        publisher.start()
+        self.addCleanup(publisher.stop)
+
     def test_make_legacy_run_rebuilds_and_stops_on_build_failure(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             (root/'scripts').mkdir()
             shutil.copyfile(ROOT/'Makefile', root/'Makefile')
+            (root/'scripts/prepare_assets.py').write_text('')
             (root/'scripts/project.py').write_text(
                 "from pathlib import Path\n"
                 "import sys\n"
                 "command = sys.argv[1]\n"
                 "with Path('calls').open('a') as log: log.write(command+'\\n')\n"
-                "rom = Path('references/build/newrallyx.rom')\n"
+                "rom = Path('dist/legacy/newrallyx.rom')\n"
                 "if command == 'build':\n"
                 "    if Path('fail-build').exists(): sys.exit(2)\n"
                 "    rom.parent.mkdir(parents=True, exist_ok=True)\n"
@@ -40,7 +48,7 @@ class ProjectTests(unittest.TestCase):
                                       cwd=root, capture_output=True, text=True)
 
             self.assertEqual(make_run().returncode, 0)
-            rom = root/project.ROM
+            rom = root/'dist/legacy/newrallyx.rom'
             rom.write_bytes(b'AB existing ROM')
             self.assertEqual(make_run().returncode, 0)
             self.assertEqual(rom.read_bytes(), b'AB synthetic ROM')
@@ -54,7 +62,7 @@ class ProjectTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp).resolve()
             subprocess.run(['git', 'init', '-q', str(root)], check=True)
-            (root/'.gitignore').write_text('/references/**\n')
+            (root/'.gitignore').write_text('/references/**\n/dist/\n')
             bundles = []
 
             def builder(root, args):
@@ -70,12 +78,12 @@ class ProjectTests(unittest.TestCase):
                 project.build(root)
                 project.build(root)
             self.assertNotEqual(bundles[0], bundles[1])
-            self.assertEqual((root/project.ROM).read_bytes(), b'AB synthetic ROM')
+            self.assertEqual((root/Path('dist/legacy/newrallyx.rom')).read_bytes(), b'AB synthetic ROM')
             self.assertTrue(all((p/'raster-scroll.rom').is_file() for p in bundles))
             with patch.object(project, 'build_rom', side_effect=ValueError('Assembly failed')):
                 with self.assertRaisesRegex(ValueError, 'Assembly failed'):
                     project.build(root)
-            self.assertEqual((root/project.ROM).read_bytes(), b'AB synthetic ROM')
+            self.assertEqual((root/Path('dist/legacy/newrallyx.rom')).read_bytes(), b'AB synthetic ROM')
             self.assertEqual(list((root/'references/build').glob('*.tmp')), [])
 
     def test_repeated_launches_use_default_rom_and_separate_sessions(self):
@@ -93,8 +101,8 @@ class ProjectTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp).resolve()
             subprocess.run(['git', 'init', '-q', str(root)], check=True)
-            (root/'.gitignore').write_text('/references/**\n')
-            default = root/project.ROM
+            (root/'.gitignore').write_text('/references/**\n/dist/\n')
+            default = root/'dist/legacy/newrallyx.rom'
             default.parent.mkdir(parents=True)
             default.write_bytes(b'AB default reference')
 
@@ -142,6 +150,7 @@ class ProjectTests(unittest.TestCase):
             root = Path(temp)
             (root/'scripts').mkdir()
             shutil.copyfile(ROOT/'Makefile', root/'Makefile')
+            (root/'scripts/prepare_assets.py').write_text('')
             (root/'scripts/project.py').write_text(
                 "import json,sys\nfrom pathlib import Path\n"
                 "with Path('calls').open('a') as log: log.write(json.dumps(sys.argv[1:])+'\\n')\n")

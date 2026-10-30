@@ -42,7 +42,7 @@ input cells distinguish planning inputs from measured results. The amber
 
 ## Keep the budgets distinct
 
-The checked-in timing model (`scripts/msx/inputs.py`) uses a 3,579,545 Hz Z80
+The checked-in timing model (`src/toolchain/msx/inputs.py`) uses a 3,579,545 Hz Z80
 clock and 228 CPU clock periods per scanline. The laboratory sets R9=$82 and
 currently runs at nominal 50 Hz. The following are clock-budget calculations,
 not measurements of an available VBlank service window:

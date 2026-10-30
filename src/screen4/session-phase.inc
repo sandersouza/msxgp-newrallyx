@@ -26,6 +26,8 @@ GameSession_PhaseSelect:
     cp b
     jr z,.selected
 .search:
+    ; Exact reuse avoids uploads. Every candidate still excludes the visible
+    ; set: matching bytes do not transfer ownership of a displayed buffer.
     ld c,0
     ld hl,pattern_phases
 .match:
@@ -62,6 +64,8 @@ GameSession_PhaseSelect:
     ld d,$ff
     ld c,0
 .candidate:
+    ; Costs are precomputed for this theme/target phase, not measured here.
+    ; Pick one inactive victim; do not sum these estimates as runtime timings.
     ld a,(pattern_front)
     cp c
     jr z,.next

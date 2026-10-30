@@ -1,3 +1,18 @@
+; Reuse contract: session-lifecycle (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: GameSession_UI, GameSession_NextRound, GameSession_Death
+; Inputs: Native session/player/attract state, main Page0 and generated UI/native bank
+;   bindings.
+; Outputs: Existing menu, challenge, death/restart, round and alternating-player transitions;
+;   returns or tail-enters the original state machine.
+; Registers: Common caller-saved ABI.
+; Interrupts: Owns blocking cold UI HALT/display/DI/EI sequence. Never call as an IRQ service
+;   or renderer callback.
+; Memory / hardware: Existing session/native/UI aliases and their cold/game lifetimes.
+; Reuse boundary: Game-specific policy with direct native entry calls. Supply another
+;   assembly-time policy for another game.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: Native menu, round, death and player-turn transitions; blocking cold execution.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 GameSession_UI:

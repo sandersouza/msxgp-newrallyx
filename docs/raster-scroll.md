@@ -181,9 +181,9 @@ and [sprite checker](https://github.com/openMSX/openMSX/blob/RELEASE_21_0/src/vi
 Experiment commands remain script CLIs, with fresh output directories:
 
 ```sh
-.venv/bin/python -B scripts/raster_scroll.py build \
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py build \
   --output references/build/raster-local
-.venv/bin/python -B scripts/raster_scroll.py verify \
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify \
   --rom references/build/raster-local/raster-scroll.rom \
   --output references/build/raster-local-verification
 ```
@@ -240,7 +240,7 @@ The isolated attribute-cost probe covers all 256 renderer scroll phases:
 8052–8088 cycles before, 5949–5985 after. Every phase saves 2103 cycles, approximately
 0.588 ms at 3.579545 MHz, or 26.1% of this routine's cost. This excludes other frame
 work and the removed first-row mask patch; it is not a whole-game speed claim.
-Reproduce with `scripts/raster_scroll.py verify-hud-cost --rom <sealed-rom>
+Reproduce with `src/toolchain/legacy/raster_scroll.py verify-hud-cost --rom <sealed-rom>
 --output <fresh-dir>`, using the same BIOS/machine options as the other verifiers.
 The probe temporarily sets only the renderer scroll shadow and restores it
 around the measured call; its output makes no RGB claim.
@@ -254,8 +254,8 @@ remain issue #11 work after the branch merge.
 
 ## Runtime integration contract
 
-Shared input/palette preparation lives in [`inputs.py`](../scripts/msx/inputs.py);
-packing and color conversion live in [`screen5.py`](../scripts/msx/screen5.py).
+Shared input/palette preparation lives in [`inputs.py`](../src/toolchain/msx/inputs.py);
+packing and color conversion live in [`screen5.py`](../src/toolchain/msx/screen5.py).
 The executable entry is [`raster-scroll.asm`](../src/screen5/raster-scroll.asm).
 [`stage-one-stream.inc`](../src/screen5/stage-one-stream.inc) supplies the full-map camera,
 ROM tile lookup, guard-cache jobs and radar projection. Camera-center projection

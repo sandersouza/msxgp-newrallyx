@@ -1,6 +1,6 @@
 """Synthetic color adaptation and both-page/four-group cache contracts."""
 import unittest
-from scripts.msx.tilemap import encode,CacheDecoder
+from src.toolchain.msx.tilemap import encode,CacheDecoder
 
 
 def palette():

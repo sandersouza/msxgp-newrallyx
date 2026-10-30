@@ -1,7 +1,7 @@
 """CPU and asset capacity checks use synthetic data only."""
 import unittest
 
-from scripts.msx.native_layout import Region, pack_assets, validate_layout
+from src.toolchain.msx.native_layout import Region, pack_assets, validate_layout
 
 
 class NativeLayoutTests(unittest.TestCase):

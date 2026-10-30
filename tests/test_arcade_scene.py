@@ -10,8 +10,8 @@ from scripts.arcade_scene import main
 
 class CliTests(unittest.TestCase):
     def test_default_layout_is_approved_compact(self):
-        from scripts.scenes.bundle import load_assets, load_capture
-        from scripts.scenes.render import render
+        from src.toolchain.scenes.bundle import load_assets, load_capture
+        from src.toolchain.scenes.render import render
         root,_,_=temporary_repo(self)
         assets=assets_at(root/'references/assets/test',blank=True)
         capture=capture_at(root/'references/scenes/input',assets)
@@ -31,8 +31,8 @@ class CliTests(unittest.TestCase):
         self.assertIn('radar_projection',json.loads((output/'constraints.json').read_text()))
 
     def test_preview_emits_reference_input_without_constraint_report(self):
-        from scripts.scenes.bundle import load_assets, load_capture
-        from scripts.scenes.render import render
+        from src.toolchain.scenes.bundle import load_assets, load_capture
+        from src.toolchain.scenes.render import render
         root,_,_=temporary_repo(self)
         assets=assets_at(root/'references/assets/test',blank=True)
         capture=capture_at(root/'references/scenes/input',assets)

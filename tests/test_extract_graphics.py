@@ -9,7 +9,7 @@ import unittest
 from unittest.mock import patch
 
 from scripts import extract_graphics as cli
-from scripts.graphics.roms import input_records
+from src.toolchain.graphics.roms import input_records
 from graphics_fixtures import temporary_repo
 
 SCRIPT = Path(__file__).resolve().parents[1]/'scripts/extract_graphics.py'

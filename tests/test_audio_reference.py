@@ -1,7 +1,7 @@
 """Synthetic Namco register traces; no original program, waveforms or music."""
 import unittest
 
-from scripts.msx.audio_reference import decode_voices, summarize
+from src.toolchain.msx.audio_reference import decode_voices, summarize
 
 
 class AudioReferenceTests(unittest.TestCase):

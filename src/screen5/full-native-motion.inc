@@ -1,3 +1,6 @@
+; Shared native-motion binding, not a portable CPU-turbo backend. SCREEN4's
+; generator selects a bounded part of this source; inspect that adapter before
+; assuming later legacy cache/turbo helpers are linked into the current ROM.
 ; Positions advance on even native ticks with twice the fractional delta.
 ; The original dispatcher still advances startup/spin on the intervening tick.
 Full_NativeMotion:

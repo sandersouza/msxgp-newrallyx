@@ -1,8 +1,8 @@
 """Synthetic guards and boundary matrix for the selected enemy oracle."""
 import unittest
-from scripts.msx.player import relocate,clipped_masks
-from scripts.msx.enemy_verify import cases_for,RECORD
-from scripts.msx.enemy_presentation_verify import cases_for as presentation_cases
+from src.toolchain.msx.player import relocate,clipped_masks
+from src.toolchain.msx.enemy_verify import cases_for,RECORD
+from src.toolchain.msx.enemy_presentation_verify import cases_for as presentation_cases
 
 
 class EnemyTests(unittest.TestCase):

@@ -1,8 +1,8 @@
 """Synthetic event/oracle contracts; actual original data stays ignored."""
 import unittest
-from scripts.msx.rock_collision_verify import analyze,cases_for
-from scripts.msx.rock_route_verify import route
-from scripts.msx.player import relocate
+from src.toolchain.msx.rock_collision_verify import analyze,cases_for
+from src.toolchain.msx.rock_route_verify import route
+from src.toolchain.msx.player import relocate
 
 
 class RockCollisionTests(unittest.TestCase):

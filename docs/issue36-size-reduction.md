@@ -70,17 +70,19 @@ counts refer to overlapping shared banks and must not be summed as ownership.
 
 ## Size gate and artifact publication
 
-`scripts/msx/cartridge_size.py` exposes the preferred **2,097,152-byte** target
-and the hard **4,194,304-byte** ceiling. The build records exact bytes, hash,
+The user tightened the limit during issue39 on2026-10-30. The former4MiB
+fallback is retired: `src/toolchain/msx/cartridge_size.py` now enforces
+**2,097,152 bytes as the hard ceiling**. Historical reports retain their original
+limits. The build records exact bytes, hash,
 bank count and both headrooms in `cartridge-size.json`. Complete 16 KiB banks
-are required. Above 4 MiB is rejected before replacing the existing ROM;
+are required. Above2MiB is rejected before replacing the existing ROM;
 successful writes use a temporary sibling followed by atomic replacement.
 The same check guards relinking and both exported cartridge filenames.
 
-Synthetic boundary tests cover exactly 2 MiB, exactly 4 MiB, misalignment and
-overflow. A rejected export leaves the previous ROM and size report unchanged.
-Exceeding the preferred target remains visible in the report; using a fallback
-above 2 MiB would still require the issue's measured justification and review.
+Synthetic boundary tests accept exactly2MiB and reject the next16KiB bank,
+4MiB images, misalignment and empty images. A rejected export leaves the
+previous ROM and size report unchanged. Unexpanded64KiB compatibility remains
+mandatory for the default build.
 
 ## Verification
 
@@ -142,12 +144,12 @@ physical hardware compatibility remain to be verified on the intended cartridge.
 
 ```sh
 make build
-.venv/bin/python -B src/screen4/rom_audit.py --output references/issue36/packed-audit.json
-.venv/bin/python -B src/screen4/rom_pack_verify.py --before references/issue36/baseline/full-session --after references/experiments/full-session --output references/issue36/packed-equivalence.json
-.venv/bin/python -B src/screen4/test_hud_programs.py --bundle references/experiments/full-session --out references/issue36/hud-native-proof
+.venv/bin/python -B src/toolchain/screen4/rom_audit.py --output references/issue36/packed-audit.json
+.venv/bin/python -B src/toolchain/screen4/rom_pack_verify.py --before references/issue36/baseline/full-session --after references/experiments/full-session --output references/issue36/packed-equivalence.json
+.venv/bin/python -B src/toolchain/screen4/test_hud_programs.py --bundle references/experiments/full-session --out references/issue36/hud-native-proof
 make test-experiments
-.venv/bin/python -B src/screen4/session_profile.py --bundle references/experiments/full-session
-.venv/bin/python -B src/screen4/session_report.py --bundle references/experiments/full-session --out references/issue36/packed-ledger
+.venv/bin/python -B src/toolchain/screen4/session_profile.py --bundle references/experiments/full-session
+.venv/bin/python -B src/toolchain/screen4/session_report.py --bundle references/experiments/full-session --out references/issue36/packed-ledger
 ```
 
 The independent before/after comparison requires the preserved baseline bundle;

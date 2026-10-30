@@ -1,14 +1,14 @@
 """Synthetic relocation guards and original-smoke scenario coverage."""
 import unittest
 
-from scripts.msx.player import relocate
-from scripts.msx.smoke_verify import cases_for,RECORD
-from scripts.msx.smoke import eligibility,anchor,ring_index,published_tiles,paint,verify_logical_rows
+from src.toolchain.msx.player import relocate
+from src.toolchain.msx.smoke_verify import cases_for,RECORD
+from src.toolchain.msx.smoke import eligibility,anchor,ring_index,published_tiles,paint,verify_logical_rows
 
 
 class SmokeTests(unittest.TestCase):
     def test_cache_backpressure_requires_frozen_native_motion_and_counts_reset_boundaries(self):
-        from scripts.msx.smoke import held_refresh_metrics
+        from src.toolchain.msx.smoke import held_refresh_metrics
         size=4215;records=[bytearray(size) for _ in range(5)]
         for r,tick in zip(records,(10,10,11,0,0)):r[4160:4162]=tick.to_bytes(2,'little')
         counts=b''.join(i.to_bytes(2,'little') for i in (0,1,1,0,1))

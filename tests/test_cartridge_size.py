@@ -4,7 +4,7 @@ import unittest
 import tempfile
 from pathlib import Path
 
-from scripts.msx.cartridge_size import (inventory, PREFERRED_BYTES, MAXIMUM_BYTES,
+from src.toolchain.msx.cartridge_size import (inventory, PREFERRED_BYTES, MAXIMUM_BYTES,
                                        BANK_BYTES, capacity_report, publish_rom)
 
 
@@ -46,10 +46,10 @@ class CartridgeSizeTests(unittest.TestCase):
                 inventory(b'AB', bank_bytes=value)
 
     def test_capacity_gate_accepts_exact_targets_and_rejects_overflow(self):
-        for size in (PREFERRED_BYTES,MAXIMUM_BYTES):
+        for size in (BANK_BYTES,2*1024*1024):
             report=capacity_report(bytes(size))
             self.assertEqual(report['within_preferred'],size<=PREFERRED_BYTES)
-        for size in (0,BANK_BYTES-1,MAXIMUM_BYTES+BANK_BYTES):
+        for size in (0,BANK_BYTES-1,2*1024*1024+BANK_BYTES,4*1024*1024):
             with self.subTest(size=size),self.assertRaises(ValueError):
                 capacity_report(bytes(size))
 
@@ -60,7 +60,7 @@ class CartridgeSizeTests(unittest.TestCase):
             publish_rom(original,rom,report_path=report)
             old_report=report.read_bytes()
             with self.assertRaises(ValueError):
-                publish_rom(bytes(MAXIMUM_BYTES+BANK_BYTES),rom,report_path=report)
+                publish_rom(bytes(2*1024*1024+BANK_BYTES),rom,report_path=report)
             self.assertEqual(rom.read_bytes(),original)
             self.assertEqual(report.read_bytes(),old_report)
             self.assertEqual(sorted(p.name for p in Path(temporary).iterdir()),['latest.rom','size.json'])

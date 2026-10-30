@@ -23,7 +23,7 @@ integration. HUD shortcuts still publish demonstration values.
 
 ## Retained Z80 routines
 
-[`player.py`](../scripts/msx/player.py) links selected routines from the locally
+[`player.py`](../src/toolchain/msx/player.py) links selected routines from the locally
 supplied, validated `nrallyx` program. Original addresses become `$8000+address`
 in bank 47; direct native `$8000..$8fff` RAM operands become `$e000..$efff`.
 Fixed-point velocity constants retain their values.
@@ -141,7 +141,7 @@ corresponding to the presented header, including after a scene reload.
 ```sh
 make build
 make test
-.venv/bin/python -B scripts/raster_scroll.py verify-player \
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py verify-player \
   --rom references/build/default-<id>/raster-scroll.rom \
   --output references/build/player-check
 ```

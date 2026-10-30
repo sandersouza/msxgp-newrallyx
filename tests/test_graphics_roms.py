@@ -4,7 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from scripts.graphics import roms
+from src.toolchain.graphics import roms
 
 
 class RomTests(unittest.TestCase):

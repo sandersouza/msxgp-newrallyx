@@ -1,0 +1,90 @@
+"""Launch the current cartridge in an isolated openMSX session."""
+import os
+import shutil
+import subprocess
+from src.toolchain.scenes.bundle import digest
+from src.toolchain.scenes.storage import require_ignored, json_write
+from .build import destination
+
+
+def tcl(value):
+    """Quote one literal Tcl word without command/variable substitution."""
+    value = str(value)
+    return '"' + ''.join('\\'+c if c in '\\"$[]{}' else '\\n' if c=='\n' else c for c in value) + '"'
+
+
+def reference_machine(root, name):
+    return (f'source {tcl(root/"src/toolchain/msx/mapper_reference.tcl")}\n'
+            f'nrallyx_reference_machine {tcl(name)}')
+
+
+def retain_cartridge(rom, output):
+    """Keep the exact session ROM beside its replay, independent of later builds."""
+    retained=output/'cartridge.rom'
+    if retained.exists():raise ValueError('Session cartridge already exists')
+    shutil.copyfile(rom,retained)
+    return retained
+
+
+def scanout_recording_tcl(output, startup_pc):
+    """Force every raw video frame without changing guest clocks or state.
+
+    openMSX's automatic host deadline can skip a rendered frame even with both
+    frameskip settings zero. Recording keeps complete raw frames available.
+    Start at cartridge startup, after the video system has been initialized.
+    """
+    action=(f'if {{[catch {{record start -videoonly {tcl(output/"scanout.avi")}}} problem]}} '
+            '{puts stderr $problem;exit 2};set ::scanout_recording_started 1')
+    return (f'debug set_bp {startup_pc} '
+            '{![info exists ::scanout_recording_started]} {'+action+'}')
+
+
+def run(root, args):
+    """Launch an isolated machine with an exact session copy of args.rom.
+
+    BIOS inputs remain read-only. Session-local state/captures are disposable;
+    summarize verification before clean removes them. Clock lock means actual
+    machine-selected speed, not a synthetic frequency forced on every model.
+    """
+    output = destination(root,args.output,sessions=args.output.absolute().is_relative_to(root.resolve()/'references/sessions'))
+    if not args.bios.is_dir():
+        raise ValueError('Supply compatible BIOS files below references/msxbios or supply --bios')
+    if not args.rom.is_file():
+        raise ValueError('Cartridge missing; run make build or supply --rom')
+    bios_hashes = {p.relative_to(args.bios).as_posix():digest(p)
+                   for p in sorted(args.bios.rglob('*')) if p.is_file()}
+    require_ignored(root,[output/'session.tcl', output/'emulator.log'])
+    output.mkdir(parents=True)
+    retained=retain_cartridge(args.rom,output)
+    json_write(output/'session.json',dict(rom=str(retained),source_rom=str(args.rom.resolve()),rom_sha256=digest(retained),
+                                        capture_key='F6',capture_on_quit=True))
+    env = dict(os.environ, OPENMSX_HOME=str(output/'home'), OPENMSX_USER_DATA=str(output/'userdata'))
+    # Session-local settings. "Locked" uses the machine-selected clock, including
+    # factory CPU switching; false would force the user frequency override.
+    lines = ['set save_settings_on_exit false',
+             f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
+             f'if {{[catch {{{reference_machine(root,args.machine)}}} problem]}} {{',
+             '  puts stderr "BIOS/machine load failed: $problem. Check machine ROM SHA-1 requirements and --bios."',
+             '  exit 2', '}',
+             'set firmwareswitch off', 'set speed 100', 'set throttle on',
+             'set vsync off',
+             'set z80_freq 3579545', 'set z80_freq_locked true',
+             'set gamma 1.0', 'set brightness 0', 'set contrast 0',
+             'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',
+             'set scanline 0', 'set blur 0', 'set noise 0',
+             f'cart {tcl(retained)} -romtype ASCII16', 'reset']
+    from .maze_capture import setup as capture_setup
+    lines.extend(capture_setup(output))
+    print(f'Diagnostics: {output}; F6 captures now; closing openMSX saves the replay.',flush=True)
+    script=output/'session.tcl'
+    script.write_text('if {[catch {\n'+'\n'.join(lines)+'\n} problem]} {puts stderr $problem; exit 2}\n')
+    command=[args.openmsx,'-script',str(script)]
+    with (output/'emulator.log').open('w') as log:
+        result=subprocess.run(command,env=env,stdout=log,stderr=subprocess.STDOUT,
+                              timeout=None)
+    if result.returncode:
+        raise ValueError(f'openMSX failed; inspect {output}/emulator.log. Check selected machine and supplied BIOS hashes.')
+    if bios_hashes != {p.relative_to(args.bios).as_posix():digest(p)
+                      for p in sorted(args.bios.rglob('*')) if p.is_file()}:
+        raise ValueError('BIOS inventory changed during emulation')
+    require_ignored(root,[p for p in output.rglob('*') if p.is_file()])

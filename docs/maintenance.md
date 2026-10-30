@@ -1,5 +1,12 @@
 # Repository maintenance and reproducibility
 
+**Retention policy updated2026-10-30:** the user requested removal of bulky
+raw evidence, archives, builds, logs and issue working directories. Compact
+results/hashes remain in `docs/artifact-retention.json` and curated measurement
+ledgers/workbooks. Earlier references below to private retained archives are
+historical provenance; those raw files have been deleted. Contributor build
+inputs and the current playable ROM remain intact.
+
 Issue: [#34](https://github.com/sandersouza/msxgp-newrallyx/issues/34).
 The current architecture is mapped in [architecture.md](architecture.md).
 This pass organizes navigation/output retention and relocates the complete
@@ -7,6 +14,14 @@ SCREEN 4 component to `src/screen4/` without rewriting runtime logic.
 Subsequent source-only module extraction is implemented as a user-authorized
 subtask of #36, coordinated with #32. See the
 [module contracts and binary/map gate](../src/screen4/modules/README.md).
+
+## Current artifact layout
+
+Normal builds publish `dist/newrallyx.rom` and run that exact cartridge.
+See [artifact-layout.md](artifact-layout.md) for variants, intermediate assets,
+validated caches, emulator sessions and deletion of disposable working data.
+The earlier cleanup records below retain their historical paths and hashes;
+raw evidence and its archival migration journal were deleted at the user request.
 
 ## Baseline before cleanup
 
@@ -44,13 +59,14 @@ manual review; a missing reference never proves a file is dead.
 | Family | Classification and owner | Decision |
 | --- | --- | --- |
 | `src/screen5/` | Shared/legacy runtime and maintained bounded-stage sources; legacy assembler plus selected SCREEN 4 consumers | Keep; a SCREEN 4 default does not make SCREEN 5 sources obsolete. |
-| `scripts/msx/`, `scripts/scenes/`, `scripts/graphics/`, environment/bootstrap | Build dependencies and input/reference adapters | Keep; includes source generators and pinned-source dependencies. |
+| `src/toolchain/msx/`, `src/toolchain/scenes/`, `src/toolchain/graphics/`, environment/bootstrap | Build dependencies and input/reference adapters | Keep; includes source generators and pinned-source dependencies. |
 | `src/screen4/` build helpers and includes | Default runtime/generators plus maintained first-stage/free-camera paths | Keep authored paths; clarify ownership and compatibility aliases. |
 | `tests/`, `test_*.py`, verifiers and probe CLIs | Maintained regressions and bounded reproductions | Keep; a CLI need not have an import caller. |
 | `docs/`, laboratory reports and workbooks | Current contracts plus dated historical evidence | Keep; mark obsolete status claims as historical instead of deleting measurements. |
 | `outputs/` | Generated payloads, reports, workbooks and private emulator state | Untrack all 854 formerly versioned files (723,138,273 bytes); keep local originals, a private archive and exact-hash provenance. |
 | `docs/measurements/audio/` | Three historical JSON inputs used by the maintained audio verifier | Retain outside generated output so a fresh checkout keeps the same comparisons. |
-| Original ROMs/BIOS/extracted imagery/disassembly | Protected contributor inputs | Keep ignored under `references/`; never download, publish or remove local evidence during cleanup. |
+| Original ROMs/BIOS/disassembly | Contributor inputs | Keep ignored under `references/`; never download or publish. Preserve original inputs during cleanup. |
+| Active extracted/converted imagery and native state | Reproducible game inputs | Keep ignored under `assets/arcade/`; `make extract-all` or normal build/run generates missing stages from contributor ROMs. |
 
 No authored runtime/tool file is discarded based only on filename searches. The
 inventory is also the starting map for issue #32. Further obsolete-code removal
@@ -85,7 +101,7 @@ bytes. The driver writes its programs, expected data and synthetic cartridge
 before openMSX consumes them. It does not require a committed binary fixture:
 
 ```sh
-.venv/bin/python -B src/screen4/test_game_radar.py --emulator --bios references/msxbios
+.venv/bin/python -B src/toolchain/screen4/test_game_radar.py --emulator --bios references/msxbios
 ```
 
 Known probe generators are listed per artifact in the manifest using their
@@ -101,8 +117,8 @@ Historical component-report tools can inspect exact retired payloads locally.
 On a fresh checkout with the original Git objects available:
 
 ```sh
-.venv/bin/python -B scripts/restore_probe_artifacts.py --check --group radar-synthetic
-.venv/bin/python -B scripts/restore_probe_artifacts.py --group radar-synthetic
+.venv/bin/python -B src/toolchain/legacy/restore_probe_artifacts.py --check --group radar-synthetic
+.venv/bin/python -B src/toolchain/legacy/restore_probe_artifacts.py --group radar-synthetic
 ```
 
 The first command is read-only. The second restores only missing files from
@@ -127,15 +143,22 @@ Run the full-session profiler on the exact selected cartridge:
 
 ```sh
 make build
-.venv/bin/python -B src/screen4/session_profile.py --bundle references/experiments/full-session-64k
-.venv/bin/python -B src/screen4/session_report.py --bundle references/experiments/full-session-64k --out references/experiments/timing-report
+.venv/bin/python -B src/toolchain/screen4/session_profile.py --bundle references/build/game
+.venv/bin/python -B src/toolchain/screen4/session_report.py --bundle references/build/game --out references/experiments/timing-report
 ```
 
 `session_profile.py` wraps the established PC/SP profiler through
 `session_profile_adapter.py`. Real keyboard/F5 input advances to native round 5;
 the default fixture requires three enemies. Optional native-population workloads
 are documented in [the RAM-profile validation](ram-profile-validation.md).
-Use `MAPPER=1` and the bundle without `-64k` for 128 KiB. The report rejects stationary-enemy samples
+With the automatic ROM, set `NRX_REFERENCE_RAM_KIB=128` on both commands to
+measure the expanded cache without rebuilding. The default reference is64KiB;
+stock turboR machines retain their actual256/512KiB. See the
+[automatic mapper/CPU matrix](issue39-software-turbo.md) for the current ledger
+and `make timing-workbook` publication. `make run MAPPER=1` uses the same ROM
+with128KiB emulated RAM. The forced128KiB extraction baseline is retained
+separately; see [its reproduction commands](ram64-variant.md).
+The report rejects stationary-enemy samples
 and verifies its ROM hash. `last-profile.txt` identifies the ignored raw capture.
 Use `--profile <capture>` on `session_report.py` to bind a report explicitly.
 An uninstrumented control run checks state/tick alignment and observation jitter.
@@ -260,7 +283,7 @@ No new graphical, timing, gameplay or sound concession is introduced by the move
 
 The 73 former top-level `src/` assembly/include files now live in `src/screen5/`.
 Their bytes and staged assembly basenames are unchanged. Legacy/native builders
-in `scripts/msx/` and direct SCREEN 4 helper consumers use the nested path.
+in `src/toolchain/msx/` and direct SCREEN 4 helper consumers use the nested path.
 Shared Python tools remain in `scripts/`, with their existing public commands.
 
 `game_core.prepare()` defaults to `src/screen5/`. Its explicit `source_directory`
@@ -323,3 +346,6 @@ all five ROMs are byte-identical to the pre-cleanup artifacts. Maintained source
 files parse, public Make command plans resolve, and no remaining code/command
 consumer references the retired filenames or modules. Raw checks are retained
 under `references/issue34/scripts-cleanup/`.
+
+First-build and regeneration commands are documented in [building.md](building.md).
+The preparation driver verifies existing bundles and stops before compilation on invalid inputs. Raw capture work is deleted after successful sealed publication. Only empty `.gitkeep` markers in the reference input tree are public.

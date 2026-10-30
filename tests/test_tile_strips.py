@@ -1,6 +1,6 @@
 """Independent pixel decoding of exact three-tile lookup/atlas contracts."""
 import unittest
-from scripts.msx.tile_strips import encode,candidates,encode_cells
+from src.toolchain.msx.tile_strips import encode,candidates,encode_cells
 
 
 class TileStripTests(unittest.TestCase):

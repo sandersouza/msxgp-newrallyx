@@ -8,6 +8,12 @@ pre-extraction binary/map fingerprints are [baselines.json](baselines.json).
 
 ## Integration model
 
+Each registered entry also carries its input/output, register/IFF, memory and
+reuse contract in source comments. Keep those summaries synchronized with
+`contracts.json`. The [developer guide](../../../docs/developer-guide.md) and
+[engineering lessons](../../../docs/engineering-lessons.md) explain the decisions
+behind these boundaries; old generated experiments are not required reading.
+
 Selection happens through assembly `INCLUDE`, just as with the
 [HUD modules](../hud/README.md). An entry includes its existing implementation
 at the existing code position. It does not add a call, jump, wrapper, loader,

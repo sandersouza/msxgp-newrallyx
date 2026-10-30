@@ -1,8 +1,8 @@
 """Synthetic pointer and optional-linker contracts for round preparation."""
 import unittest
 
-from scripts.msx.player import relocate
-from scripts.msx.round_prepare_verify import relocated_seed
+from src.toolchain.msx.player import relocate
+from src.toolchain.msx.round_prepare_verify import relocated_seed
 
 
 class RoundPreparationTests(unittest.TestCase):

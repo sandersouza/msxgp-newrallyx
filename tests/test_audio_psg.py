@@ -1,6 +1,6 @@
 import unittest
 
-from scripts.msx.audio_psg import PSG_CLOCK, period, period_banks, volume_curve
+from src.toolchain.msx.audio_psg import PSG_CLOCK, period, period_banks, volume_curve
 
 
 class AudioPSGTests(unittest.TestCase):

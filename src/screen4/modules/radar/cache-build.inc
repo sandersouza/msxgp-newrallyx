@@ -1,3 +1,20 @@
+; Reuse contract: radar-cache (modules/contracts.json).
+; Source organization only: this header emits no code or storage.
+; Public API: GameSession_BuildFlags, GameSession_DrawFlagDots, GameSession_FlagCoordinates,
+;   GameSession_EncodeFlags
+; Inputs: Cold round flag records, phase/name tables, scratch and independent flag segments
+;   initialized.
+; Outputs: Builds exact 64-phase radar glyph/name caches and invalidates loaded keys; native
+;   positions/rules remain unchanged.
+; Registers: Common caller-saved ABI.
+; Interrupts: Cold build only; runtime capture invalidation uses the existing session-flags
+;   API rather than rebuilding all phases.
+; Memory / hardware: Existing flag records, CE80 staging, radar scratch and dedicated flag RAM
+;   segments; no extra cache.
+; Reuse boundary: Game-specific flag encoding/geometry. The caller must preserve native record
+;   layout and cache generation semantics.
+; Keep this summary synchronized with the registry and modules/README.md.
+
 ; Module contract: Cold flag glyph/name cache generation; restores main Page0 mapping.
 ; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
 GameSession_BuildFlags:

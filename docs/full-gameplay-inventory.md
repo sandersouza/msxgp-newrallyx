@@ -54,7 +54,7 @@ Direct diagnostic builds retain their earlier defaults. To build the complete
 variant explicitly, use:
 
 ```sh
-.venv/bin/python -B scripts/raster_scroll.py build --stage 12 --full-game --hz 60 --output references/build/my-full-game
+.venv/bin/python -B src/toolchain/legacy/raster_scroll.py build --stage 12 --full-game --hz 60 --output references/build/my-full-game
 ```
 
 Outputs must be fresh and ignored. Supply original ROMs, graphics, reference
@@ -227,9 +227,9 @@ Use fresh ignored outputs. Replace `$ROM` with the complete sealed cartridge pat
 .venv/bin/python -B scripts/full_rules_probe.py --rom "$ROM" --reference references/build/my-inventory --output references/build/my-phase-proof
 .venv/bin/python -B scripts/full_msx_enemy_probe.py --rom "$ROM" --output references/build/my-msx-enemy-proof
 .venv/bin/python -B scripts/full_enemy_probe.py --rom "$ROM" --output references/build/my-car-proof
-.venv/bin/python -B scripts/full_game_route.py --rom "$ROM" --rounds 8 --avoid-enemies --output references/build/my-route
+.venv/bin/python -B src/toolchain/legacy/full_game_route.py --rom "$ROM" --rounds 8 --avoid-enemies --output references/build/my-route
 .venv/bin/python -B scripts/full_game_evidence.py --rom "$ROM" --capture references/build/my-route --output references/build/my-route-pixels
-.venv/bin/python -B scripts/full_game_probe.py --rom "$ROM" --headless --rounds 254 --output references/build/my-scenes
+.venv/bin/python -B src/toolchain/legacy/full_game_probe.py --rom "$ROM" --headless --rounds 254 --output references/build/my-scenes
 .venv/bin/python -B scripts/session_inventory.py --output references/build/my-original-session
 .venv/bin/python -B scripts/full_session_probe.py --rom "$ROM" --reference references/build/my-original-session --output references/build/my-two-player
 .venv/bin/python -B scripts/full_state_probe.py --rom "$ROM" --reference references/build/my-inventory --output references/build/my-player-state

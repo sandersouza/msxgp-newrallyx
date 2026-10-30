@@ -131,7 +131,7 @@ With the contributor-provided inputs and the existing virtual environment:
 ```sh
 make build
 .venv/bin/python -B -m scripts.msx.cartridge_size --rom references/experiments/full-session/fixed-hud.rom --bundle references/experiments/full-session --output references/issue36/size-ledger.json --build-command 'make build'
-.venv/bin/python -B src/screen4/rom_audit.py --output references/issue36/graphics-audit.json
+.venv/bin/python -B src/toolchain/screen4/rom_audit.py --output references/issue36/graphics-audit.json
 .venv/bin/python -B -m unittest discover -s tests -p test_cartridge_size.py
 .venv/bin/python -B -m unittest discover -s src/screen4 -p 'test_*.py'
 ```

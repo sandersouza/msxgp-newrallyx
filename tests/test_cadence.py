@@ -2,7 +2,7 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
-from scripts.msx.cadence import analyze,analyze_scroll
+from src.toolchain.msx.cadence import analyze,analyze_scroll
 
 
 class CadenceTests(unittest.TestCase):

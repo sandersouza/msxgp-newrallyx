@@ -1,6 +1,6 @@
 """Hand-derived bit probes and PROMs; no original ROM bytes."""
 import unittest
-from scripts.graphics import decode
+from src.toolchain.graphics import decode
 
 
 class DecodeTests(unittest.TestCase):

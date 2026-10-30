@@ -8,7 +8,7 @@ import unittest
 import xml.etree.ElementTree as ET
 
 
-HELPER = Path(__file__).resolve().parents[1]/'scripts/msx/mapper_reference.tcl'
+HELPER = Path(__file__).resolve().parents[1]/'src/toolchain/msx/mapper_reference.tcl'
 
 
 @unittest.skipUnless(shutil.which('tclsh'), 'Tcl interpreter unavailable')

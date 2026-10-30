@@ -1,8 +1,8 @@
 import unittest
 from PIL import Image
-from scripts.scenes.layout import Preview
-from scripts.scenes.render import Object
-from scripts.scenes.analyze import analyze
+from src.toolchain.scenes.layout import Preview
+from src.toolchain.scenes.render import Object
+from src.toolchain.scenes.analyze import analyze
 from test_scene_render import scene
 
 

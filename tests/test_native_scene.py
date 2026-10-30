@@ -1,10 +1,10 @@
 import unittest
 
-from scripts.msx.native_contract import Snapshot
-from scripts.msx.native_scene import compose_scene, dirty_regions, scene_from_snapshot, tile_pixels, verify_tile_cache, verify_scene_cache, radar_from_snapshot, verify_radar_cache, radar_visible
-from scripts.msx.native_video import flipped_pens, native_palette, black_tables, strip_atlas
-from scripts.msx.screen5 import expand
-from scripts.msx.native_scene import verify_presentation
+from src.toolchain.msx.native_contract import Snapshot
+from src.toolchain.msx.native_scene import compose_scene, dirty_regions, scene_from_snapshot, tile_pixels, verify_tile_cache, verify_scene_cache, radar_from_snapshot, verify_radar_cache, radar_visible
+from src.toolchain.msx.native_video import flipped_pens, native_palette, black_tables, strip_atlas
+from src.toolchain.msx.screen5 import expand
+from src.toolchain.msx.native_scene import verify_presentation
 
 
 class NativeSceneTests(unittest.TestCase):

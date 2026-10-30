@@ -12,7 +12,7 @@ The existing movement-only relocation is not a full-game linker.
 
 The run, player, HUD and raster verification launchers create a session-local
 `Panasonic_FS-A1WSX_NR128` configuration with a 128 KB main RAM mapper.
-[`mapper_reference.tcl`](../scripts/msx/mapper_reference.tcl) derives it from the
+[`mapper_reference.tcl`](../src/toolchain/msx/mapper_reference.tcl) derives it from the
 installed machine XML, updates RAM capacity and mapper readback bits, and verifies
 that at least one mapper exposes 131,072 bytes. Installed openMSX files and global
 settings are unchanged. Other selected machines must also meet this minimum.
@@ -34,9 +34,9 @@ Supply the supported unpacked ROM set in `references/roms/nrallyx/` and use the
 project `.venv`, z80dasm 1.2.0 and MAME 0.289. No ROM download is performed.
 
 ```sh
-.venv/bin/python -B scripts/z80_analysis.py --capture --output references/analysis/reference-a
-.venv/bin/python -B scripts/z80_analysis.py --capture --output references/analysis/reference-b
-.venv/bin/python -B scripts/z80_analysis.py --output references/analysis/reference-a --compare references/analysis/reference-b
+.venv/bin/python -B src/toolchain/legacy/z80_analysis.py --capture --output references/analysis/reference-a
+.venv/bin/python -B src/toolchain/legacy/z80_analysis.py --capture --output references/analysis/reference-b
+.venv/bin/python -B src/toolchain/legacy/z80_analysis.py --output references/analysis/reference-a --compare references/analysis/reference-b
 make test
 ```
 
@@ -52,7 +52,7 @@ hashes before analysis. The four program files are **not** simply concatenated.
 The reconstructed 16 KB program SHA-256 is
 `d6943e556fcd6ffc32bcc1cc4abbec2249c16a2059a3cdc0ba9c942dbb765d4c`.
 Source integrity is validated again after capture. Hook span hashes are separately
-pinned in [`z80_hooks.json`](../scripts/z80_hooks.json); a mismatch is an error,
+pinned in [`z80_hooks.json`](../src/toolchain/legacy/z80_hooks.json); a mismatch is an error,
 never a reason to apply offsets to another revision.
 
 ## Evidence and its limits
@@ -60,7 +60,7 @@ never a reason to apply offsets to another revision.
 The October 21, 2026 reference runs are local directories
 `references/analysis/issue-10-reference-c/` and `issue-10-reference-d/`.
 Both begin with a fresh MAME configuration and observed soft reset, use
-[`gameplay-inputs.json`](../scripts/scenes/gameplay-inputs.json), and run 3,200
+[`gameplay-inputs.json`](../src/toolchain/scenes/gameplay-inputs.json), and run 3,200
 arcade frames (52.8 emulated seconds). Coin is pressed at 1800, Start at 1860,
 smoke at 2400, and Up at 2600; releases remain in the replay file.
 

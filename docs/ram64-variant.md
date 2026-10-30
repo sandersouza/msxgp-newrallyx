@@ -1,7 +1,19 @@
-# 64 KiB default cartridge
+# 64 KiB cache strategy and forced baseline
 
-The default full-session cartridge uses 64 KiB of system RAM and 128 KiB VRAM.
-`MAPPER=1` preserves the version requiring at least 128 KiB of mapper RAM.
+The current default is one automatic64KiB-minimum cartridge, described in
+[issue39](issue39-software-turbo.md). It selects the cache strategy below on
+64KiB machines and the expanded cache on128KiB or larger mappers. Use
+`make run MAPPER=1` to test the same image with more RAM.
+The separate images and hashes below document the preserved forced profiles;
+`MAPPER` no longer selects those builds. Reproduce historical images directly:
+
+```sh
+NRX_RAM_AUTO=0 NRX_RAM_KIB=64 NRX_TURBO=0 .venv/bin/python -B src/toolchain/screen4/build.py --full-session
+NRX_RAM_AUTO=0 NRX_RAM_KIB=128 NRX_TURBO=0 .venv/bin/python -B src/toolchain/screen4/build.py --full-session
+```
+
+The low-memory full-session strategy uses64KiB mapper RAM and128KiB VRAM.
+The historical expanded strategy requires at least128KiB mapper RAM.
 Both cartridges use ASCII16 and remain **2,048,000 bytes**, 125 banks.
 System RAM is independent of cartridge Flash capacity and VRAM.
 
@@ -16,8 +28,8 @@ NRX_REFERENCE_MACHINE=Panasonic_FS-A1FX make run
 
 | Profile | Bundle / exported filename | SHA-256 |
 | --- | --- | --- |
-| Default, 64 KiB | `references/experiments/full-session-64k/fixed-hud.rom`; `outputs/test-roms/newrallyx-screen4-full-game-64k.rom` | `661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5` |
-| `MAPPER=1`, 128 KiB | `references/experiments/full-session/fixed-hud.rom`; `outputs/test-roms/newrallyx-screen4-full-game.rom` | `b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1` |
+| Historical forced64KiB | `references/experiments/full-session-64k/fixed-hud.rom`; `outputs/test-roms/newrallyx-screen4-full-game-64k.rom` | `661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5` |
+| Historical forced128KiB | `references/experiments/full-session/fixed-hud.rom`; `outputs/test-roms/newrallyx-screen4-full-game.rom` | `b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1` |
 
 The launcher selects a private FS-A1WSX_NR64 or FS-A1WSX_NR128 definition and
 checks actual mapper capacity. It never edits installed machine definitions.

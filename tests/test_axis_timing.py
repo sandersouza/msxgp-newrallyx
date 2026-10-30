@@ -3,7 +3,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
 
-from scripts.msx.axis_timing import analyze
+from src.toolchain.msx.axis_timing import analyze
 
 
 class AxisTimingTests(unittest.TestCase):

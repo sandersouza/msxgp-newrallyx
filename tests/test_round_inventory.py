@@ -2,7 +2,7 @@
 from types import SimpleNamespace
 import unittest
 
-from scripts.msx.round_inventory import analyze
+from src.toolchain.msx.round_inventory import analyze
 
 
 class RoundInventoryTests(unittest.TestCase):

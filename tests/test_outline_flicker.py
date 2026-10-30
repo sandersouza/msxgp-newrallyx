@@ -1,6 +1,6 @@
 import unittest
-from scripts.msx.outline_flicker import resources,order
-from scripts.msx.sprite_flicker import selected
+from src.toolchain.msx.outline_flicker import resources,order
+from src.toolchain.msx.sprite_flicker import selected
 
 
 class OutlineFlickerTests(unittest.TestCase):

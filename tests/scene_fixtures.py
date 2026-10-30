@@ -4,8 +4,8 @@ import json
 from pathlib import Path
 from PIL import Image
 from graphics_fixtures import synthetic_payload
-from scripts.graphics.export import write_payload
-from scripts.graphics.roms import load_metadata
+from src.toolchain.graphics.export import write_payload
+from src.toolchain.graphics.roms import load_metadata
 
 
 def json_write(path, value):

@@ -1,7 +1,7 @@
 """Synthetic instruction operands for the isolated original sound overlay."""
 import unittest
 
-from scripts.msx.audio_native import map_address, relocate
+from src.toolchain.msx.audio_native import map_address, relocate
 
 
 class AudioNativeTests(unittest.TestCase):

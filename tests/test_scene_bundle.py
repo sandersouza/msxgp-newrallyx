@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from scene_fixtures import assets_at, capture_at, json_write, seal
-from scripts.scenes.bundle import load_assets, load_capture
+from src.toolchain.scenes.bundle import load_assets, load_capture
 
 
 class BundleTests(unittest.TestCase):
