@@ -1,0 +1,699 @@
+{
+  "status": "Local implementation and emulator validation complete; no commit/PR or physical-hardware acceptance",
+  "date": "2026-10-30",
+  "default_mapper": 0,
+  "public_commands": {
+    "default": "make run",
+    "mapper128": "make run MAPPER=1"
+  },
+  "ram_interface": "Standard MSX RAM-mapper page ports; ASCII16 remains the cartridge mapper in both profiles",
+  "vram_kib": 128,
+  "build_matrix": [
+    {
+      "profile": "test",
+      "mapper": 0,
+      "bundle": "references/experiments/full-session-test-64k",
+      "bytes": 2048000,
+      "rom_sha256": "cc39cb6b5eec55b8db183dadb4f1afaa308d9e6e27a2e578497504c3357518d7"
+    },
+    {
+      "profile": "test",
+      "mapper": 1,
+      "bundle": "references/experiments/full-session-test",
+      "bytes": 2048000,
+      "rom_sha256": "16a5ac1c53484d676a292d036f9d1a6d492cb287e701d61c344c1c47e5c979c6"
+    },
+    {
+      "profile": "classic",
+      "mapper": 0,
+      "bundle": "references/experiments/full-session-hud-classic-64k",
+      "bytes": 2048000,
+      "rom_sha256": "3b38e56f107378f922344e0f8d6416303178088e7b328fc89093a6571fd6a7b5"
+    },
+    {
+      "profile": "classic",
+      "mapper": 1,
+      "bundle": "references/experiments/full-session-hud-classic",
+      "bytes": 2048000,
+      "rom_sha256": "bd602ce3d43fe85df7903f69842edb1979cabac23bfea0dd7d938c149b0911b2"
+    },
+    {
+      "profile": "no_check",
+      "mapper": 0,
+      "bundle": "references/experiments/full-session-no-check-64k",
+      "bytes": 2048000,
+      "rom_sha256": "accbffb15bfce2330b4516dc0af86e6e670ca6f8595a6aafe68e6a03aa75fa31"
+    },
+    {
+      "profile": "no_check",
+      "mapper": 1,
+      "bundle": "references/experiments/full-session-no-check",
+      "bytes": 2048000,
+      "rom_sha256": "982ea985a6e3fa0238539b11926b5f36989677d274672b2b694276c7b97aa0de"
+    },
+    {
+      "profile": "no_logo",
+      "mapper": 0,
+      "bundle": "references/experiments/full-session-no-logo-64k",
+      "bytes": 2048000,
+      "rom_sha256": "ee04af7df908ce7e459b7d5aeb809c7cde775be532dbb7a0a1b167d06045e844"
+    },
+    {
+      "profile": "no_logo",
+      "mapper": 1,
+      "bundle": "references/experiments/full-session-no-logo",
+      "bytes": 2048000,
+      "rom_sha256": "d04aaeb97e665cf17b2a1b324417b66916790f0c65c85230ae42a29b308cb366"
+    },
+    {
+      "profile": "default",
+      "mapper": 0,
+      "bundle": "references/experiments/full-session-64k",
+      "bytes": 2048000,
+      "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5"
+    },
+    {
+      "profile": "default",
+      "mapper": 1,
+      "bundle": "references/experiments/full-session",
+      "bytes": 2048000,
+      "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1"
+    }
+  ],
+  "matching_resource_files": {
+    "hud.bin": "a5c3e3121af82903097828e49a21637c77788139806af2a71e7b7435f45759ed",
+    "palette.bin": "1114226655f65ff3e04857213d3417eaea78f7b357bb6448c69df0e0572393dd",
+    "game-sprite-templates.bin": "b8bddc8f918d1dc79356fe15e9c1315b648db80bc4b7bed56eab56633799ef02",
+    "game-hud-digits.bin": "fe47485585c44b606243158d0b2f6483bb681c63f1b7334c4614701ddd545d9b",
+    "game-hud-life.bin": "004024c79ce0bfd09238d07c79ecdc70773f127aab61f5a7b92688195e044980",
+    "game-native-raw.bin": "50b7a2385a6f2b045b73d56334556c4412090cde972bf0692c73ef07fca59f58",
+    "game-navigation.bin": "e041b8f07d977fa4285681fc7d4697cb7ab6bbdd7bdbb6e1a62a37ee97e2aeef",
+    "session-production-audio.bin": "16370e8bac408de6825627bbe9c1d73f0522bedde367648b85641787ee424de8",
+    "session-challenge-pixels.bin": "72ca5d9ae7685bfab5bdfe03bb437e5e390d3d9cdb597b916c5e8cc902384884",
+    "ui-font.bin": "09e7c3cfdc86e95fdacaadafcee4677c03628ca1bd08ef7ee63947ad4744612b",
+    "ui-redcar.bin": "c1b594365091cf62065b46fb4972a536452a92a02951e5f2660e40558f846642",
+    "ui-rock.bin": "6f85e9477c1b3ebbfe6e0c77bd3bb1655f1778c0349b7b71d83f68c40e7f9af5",
+    "hud-00.bin": "b9de92ddfc3947a9244fd1f5134518bd209d6d2247069eb0d7951cd64face58f",
+    "hud-01.bin": "4e823a99f5a582f9bc60eb316950153222925a8c92a36b9e728acc302fc2ef67",
+    "hud-02.bin": "d160ad1fbd348a710048f10e7e2761f9a809eb79bca0cf4a5446ce0ec22fd3a3",
+    "hud-03.bin": "717a556eaea89b0784ac99962670a79a8faf8b40a173149806e85c8205a695d8",
+    "hud-04.bin": "c38e5041c5a6c60cffd55f353ec3865c5036bf08e16dac0b6bd2aa5487f6708a",
+    "hud-05.bin": "32dbe376743fe419f70b5e1627369616375529593289ca1ab4ecf028c96b469c",
+    "hud-06.bin": "a27a0aa2fc45702f9b43baa3de007bbaad0bec07824ddb181e57a9a06fdd8152",
+    "hud-07.bin": "f6acff424d789fe61f15c99385845701abab38886806f8f19b0c8ab29b6641ff",
+    "hud-08.bin": "2fad0100c08a9c32935532f17a46b82545749d07d4ee261ef3638db7afb66667",
+    "hud-09.bin": "e74df803508737131ff69106ae2c919b02711d6be857bff603c6ceb654e087c5",
+    "hud-10.bin": "ce99d7b333bff49cc9166c78a6de34d4e5aad2bb26f3f2cc612b3de29c98dbdc",
+    "hud-11.bin": "46623a49efde00af74392e094a7b8612a878516440357338ba4c7a4a465704e7",
+    "hud-12.bin": "90fa7ba2d25c1d3393aa2eb990f319a54c5a0922b5206bfd5c245d1a1d89e3f2",
+    "hud-13.bin": "22f002e7113ffb733993062a34797c3df3b856774cf3ae241a9ec63cf6598938",
+    "hud-14.bin": "c44329fdc916e9f8e02642ccaf40de2a78e2d8d1c80b5fcc5c540c08ceb05163",
+    "hud-15.bin": "d3b59858f6e8b46f349ec96e24577c07f6aa90f46227ca7475e464d71958f43f",
+    "hud-16.bin": "529e9dc929962538943e0dff4d6e2e0f5de5165c6ba6b4643a043e3707d26739",
+    "hud-17.bin": "ae8f9c7b4a2e16ad9481eb2c23611d316183b5e6a37137b8f96c1460ec1b54cd",
+    "hud-18.bin": "551552173c3492f23331eb80a0d1f7aa1bee32a0cddd2b9780f514ffb635587b",
+    "hud-19.bin": "fb5f05078f0c050d8b1cef52a8cd9184bbef1f311596a03bad1ea8df9cfd15a0",
+    "hud-20.bin": "3b769f1d91e39307dbd53a5389b097ecbcdf743b66a062acef9ef43b29d482cb",
+    "hud-21.bin": "7f6e8c2d21895fd737bf05a08b51b37f29196439d2029ee62fdd87af9bb60297",
+    "hud-22.bin": "30d51c0d241b776df369190fff565e7e8e1708cf80412fb525f25c855dab9376",
+    "hud-23.bin": "873b32a28aab9fdd4d8cd0a7cc0b0d7458bd8602fe6450b793d399c2ab72ecdb",
+    "hud-24.bin": "bc517a305dfd67b48f43cafe48f5e13a7e34ce813619ace3b9e66fd3048aabca",
+    "hud-25.bin": "139c413127ebb567bb762fbf931ca45e276e429228b9a231584fd389092bcf42",
+    "hud-26.bin": "8b491b0228515f9b44958a5b09270117d2a9d3f24663f1aaac18d16976a32386",
+    "hud-27.bin": "69ea5a614c34b331fcbba4316c881877abd6fca929f60ce47dbae2f61597c8f1",
+    "hud-28.bin": "edc960dea1f634962057bfedc4789f0754a7b0a372b25f0574e0fb3f06b65b8f",
+    "hud-29.bin": "8a87e2014d58a55d8de3d331a81538a70d8f0c328254d3386c59ae39a91d8ee4",
+    "hud-30.bin": "9dfea94038b3fe59c1676604cc38538767c255936a41d1399ea52b0c6f524c28",
+    "hud-31.bin": "06d7c0572e275aeaf16a8440e955054e26ffdcae037e128ce6e8df9efc930e99",
+    "hud-32.bin": "1e97a04a6650863f4d1fadbe9d74aeaf3247c55cde25db7092ca2346cc5cb2ef",
+    "hud-33.bin": "842da91faa150c50953e4c75932e8b0376f1713889d9491abf73ad9249bffc90",
+    "hud-34.bin": "7d9e0d1a533c77a282c5f49bcb89b255d5954e15cca839fcc6637adb1a2e21e8",
+    "hud-35.bin": "fcbc17a7ffa97d9ae70178ccbc8409fa43fe72637d5dd24c74c89294f23b4083",
+    "hud-36.bin": "e7617f8d8276a2e52d214a4f925143e4b7cd2ecfe174d45cad213325d0eb7466",
+    "hud-37.bin": "264db7bf1ff7e773503a4ccedf70b5b158210f7b058dd44546bb791e454dc49d",
+    "hud-38.bin": "6eb973db537bc98670c0ad952c1e983f8aaf6b6f95bb2a696c302654f31e3a0b",
+    "hud-39.bin": "f97a34b956c46b00d705b811aa25f27cad487487b01f86680a4c2aa1c93c7c02",
+    "hud-40.bin": "c1d1f28337101a91a2baaec157fc2bf8c2ab1d839e7156919b72d40738e57a12",
+    "hud-41.bin": "9a94c9c44cd462eb0493e9e2d4c5de0b58cd677600cc1258761ea7d8c7499e69",
+    "hud-42.bin": "6586cfcb36bf29665dd73b75ead4dc86ac4a8a16869dac661bdcec3a1a71ce01",
+    "hud-43.bin": "a72bddbbbde2ee520f8cfe20c3f555c1f6bef6ff6a45f19a65f4881b65fc4b0e",
+    "hud-44.bin": "f90feb1c5fcda0358fe7081fa73980e241dee7ca727f79bcf7dd9e5aca7e0e9d",
+    "hud-45.bin": "2f0874d986998a4a96ced1a0a5dbfb72366775187c5121737dee6b82ed214fd4",
+    "hud-46.bin": "653dcd91249c925bd31dcaca60eec456779327a5e52ac14ac35605e0150ccd97",
+    "hud-47.bin": "d53f3550745f710e190339161b12044c371b652f35653a04d81c92a7215c78a2",
+    "hud-48.bin": "9fe9b2f34f1ba9f249be1ad4f9ddaa24fa9737f3bc731bc985c03e5c7b7c1246",
+    "hud-49.bin": "4bd2c97c0f451b5aa51d4c27dbd878475dcef5ae75fbfd90256eee4af374a151",
+    "hud-50.bin": "d5a81baab82115d0e72384f55e7498f76e1351efa6b9eba3b63f4adf6e7f41d3",
+    "hud-51.bin": "19c80ba91bab65cbcf471ed6efa42c7601db037242f6496d75a3a83de3c36d51",
+    "hud-52.bin": "edd2d65665b48e6e49c2df02a427644554f5c86bc07f3ef7b81518817159d489",
+    "hud-53.bin": "20b8f924c894016be911c4c0b4de64715e5432c7d0195745eb97603bd0a7c42b",
+    "hud-54.bin": "3e87c6b2c35c9b7427bc300d83b9d2b97b1a2945d14a484040a1025cffc16393",
+    "hud-55.bin": "e3c8afde09b6d2efa336174c35f5f1a42a867ec71b54b0195dddd3eb438bc779",
+    "hud-56.bin": "03f823f6fc38b4be20631b8ae71f3bdc48b5b4f8f4ab4207f8c75a79407e698b",
+    "hud-57.bin": "5c5f349bc65e10fc7699a01a1f66c2bf6fb26a7b9ba8ebda155ad83a8bc6b918",
+    "hud-58.bin": "a217e4b02c7d09ace57df57afc979ef02509165fcd1e3064eeac15feb12d58e8",
+    "hud-59.bin": "8cac6793eabe1dea6fe2abd40629222f06ea7d5b3281a1138bfdd6d21683e476",
+    "hud-60.bin": "5ef6eb6befaaceb295d545b08c81536d7ba30a14c879304747c94b957afa6ee9",
+    "hud-61.bin": "d4f6e67a5341f7196d59b54432d0995786e3be8d5c2a65cba03e9e6881f40776",
+    "hud-62.bin": "f60fcccb1a13b23f9fc845c6163850dbb8fa92e472a91ca64c135fd9ba3905a0",
+    "hud-63.bin": "7f15036f8617a37ff886b28b5965da29f3230ad22fc982a0bb0c4449d4534085",
+    "session-map-0.bin": "2bf8650857dc808aa86b4e89202128abb37b87e67fd2f59a53fdd98488fd5115",
+    "session-map-1.bin": "343c7b4a767463f67c69b83911da69e96ed9548e3eab419232f7ae70afbe7cfc",
+    "session-map-2.bin": "8cdd6a771029f3e98c158f6537499feb5db9f45ed3f0829a9bda8fbfa1243928",
+    "session-map-3.bin": "2ed58748861ee6fe153fa629e118b5b526a1dfa0f83e540591c09fef4975dd57",
+    "session-terrain-0.bin": "c6467741e4c0a8371516d29b496ced29ead7d31e55376f7aa0dc2fa9c9254a69",
+    "session-terrain-1.bin": "e00dd9bb1c930e8c5676e19670d2c18c166a914c880b3ebf02f98e31776084c0",
+    "session-terrain-2.bin": "0f5ed8c293b32f45ee8ca44ee8e2eac6480f51ff6d7b64fcb042cf74d358315b",
+    "session-terrain-3.bin": "4c0827b3fbcb2b486969f427a0e80ad73ff82881e417b3c64f68665b7e57d3b1"
+  },
+  "tests": {
+    "general": {
+      "run": 448,
+      "passed": 448,
+      "source": "references/issue36/ram-optimization/general-tests-final.log"
+    },
+    "component": {
+      "run": 90,
+      "passed": 89,
+      "skipped": 1
+    },
+    "cache_states": 524288,
+    "motion_cases": 9604,
+    "motion_restores": 9034,
+    "steering64": [
+      {
+        "passed": true,
+        "requested_active_refreshes": 16000,
+        "input_seed": 12345,
+        "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/steering-proof-peytdh_d",
+        "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze",
+        "observed": [
+          16000,
+          6571,
+          10,
+          0,
+          16
+        ],
+        "distinct_poses_after_refresh5000": 3733,
+        "machine": "Panasonic_FS-A1FX",
+        "mapper_ram_bytes": 65536
+      },
+      {
+        "passed": true,
+        "requested_active_refreshes": 32000,
+        "input_seed": 98765,
+        "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/steering-proof-o_cb6k69",
+        "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze",
+        "observed": [
+          32000,
+          13606,
+          16,
+          2,
+          16
+        ],
+        "distinct_poses_after_refresh5000": 8324,
+        "machine": "Panasonic_FS-A1FX",
+        "mapper_ram_bytes": 65536
+      }
+    ],
+    "full_session": [
+      {
+        "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "mapper_ram_kib": 64,
+        "verification": {
+          "scenarios": [
+            {
+              "scenario": "start",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-_1_whqsk",
+              "passed": true,
+              "active_snapshots": 2,
+              "silence_checks": 3
+            },
+            {
+              "scenario": "integration",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-mho7ycpl",
+              "passed": true,
+              "active_snapshots": 14,
+              "silence_checks": 30
+            },
+            {
+              "scenario": "two-player",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-2jq53zkt",
+              "passed": true,
+              "active_snapshots": 3,
+              "silence_checks": 7
+            },
+            {
+              "scenario": "flags",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-_9u29lqc",
+              "passed": true,
+              "active_snapshots": 12,
+              "silence_checks": 5
+            },
+            {
+              "scenario": "attract",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-hto2frb1",
+              "passed": true,
+              "active_snapshots": 3,
+              "silence_checks": 6
+            },
+            {
+              "scenario": "radar",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-zjs9fwjp",
+              "passed": true,
+              "active_snapshots": 257,
+              "silence_checks": 3
+            },
+            {
+              "scenario": "smoke",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-zm3_vp1z",
+              "passed": true,
+              "active_snapshots": 301,
+              "silence_checks": 9
+            }
+          ],
+          "steering": {
+            "passed": true,
+            "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/steering-proof-l7_90n7d",
+            "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze"
+          },
+          "audio": {
+            "passed": true,
+            "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/audio-proof-mtv7pqa2",
+            "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance."
+          },
+          "sprite_clip": {
+            "passed": true,
+            "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/sprite-clip-proof-v8k085_2",
+            "scope": "Synthetic complete-pattern/SAT/color matrix, including vertical/horizontal clips and sentinel216. Component cycles are not integrated FPS."
+          },
+          "challenge_speed": {
+            "passed": true,
+            "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/speed-proof-b66lrf0e",
+            "scope": "Actual cartridgeB60C limiter, both velocity signs, normal and parked challenge parameters and fuel-exhaustion exit. Guest entry-through-RET cycles; no full-course or scanout claim."
+          },
+          "enemy_rocks": {
+            "passed": true,
+            "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+            "cases": 404,
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/rocks-proof-a4sa_028",
+            "scope": "All32 descriptor bytes compared with original181B/1885 collision/rebound, both axes/signs, fine-boundary hits/misses and immunity. Controlled fixtures, not a natural-course proof. Entry-through-RET inclusive cycles; no self-cost sum."
+          },
+          "boot_skip": {
+            "passed": true,
+            "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+            "cases": 14,
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/boot-skip-proof-w9mlc5er",
+            "scope": "All11 keyboard rows, initial fill, moving RAM test, final matrix, held coin/start/Return keys; title key consumption, release, PSG silence, VDP status selector and access timing. Real keymatrix input, no guest-state writes."
+          },
+          "boot": {
+            "passed": true,
+            "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/boot-proof-a1_vx4vl",
+            "scope": "Lossless selected boot states on the original timeline, timing/silence, all96 original reveal units shifted8px, full title on/off pixels, optional logo, fixed brackets and blinking numeric masks. Recorded scanout retained; no live gameplay-cycle claim."
+          },
+          "no_logo": {
+            "passed": true,
+            "rom_sha256": "ee04af7df908ce7e459b7d5aeb809c7cde775be532dbb7a0a1b167d06045e844",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-no-logo-64k/boot-proof-e2iappwb",
+            "scope": "Lossless selected boot states on the original timeline, timing/silence, all96 original reveal units shifted8px, full title on/off pixels, optional logo, fixed brackets and blinking numeric masks. Recorded scanout retained; no live gameplay-cycle claim."
+          },
+          "build_variants": [
+            {
+              "passed": true,
+              "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+              "scenario": "controls",
+              "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-uofka15e",
+              "test_mode": false
+            },
+            {
+              "passed": true,
+              "rom_sha256": "cc39cb6b5eec55b8db183dadb4f1afaa308d9e6e27a2e578497504c3357518d7",
+              "scenario": "controls",
+              "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-test-64k/session-start-4vg8a36w",
+              "test_mode": true
+            },
+            {
+              "passed": true,
+              "rom_sha256": "3b38e56f107378f922344e0f8d6416303178088e7b328fc89093a6571fd6a7b5",
+              "scenario": "controls",
+              "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-hud-classic-64k/session-start-uwc401ne",
+              "test_mode": false
+            },
+            {
+              "passed": true,
+              "rom_sha256": "3b38e56f107378f922344e0f8d6416303178088e7b328fc89093a6571fd6a7b5",
+              "scenario": "start",
+              "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-hud-classic-64k/session-start-zkrn0j7g"
+            }
+          ],
+          "clear_sequence": {
+            "passed": true,
+            "cases": [
+              {
+                "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+                "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-_9u29lqc",
+                "settlement_start": 32.64191091325853,
+                "first_audible_mode4": 32.64191091325853,
+                "bonus_start": 34.68206489930983,
+                "settlement_seconds": 2.040153986051301,
+                "fuel_before_bonus": 14851,
+                "fuel_and_score_stable_during_music": true,
+                "flag_order": "0 9 8 1 2 3 4 5 6 7",
+                "pause_seconds": 0.28001715301805064,
+                "pause_cursor_and_timer_frozen": true
+              },
+              {
+                "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+                "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-7855bney",
+                "settlement_start": 32.56192979834029,
+                "first_audible_mode4": 32.56192979834029,
+                "bonus_start": 34.302056546292896,
+                "settlement_seconds": 1.7401267479526084,
+                "fuel_before_bonus": 14852,
+                "fuel_and_score_stable_during_music": true,
+                "flag_order": "0 1 2 3 4 5 6 7 8 9"
+              },
+              {
+                "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+                "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-0_l4pi03",
+                "settlement_start": 32.64191091325853,
+                "first_audible_mode4": 32.64191091325853,
+                "bonus_start": 34.40203489549649,
+                "settlement_seconds": 1.760123982237964,
+                "fuel_before_bonus": 14851,
+                "fuel_and_score_stable_during_music": true,
+                "flag_order": "0 9 8 1 2 3 4 5 6 7"
+              },
+              {
+                "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+                "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/session-start-nyfnn1du",
+                "settlement_start": 27.401578971629075,
+                "first_audible_mode4": 27.401578971629075,
+                "bonus_start": 29.161696249104285,
+                "settlement_seconds": 1.76011727747521,
+                "fuel_before_bonus": 14850,
+                "fuel_and_score_stable_during_music": true,
+                "flag_order": "0 1 2 3 4 5 6 7 9 8"
+              }
+            ]
+          }
+        },
+        "selected_core_graphics_snapshots": 592
+      },
+      {
+        "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+        "mapper_ram_kib": 128,
+        "verification": {
+          "scenarios": [
+            {
+              "scenario": "start",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-8xr15hjl",
+              "passed": true,
+              "active_snapshots": 2,
+              "silence_checks": 3
+            },
+            {
+              "scenario": "integration",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-acbhe8fz",
+              "passed": true,
+              "active_snapshots": 14,
+              "silence_checks": 30
+            },
+            {
+              "scenario": "two-player",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-222vz6ag",
+              "passed": true,
+              "active_snapshots": 3,
+              "silence_checks": 7
+            },
+            {
+              "scenario": "flags",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-y3ju50kq",
+              "passed": true,
+              "active_snapshots": 12,
+              "silence_checks": 5
+            },
+            {
+              "scenario": "attract",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-nfdpepof",
+              "passed": true,
+              "active_snapshots": 3,
+              "silence_checks": 6
+            },
+            {
+              "scenario": "radar",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-5r54tre3",
+              "passed": true,
+              "active_snapshots": 257,
+              "silence_checks": 3
+            },
+            {
+              "scenario": "smoke",
+              "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-auut9tzf",
+              "passed": true,
+              "active_snapshots": 301,
+              "silence_checks": 9
+            }
+          ],
+          "steering": {
+            "passed": true,
+            "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/steering-proof-p56e852h",
+            "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze"
+          },
+          "audio": {
+            "passed": true,
+            "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/audio-proof-qn3alfln",
+            "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance."
+          },
+          "sprite_clip": {
+            "passed": true,
+            "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/sprite-clip-proof-mrtn1ygx",
+            "scope": "Synthetic complete-pattern/SAT/color matrix, including vertical/horizontal clips and sentinel216. Component cycles are not integrated FPS."
+          },
+          "challenge_speed": {
+            "passed": true,
+            "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/speed-proof-qjwh9k5g",
+            "scope": "Actual cartridgeB60C limiter, both velocity signs, normal and parked challenge parameters and fuel-exhaustion exit. Guest entry-through-RET cycles; no full-course or scanout claim."
+          },
+          "enemy_rocks": {
+            "passed": true,
+            "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+            "cases": 404,
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/rocks-proof-13imgyib",
+            "scope": "All32 descriptor bytes compared with original181B/1885 collision/rebound, both axes/signs, fine-boundary hits/misses and immunity. Controlled fixtures, not a natural-course proof. Entry-through-RET inclusive cycles; no self-cost sum."
+          },
+          "boot_skip": {
+            "passed": true,
+            "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+            "cases": 14,
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/boot-skip-proof-t20pcn_t",
+            "scope": "All11 keyboard rows, initial fill, moving RAM test, final matrix, held coin/start/Return keys; title key consumption, release, PSG silence, VDP status selector and access timing. Real keymatrix input, no guest-state writes."
+          },
+          "boot": {
+            "passed": true,
+            "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/boot-proof-h3v1067n",
+            "scope": "Lossless selected boot states on the original timeline, timing/silence, all96 original reveal units shifted8px, full title on/off pixels, optional logo, fixed brackets and blinking numeric masks. Recorded scanout retained; no live gameplay-cycle claim."
+          },
+          "no_logo": {
+            "passed": true,
+            "rom_sha256": "d04aaeb97e665cf17b2a1b324417b66916790f0c65c85230ae42a29b308cb366",
+            "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-no-logo/boot-proof-mx4pol07",
+            "scope": "Lossless selected boot states on the original timeline, timing/silence, all96 original reveal units shifted8px, full title on/off pixels, optional logo, fixed brackets and blinking numeric masks. Recorded scanout retained; no live gameplay-cycle claim."
+          },
+          "build_variants": [
+            {
+              "passed": true,
+              "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+              "scenario": "controls",
+              "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-rr_cot3l",
+              "test_mode": false
+            },
+            {
+              "passed": true,
+              "rom_sha256": "16a5ac1c53484d676a292d036f9d1a6d492cb287e701d61c344c1c47e5c979c6",
+              "scenario": "controls",
+              "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-test/session-start-46tddbbl",
+              "test_mode": true
+            },
+            {
+              "passed": true,
+              "rom_sha256": "bd602ce3d43fe85df7903f69842edb1979cabac23bfea0dd7d938c149b0911b2",
+              "scenario": "controls",
+              "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-hud-classic/session-start-eu2z50bg",
+              "test_mode": false
+            },
+            {
+              "passed": true,
+              "rom_sha256": "bd602ce3d43fe85df7903f69842edb1979cabac23bfea0dd7d938c149b0911b2",
+              "scenario": "start",
+              "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-hud-classic/session-start-htc9fc8f"
+            }
+          ],
+          "clear_sequence": {
+            "passed": true,
+            "cases": [
+              {
+                "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+                "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-fk604iie",
+                "settlement_start": 27.741579725914885,
+                "first_audible_mode4": 27.741579725914885,
+                "bonus_start": 29.501710133550493,
+                "settlement_seconds": 1.7601304076356072,
+                "fuel_before_bonus": 14849,
+                "fuel_and_score_stable_during_music": true,
+                "flag_order": "0 1 2 3 4 5 6 7 9 8"
+              },
+              {
+                "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+                "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-p9l6my63",
+                "settlement_start": 33.041933541832826,
+                "first_audible_mode4": 33.041933541832826,
+                "bonus_start": 34.80203740978253,
+                "settlement_seconds": 1.7601038679497023,
+                "fuel_before_bonus": 14852,
+                "fuel_and_score_stable_during_music": true,
+                "flag_order": "0 9 8 1 2 3 4 5 6 7"
+              },
+              {
+                "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+                "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-y3ju50kq",
+                "settlement_start": 33.041933541832826,
+                "first_audible_mode4": 33.041933541832826,
+                "bonus_start": 35.082058473912184,
+                "settlement_seconds": 2.040124932079358,
+                "fuel_before_bonus": 14852,
+                "fuel_and_score_stable_during_music": true,
+                "flag_order": "0 9 8 1 2 3 4 5 6 7",
+                "pause_seconds": 0.2800216228598913,
+                "pause_cursor_and_timer_frozen": true
+              },
+              {
+                "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+                "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session/session-start-kpcd21fm",
+                "settlement_start": 32.96190912532179,
+                "first_audible_mode4": 32.96190912532179,
+                "bonus_start": 34.70203335898836,
+                "settlement_seconds": 1.7401242336665703,
+                "fuel_before_bonus": 14851,
+                "fuel_and_score_stable_during_music": true,
+                "flag_order": "0 1 2 3 4 5 6 7 8 9"
+              }
+            ]
+          }
+        },
+        "selected_core_graphics_snapshots": 592
+      }
+    ],
+    "optional_log": "references/issue36/ram-optimization/optional-runtime-final.log",
+    "clone": {
+      "before": {
+        "passed": true,
+        "cases": 640,
+        "rom_sha256": "428a775d5edf04dc2b197eb928069c0c11ee6fe64f6017969489fe59fd692235",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/issue36/ram-optimization/baseline-64/flag-clone-hakyg1og",
+        "cycles": {
+          "mean": 987.0000000000111,
+          "min": 986.9999999892016,
+          "max": 987.0000000019187
+        },
+        "scope": "Actual CloneFlag entry-through-RET, IRQ disabled; eight CPU records x ten source glyphs x eight actor slots. Complete destination512 bytes, unchanged source2048 bytes, SP and IX/IY verified. AF/BC/DE/HL are caller-clobbered; the real caller restores BC. Synthetic data, not active FPS."
+      },
+      "current": {
+        "passed": true,
+        "cases": 640,
+        "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/experiments/full-session-64k/flag-clone-tj559ef4",
+        "cycles": {
+          "mean": 470.000000000029,
+          "min": 469.99999998880213,
+          "max": 470.00000000151925
+        },
+        "scope": "Actual CloneFlag entry-through-RET, IRQ disabled; eight CPU records x ten source glyphs x eight actor slots. Complete destination512 bytes, unchanged source2048 bytes, SP and IX/IY verified. AF/BC/DE/HL are caller-clobbered; the real caller restores BC. Synthetic data, not active FPS."
+      }
+    }
+  },
+  "module_profiles": [
+    {
+      "profile": "default",
+      "passed": true,
+      "bytes": 2048000,
+      "sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "symbol_count": 1589,
+      "symbols_sha256": "4327560d2df76495d083b71b5165cdd1f8c90024b02bda2484c99409053328c7"
+    },
+    {
+      "profile": "test",
+      "passed": true,
+      "bytes": 2048000,
+      "sha256": "16a5ac1c53484d676a292d036f9d1a6d492cb287e701d61c344c1c47e5c979c6",
+      "symbol_count": 1593,
+      "symbols_sha256": "663b51889bf733db8e85cfe028570ea9b287729c48ccb94e0ec4d8424542080c"
+    },
+    {
+      "profile": "classic",
+      "passed": true,
+      "bytes": 2048000,
+      "sha256": "bd602ce3d43fe85df7903f69842edb1979cabac23bfea0dd7d938c149b0911b2",
+      "symbol_count": 1585,
+      "symbols_sha256": "96b474022b29af81eda15f6a0789906c6fca7f6647ce5c72abf16a103ed3c361"
+    },
+    {
+      "profile": "no_check",
+      "passed": true,
+      "bytes": 2048000,
+      "sha256": "982ea985a6e3fa0238539b11926b5f36989677d274672b2b694276c7b97aa0de",
+      "symbol_count": 1562,
+      "symbols_sha256": "d53dd9fe38fa1af346e7336136ef7e35286bab1580128abe83f22e0a808102c0"
+    },
+    {
+      "profile": "first_stage",
+      "passed": true,
+      "bytes": 3604480,
+      "sha256": "ae106e6a3d22e295c0e5eac1eaf74f1c1626485c889268d15149f5fdb53dae5c",
+      "symbol_count": 956,
+      "symbols_sha256": "662e27ea421f67c3e325a2765b923d198cb5293cc2724301335ea9004ed0844d"
+    }
+  ],
+  "timing_comparison": "docs/measurements/timing/ram-profile-comparison.json",
+  "workbook": {
+    "path": "docs/cycle-budget.xlsx",
+    "formulas": 463,
+    "formula_errors": 0,
+    "missing_cached_results": 0,
+    "historical_workbooks": 20,
+    "sha256": "e6c06d306995aa05f370e55dddc7d5fe2282d896ecee196d13a83251c310319b",
+    "ledger_sha256": "60c2831af4ee277e99b50788336a0775a6e50a17cb40a46bdcbac5c8bb049459"
+  },
+  "scope": "Emulator regression/component fixtures and bounded directional workloads; not complete-course, physical multicart, human-audio or perceptual acceptance. Heavy rounds remain below30 presented FPS. No original game payload is included.",
+  "checkout_head": "153300df0dc4b437fab3a53f97015853bfdd4d49",
+  "checkout_has_uncommitted_changes": true,
+  "pinned_integration_revision": "6d562a791b0cc242119a31dd686ff8e93eb94fe0",
+  "authored_source_sha256": {
+    "src/screen4/session_ram64.py": "ad84896b7a0d6a7e106432500ee5b87400524854db78646b2f768c6bcbc17a5b",
+    "src/screen4/session-ram64-cache.inc": "1620b319f5aa38acfdf102a52e97a97ffdb01b2f1ad6a4e3be471e17a1f13e61",
+    "src/screen4/session-ram64-flags.inc": "0b87716b7d5af6f1c65ad6af001eec88f9a7a8bc9f096cf2ca4acc67a560fbec",
+    "src/screen4/targets.mk": "2c59825cec4bfdc6906047d26d04769fce143c9396c23f8661b588eacbd9e6e8",
+    "src/screen4/build.py": "287d8316f4d08a4fa0c8129af2824e0a0a01a20d1dd8a5e2483ffb182a96f861",
+    "src/screen4/session_build.py": "96a570556ff91bac577dd0da9d8bef896d23c3b6a358b42e58be770c7b949533",
+    "src/screen4/session_reference.py": "7f3809d757e98b55d54b047b39a2184ff109b04fe119e93c6ae6af382a92340e",
+    "scripts/msx/mapper_reference.tcl": "2990deca696c8cb2080829c872214d1b266c4654800a873e3087a5c0ebc0969e",
+    "src/screen4/session_profile_adapter.py": "49e3d6405914a9a8f3176e1db473d0ba014734f249e20e2a32694a664b971c8d",
+    "src/screen4/session_report.py": "d028aedd82051688a08a6a4b46f6068c5fed02d7eb46e3470856bb8739a0ebd5",
+    "src/screen4/session_workbook.mjs": "4472c2c17a286201c3c75f5626d7da3e2849e10ffbc4c5d7cd16b5a60776f73d",
+    "src/screen4/session_flag_cache_verify.py": "34102ea1317adad27223da67bbbb9c6c287aa84466c3b3e4a19f7bc5fd3f5763",
+    "src/screen4/session_motion_verify.py": "25d154c994eeca4c77b09868c807ee805e9b11daeeec8938e982d72d08e2ca5b",
+    "src/screen4/session_flag_clone_verify.py": "67ce7dba304dfc8ab62e25e35662d5eddab0843daa440f1fec69c4677c8776fd"
+  }
+}

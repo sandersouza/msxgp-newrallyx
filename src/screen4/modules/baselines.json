@@ -1,0 +1,32 @@
+{
+  "default": {
+    "bytes": 2048000,
+    "sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+    "symbol_count": 1589,
+    "symbols_sha256": "4327560d2df76495d083b71b5165cdd1f8c90024b02bda2484c99409053328c7"
+  },
+  "test": {
+    "bytes": 2048000,
+    "sha256": "16a5ac1c53484d676a292d036f9d1a6d492cb287e701d61c344c1c47e5c979c6",
+    "symbol_count": 1593,
+    "symbols_sha256": "663b51889bf733db8e85cfe028570ea9b287729c48ccb94e0ec4d8424542080c"
+  },
+  "classic": {
+    "bytes": 2048000,
+    "sha256": "bd602ce3d43fe85df7903f69842edb1979cabac23bfea0dd7d938c149b0911b2",
+    "symbol_count": 1585,
+    "symbols_sha256": "96b474022b29af81eda15f6a0789906c6fca7f6647ce5c72abf16a103ed3c361"
+  },
+  "no_check": {
+    "bytes": 2048000,
+    "sha256": "982ea985a6e3fa0238539b11926b5f36989677d274672b2b694276c7b97aa0de",
+    "symbol_count": 1562,
+    "symbols_sha256": "d53dd9fe38fa1af346e7336136ef7e35286bab1580128abe83f22e0a808102c0"
+  },
+  "first_stage": {
+    "bytes": 3604480,
+    "sha256": "ae106e6a3d22e295c0e5eac1eaf74f1c1626485c889268d15149f5fdb53dae5c",
+    "symbol_count": 956,
+    "symbols_sha256": "662e27ea421f67c3e325a2765b923d198cb5293cc2724301335ea9004ed0844d"
+  }
+}

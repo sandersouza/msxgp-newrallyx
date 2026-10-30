@@ -1,4 +1,4 @@
-"""Read-only cartridge byte/bank inventory; emitted metadata contains no ROM data.
+"""Cartridge inventory and size-gated publication; metadata contains no ROM data.
 
 Duplicate banks and fill-like tails are investigation candidates. Neither proves
 that bytes are unreachable or can be removed without changing bank consumers.
@@ -7,12 +7,47 @@ import argparse
 from collections import defaultdict
 import hashlib
 import json
+import os
 from pathlib import Path
 import subprocess
+import tempfile
 
 BANK_BYTES = 16384
 PREFERRED_BYTES = 2 * 1024 * 1024
 MAXIMUM_BYTES = 4 * 1024 * 1024
+
+
+def capacity_report(data):
+    """Validate the programmed ASCII16 image before replacing any ROM."""
+    size = len(data)
+    if not size or size % BANK_BYTES:
+        raise ValueError('Cartridge image must contain complete 16 KiB banks')
+    if size > MAXIMUM_BYTES:
+        raise ValueError(f'Cartridge image is {size} bytes; maximum is {MAXIMUM_BYTES}')
+    return dict(bytes=size,bank_count=size//BANK_BYTES,mapper='ASCII16',
+                sha256=hashlib.sha256(data).hexdigest(),preferred_bytes=PREFERRED_BYTES,
+                maximum_bytes=MAXIMUM_BYTES,within_preferred=size<=PREFERRED_BYTES,
+                preferred_headroom_bytes=PREFERRED_BYTES-size,
+                maximum_headroom_bytes=MAXIMUM_BYTES-size)
+
+
+def publish_rom(data, target, *, report_path=None):
+    """Gate size before touching the last good artifact; replace atomically."""
+    report = capacity_report(data)
+    target = Path(target)
+    target.parent.mkdir(parents=True,exist_ok=True)
+    temporary = None
+    try:
+        with tempfile.NamedTemporaryFile(prefix='.'+target.name+'-',dir=target.parent,delete=False) as stream:
+            temporary = Path(stream.name)
+            stream.write(data)
+        os.replace(temporary,target)
+    finally:
+        if temporary is not None:
+            temporary.unlink(missing_ok=True)
+    if report_path is not None:
+        Path(report_path).write_text(json.dumps(report,indent=2)+'\n')
+    return report
 
 
 def inventory(data, *, bank_bytes=BANK_BYTES):

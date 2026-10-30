@@ -19,7 +19,7 @@ from scripts.msx.cartridge_size import inventory, BANK_BYTES
 from session_phase import compiled_cycles
 
 
-def decode_transfer(rom, bank, address, *, exit_address, transfer_address):
+def decode_transfer(rom, bank, address, *, exit_address, transfer_address, inline_literals=True):
     """Validate the compile_packet vocabulary, including inline literal bounds."""
     if not 0x8000 <= address < 0xc000 or not 0 <= bank < len(rom)//BANK_BYTES:
         raise ValueError('Transfer entry outside the ROM bank')
@@ -89,14 +89,16 @@ def decode_transfer(rom, bank, address, *, exit_address, transfer_address):
     literal = bytearray()
     expected = address+code_bytes
     for source in sources:
-        if not source['bytes'] or source['address'] != expected:
+        if (not source['bytes'] or not 0x8000 <= source['address'] or
+                source['address']+source['bytes'] > 0xc000 or
+                (inline_literals and source['address'] != expected)):
             raise ValueError('Noncontiguous or empty emitted literal span')
         expected += source['bytes']
-        if expected > 0xc000:
+        if inline_literals and expected > 0xc000:
             raise ValueError('Transfer literals cross a bank boundary')
         begin = base+source['address']-0x8000
         literal.extend(rom[begin:begin+source['bytes']])
-    if len(literal) != expected-address-code_bytes:
+    if inline_literals and len(literal) != expected-address-code_bytes:
         raise ValueError('Truncated transfer literal data')
     spans = [dict(destination=s['destination'],bytes=s['bytes'],
                   literal_offset=base+s['address']-0x8000) for s in sources]
@@ -287,25 +289,26 @@ def tile_statistics(rom, groups):
                 scope='Exact pattern/color bytes only, excluding table padding. Sharing requires preserving tile IDs, phase addressing and access cost.')
 
 
-def ownership(rom,metadata,families,cold_banks,bundle):
+def ownership(rom,metadata,families,cold_banks,bundle,packed=False):
     owners={0:'resident-code'}
     def mark(banks,name):
         for bank in banks:
             if bank in owners:raise ValueError('Overlapping bank ownership')
             owners[bank]=name
     mark([1],'initial-terrain');mark([2,3],'initial-map')
-    mark(range(4,68),'phase-hud-tables-and-embedded-workers')
-    mark(families['hud']['banks'],'hud-transfer-programs')
+    mark(range(4,68),'phase-hud-tables-workers-transfer-code-and-cold-streams' if packed else 'phase-hud-tables-and-embedded-workers')
+    if not packed:mark(families['hud']['banks'],'hud-transfer-programs')
     old=json.loads((bundle/'boundary-cost.json').read_text())
     mark(range(old['first_packet_bank'],old['first_packet_bank']+old['added_banks']),'initial-boundary-packets')
     game=json.loads((bundle/'game-resources.json').read_text())['banks']
     for key in ('GAME_NATIVE_BANK','PLAYER_DATA_BANK','GAME_AUDIO_BANK','GAME_RESOURCE_BANK'):
         mark([game[key]],key)
-    for key in ('terrain_banks','map_banks','edge_banks'):mark(metadata[key],key)
-    mark(families['boundary']['banks'],'world-boundary-transfer-programs')
+    for key in ('terrain_banks','map_banks','edge_banks'):
+        mark(metadata[key],'world-edge-tables-transfer-code-and-cold-streams' if packed and key=='edge_banks' else key)
+    if not packed:mark(families['boundary']['banks'],'world-boundary-transfer-programs')
     for key in ('SESSION_IMAGE_BANK','SESSION_DATA_BANK','SESSION_BANK','SESSION_COLD_BANK','SESSION_DECOR_BANK','SESSION_BOOT_BANK'):
         mark([metadata['banks'][key]],key)
-    mark(cold_banks,'cold-startup-replay-streams')
+    if not packed:mark(cold_banks,'cold-startup-replay-streams')
     expected=set(range(len(rom)//BANK_BYTES))
     if set(owners)!=expected:raise ValueError(f'Unclassified banks: {sorted(expected-set(owners))}')
     counts=Counter(owners.values())
@@ -319,6 +322,9 @@ def audit(rom, bundle):
         raise ValueError('Expected a complete bank-aligned ROM')
     metadata = json.loads((bundle/'session-build.json').read_text())
     program_meta = json.loads((bundle/'hud-programs.json').read_text())
+    packing_path=bundle/'rom-packing.json'
+    packing=json.loads(packing_path.read_text()) if packing_path.exists() else None
+    packed=bool(packing and packing.get('mode')=='same-bank-table-alias')
     if not program_meta.get('boundary_programs'):
         raise ValueError('Expected the maintained full-session compiled graphics bundle')
     syms = program_meta['linked_symbols']
@@ -335,7 +341,8 @@ def audit(rom, bundle):
         identity = (target, address)
         if identity not in programs:
             programs[identity] = decode_transfer(rom, target, address,
-                exit_address=syms['hud_upload.done'], transfer_address=syms['GamePacketFast_Transfer'])
+                exit_address=syms['hud_upload.done'], transfer_address=syms['GamePacketFast_Transfer'],
+                inline_literals=not packed)
         refs[family].append(dict(key=key, program=identity))
         return identity
     for current in range(64):
@@ -383,11 +390,17 @@ def audit(rom, bundle):
         policies[name] = dict(kept_unique_programs=len(kept),fallback_pairs=fallback,
             program_bytes=sum(sizes),next_fit_bank_bytes=next_fit(sizes),
             scope='Read-only storage model. Existing full-upload path preserves pixels; actual timing, cache selection and input workload require emulator measurement before adoption.')
-    model=alias_model(rom,bundle,metadata,programs,refs,counts)
+    if packed:
+        cold=replay_commands(rom,metadata,json.loads((bundle/'session-boot.json').read_text())) if metadata['banks'].get('SESSION_HARDWARE_CHECK') else None
+        model=dict(applied=True,actual_image_bytes=len(rom),packing=packing,
+                   original_boot_data_banks=cold['banks'] if cold else [],
+                   scope='Applied table-alias layout. Transfer literal bytes count references to shared tables; family bank totals overlap and must not be added. Use the allocation ledger for whole-ROM ownership.')
+    else:
+        model=alias_model(rom,bundle,metadata,programs,refs,counts)
     hud_tiles=tile_statistics(rom,[(4+phase,0x100,0x500,count) for phase,count in counts.items()])
     edge_tiles=tile_statistics(rom,[(bank,pattern,color,rom[bank*BANK_BYTES+count])
         for bank in metadata['edge_banks'] for pattern,color,count in ((0xb00,0xd00,0xf00),(0x1100,0x1300,0x1500))])
-    allocations=ownership(rom,metadata,families,model['original_boot_data_banks'],bundle)
+    allocations=ownership(rom,metadata,families,model['original_boot_data_banks'],bundle,packed)
     report = dict(rom=inventory(rom), families=families,table_alias_model=model,
         allocation_ledger=allocations,allocation_total_bytes=sum(row['bytes'] for row in allocations),
         graphics_tiles=dict(hud=hud_tiles,world_boundaries=edge_tiles),
@@ -410,7 +423,7 @@ def main():
     sources = [ROOT/'scripts/msx/cartridge_size.py', Path(__file__)]
     sources += [Path(__file__).with_name(name) for name in (
         'build.py', 'hud_programs.py', 'session_build.py', 'session_boot.py',
-        'session_phase.py', 'game_ring_refresh.py')]
+        'session_phase.py', 'game_ring_refresh.py', 'rom_pack.py', 'rom_pack_verify.py')]
     metadata = [args.bundle/name for name in (
         'session-build.json', 'hud-programs.json', 'ring-refresh.json',
         'session-boot.json', 'boundary-cost.json', 'game-resources.json')]

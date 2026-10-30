@@ -1,0 +1,162 @@
+{
+  "historical": [
+    {
+      "source": "outputs/01a17d69-5b91-7702-ba92-4aaccfe26d26/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/01a17d69-5b91-7702-ba92-4aaccfe26d26/cycle-budget.xlsx",
+      "bytes": 48122,
+      "sha256": "cc5f2551059dc39d4d11b96b99c5c8fd6699e02e8b28caacedb8e9f784fae8d7",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/01a17d69-5b91-7702-ba92-4aaccfe26d26/footer/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/01a17d69-5b91-7702-ba92-4aaccfe26d26/footer/cycle-budget.xlsx",
+      "bytes": 85846,
+      "sha256": "46e42301ced5c501731299f114e7bad666da08a163e7c9aca940f4a265cc57dc",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/01a17d69-5b91-7702-ba92-4aaccfe26d26/movement/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/01a17d69-5b91-7702-ba92-4aaccfe26d26/movement/cycle-budget.xlsx",
+      "bytes": 86304,
+      "sha256": "4d13b38f614d58188cb37e16cce2c1d63a2e80f534a4be4018b0da9555c1bde6",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/01a17d69-5b91-7702-ba92-4aaccfe26d26/wide-hud/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/01a17d69-5b91-7702-ba92-4aaccfe26d26/wide-hud/cycle-budget.xlsx",
+      "bytes": 84930,
+      "sha256": "016604e0ba21a3bb3a59b2ce6e3910f906a337ac7e3a2607e9133c045b94f9ba",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/component-timing/component-timing.xlsx",
+      "path": "measurements/timing/archive/component-timing/component-timing.xlsx",
+      "bytes": 46391,
+      "sha256": "14889265175e6fee82999da2eb0486fa8bcbcd594a5c25e0bdf2edc40c9059aa",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/first-stage/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/first-stage/cycle-budget.xlsx",
+      "bytes": 167297,
+      "sha256": "43767fed72bc7926dbd236529a9cf7e2c77a300e04fd8674ce95a9389d0f73ed",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/first-stage-fixture/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/first-stage-fixture/cycle-budget.xlsx",
+      "bytes": 32694,
+      "sha256": "7fd8b3cc8a42eb16771fd61bc57b3c78681397d0c24c254f02dab3d681fd7d7d",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/full-session/baseline-15c931/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/full-session/baseline-15c931/cycle-budget.xlsx",
+      "bytes": 41735,
+      "sha256": "42ec315bee93921079c07ecaf377069f8827e935da532c088ea8395e80ef4f27",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/full-session/baseline-3fdb91/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/full-session/baseline-3fdb91/cycle-budget.xlsx",
+      "bytes": 49211,
+      "sha256": "9aa3a66590b170d8eb9b58e17defca2dce24012fdc61b2b1bd1b128d5845aa18",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/full-session/baseline-5451bd/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/full-session/baseline-5451bd/cycle-budget.xlsx",
+      "bytes": 38884,
+      "sha256": "debaa4339f4cc60ba69cc6a207c3c5e5ec2d0028057dae13e16c347ecfdeb6df",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/full-session/baseline-70d633/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/full-session/baseline-70d633/cycle-budget.xlsx",
+      "bytes": 45108,
+      "sha256": "de7a2bac7ee7924e14d53ccd84b4b7d9c49038bb45153b4837dbd4315cb0391a",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/full-session/baseline-8e3835/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/full-session/baseline-8e3835/cycle-budget.xlsx",
+      "bytes": 42042,
+      "sha256": "feab08266e5c7c24b101c71a80c0bde6022b8211f270a620c7383f2790301653",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/full-session/baseline-b3d4a5/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/full-session/baseline-b3d4a5/cycle-budget.xlsx",
+      "bytes": 43907,
+      "sha256": "8864656c4e667d7f5c2a02414ce8e42c1432fe03e8c7aa67aa37cafdece96244",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/full-session/baseline-d6c508/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/full-session/baseline-d6c508/cycle-budget.xlsx",
+      "bytes": 31882,
+      "sha256": "61fd67893291c4b9b86eb1f4134dad6c93bd87cb42852c7004b7630030fe7c7e",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "outputs/full-session/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/full-session/cycle-budget.xlsx",
+      "bytes": 53914,
+      "sha256": "749abede5c373de8af38dac3f58978d2e2417c0fd35cb584e4e7fb5ca4afa22e",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-6ffac302afbf165d/cycle-budget.xlsx",
+      "bytes": 53640,
+      "sha256": "6ffac302afbf165dba21668398aba6ed1159b3cc3a4b6b554ec23a62ba1ed115",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-6d2ea630461d9898/cycle-budget.xlsx",
+      "bytes": 53639,
+      "sha256": "6d2ea630461d9898d1f94be63fd44a6747a4634c19af02ccca3a20ff52f58561",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-ed7c6840246b9381/cycle-budget.xlsx",
+      "bytes": 55008,
+      "sha256": "ed7c6840246b9381b957708c77c602f84b9ad088fc21f40ae9a938b084a1d764",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload."
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-5f362a2d2fe5455d/cycle-budget.xlsx",
+      "bytes": 60628,
+      "sha256": "5f362a2d2fe5455d4feb1e372f2937d9f90ac9a0a9909634ba1c0765edf83e9f",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-5f362a2d2fe5455d/cycle-ledger.json",
+      "ledger_sha256": "6e26ae41374f5339e3103872d338902340285ea0363cd480ed1a61543553c027",
+      "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-4fd977dfa4d4cb97/cycle-budget.xlsx",
+      "bytes": 60712,
+      "sha256": "4fd977dfa4d4cb9746ccc9c83f998e4aa91ed9d59d89dd54c901ea59d5dc8699",
+      "scope": "Historical workbook; retain its embedded ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-4fd977dfa4d4cb97/cycle-ledger.json",
+      "ledger_sha256": "21bd707ef6dcedfd1db85f571497249939616786dc4068cdf88639bd0eeff6ee",
+      "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5"
+    }
+  ],
+  "current": {
+    "path": "cycle-budget.xlsx",
+    "bytes": 60867,
+    "sha256": "e6c06d306995aa05f370e55dddc7d5fe2282d896ecee196d13a83251c310319b",
+    "rom_sha256": "661c41bd7332fee8b06bef03a20555a44863435fc13747e8150f738c32cc13a5",
+    "rom_bytes": 2048000,
+    "ledger": "measurements/timing/cycle-ledger.json",
+    "ledger_sha256": "60c2831af4ee277e99b50788336a0775a6e50a17cb40a46bdcbac5c8bb049459",
+    "generator": "src/screen4/session_workbook.mjs",
+    "generator_sha256": "4472c2c17a286201c3c75f5626d7da3e2849e10ffbc4c5d7cd16b5a60776f73d",
+    "scope": "Full session, keyboard coin/start and F5 to native round5 (RND4), 3 native enemies; frames5..360, fixed directional input"
+  }
+}

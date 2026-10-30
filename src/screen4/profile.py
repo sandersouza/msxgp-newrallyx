@@ -285,7 +285,8 @@ debug set_bp {syms['loop']} {{}} {{next_frame}}
                     layout=json.loads((BASE/'prepare.json').read_text())['geometry'],
                     measured_frames=len(frames), rom_sha256=hashlib.sha256(
                         (BASE/'fixed-hud.rom').read_bytes()).hexdigest(),
-                    machine='Panasonic_FS-A1WSX_NR128',
+                    machine=re.search(r'Reference RAM mapper: (\d+) bytes; machine: (\S+)',(out/'openmsx.log').read_text()).group(2),
+                    mapper_ram_kib=int(re.search(r'Reference RAM mapper: (\d+) bytes; machine: (\S+)',(out/'openmsx.log').read_text()).group(1))//1024,
                     workload=('isolated horizontal/vertical routes, both directions, normal/Shift and idle'
                               if args.movement else 'continuous keys, 1/2 px per tick; frames 5..312'),
                     control_check=f'{len(frames)} camera/tick states match a run without routine breakpoints; total duration matches within 0.01 cycle; per-frame observation jitter <=5 cycles',

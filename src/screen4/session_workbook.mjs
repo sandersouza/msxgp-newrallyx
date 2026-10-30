@@ -1,8 +1,35 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {Workbook,SpreadsheetFile} from '@oai/artifact-tool';
-const [input,out]=process.argv.slice(2);
+import os from 'node:os';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
+import {createHash} from 'node:crypto';
+const [input,out,publishDocs]=process.argv.slice(2);
+if(!input||!out)throw Error('Usage: session_workbook.mjs ledger.json output-directory [docs-directory]');
+let artifact;
+try {artifact=await import('@oai/artifact-tool');}
+catch(error) {
+ if(error.code!=='ERR_MODULE_NOT_FOUND')throw error;
+ const root=process.env.ARTIFACT_TOOL_NODE_ROOT||path.join(os.homedir(),'.cache/codex-runtimes/codex-primary-runtime/dependencies/node');
+ const require=createRequire(path.join(root,'runtime.cjs'));
+ artifact=await import(pathToFileURL(require.resolve('@oai/artifact-tool')).href);
+}
+const {Workbook,SpreadsheetFile}=artifact;
 const d=JSON.parse(await fs.readFile(input,'utf8'));
+const digest=data=>createHash('sha256').update(data).digest('hex');
+const generatorHash=digest(await fs.readFile(new URL(import.meta.url)));
+if(publishDocs){
+ try {
+  const docs=path.resolve(publishDocs);
+  const current=JSON.parse(await fs.readFile(path.join(docs,'measurements/timing/workbooks.json'),'utf8')).current;
+  if(current&&current.generator_sha256===generatorHash&&current.ledger_sha256===digest(await fs.readFile(input))&&
+     current.sha256===digest(await fs.readFile(path.join(docs,'cycle-budget.xlsx')))&&
+     current.ledger_sha256===digest(await fs.readFile(path.join(docs,current.ledger)))){
+   console.log('Timing workbook already matches this ledger and generator.');
+   process.exit(0);
+  }
+ }catch(error){if(error.code!=='ENOENT')throw error;}
+}
 const w=Workbook.create();
 const summary=w.worksheets.add('Summary'),routines=w.worksheets.add('Routines');
 const raster=w.worksheets.add('Raster'),frames=w.worksheets.add('Frames');
@@ -17,8 +44,8 @@ function setup(s,title,widths,rows){
  s.getRange('A2').values=[[title]];s.getRange('A2').format.font={name:'Arial',size:15,bold:true,color:ink};
 }
 function header(s,range,values){const r=s.getRange(range);r.values=[values];r.format={fill:ink,font:{name:'Arial',size:10,color:'#FFFFFF',bold:true},wrapText:true,rowHeight:36,horizontalAlignment:'center',verticalAlignment:'center'};}
-setup(summary,'Full session: three native enemies',[36,18,16,79],55);
-summary.getRange('A3').values=[['RND4, layout1; active endpoints exclude death, bonus and menus.']];
+setup(summary,`Full session: ${d.enemy_count??3} native enemies`,[36,18,16,79],55);
+summary.getRange('A3').values=[['Native round'+(d.native_round??5)+'; active endpoints exclude death, bonus and menus.']];
 header(summary,'A5:D5',['Measure','Result','Unit','Scope']);
 summary.getRange('A6:A15').values=[['Active presentations'],['Active duration'],['Presentation rate'],['Mean CPU work'],['Late presentations'],['Physical refresh'],['Two-refresh cadence'],['Physical VBlank'],['Mean target work margin'],['Worst readiness margin']];
 summary.getRange('C6:D15').values=[['frames','Both endpoints active; no population override'],['s','Sum of active presentation intervals'],['FPS','Short directional sample; not a complete phase'],['ms/frame','Logic, drawing and publication; synchronization excluded'],['frames','Three refreshes instead of two'],['Hz','Physical refresh and presentation rate are separate'],['FPS','Physical emulator clock; nominal target remains29.97'],['ms','Status2 VR; usable reserve is not established by this'],['ms','Average margin does not imply every deadline was met'],['ms','Readiness relative to the second next VBlank edge']];
@@ -43,6 +70,11 @@ summary.getRange('A32').values=[[d.control]];
 summary.getRange('A33').values=[['Evidence: '+d.profile_path]];
 summary.getRange('A34').values=[['Original first-stage workbook remains bound to its earlier ROM and workload.']];
 summary.getRange('A35').values=[['Separate checks: '+d.verification.stable_graphics_snapshots+' stable graphics states; '+d.verification.cold_silence_checks+' cold-silence assertions; 16,000 steering refreshes.']];
+if(d.mapper_ram_kib===64){
+ summary.getRange('A37').values=[['Default 64 KiB RAM; 128 KiB VRAM. See RAM profiles for paired workloads; hardware/full-course acceptance remains open.']];
+}
+summary.getRange('A45:D45').values=[['Cartridge image',d.rom_bytes,'bytes','Uncompressed programmed image; timing belongs to the ROM hash above.']];
+summary.getRange('B45').setNumberFormat('#,##0');
 if(d.verification.steering && !d.verification.steering.passed){
  summary.getRange('A36').values=[['Long steering regression FAILED: '+d.verification.steering.distinct_poses_after_refresh5000+' poses after refresh5000; persistent corner stall remains.']];
  summary.getRange('A36').format.font.color='#A12323';
@@ -197,14 +229,14 @@ const detail=[
  ['Boot table / cleanup','D300 / D300..F2FF','RAM','Any key skips; held key consumed until release. UI-only IRQ, no active-game call.'],
  ['Controls normal build',0,'TEST_MODE','Return/equals do not activate new controls.'],
  ['Controls test build',1,'TEST_MODE','Return edges advance; equals toggles car/rock invulnerability. Walls remain solid.'],
- ['Broader module extraction',32,'issue','Backlog only; zero additional cycles/latency/memory/transfer/stack use required.'],
+ ['Assembly module contracts',20,'contracts','Frozen128 KiB ROM/symbol gate; functional64 KiB adapter is validated separately.'],
 ];
 detail.forEach((r,i)=>cosmetics.getRange(`A${i+6}:D${i+6}`).values=[r]);
 cosmetics.getRange('B18').formulas=[["=B16*'Summary'!$B$20"]];
 cosmetics.getRange('B13:B14').setNumberFormat('#,##0.0');cosmetics.getRange('B16:B17').setNumberFormat('0.000');cosmetics.getRange('B18').setNumberFormat('#,##0');
 header(cosmetics,'A25:F25',['Variant check','Passed','Scenario','ROM SHA256','Mode','Evidence']);
 d.verification.build_variants.forEach((r,i)=>cosmetics.getRange(`A${26+i}:F${26+i}`).values=[[
- r.source.includes('-hud-classic/')?'classic':r.test_mode?'compact test':'compact normal',r.passed,r.scenario,r.rom_sha256,r.test_mode?1:0,r.source
+ r.source.includes('-hud-classic')?'classic':r.test_mode?'compact test':'compact normal',r.passed,r.scenario,r.rom_sha256,r.test_mode?1:0,r.source
 ]]);
 header(cosmetics,'A31:F31',['Explosion','70d633 low band','Current low band','Power ratio','Gain dB','Band / method']);
 d.verification.audio.crash.forEach((r,i)=>{
@@ -222,7 +254,7 @@ const titleRows=[
  ['Keyboard blink',32,'refreshes/half','Only5 and1/2 blink; brackets and all other pixels stay fixed; no reversed text.'],
  ['Brand reference position',d.title.brand_y,'y px',`Supplied artwork on the full screen grid: ${d.title.brand_width}x${d.title.brand_height} at${d.title.brand_x},${d.title.brand_y}; single scale for the complete supplied crop; no generated glyphs.`],
  ['MSX logo','54 x 20 at194,8','px','Uniform3:1 sample of black label; exact8px top/right margins.'],
- ['Prior optional include',d.verification.no_logo.passed,'prior ROM pass','session-ui-options.inc selects session-msx-logo.inc; removing it omits routine, bitmap and call.'],
+ ['Optional logo include',d.verification.no_logo.passed,'selected RAM profile','session-ui-options.inc selects session-msx-logo.inc; removing it omits routine, bitmap and call.'],
  ['World S','Red and fixed','behavior','Only radar S blinks; stationary L-before-S regression fails old ROM at radar-144 and passes current ROM.'],
  ['Enemy stone comparison',d.verification.enemy_rocks.cases,'cases','All32 descriptor bytes match original181B/1885 execution; controlled RAM fixtures, no ROM patches.'],
  ['Navigation tag check',d.verification.enemy_rocks.navigation_tag_pairs,'pairs','Spare bit4 tags stones without new RAM; low4 exit bits produce identical decisions for all16 masks/4 headings.'],
@@ -260,6 +292,41 @@ if(d.verification.clear_sequence){
  sheet.getRange('A27').values=[['Corner-stall fallback has a separate 16000-refresh proof; see Summary and the ROM-bound steering report.']];
  sheet.freezePanes.freezeRows(5);
 }
+if(d.ram_profile_comparison){
+ const q=d.ram_profile_comparison, sheet=w.worksheets.add('RAM profiles');
+ setup(sheet,'RAM profiles: retained before / after / mapper',[26,13,14,14,15,17,17,17,17,78],51);
+ sheet.getRange('A3').values=[['Same scripted inputs and native populations; trajectories and active/death partitions differ. No matched-frame speedup claim.']];
+ header(sheet,'A5:J5',['Profile','Native enemies','Active frames','Presented FPS','Late frames','Mean work ms','P95 work ms','Max work ms','ROM bytes','Measured ROM SHA256']);
+ q.profiles.forEach((r,i)=>{
+  const n=6+i;
+  sheet.getRange(`A${n}:E${n}`).values=[[r.label,r.enemies,r.active_frames,r.presented_fps,r.late_frames]];
+  sheet.getRange(`F${n}:H${n}`).formulas=[['mean','p95','max'].map(k=>`=${r.work[k]}/${r.cpu_hz}*1000`)];
+  sheet.getRange(`I${n}:J${n}`).values=[[r.rom_bytes,r.rom_sha256]];
+ });
+ sheet.getRange('D6:D14').setNumberFormat('0.0000');sheet.getRange('F6:H14').setNumberFormat('0.000');sheet.getRange('I6:I14').setNumberFormat('#,##0');
+ header(sheet,'A17:F17',['Controlled component','Before cycles','After cycles','Saved cycles','Saved us','Scope']);
+ q.component_comparisons.forEach((r,i)=>{
+  const n=18+i;
+  sheet.getRange(`A${n}:C${n}`).values=[[r.name,r.before_cycles,r.after_cycles]];
+  sheet.getRange(`D${n}:E${n}`).formulas=[[`=B${n}-C${n}`,`=D${n}/${q.cpu_hz}*1000000`]];
+  sheet.getRange(`F${n}:I${n}`).merge();
+  sheet.getRange(`F${n}`).values=[[r.scope]];
+  sheet.getRange(`F${n}:I${n}`).format.wrapText=true;
+  sheet.getRange(`A${n}:I${n}`).format.rowHeight=44;
+ });
+ sheet.getRange(`B18:E${17+q.component_comparisons.length}`).setNumberFormat('#,##0.000');
+ sheet.getRange('A26:I27').merge();sheet.getRange('A26').values=[[q.scope]];sheet.getRange('A26:I27').format.wrapText=true;
+ sheet.getRange('A28').values=[['Cold cache prewarm increased448 cycles (0.125 ms); it runs with display disabled, outside active FPS.']];
+ sheet.getRange('A29').values=[['Six-enemy maximum work:48.237 ->49.954 ms; different trajectories. See retained tail analysis; not every maximum improved.']];
+ header(sheet,'A31:J31',['Evidence','ROM SHA256','','','','Retained profile directory','','','','']);
+ q.profiles.forEach((r,i)=>{
+  const n=32+i;
+  sheet.getRange(`B${n}:E${n}`).merge();sheet.getRange(`F${n}:J${n}`).merge();
+  sheet.getRange(`A${n}`).values=[[r.label+' / '+r.enemies]];sheet.getRange(`B${n}`).values=[[r.rom_sha256]];sheet.getRange(`F${n}`).values=[[r.profile_path]];
+  sheet.getRange(`B${n}:J${n}`).format.wrapText=true;sheet.getRange(`A${n}:J${n}`).format.rowHeight=44;
+ });
+ sheet.freezePanes.freezeRows(5);
+}
 w.recalculate();
 await fs.mkdir(out,{recursive:true});
 const inspected=await w.inspect({kind:'table',range:'Summary!A5:D15',include:'values,formulas',tableMaxRows:11,tableMaxCols:4});
@@ -275,6 +342,10 @@ const lower=await w.render({sheetName:'Routines',range:'A24:J40',scale:1,format:
 await fs.writeFile(path.join(out,'routines-hooks.png'),new Uint8Array(await lower.arrayBuffer()));
 const provenance=await w.render({sheetName:'Summary',range:'A26:D36',scale:1,format:'png'});
 await fs.writeFile(path.join(out,'summary-evidence.png'),new Uint8Array(await provenance.arrayBuffer()));
+if(d.ram_profile_comparison){
+ const img=await w.render({sheetName:'RAM profiles',range:'A1:I29',scale:1,format:'png'});
+ await fs.writeFile(path.join(out,'ram-profiles.png'),new Uint8Array(await img.arrayBuffer()));
+}
 for(const [s,range,file] of [['Summary','A37:D52','comparison.png'],['Events',`A${gainRow}:F${gainRow+3}`,'engine-gain.png'],['Routines','A19:J36','routines-middle.png'],['Routines','A37:J50','routines-tail.png']]){
  const render=await w.render({sheetName:s,range,scale:1,format:'png'});
  await fs.writeFile(path.join(out,file),new Uint8Array(await render.arrayBuffer()));
@@ -304,3 +375,38 @@ if(d.verification.clear_sequence){
  await fs.writeFile(path.join(out,'stage-clear.png'),new Uint8Array(await img.arrayBuffer()));
 }
 console.log(path.join(out,'cycle-budget.xlsx'));
+if(publishDocs){
+ const docs=path.resolve(publishDocs),timing=path.join(docs,'measurements/timing');
+ const target=path.join(docs,'cycle-budget.xlsx');
+ await fs.mkdir(timing,{recursive:true});
+ const manifestPath=path.join(timing,'workbooks.json');
+ let manifest={historical:[]};
+ try {manifest=JSON.parse(await fs.readFile(manifestPath,'utf8'));}
+ catch(error){if(error.code!=='ENOENT')throw error;}
+ const data=await fs.readFile(path.join(out,'cycle-budget.xlsx'));
+ try {
+  const previous=await fs.readFile(target),sha=digest(previous);
+  if(sha!==digest(data)&&!manifest.historical.some(row=>row.sha256===sha)){
+   const relative=`measurements/timing/archive/retained-${sha.slice(0,16)}/cycle-budget.xlsx`;
+   await fs.mkdir(path.dirname(path.join(docs,relative)),{recursive:true});
+   await fs.writeFile(path.join(docs,relative),previous);
+   const retained={source:'Previous docs/cycle-budget.xlsx',path:relative,bytes:previous.length,sha256:sha,scope:'Historical workbook; retain its embedded ROM hash and workload.'};
+   if(manifest.current?.sha256===sha&&manifest.current.ledger){
+    const priorLedger=await fs.readFile(path.join(docs,manifest.current.ledger));
+    if(digest(priorLedger)!==manifest.current.ledger_sha256)throw Error('Previous workbook ledger hash changed');
+    retained.ledger=path.posix.join(path.posix.dirname(relative),'cycle-ledger.json');
+    retained.ledger_sha256=digest(priorLedger);retained.rom_sha256=manifest.current.rom_sha256;
+    await fs.writeFile(path.join(docs,retained.ledger),priorLedger);
+   }
+   manifest.historical.push(retained);
+  }
+ }catch(error){if(error.code!=='ENOENT')throw error;}
+ const ledger=await fs.readFile(input);
+ await fs.writeFile(path.join(timing,'cycle-ledger.json'),ledger);
+ manifest.current={path:'cycle-budget.xlsx',bytes:data.length,sha256:digest(data),rom_sha256:d.rom_sha256,
+  rom_bytes:d.rom_bytes,ledger:'measurements/timing/cycle-ledger.json',ledger_sha256:digest(ledger),
+  generator:'src/screen4/session_workbook.mjs',generator_sha256:generatorHash,scope:d.workload};
+ await fs.writeFile(target+'.tmp',data);await fs.rename(target+'.tmp',target);
+ await fs.writeFile(manifestPath,JSON.stringify(manifest,null,2)+'\n');
+ console.log('Maintained workbook:',target);
+}

@@ -3,6 +3,9 @@
 Issue: [#36](https://github.com/sandersouza/msxgp-newrallyx/issues/36).
 Status: read-only audit and storage simulation, 2026-10-29. No production
 generator, mapper layout or ROM has been changed by this audit.
+The selected strategy was subsequently implemented; see the
+[actual reduced image and verification](issue36-size-reduction.md). The figures
+below retain the original baseline and simulation evidence.
 
 ## Baseline and scope
 

@@ -8,6 +8,8 @@ HERE=Path(__file__).resolve().parent
 
 
 def verify(bundle):
+    from session_reference import configure
+    configure(bundle)
     bundle=Path(bundle).resolve()
     out=Path(tempfile.mkdtemp(prefix='sprite-clip-proof-',dir=bundle))
     sources=out/'sources';sources.mkdir()
@@ -26,4 +28,4 @@ def verify(bundle):
 
 if __name__=='__main__':
     import argparse
-    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session');a=p.parse_args();verify(a.bundle)
+    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session-64k');a=p.parse_args();verify(a.bundle)

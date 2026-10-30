@@ -42,6 +42,8 @@ def reference(cases):
     return expected
 
 def verify(bundle):
+    from session_reference import configure
+    configure(bundle)
     cases=vectors();expected=reference(cases);bundle=Path(bundle).resolve();out=Path(tempfile.mkdtemp(prefix='rocks-proof-',dir=bundle))
     for a,b in (('fixed-hud.rom','measured.rom'),('lab.sym','measured.sym')):shutil.copyfile(bundle/a,out/b)
     s={n:int(v,16) for n,v in re.findall(r'(?m)^([\w.]+): EQU 0x([\da-fA-F]+)',(out/'measured.sym').read_text())}
@@ -137,4 +139,4 @@ after time 90 {{puts stderr "Stone fixture timeout";exit 3}}
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2));assert report['passed'];return out
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session');a=p.parse_args();verify(a.bundle)
+    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session-64k');a=p.parse_args();verify(a.bundle)

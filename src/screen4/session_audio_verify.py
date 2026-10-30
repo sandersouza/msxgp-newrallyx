@@ -12,6 +12,8 @@ HZ=3579545;INTERVAL=2*59736/HZ
 
 
 def verify(bundle):
+    from session_reference import configure
+    configure(bundle)
     bundle=Path(bundle).resolve();out=Path(tempfile.mkdtemp(prefix='audio-proof-',dir=bundle))
     rom=(bundle/'fixed-hud.rom').read_bytes();(out/'measured.rom').write_bytes(rom)
     (out/'measured.sym').write_bytes((bundle/'lab.sym').read_bytes())
@@ -325,4 +327,4 @@ after time 90 {{puts stderr "Audio fixture timeout";exit 3}}
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2));return out
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session');a=p.parse_args();verify(a.bundle)
+    p=argparse.ArgumentParser();p.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session-64k');a=p.parse_args();verify(a.bundle)

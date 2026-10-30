@@ -37,6 +37,8 @@ def reference():
     marker.write_text(json.dumps(report,indent=2)+'\n');return report
 
 def verify(bundle):
+    from session_reference import configure
+    configure(bundle)
     ref=reference();bundle=Path(bundle).resolve()
     out=Path(tempfile.mkdtemp(prefix='speed-proof-',dir=bundle))
     for source,target in (('fixed-hud.rom','measured.rom'),('lab.sym','measured.sym')):shutil.copyfile(bundle/source,out/target)
@@ -123,5 +125,5 @@ after time 90 {{puts stderr "Speed verification timeout";exit 3}}
     return report
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session')
+    parser=argparse.ArgumentParser();parser.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session-64k')
     args=parser.parse_args();verify(args.bundle)

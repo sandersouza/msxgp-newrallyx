@@ -1,8 +1,11 @@
 """Synthetic accounting guards; no proprietary cartridge fixture is required."""
 import hashlib
 import unittest
+import tempfile
+from pathlib import Path
 
-from scripts.msx.cartridge_size import inventory, PREFERRED_BYTES, MAXIMUM_BYTES
+from scripts.msx.cartridge_size import (inventory, PREFERRED_BYTES, MAXIMUM_BYTES,
+                                       BANK_BYTES, capacity_report, publish_rom)
 
 
 class CartridgeSizeTests(unittest.TestCase):
@@ -41,6 +44,26 @@ class CartridgeSizeTests(unittest.TestCase):
         for value in (0, -1, True, 1.5):
             with self.subTest(value=value), self.assertRaises(ValueError):
                 inventory(b'AB', bank_bytes=value)
+
+    def test_capacity_gate_accepts_exact_targets_and_rejects_overflow(self):
+        for size in (PREFERRED_BYTES,MAXIMUM_BYTES):
+            report=capacity_report(bytes(size))
+            self.assertEqual(report['within_preferred'],size<=PREFERRED_BYTES)
+        for size in (0,BANK_BYTES-1,MAXIMUM_BYTES+BANK_BYTES):
+            with self.subTest(size=size),self.assertRaises(ValueError):
+                capacity_report(bytes(size))
+
+    def test_rejected_publication_keeps_last_good_rom_and_report(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            rom=Path(temporary)/'latest.rom';report=Path(temporary)/'size.json'
+            original=b'\x55'*BANK_BYTES
+            publish_rom(original,rom,report_path=report)
+            old_report=report.read_bytes()
+            with self.assertRaises(ValueError):
+                publish_rom(bytes(MAXIMUM_BYTES+BANK_BYTES),rom,report_path=report)
+            self.assertEqual(rom.read_bytes(),original)
+            self.assertEqual(report.read_bytes(),old_report)
+            self.assertEqual(sorted(p.name for p in Path(temporary).iterdir()),['latest.rom','size.json'])
 
 
 if __name__ == '__main__':

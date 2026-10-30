@@ -47,6 +47,8 @@ gameplay=options.pop('gameplay')
 full_session=options.pop('full_session')
 test_mode=int(os.environ.get('NRX_TEST_MODE','0')) if full_session else 0
 if test_mode not in (0,1):parser.error('TEST_MODE must be0 or1')
+ram_kib=int(os.environ.get('NRX_RAM_KIB','64')) if full_session else 128
+if ram_kib not in (64,128):parser.error('NRX_RAM_KIB must be 64 or 128')
 gameplay=gameplay or full_session
 enemies=options.pop('enemies')
 legacy_render=options.pop('legacy_render')
@@ -55,6 +57,7 @@ if full_session and legacy_render:
 if gameplay:
     import prepare as preparation
     variant=(('full-session-test' if test_mode else 'full-session')+('-hud-classic' if os.environ.get('NRX_HUD_VARIANT','compact')=='classic' else '')+('-no-logo' if os.environ.get('NRX_MSX_LOGO','1')=='0' else '')+('-no-check' if os.environ.get('NRX_HARDWARE_CHECK','1')=='0' else '')) if full_session else 'stage-one'+(f'-{enemies}-enemies' if enemies!=1 else '')+('-baseline' if legacy_render else '')
+    if full_session and ram_kib==64:variant+='-64k'
     OUT=ROOT/'references/experiments'/variant
     preparation.OUT=OUT
 from hud_module import selected as selected_hud
@@ -174,36 +177,44 @@ hud_programs = gameplay and not legacy_render
 program_relocations=[]
 if hud_programs:
     from hud_programs import compile_packet
-for current in range(64):
-    allocated=0
-    candidates=[(previous,patch_packet(hud_data[previous],hud_data[current],
-        hud_active[previous] if hud_active else None,hud_active[current] if hud_active else None)) for previous in range(64)]
-    candidates.sort(key=lambda item:(
-        (current%8-item[0]%8)%8 not in (0,2,4,6) or (current//8-item[0]//8)%8 not in (0,2,4,6),
-        len(item[1])))
-    for previous,packet in candidates:
-        target=(3+current)*16384+0x2600+previous*3
-        if packet not in patches and allocated+len(packet)>(100000 if hud_programs else 40000):
-            banks[target:target+3]=bytes(3);fallback+=1;continue
-        if packet not in patches:
-            payload, relocs = compile_packet(packet,0x8000,back_address=0xc027,packed8=full_session) if hud_programs else (packet, [])
-            if len(page)+len(payload)>16384:
-                banks.extend(page.ljust(16384,b'\xff'));page=bytearray()
-                payload, relocs = compile_packet(packet,0x8000,back_address=0xc027,packed8=full_session) if hud_programs else (packet, [])
-            elif hud_programs:
-                payload, relocs = compile_packet(packet,0x8000+len(page),back_address=0xc027,packed8=full_session)
-            bank_number=len(banks)//16384+1
-            assert bank_number<256, 'Transition toolchain exceeds ASCII16 capacity'
-            patches[packet]=(bank_number,0x8000+len(page))
-            for offset,symbol in relocs:
-                program_relocations.append(dict(offset=len(banks)+len(page)+offset,symbol=symbol))
-            page.extend(payload)
-            allocated+=len(payload)
-        bank_number,address=patches[packet]
-        banks[target:target+3]=bytes((bank_number,address&255,address>>8))
-banks.extend(page.ljust(16384,b'\xff'))
+if full_session:
+    # Reserve the actual ring worker before allocating code in phase-bank gaps.
+    from game_ring_refresh import append_worker as append_ring_refresh
+    banks=append_ring_refresh(banks,ROOT,OUT,names_base=0x0800)
+    from rom_pack import pack_hud
+    banks,program_relocations,patches=pack_hud(banks,hud_data,hud_active,OUT)
+    first_patch_bank=None  # Code now lives with its phase's raw graphics.
+else:
+    for current in range(64):
+        allocated=0
+        candidates=[(previous,patch_packet(hud_data[previous],hud_data[current],
+            hud_active[previous] if hud_active else None,hud_active[current] if hud_active else None)) for previous in range(64)]
+        candidates.sort(key=lambda item:(
+            (current%8-item[0]%8)%8 not in (0,2,4,6) or (current//8-item[0]//8)%8 not in (0,2,4,6),
+            len(item[1])))
+        for previous,packet in candidates:
+            target=(3+current)*16384+0x2600+previous*3
+            if packet not in patches and allocated+len(packet)>(100000 if hud_programs else 40000):
+                banks[target:target+3]=bytes(3);fallback+=1;continue
+            if packet not in patches:
+                payload, relocs = compile_packet(packet,0x8000,back_address=0xc027) if hud_programs else (packet, [])
+                if len(page)+len(payload)>16384:
+                    banks.extend(page.ljust(16384,b'\xff'));page=bytearray()
+                    payload, relocs = compile_packet(packet,0x8000,back_address=0xc027) if hud_programs else (packet, [])
+                elif hud_programs:
+                    payload, relocs = compile_packet(packet,0x8000+len(page),back_address=0xc027)
+                bank_number=len(banks)//16384+1
+                assert bank_number<256, 'Transition toolchain exceeds ASCII16 capacity'
+                patches[packet]=(bank_number,0x8000+len(page))
+                for offset,symbol in relocs:
+                    program_relocations.append(dict(offset=len(banks)+len(page)+offset,symbol=symbol))
+                page.extend(payload)
+                allocated+=len(payload)
+            bank_number,address=patches[packet]
+            banks[target:target+3]=bytes((bank_number,address&255,address>>8))
+    banks.extend(page.ljust(16384,b'\xff'))
 if hud_programs:
-    (OUT/'hud-programs.json').write_text(json.dumps(dict(programs=len(patches),
+    (OUT/'hud-programs.json').write_text(json.dumps(dict(programs=sum(r['symbol']=='hud_upload.done' for r in program_relocations),
         relocations=program_relocations, no_new_ram=True,
         scope='Compiled exact HUD packets; direct short OUTI spans, shared R14 changes, resident burst helper for long spans; foreground only.'),indent=2)+'\n')
 # Decode actual packed bank pointers independently. Poison unused previous slots
@@ -250,8 +261,9 @@ if gameplay:
     if not legacy_render:
         from game_radar_source_cache import append_metadata as append_radar_metadata
         banks=append_radar_metadata(banks,OUT)
-        from game_ring_refresh import append_worker as append_ring_refresh
-        banks=append_ring_refresh(banks,ROOT,OUT,names_base=0x0800 if full_session else 0x2000)
+        if not full_session:
+            from game_ring_refresh import append_worker as append_ring_refresh
+            banks=append_ring_refresh(banks,ROOT,OUT,names_base=0x2000)
     banks=game_build.append_resources(ROOT,OUT,banks,enemies=enemies,legacy_render=legacy_render,full_session=full_session)
 (OUT/'banks.bin').write_bytes(banks)
 (OUT/'radar-x.bin').write_bytes(bytes(8+(x+100)*32//816 for x in range(617)))
@@ -277,8 +289,9 @@ with tempfile.TemporaryDirectory(prefix='.assemble-',dir=OUT) as temporary:
         banks=game_build.finalize_banks(assembly,OUT,banks)
     resident=rom.read_bytes()
     assert len(resident)==16384
-    rom.write_bytes(resident+banks)
+    from scripts.msx.cartridge_size import publish_rom
+    size=publish_rom(resident+banks,OUT/'fixed-hud.rom',report_path=OUT/'cartridge-size.json')
     for name in ('lab.sym','lab.lst'):
         shutil.copyfile(assembly/name,OUT/name)
-    rom.replace(OUT/'fixed-hud.rom')
+    print(f"Cartridge: {size['bytes']} bytes; 2 MiB headroom {size['preferred_headroom_bytes']}; 4 MiB headroom {size['maximum_headroom_bytes']}")
 print(OUT/'fixed-hud.rom')

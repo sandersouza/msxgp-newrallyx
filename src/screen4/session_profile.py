@@ -7,7 +7,9 @@ from pathlib import Path
 import sys
 
 if '--bundle' not in sys.argv:
-    sys.argv.extend(('--bundle',str(Path.cwd()/'references/experiments/full-session')))
+    sys.argv.extend(('--bundle',str(Path.cwd()/'references/experiments/full-session-64k')))
+from session_reference import configure
+configure(Path(sys.argv[sys.argv.index('--bundle')+1]))
 adapter=Path(__file__).with_name('game_profile.py').read_text()
 at=adapter.index('exec(compile(source')
 adapter=adapter[:at]+"from session_profile_adapter import adapt\nsource=adapt(source,base)\n"+adapter[at:]

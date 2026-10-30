@@ -107,7 +107,7 @@ def worlds(root,out):
 
 def append_resources(root,out,banks):
     from game_boundary_stable import family
-    from hud_programs import transition_packet,compile_packet
+    from hud_programs import transition_packet
     view,production=reference()
     result=bytearray(banks)
     metadata=json.loads((out/'game-resources.json').read_text())
@@ -121,6 +121,10 @@ def append_resources(root,out,banks):
     profiles=worlds(root,out)
     terrain_banks=[];map_banks=[];edge_banks=[];edge_costs=[]
     compiled=json.loads((out/'hud-programs.json').read_text())
+    from rom_pack import pack_transfers
+    packing=json.loads((out/'rom-packing.json').read_text())
+    packing['boundary_code_bytes']=0
+    packing['boundary_programs']=0
     for layout,profile in enumerate(profiles):
         terrain_banks.append(page((profile['terrain']+profile['permission']).ljust(0x2800,b'\0')+profile['objects']))
         map_banks.extend((page(profile['map'][:16384]),page(profile['map'][16384:])))
@@ -143,30 +147,31 @@ def append_resources(root,out,banks):
                 if which==0:arrays.extend((patterns[:384],colors[:384],patterns[384:],colors[384:]))
                 else:arrays.extend((patterns,colors))
             atlases.append((bank,arrays))
-        pointers={};costs=[[0]*8 for _ in range(9)]
-        unique={};storage=bytearray()
-        for old in range(9):
-            for current in range(8):
-                data=transition_packet(atlases[old][1] if old<8 else (b'',)*6,atlases[current][1],
-                                       (0x500,0x4500,0x448,0x4448,0x680,0x4680),merge_gap=6)
-                payload,relocations=compile_packet(data,0x8000,back_address=0xc027,packed8=True)
-                from session_phase import compiled_cycles
-                costs[old][current]=compiled_cycles(payload,1,0x8000)
-                if data not in unique:
-                    if len(storage)+len(payload)>16384:page(storage);storage=bytearray()
-                    if storage:payload,relocations=compile_packet(data,0x8000+len(storage),back_address=0xc027,packed8=True)
-                    unique[data]=(1+len(result)//16384,0x8000+len(storage))
-                    compiled['relocations'].extend(dict(offset=len(result)+len(storage)+at,symbol=name) for at,name in relocations)
-                    storage.extend(payload)
-                pointers[old,current]=unique[data]
-        if storage:page(storage)
+        costs=[[0]*8 for _ in range(9)]
         for fx,(bank,_) in enumerate(atlases):
+            number=page(bank)
+            arrays=atlases[fx][1]
+            tables=list(zip((0x500,0x4500,0x448,0x4448,0x680,0x4680),
+                            (0x8b00,0x8d00,0x8c80,0x8e80,0x9100,0x9300),arrays))
+            packets=[transition_packet(atlases[old][1] if old<8 else (b'',)*6,arrays,
+                                       tuple(t[0] for t in tables),merge_gap=6) for old in range(9)]
+            gaps=[[0x2920,16384]]
+            pointers,relocations,used=pack_transfers(result,number,packets,tables,gaps)
+            compiled['relocations'].extend(relocations)
+            packing['boundary_code_bytes']+=used
+            packing['boundary_programs']+=len(pointers)
+            packing['holes'].extend([number,begin,end] for begin,end in gaps if end>begin)
             for old in range(9):
-                b,address=pointers[old,fx];bank[0x2900+old*3:0x2903+old*3]=bytes((b,address&255,address>>8))
-            edge_banks.append(page(bank))
+                b,address=pointers[packets[old]]
+                target=(number-1)*16384+0x2900+old*3
+                result[target:target+3]=bytes((b,address&255,address>>8))
+                from session_phase import compiled_cycles
+                costs[old][fx]=compiled_cycles(result,b,address)
+            edge_banks.append(number)
         edge_costs.append(costs)
     compiled['boundary_programs']=True
     (out/'hud-programs.json').write_text(json.dumps(compiled,indent=2)+'\n')
+    (out/'rom-packing.json').write_text(json.dumps(packing,indent=2)+'\n')
     from session_phase import append_costs
     result=append_costs(result,edge_costs,out)
     production_config=(production/'config.inc').read_text()
@@ -181,7 +186,7 @@ def append_resources(root,out,banks):
     constants['SESSION_DECOR_BANK']=page(decorations(root,out,production))
     constants['AUDIO_BANK']=metadata['banks']['GAME_AUDIO_BANK']
     from session_boot import append as append_boot,enabled as boot_enabled
-    append_boot(root,out,page)
+    append_boot(root,out,page,image=result,holes=packing['holes'])
     constants['SESSION_BOOT_BANK']=page(b'')
     constants.update(SESSION_HARDWARE_CHECK=int(boot_enabled()),SESSION_RUNTIME=1,FULL_GAME=1,FLAG_POPUPS=1,AUDIO_ENABLED=1,
                      SESSION_TEST_MODE=int(os.environ.get('NRX_TEST_MODE','0')),
@@ -361,7 +366,7 @@ Audio_SmokeEnvelope:
         file.write('\n    DEFINE GAME_FULL_SESSION 1\n'+''.join(f'{k} EQU ${v:04x}\n' for k,v in constants.items()))
     metadata.update(full_session=True,shared_revision=REVISION,enemy_policy='Native phase progression; no diagnostic population clamp')
     (out/'game-resources.json').write_text(json.dumps(metadata,indent=2)+'\n')
-    report=dict(revision=REVISION,banks=constants,terrain_banks=terrain_banks,map_banks=map_banks,edge_banks=edge_banks,
+    report=dict(revision=REVISION,ram_kib=int(os.environ.get('NRX_RAM_KIB','64')),banks=constants,terrain_banks=terrain_banks,map_banks=map_banks,edge_banks=edge_banks,
                 production_bundle=str(production),stone_authorization=ROCK_CODEC_AUTHORIZATION)
     (out/'session-build.json').write_text(json.dumps(report,indent=2)+'\n')
     return result
@@ -576,6 +581,9 @@ def copy_sources(out,assembly):
     from hud_module import FONT
     (assembly/'hud-small-font-data.inc').write_text(''.join('    db '+','.join(map(str,FONT[c]))+'\n' for c in '0123456789 '))
     path.write_text((module/(variant['name']+'.inc')).read_text())
+    if json.loads((out/'session-build.json').read_text()).get('ram_kib',128)==64:
+        from session_ram64 import adapt
+        adapt(assembly)
 
 
 def renderer_source(text,out):
@@ -635,8 +643,8 @@ cx EQU $c000''',1)
     text=text.replace('.boundary_needed:\n','.boundary_needed:\n    call GameSession_MapEdges\n',1)
     text=text.replace('render.hud_uploaded:\n','render.hud_uploaded:\n    call GameSession_FlagUpload\n',1)
     text=text.replace('.no_left:\n','.no_left:\n    call GameSession_LabelUpload\n    call GameSession_PopupUpload\n',1)
-    text=text.replace('    INCLUDE "game-audio-data.inc"\n    INCLUDE "game-audio.inc"',
-        '    INCLUDE "full-audio-state.inc"\n    INCLUDE "session-resident.inc"\n    INCLUDE "session-flags.inc"\n    INCLUDE "session-bank-tables.inc"')
+    text=text.replace('    INCLUDE "modules/audio/first-stage.inc"',
+        '    INCLUDE "modules/session/runtime.inc"')
     # Native cold worker owns AC00/AE00, as in the shared production adapter.
     text=text.replace('    INCBIN "game-native-raw.bin",0,$3500','''    INCBIN "game-native-raw.bin",0,$2c00
     INCLUDE "session-native-objects.inc"
@@ -725,7 +733,8 @@ def assemble_existing(out):
         subprocess.run([str(root/'.tools/sjasmplus/1.24.0/sjasmplus'),'--nologo','--sym=lab.sym','--lst=lab.lst','lab.asm'],cwd=assembly,check=True)
         banks=game_build.finalize_banks(assembly,out,bytearray((out/'banks.bin').read_bytes()))
         resident=(assembly/'fixed-hud.rom').read_bytes();assert len(resident)==16384
-        (out/'fixed-hud.rom').write_bytes(resident+banks)
+        from scripts.msx.cartridge_size import publish_rom
+        publish_rom(resident+banks,out/'fixed-hud.rom',report_path=out/'cartridge-size.json')
         for name in ('lab.sym','lab.lst'):shutil.copyfile(assembly/name,out/name)
     print(out/'fixed-hud.rom')
 
@@ -737,18 +746,21 @@ def export_cartridge(out):
     build=json.loads((out/'session-build.json').read_text())
     test_mode=bool(build['banks'].get('SESSION_TEST_MODE',0))
     suffix=('-test' if test_mode else '')+('-hud-classic' if json.loads((out/'hud-module.json').read_text())['name']=='classic' else '')+('-no-logo' if '-no-logo' in out.name else '')+('-no-check' if not build['banks'].get('SESSION_HARDWARE_CHECK',1) else '')
+    if build.get('ram_kib',128)==64:suffix+='-64k'
     target=destination/f'newrallyx-screen4-full-game{suffix}.rom'
-    shutil.copyfile(out/'fixed-hud.rom',target)
+    from scripts.msx.cartridge_size import publish_rom
+    data=(out/'fixed-hud.rom').read_bytes()
+    capacity=publish_rom(data,target,report_path=out/'cartridge-size.json')
     # WebMSX consumes the bracketed filename hint before mapper selection.
     # Keep the measured cartridge byte-identical and retain canonical paths.
     webmsx_target=target.with_name(target.stem+' [ASCII16].rom')
-    shutil.copyfile(target,webmsx_target)
+    publish_rom(data,webmsx_target)
     manifest=dict(rom=str(target.relative_to(root)),rom_sha256=hashlib.sha256(target.read_bytes()).hexdigest(),
         mapper='ASCII16',webmsx_rom=str(webmsx_target.relative_to(root)),
         bytes=target.stat().st_size,source_revision=build['revision'],presenter='Optimized SCREEN4 gameplay; shared SCREEN5 UI',
-        enemy_policy='Native full-session progression',minimum_mapper_ram_kib=128,
+        enemy_policy='Native full-session progression',minimum_mapper_ram_kib=build.get('ram_kib',128),
         status='Experimental test cartridge; final visual/audio/timing acceptance remains with user',
-        source_bundle=str(out.resolve()),test_mode=test_mode,hardware_check=bool(build['banks'].get('SESSION_HARDWARE_CHECK',1)),title=json.loads((out/'session-title.json').read_text()),hud_module=json.loads((out/'hud-module.json').read_text()))
+        source_bundle=str(out.resolve()),test_mode=test_mode,hardware_check=bool(build['banks'].get('SESSION_HARDWARE_CHECK',1)),capacity=capacity,title=json.loads((out/'session-title.json').read_text()),hud_module=json.loads((out/'hud-module.json').read_text()))
     (destination/f'full-session-build{suffix}.json').write_text(json.dumps(manifest,indent=2)+'\n')
     print('Test ROM:',target)
     print('WebMSX ROM:',webmsx_target)

@@ -31,8 +31,8 @@ VBlank11,172cycles;5,000cycles remains a planning reserve. The remaining late
 self-cost leaders are smoke cache, terrain names/overlays and sprite preparation.
 
 Reproduce the cache guards with `make test-phase-cache` (three-enemy default).
-Workbooks: `outputs/component-timing/component-timing.xlsx` and
-`outputs/first-stage/cycle-budget.xlsx`. Raw traces and ROM hashes are recorded
+Workbooks: `docs/measurements/timing/archive/component-timing/component-timing.xlsx` and
+`docs/measurements/timing/archive/first-stage/cycle-budget.xlsx`. Raw traces and ROM hashes are recorded
 in their input/source sheets and `outputs/fixed-hud/phase-cache-proof.json`.
 
 A register-based smoke-cache trial passed2,285 exact cases and helped synthetic
@@ -185,7 +185,7 @@ No claim of identical temporal behavior is made across frame-indexed inputs.
 
 ## Evidence and cycle ledger
 
-`outputs/first-stage/cycle-budget.xlsx` and `summary.json` bind the exact ROM
+`docs/measurements/timing/archive/first-stage/cycle-budget.xlsx` and `summary.json` bind the exact ROM
 hashes to raw profile paths, active-only calculations, inclusive/self costs,
 calls/frame, mean/P95/max, waits and remaining budgets. `MultiCar`, `SmokeCache`
 and `DirtyNames` distinguish separate workloads and synthetic bounds.
@@ -245,9 +245,9 @@ The 480-frame population check observes three moving, fully visible enemies,
 an enemy-contact death and restart. It reports no scanline overflow in that
 specific scenario; hardware sprite limits remain enabled.
 
-`outputs/component-timing/component-timing.xlsx` includes the previous measured
+`docs/measurements/timing/archive/component-timing/component-timing.xlsx` includes the previous measured
 baseline and current Schedule, Changes, Components, Movement, Raster and Inputs views.
-The original cycle workbook at `outputs/first-stage/cycle-budget.xlsx` is also
+The original cycle workbook at `docs/measurements/timing/archive/first-stage/cycle-budget.xlsx` is also
 refreshed. All original graphics and 64 HUD phase payloads are byte-identical.
 The native worker payload is unchanged apart from three linked CALL/JP operands
 following their relocated resident symbols.

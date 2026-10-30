@@ -8,6 +8,8 @@ from scripts.msx.emulator import reference_machine,tcl,scanout_recording_tcl
 
 
 def run(bundle,*,headless=False,scenario='start'):
+    from session_reference import configure
+    configure(bundle)
     bundle=Path(bundle).resolve();out=Path(tempfile.mkdtemp(prefix='session-start-',dir=bundle))
     rom=(bundle/'fixed-hud.rom').read_bytes();(out/'measured.rom').write_bytes(rom)
     (out/'measured.sym').write_bytes((bundle/'lab.sym').read_bytes())
@@ -166,13 +168,16 @@ debug set_bp 0xf100 {{[info exists ::death_saved]}} {{
 }}
 '''
     if scenario=='radar':
+        removed_index=int(os.environ.get('NRX_RADAR_REMOVE_FLAG','8'))
+        assert 0<=removed_index<10,'Radar flag index must be 0..9'
+        setup+=f'set radar_removed_index {removed_index}\n'
         stub=bytes((0x31,0xe0,0xf2,0xcd,syms['GameSession_RemoveFlag']&255,syms['GameSession_RemoveFlag']>>8,0xc3,0,0xf1))
         setup+=f'''
 debug set_bp {syms['Game_Actors']} {{$::phase eq "radar_matrix" && $::matrix_index==128 && ![info exists ::l_removed]}} {{
  set ::l_removed 1
  set ::radar_saved {{}};foreach name {{AF BC DE HL IX IY SP PC}} {{lappend ::radar_saved $name [reg $name]}}
- debug write memory {syms['Flag_Active']+9} 0
- debug write memory {syms['GameSession_FlagIndex']} 8
+ debug write memory {syms['Flag_Active']+1+removed_index} 0
+ debug write memory {syms['GameSession_FlagIndex']} {removed_index}
  debug write_block memory 0xf000 [binary format H* {stub.hex()}]
  reg PC 0xf000
 }}
@@ -184,7 +189,7 @@ debug set_bp 0xf100 {{[info exists ::radar_saved]}} {{
         script+=f'''
 debug set_bp {syms['Game_Actors']} {{$::phase eq "radar_matrix"}} {{
  set n [expr {{$::matrix_index%128}}];set fx [expr {{$n%8}}];set fy [expr {{($n/8)%8}}];set blink [expr {{($n/64)*16}}]
- if {{$::matrix_index>=128}} {{set fx 0;set fy 0;set blink [expr {{($::matrix_index/16)%2*16}}]}}
+ if {{$::matrix_index>=128 && $::radar_removed_index==8}} {{set fx 0;set fy 0;set blink [expr {{($::matrix_index/16)%2*16}}]}}
  set sx [debug read memory 0xdfba];set sy [debug read memory 0xdfbb]
  set cx [expr {{max(0,min(600,$sx*8-80))/8*8+$fx}}]
  set cy [expr {{max(0,min(1176,$sy*8-80))/8*8+$fy}}]
@@ -271,6 +276,9 @@ debug set_bp 0xf100 {{[info exists ::saved_registers]}} {{
     assert result.returncode==0,(out,(out/'openmsx.log').read_text()[-1200:])
     report=dict(rom_sha256=hashlib.sha256(rom).hexdigest(),scenario=scenario,passed=True,source=str(out),
                 snapshots=[p.stem for p in out.glob('*.ram')],input='Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source')
+    machine=re.search(r'Reference RAM mapper: (\d+) bytes; machine: (\S+)',(out/'openmsx.log').read_text())
+    assert machine,'Missing actual machine/RAM evidence'
+    report.update(machine=machine[2],mapper_ram_kib=int(machine[1])//1024)
     if scenario=='flags':
         start,heard,bonus,fuel=map(float,(out/'clear-order.tsv').read_text().split())
         report['clear_sequence']=dict(settlement_start=start,first_audible_mode4=heard,bonus_start=bonus,settlement_seconds=bonus-start,fuel_before_bonus=int(fuel),fuel_and_score_stable_during_music=True,flag_order=os.environ.get('NRX_TEST_FLAG_ORDER','0 9 8 1 2 3 4 5 6 7'))
@@ -310,7 +318,7 @@ debug set_bp 0xf100 {{[info exists ::saved_registers]}} {{
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session')
+    parser=argparse.ArgumentParser();parser.add_argument('--bundle',type=Path,default=ROOT/'references/experiments/full-session-64k')
     parser.add_argument('--headless',action='store_true');parser.add_argument('--scenario',choices=['start','integration','two-player','flags','attract','radar','smoke','controls'],default='start')
     parser.add_argument('--contracts',action='store_true',help='Check stable active VRAM against the independent graphics oracle')
     args=parser.parse_args();folder=run(args.bundle,headless=args.headless,scenario=args.scenario)

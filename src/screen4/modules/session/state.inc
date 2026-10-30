@@ -1,0 +1,57 @@
+; Module contract: State aliases only; no allocation or executable instructions.
+; Detailed ABI, ownership and reuse limits: modules/README.md and contracts.json.
+; Full sessions share native rules with the audio branch. This file contains
+; only resident mapper/VDP boundaries; cold work lives in independent Page0 RAM.
+Session_State EQU $c7d0
+Session_Drawn EQU $c7d1
+Session_Credits EQU $c7d2
+Session_Keys EQU $c7d3
+Session_High EQU $c7d4
+Session_Edges EQU $c7dc
+Session_Ready EQU $c7dd
+Session_HeldDirections EQU $c7de
+Session_SelectedDirection EQU $c7df
+Full_Players EQU $c7eb
+Full_Player EQU $c7ec
+Full_NewBoard EQU $c7ed
+Full_Attract EQU $c7ee
+Full_NumberBlack EQU $c7ef
+Full_ChallengeBypass EQU $c7f0
+Full_UIHeld EQU $c7f1
+Full_UIEdges EQU $c7f2
+Full_AttractClock EQU $c7ca
+Full_Shadow EQU $d230
+Full_Loading EQU $dfc8
+Full_Layout EQU $dfc9
+Full_ResourceBank EQU $dfbd
+Flag_Records EQU $df80
+Full_DebugHeld EQU $dfcb
+GameSession_MainSegment EQU $c0d0
+GameSession_MapSegments EQU $c0d1
+GameSession_FlagSegment EQU $c0d3
+GameSession_FlagGeneration EQU $c0d4
+GameSession_FlagLoaded EQU $2860
+GameSession_FlagIndex EQU $c0d9
+GameSession_FlagMask EQU $c0da
+GameSession_Count EQU $c0db
+GameSession_Phase EQU $c0dc
+GameSession_LoadKind EQU $c0dd
+GameSession_SaveFlags EQU $c0e0
+GameSession_PauseHeld EQU $c0ea
+GameSession_Key0 EQU $c0eb
+GameSession_Key8 EQU $c0ec
+Popup_Pending EQU $dfe5
+Popup_Active EQU $dfe4
+Popup_X EQU $dfe6
+Popup_Y EQU $dfe7
+Popup_Tick EQU $dfe8
+Popup_Age EQU $dfe9
+Popup_Index EQU $dfea
+Popup_Loaded EQU $2880
+GameSession_RoundCaps EQU $c0f4
+GameSession_Blink EQU $c0f6
+GameSession_FlagOffSegment EQU $c0f7
+Session_WallBlocks EQU $c7e6
+Session_RiskFrames EQU $c7e8
+Session_GuardActive EQU $c7e9
+ticks EQU clock_ticks

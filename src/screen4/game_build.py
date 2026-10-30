@@ -206,23 +206,11 @@ def renderer_source(text, *, phase_cache=True):
     # Gameplay radar reads native cells and the 56-byte Game_RadarCellRows.
     # The free-camera pixel-coordinate tables have no gameplay references.
     replace('radar_x:\n    INCBIN "radar-x.bin"\nradar_y:\n    INCBIN "radar-y.bin"\n','')
-    replace('palette:\n', '''    INCLUDE "game-phase-cache.inc"
-    INCLUDE "game-main.inc"
-    INCLUDE "game-dirty.inc"
-    INCLUDE "game-smoke-cache.inc"
-    INCLUDE "game-radar-fast.inc"
-    INCLUDE "game-name-stream.inc"
-    INCLUDE "game-boundary-fast.inc"
-    INCLUDE "game-packet-fast.inc"
-    INCLUDE "game-multi.inc"
-    INCLUDE "game-core.inc"
-    INCLUDE "game-host.inc"
+    replace('palette:\n', '''    INCLUDE "modules/renderer/msx2.inc"
+    INCLUDE "modules/native/core.inc"
     INCLUDE "game-hud.inc"
-    INCLUDE "game-sprites.inc"
-    INCLUDE "game-sprite-mask-fast.inc"
-    INCLUDE "game-sprite-clip-fast.inc"
-    INCLUDE "game-audio-data.inc"
-    INCLUDE "game-audio.inc"
+    INCLUDE "modules/actors/msx2.inc"
+    INCLUDE "modules/audio/first-stage.inc"
 palette:
 ''')
     from game_phase_cache import transform as phase_cache_transform
@@ -244,6 +232,12 @@ palette:
 
 
 def copy_sources(root,out,assembly):
+    # Copy authored include facades/submodules, never another code/data copy.
+    module_root=Path(__file__).with_name('modules')
+    for source in module_root.rglob('*.inc'):
+        target=Path(assembly)/'modules'/source.relative_to(module_root)
+        target.parent.mkdir(parents=True,exist_ok=True)
+        shutil.copyfile(source,target)
     for source in out.iterdir():
         if source.suffix in ('.bin','.inc'):shutil.copyfile(source,assembly/source.name)
     for name in ('game-phase-cache.inc','game-main.inc','game-core.inc','game-sprites.inc','game-sprite-mask-fast.inc','game-sprite-clip-fast.inc','game-audio.inc','game-hud.inc','game-dirty.inc','game-smoke-cache.inc','game-radar-fast.inc','game-name-stream.inc','game-boundary-fast.inc','game-packet-fast.inc','game-multi.inc'):

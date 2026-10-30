@@ -22,5 +22,5 @@ __pycache__/
 .tools/
 
 # Generated cartridges, reports, workbooks and private emulator state.
-# Keep local evidence; curated regression metadata lives under docs/measurements/.
+# Keep local evidence; maintained timing workbooks and curated metadata live in docs/.
 /outputs/

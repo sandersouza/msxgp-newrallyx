@@ -1,0 +1,822 @@
+{
+  "issue": 36,
+  "related_issue": 32,
+  "date": "2026-10-29",
+  "implementation_base": "153300d",
+  "profiles": {
+    "default": {
+      "passed": true,
+      "profile": "default",
+      "bytes": 2048000,
+      "sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "symbol_count": 1589,
+      "symbols_sha256": "4327560d2df76495d083b71b5165cdd1f8c90024b02bda2484c99409053328c7",
+      "exports": {
+        "vdp-transfers": {
+          "GamePacketFast_Transfer": 22206,
+          "GamePacketFast_End": 22253
+        },
+        "page0-mapper": {
+          "GameSession_MapPage": 31961,
+          "GameSession_RestorePage0": 31974,
+          "GameSession_CopyMap": 31980,
+          "GameSession_PatchObject": 32000
+        },
+        "vdp-registers": {
+          "register": 6805,
+          "stage_wait_command": 6813
+        },
+        "screen4-renderer": {
+          "Game_Init": 20095,
+          "Game_Prepare": 20063,
+          "Game_RingPatch": 20231,
+          "Game_Radar": 20752,
+          "Game_RadarUpload": 21074,
+          "GameDirty_Mark": 21171,
+          "GameDirty_Plan": 21252,
+          "GameSmoke_MarkCloud": 21541,
+          "GameNameStream_Wide": 22024,
+          "GameBoundary_Upload": 22166
+        },
+        "native-core": {
+          "Game_InitCore": 22254,
+          "Game_Frame": 22365,
+          "Game_Position": 23123,
+          "Game_Actors": 23251
+        },
+        "world-sprites": {
+          "GameSprites_Init": 28300,
+          "GameSprites_Prepare": 28373,
+          "GameSprites_Commit": 29900,
+          "GS_MaskedCopyFast": 31103,
+          "GS_ClippedCopyFast": 31636
+        },
+        "session-state": {
+          "Session_State": 51152,
+          "GameSession_MainSegment": 49360,
+          "GameSession_MapSegments": 49361,
+          "GameSession_FlagSegment": 49363,
+          "Popup_Active": 57316
+        },
+        "session-boot": {
+          "GameSession_Boot": 31888
+        },
+        "session-render-banks": {
+          "GameSession_MapEdges": 32056,
+          "GameSession_PhaseBank": 32079,
+          "GameSession_Boundaries": 32088,
+          "GameSession_Prewarm": 32097
+        },
+        "session-world": {
+          "GameSession_ColdBoot": 5370,
+          "GameSession_ColdLoad": 5448,
+          "GameSession_BuildMap": 5665,
+          "GameSession_MapTerrain": 5853,
+          "GameSession_PhaseSelect": 5120,
+          "GameSession_SharedInit": 5267,
+          "GameSession_SharedSprite": 5336
+        },
+        "session-video": {
+          "GameSession_Video": 5871
+        },
+        "radar-cache": {
+          "GameSession_BuildFlags": 6189,
+          "GameSession_DrawFlagDots": 6295,
+          "GameSession_FlagCoordinates": 6317,
+          "GameSession_EncodeFlags": 6348
+        },
+        "session-lifecycle": {
+          "GameSession_UI": 6517,
+          "GameSession_NextRound": 6625,
+          "GameSession_Death": 6679
+        },
+        "audio-session": {
+          "GameAudio_Init": 6739,
+          "GameAudio_Tick": 6764,
+          "GameAudio_Event": 6796,
+          "Full_TurboOn": 6804,
+          "Full_TurboOff": 6804
+        },
+        "session-decorations": {
+          "GameSession_AfterFrame": 6879,
+          "GameSession_EndDemo": 6912,
+          "GameSession_LabelNames": 6948,
+          "GameSession_LabelUpload": 6970,
+          "GameSession_PopupFrame": 7038,
+          "GameSession_PopupOverlay": 7175,
+          "GameSession_PopupUpload": 7241
+        },
+        "input-motion": {
+          "GameSession_DisplayRound": 7314,
+          "GameSession_ValidateMotion": 7460,
+          "GameSession_ContactWall": 7569,
+          "Session_SaveMotion": 7350,
+          "Session_RestoreMotion": 7409
+        },
+        "radar-color-blink": {
+          "GameSession_SpecialFrame": 7597,
+          "GameSession_RadarColor": 7609
+        },
+        "audio-stop-completion": {
+          "GameSession_AudioStop": 7664,
+          "GameSession_CompletionWait": 7734
+        },
+        "startup-replay": {
+          "GameSession_BootShow": 10496
+        }
+      },
+      "resource_delta": {
+        "rom_bytes": 0,
+        "instructions": 0,
+        "ram_bytes": 0,
+        "vram_bytes": 0,
+        "stack_bytes": 0,
+        "mapper_writes": 0,
+        "vdp_writes": 0,
+        "synchronization": 0
+      },
+      "proof": "Complete ROM and complete symbol map match the frozen pre-extraction profile. Same instructions/data, RAM aliases, branch destinations and mapper/VDP schedule; no runtime wrapper was introduced.",
+      "limitation": "The zero-delta proof is relative to this exact accepted build/configuration. New host bindings, inputs, assets or hardware need their own integration validation."
+    },
+    "test": {
+      "passed": true,
+      "profile": "test",
+      "bytes": 2048000,
+      "sha256": "16a5ac1c53484d676a292d036f9d1a6d492cb287e701d61c344c1c47e5c979c6",
+      "symbol_count": 1593,
+      "symbols_sha256": "663b51889bf733db8e85cfe028570ea9b287729c48ccb94e0ec4d8424542080c",
+      "exports": {
+        "vdp-transfers": {
+          "GamePacketFast_Transfer": 22206,
+          "GamePacketFast_End": 22253
+        },
+        "page0-mapper": {
+          "GameSession_MapPage": 31973,
+          "GameSession_RestorePage0": 31986,
+          "GameSession_CopyMap": 31992,
+          "GameSession_PatchObject": 32012
+        },
+        "vdp-registers": {
+          "register": 6812,
+          "stage_wait_command": 6820
+        },
+        "screen4-renderer": {
+          "Game_Init": 20095,
+          "Game_Prepare": 20063,
+          "Game_RingPatch": 20231,
+          "Game_Radar": 20752,
+          "Game_RadarUpload": 21074,
+          "GameDirty_Mark": 21171,
+          "GameDirty_Plan": 21252,
+          "GameSmoke_MarkCloud": 21541,
+          "GameNameStream_Wide": 22024,
+          "GameBoundary_Upload": 22166
+        },
+        "native-core": {
+          "Game_InitCore": 22254,
+          "Game_Frame": 22365,
+          "Game_Position": 23130,
+          "Game_Actors": 23258
+        },
+        "world-sprites": {
+          "GameSprites_Init": 28312,
+          "GameSprites_Prepare": 28385,
+          "GameSprites_Commit": 29912,
+          "GS_MaskedCopyFast": 31115,
+          "GS_ClippedCopyFast": 31648
+        },
+        "session-state": {
+          "Session_State": 51152,
+          "GameSession_MainSegment": 49360,
+          "GameSession_MapSegments": 49361,
+          "GameSession_FlagSegment": 49363,
+          "Popup_Active": 57316
+        },
+        "session-boot": {
+          "GameSession_Boot": 31900
+        },
+        "session-render-banks": {
+          "GameSession_MapEdges": 32068,
+          "GameSession_PhaseBank": 32091,
+          "GameSession_Boundaries": 32100,
+          "GameSession_Prewarm": 32109
+        },
+        "session-world": {
+          "GameSession_ColdBoot": 5370,
+          "GameSession_ColdLoad": 5455,
+          "GameSession_BuildMap": 5672,
+          "GameSession_MapTerrain": 5860,
+          "GameSession_PhaseSelect": 5120,
+          "GameSession_SharedInit": 5267,
+          "GameSession_SharedSprite": 5336
+        },
+        "session-video": {
+          "GameSession_Video": 5878
+        },
+        "radar-cache": {
+          "GameSession_BuildFlags": 6196,
+          "GameSession_DrawFlagDots": 6302,
+          "GameSession_FlagCoordinates": 6324,
+          "GameSession_EncodeFlags": 6355
+        },
+        "session-lifecycle": {
+          "GameSession_UI": 6524,
+          "GameSession_NextRound": 6632,
+          "GameSession_Death": 6686
+        },
+        "audio-session": {
+          "GameAudio_Init": 6746,
+          "GameAudio_Tick": 6771,
+          "GameAudio_Event": 6803,
+          "Full_TurboOn": 6811,
+          "Full_TurboOff": 6811
+        },
+        "session-decorations": {
+          "GameSession_AfterFrame": 6886,
+          "GameSession_EndDemo": 6919,
+          "GameSession_LabelNames": 6955,
+          "GameSession_LabelUpload": 6977,
+          "GameSession_PopupFrame": 7045,
+          "GameSession_PopupOverlay": 7182,
+          "GameSession_PopupUpload": 7248
+        },
+        "input-motion": {
+          "GameSession_DisplayRound": 7321,
+          "GameSession_ValidateMotion": 7467,
+          "GameSession_ContactWall": 7576,
+          "Session_SaveMotion": 7357,
+          "Session_RestoreMotion": 7416
+        },
+        "radar-color-blink": {
+          "GameSession_SpecialFrame": 7604,
+          "GameSession_RadarColor": 7616
+        },
+        "audio-stop-completion": {
+          "GameSession_AudioStop": 7671,
+          "GameSession_CompletionWait": 7741
+        },
+        "startup-replay": {
+          "GameSession_BootShow": 10496
+        }
+      },
+      "resource_delta": {
+        "rom_bytes": 0,
+        "instructions": 0,
+        "ram_bytes": 0,
+        "vram_bytes": 0,
+        "stack_bytes": 0,
+        "mapper_writes": 0,
+        "vdp_writes": 0,
+        "synchronization": 0
+      },
+      "proof": "Complete ROM and complete symbol map match the frozen pre-extraction profile. Same instructions/data, RAM aliases, branch destinations and mapper/VDP schedule; no runtime wrapper was introduced.",
+      "limitation": "The zero-delta proof is relative to this exact accepted build/configuration. New host bindings, inputs, assets or hardware need their own integration validation."
+    },
+    "classic": {
+      "passed": true,
+      "profile": "classic",
+      "bytes": 2048000,
+      "sha256": "bd602ce3d43fe85df7903f69842edb1979cabac23bfea0dd7d938c149b0911b2",
+      "symbol_count": 1585,
+      "symbols_sha256": "96b474022b29af81eda15f6a0789906c6fca7f6647ce5c72abf16a103ed3c361",
+      "exports": {
+        "vdp-transfers": {
+          "GamePacketFast_Transfer": 22206,
+          "GamePacketFast_End": 22253
+        },
+        "page0-mapper": {
+          "GameSession_MapPage": 31953,
+          "GameSession_RestorePage0": 31966,
+          "GameSession_CopyMap": 31972,
+          "GameSession_PatchObject": 31992
+        },
+        "vdp-registers": {
+          "register": 6805,
+          "stage_wait_command": 6813
+        },
+        "screen4-renderer": {
+          "Game_Init": 20095,
+          "Game_Prepare": 20063,
+          "Game_RingPatch": 20231,
+          "Game_Radar": 20752,
+          "Game_RadarUpload": 21074,
+          "GameDirty_Mark": 21171,
+          "GameDirty_Plan": 21252,
+          "GameSmoke_MarkCloud": 21541,
+          "GameNameStream_Wide": 22024,
+          "GameBoundary_Upload": 22166
+        },
+        "native-core": {
+          "Game_InitCore": 22254,
+          "Game_Frame": 22365,
+          "Game_Position": 23123,
+          "Game_Actors": 23251
+        },
+        "world-sprites": {
+          "GameSprites_Init": 28292,
+          "GameSprites_Prepare": 28365,
+          "GameSprites_Commit": 29892,
+          "GS_MaskedCopyFast": 31095,
+          "GS_ClippedCopyFast": 31628
+        },
+        "session-state": {
+          "Session_State": 51152,
+          "GameSession_MainSegment": 49360,
+          "GameSession_MapSegments": 49361,
+          "GameSession_FlagSegment": 49363,
+          "Popup_Active": 57316
+        },
+        "session-boot": {
+          "GameSession_Boot": 31880
+        },
+        "session-render-banks": {
+          "GameSession_MapEdges": 32048,
+          "GameSession_PhaseBank": 32071,
+          "GameSession_Boundaries": 32080,
+          "GameSession_Prewarm": 32089
+        },
+        "session-world": {
+          "GameSession_ColdBoot": 5370,
+          "GameSession_ColdLoad": 5448,
+          "GameSession_BuildMap": 5665,
+          "GameSession_MapTerrain": 5853,
+          "GameSession_PhaseSelect": 5120,
+          "GameSession_SharedInit": 5267,
+          "GameSession_SharedSprite": 5336
+        },
+        "session-video": {
+          "GameSession_Video": 5871
+        },
+        "radar-cache": {
+          "GameSession_BuildFlags": 6189,
+          "GameSession_DrawFlagDots": 6295,
+          "GameSession_FlagCoordinates": 6317,
+          "GameSession_EncodeFlags": 6348
+        },
+        "session-lifecycle": {
+          "GameSession_UI": 6517,
+          "GameSession_NextRound": 6625,
+          "GameSession_Death": 6679
+        },
+        "audio-session": {
+          "GameAudio_Init": 6739,
+          "GameAudio_Tick": 6764,
+          "GameAudio_Event": 6796,
+          "Full_TurboOn": 6804,
+          "Full_TurboOff": 6804
+        },
+        "session-decorations": {
+          "GameSession_AfterFrame": 6879,
+          "GameSession_EndDemo": 6912,
+          "GameSession_LabelNames": 6948,
+          "GameSession_LabelUpload": 6970,
+          "GameSession_PopupFrame": 7038,
+          "GameSession_PopupOverlay": 7175,
+          "GameSession_PopupUpload": 7241
+        },
+        "input-motion": {
+          "GameSession_DisplayRound": 7314,
+          "GameSession_ValidateMotion": 7460,
+          "GameSession_ContactWall": 7569,
+          "Session_SaveMotion": 7350,
+          "Session_RestoreMotion": 7409
+        },
+        "radar-color-blink": {
+          "GameSession_SpecialFrame": 7597,
+          "GameSession_RadarColor": 7609
+        },
+        "audio-stop-completion": {
+          "GameSession_AudioStop": 7664,
+          "GameSession_CompletionWait": 7734
+        },
+        "startup-replay": {
+          "GameSession_BootShow": 10496
+        }
+      },
+      "resource_delta": {
+        "rom_bytes": 0,
+        "instructions": 0,
+        "ram_bytes": 0,
+        "vram_bytes": 0,
+        "stack_bytes": 0,
+        "mapper_writes": 0,
+        "vdp_writes": 0,
+        "synchronization": 0
+      },
+      "proof": "Complete ROM and complete symbol map match the frozen pre-extraction profile. Same instructions/data, RAM aliases, branch destinations and mapper/VDP schedule; no runtime wrapper was introduced.",
+      "limitation": "The zero-delta proof is relative to this exact accepted build/configuration. New host bindings, inputs, assets or hardware need their own integration validation."
+    },
+    "no_check": {
+      "passed": true,
+      "profile": "no_check",
+      "bytes": 2048000,
+      "sha256": "982ea985a6e3fa0238539b11926b5f36989677d274672b2b694276c7b97aa0de",
+      "symbol_count": 1562,
+      "symbols_sha256": "d53dd9fe38fa1af346e7336136ef7e35286bab1580128abe83f22e0a808102c0",
+      "exports": {
+        "vdp-transfers": {
+          "GamePacketFast_Transfer": 22206,
+          "GamePacketFast_End": 22253
+        },
+        "page0-mapper": {
+          "GameSession_MapPage": 31911,
+          "GameSession_RestorePage0": 31924,
+          "GameSession_CopyMap": 31930,
+          "GameSession_PatchObject": 31950
+        },
+        "vdp-registers": {
+          "register": 6805,
+          "stage_wait_command": 6813
+        },
+        "screen4-renderer": {
+          "Game_Init": 20095,
+          "Game_Prepare": 20063,
+          "Game_RingPatch": 20231,
+          "Game_Radar": 20752,
+          "Game_RadarUpload": 21074,
+          "GameDirty_Mark": 21171,
+          "GameDirty_Plan": 21252,
+          "GameSmoke_MarkCloud": 21541,
+          "GameNameStream_Wide": 22024,
+          "GameBoundary_Upload": 22166
+        },
+        "native-core": {
+          "Game_InitCore": 22254,
+          "Game_Frame": 22365,
+          "Game_Position": 23076,
+          "Game_Actors": 23204
+        },
+        "world-sprites": {
+          "GameSprites_Init": 28253,
+          "GameSprites_Prepare": 28326,
+          "GameSprites_Commit": 29853,
+          "GS_MaskedCopyFast": 31056,
+          "GS_ClippedCopyFast": 31589
+        },
+        "session-state": {
+          "Session_State": 51152,
+          "GameSession_MainSegment": 49360,
+          "GameSession_MapSegments": 49361,
+          "GameSession_FlagSegment": 49363,
+          "Popup_Active": 57316
+        },
+        "session-boot": {
+          "GameSession_Boot": 31841
+        },
+        "session-render-banks": {
+          "GameSession_MapEdges": 32006,
+          "GameSession_PhaseBank": 32029,
+          "GameSession_Boundaries": 32038,
+          "GameSession_Prewarm": 32047
+        },
+        "session-world": {
+          "GameSession_ColdBoot": 5370,
+          "GameSession_ColdLoad": 5448,
+          "GameSession_BuildMap": 5665,
+          "GameSession_MapTerrain": 5853,
+          "GameSession_PhaseSelect": 5120,
+          "GameSession_SharedInit": 5267,
+          "GameSession_SharedSprite": 5336
+        },
+        "session-video": {
+          "GameSession_Video": 5871
+        },
+        "radar-cache": {
+          "GameSession_BuildFlags": 6189,
+          "GameSession_DrawFlagDots": 6295,
+          "GameSession_FlagCoordinates": 6317,
+          "GameSession_EncodeFlags": 6348
+        },
+        "session-lifecycle": {
+          "GameSession_UI": 6517,
+          "GameSession_NextRound": 6625,
+          "GameSession_Death": 6679
+        },
+        "audio-session": {
+          "GameAudio_Init": 6739,
+          "GameAudio_Tick": 6764,
+          "GameAudio_Event": 6796,
+          "Full_TurboOn": 6804,
+          "Full_TurboOff": 6804
+        },
+        "session-decorations": {
+          "GameSession_AfterFrame": 6879,
+          "GameSession_EndDemo": 6912,
+          "GameSession_LabelNames": 6948,
+          "GameSession_LabelUpload": 6970,
+          "GameSession_PopupFrame": 7038,
+          "GameSession_PopupOverlay": 7175,
+          "GameSession_PopupUpload": 7241
+        },
+        "input-motion": {
+          "GameSession_DisplayRound": 7314,
+          "GameSession_ValidateMotion": 7460,
+          "GameSession_ContactWall": 7569,
+          "Session_SaveMotion": 7350,
+          "Session_RestoreMotion": 7409
+        },
+        "radar-color-blink": {
+          "GameSession_SpecialFrame": 7597,
+          "GameSession_RadarColor": 7609
+        },
+        "audio-stop-completion": {
+          "GameSession_AudioStop": 7664,
+          "GameSession_CompletionWait": 7734
+        }
+      },
+      "resource_delta": {
+        "rom_bytes": 0,
+        "instructions": 0,
+        "ram_bytes": 0,
+        "vram_bytes": 0,
+        "stack_bytes": 0,
+        "mapper_writes": 0,
+        "vdp_writes": 0,
+        "synchronization": 0
+      },
+      "proof": "Complete ROM and complete symbol map match the frozen pre-extraction profile. Same instructions/data, RAM aliases, branch destinations and mapper/VDP schedule; no runtime wrapper was introduced.",
+      "limitation": "The zero-delta proof is relative to this exact accepted build/configuration. New host bindings, inputs, assets or hardware need their own integration validation."
+    },
+    "first_stage": {
+      "passed": true,
+      "profile": "first_stage",
+      "bytes": 3604480,
+      "sha256": "ae106e6a3d22e295c0e5eac1eaf74f1c1626485c889268d15149f5fdb53dae5c",
+      "symbol_count": 956,
+      "symbols_sha256": "662e27ea421f67c3e325a2765b923d198cb5293cc2724301335ea9004ed0844d",
+      "exports": {
+        "vdp-transfers": {
+          "GamePacketFast_Transfer": 22248,
+          "GamePacketFast_End": 22295
+        },
+        "screen4-renderer": {
+          "Game_Init": 20141,
+          "Game_Prepare": 20112,
+          "Game_RingPatch": 20301,
+          "Game_Radar": 20816,
+          "Game_RadarUpload": 21138,
+          "GameDirty_Mark": 21235,
+          "GameDirty_Plan": 21316,
+          "GameSmoke_MarkCloud": 21605,
+          "GameNameStream_Wide": 22064,
+          "GameBoundary_Upload": 22206
+        },
+        "native-core": {
+          "Game_InitCore": 22376,
+          "Game_Frame": 22493,
+          "Game_Position": 22924,
+          "Game_Actors": 23052
+        },
+        "world-sprites": {
+          "GameSprites_Init": 28029,
+          "GameSprites_Prepare": 28099,
+          "GameSprites_Commit": 29622,
+          "GS_MaskedCopyFast": 30825,
+          "GS_ClippedCopyFast": 31165
+        },
+        "audio-first-stage": {
+          "GameAudio_Init": 31358,
+          "GameAudio_Tick": 31393,
+          "GameAudio_Event": 31439,
+          "GameAudio_Stop": 31520
+        }
+      },
+      "resource_delta": {
+        "rom_bytes": 0,
+        "instructions": 0,
+        "ram_bytes": 0,
+        "vram_bytes": 0,
+        "stack_bytes": 0,
+        "mapper_writes": 0,
+        "vdp_writes": 0,
+        "synchronization": 0
+      },
+      "proof": "Complete ROM and complete symbol map match the frozen pre-extraction profile. Same instructions/data, RAM aliases, branch destinations and mapper/VDP schedule; no runtime wrapper was introduced.",
+      "limitation": "The zero-delta proof is relative to this exact accepted build/configuration. New host bindings, inputs, assets or hardware need their own integration validation."
+    }
+  },
+  "legacy": {
+    "bytes": 2097152,
+    "sha256": "e95a4a803c0ac3d0096b7021c877a56086d09d6ba8ed307dde7a8d039198537c",
+    "byte_identical": true,
+    "sources_unchanged": true
+  },
+  "source_sha256": {
+    "src/screen4/game_build.py": "f1b4ccc56e8f94d51184a705a48a23fe608f4b57f2c52e17ca249b94eba6a5e5",
+    "src/screen4/session_build.py": "7e6f69131cb8e762dc66ef70b6cf6d2db1338f9e884f82ab2d01a42434867efe",
+    "src/screen4/module_contracts.py": "d3ab09055e1b6ed7099199f581b6ec0dbe5e2e3ae885569045a8806050c0343a",
+    "src/screen4/session-resident.inc": "7b5efbe21ca46d35b8253fbf15babef00ad960444e1694588d496df36522f841",
+    "src/screen4/session-cold.inc": "22b12223cc6d89b01b41db478ba81a7e949aa452080b381337610a41e91051f3",
+    "src/screen4/modules/actors/msx2.inc": "09559ad83225ac1674007eba4948b31b87b4a5d17c303a2f5c161e21ff5e1c50",
+    "src/screen4/modules/audio/first-stage.inc": "36a445eb483583450eac3a20bccbaac7f0ad3dd5ee63f55560399dc21dac4b08",
+    "src/screen4/modules/audio/session.inc": "e23b815cca8b36dfa71fdbaa3a006e063cb673cccb087cf5583f5116a0cee247",
+    "src/screen4/modules/audio/stop-completion.inc": "f2f8a214de52d918b7a680d922733366138bd27333a48ac3bb04cfa0e92ab391",
+    "src/screen4/modules/input/motion.inc": "7120077a7e8c93437d3c29967987c593d1308621ea1708d87dd8168514fcc226",
+    "src/screen4/modules/interface/bitmap.inc": "bc226d0f1fae70f0145701539fd3715bfde9113d174a6d1f8a8ec7c4994a9d9b",
+    "src/screen4/modules/interface/decorations.inc": "5e99e0b81da9ede8268d361a61f28c50d0c5f985b15e5e80ac7652d40f9b8f7c",
+    "src/screen4/modules/mapper/page0.inc": "855d642b5a19c655d495ea3c64d5cb24246eec00adcfacdb003fd60b38feb25c",
+    "src/screen4/modules/native/core.inc": "7456135e9eb6364ba89d877a97f82948cd88ea1d730d37ab1941fb9f863c4f87",
+    "src/screen4/modules/native/smoke-objects.inc": "5f879649e28716e22dae48542fbafdef77e7362949f284480588e4cd3c3628b7",
+    "src/screen4/modules/radar/blink.inc": "844270e242822e020d8a7a6cb12f01d17bbca5b4fa17f355795abfd99347779f",
+    "src/screen4/modules/radar/cache-build.inc": "da0c654d392aa5bb2b973c1a0e1d4fbc265817ec06f972bcfb3077de97a267bb",
+    "src/screen4/modules/radar/color.inc": "6845e8fa18370400891cb684c7463004be57fccebebd42f7659989587400daf7",
+    "src/screen4/modules/renderer/msx2.inc": "5feec41acd50947809381ab20a854ce38cd473af11621c3d5f1424e6267faf4c",
+    "src/screen4/modules/renderer/session-banks.inc": "505c46dbbe8cf8c1dfbb0d6c002ac1a9ee3c8261b8afc4f2c6e91e452e1f113c",
+    "src/screen4/modules/renderer/video.inc": "e714d345416c9929a6fe281033a47ee5c478a4657f6f68f87792878d764d3486",
+    "src/screen4/modules/session/boot.inc": "1a6835664664fd9de5390d47dd067ba2dfc0b4b76366d40e5f6b6549aacc5558",
+    "src/screen4/modules/session/lifecycle.inc": "1b3ec2a462c39d2ece609d08c2b6c784eee345f744fb47a025861dcc95f23674",
+    "src/screen4/modules/session/runtime.inc": "1e4fefe6c28d764ccc01cc6fb929d957b21ce1e5f518e02aef3367692053df4d",
+    "src/screen4/modules/session/state.inc": "436c9a662b62c9ea4d32dd173b197a964e7279fe0fc82e083e1e0627f895dec0",
+    "src/screen4/modules/session/ui-palette.inc": "b5044f4a432ec574df8431370881cadb0ebf13609c8ffa7aaf8742d1e7622e5d",
+    "src/screen4/modules/session/world.inc": "321508f788d0deb90ed03a5b56504c26fd92b17f7e306121db6583027007e29e",
+    "src/screen4/modules/vdp/cold-ui.inc": "21c4204517d4be738ad79d6fb2cde0ba91c509bd7168658ab42f2d598e74fef3",
+    "src/screen4/modules/vdp/registers.inc": "4f80137bac7a775748e08f6694ff26f601819fff34c251e1462d3ad6a48cf355",
+    "src/screen4/modules/vdp/transfers.inc": "fc01a649251abc5b4052df18edec73bc8ffee168ceeac4a7bfa072b3329ce713",
+    "src/screen4/modules/contracts.json": "7d0de3f41b9f357160a3cbb9e413cd15cc0565ff5f48d7483818aeed64d351d3",
+    "src/screen4/modules/baselines.json": "a347de67b8e8a33a3d2087a3a1b30baaff8fc4a23cf2f0d9dae53388acdf29cc"
+  },
+  "profiles_before_after": {
+    "before": {
+      "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "cpu_hz": 3579545,
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "emulator": "openMSX 21.0\nflavour: opt\ncomponents: CORE GL LASERDISC",
+      "workload": "Full session, keyboard coin/start and F5 to native round5 (RND4), layout1, three native enemies; frames5..360, fixed directional input",
+      "method": "Guest emulated seconds * CPU Hz; entry to matched PC/SP return; tracked descendants subtracted for self time",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=5 cycles",
+      "limitsprites": true,
+      "hud": true,
+      "audio": true,
+      "active_frames": 238,
+      "active_seconds": 7.95902803289244,
+      "presented_fps": 29.903148853906842,
+      "work": {
+        "min": 64633.0,
+        "mean": 81013.56302520927,
+        "p95": 109982.9999999851,
+        "max": 127374.9999999851
+      },
+      "interval": {
+        "min": 115097.0,
+        "mean": 119704.6176470587,
+        "p95": 121024.9999999851,
+        "max": 176387.0
+      },
+      "cadence": {
+        "2": 237,
+        "3": 1
+      },
+      "late_frames": 1,
+      "enemy_distinct_positions": [
+        12,
+        11,
+        14
+      ],
+      "calibration": {
+        "cycles_per_line": 228,
+        "cycles_per_refresh": 59736,
+        "refresh_hz": 59.92274340431231,
+        "two_refresh_fps": 29.961371702156153,
+        "nominal_target_fps": 29.97,
+        "vblank_cycles": 11172.0,
+        "vblank_start_line": 244,
+        "vblank_start_cycle": 33.666666666666664,
+        "vblank_end_line": 31,
+        "vblank_end_cycle": 33.666666666666664,
+        "reserve_planning_cycles": 5000,
+        "all_status2_and_duration_checks_passed": true
+      }
+    },
+    "after": {
+      "rom_sha256": "b80c7b72ace0ee0e9686127a156249d3cceaa3292ddea767ad1497950badbfb1",
+      "cpu_hz": 3579545,
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "emulator": "openMSX 21.0\nflavour: opt\ncomponents: CORE GL LASERDISC",
+      "workload": "Full session, keyboard coin/start and F5 to native round5 (RND4), layout1, three native enemies; frames5..360, fixed directional input",
+      "method": "Guest emulated seconds * CPU Hz; entry to matched PC/SP return; tracked descendants subtracted for self time",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=5 cycles",
+      "limitsprites": true,
+      "hud": true,
+      "audio": true,
+      "active_frames": 238,
+      "active_seconds": 7.95902803289244,
+      "presented_fps": 29.903148853906842,
+      "work": {
+        "min": 64633.0,
+        "mean": 81013.56302520927,
+        "p95": 109982.9999999851,
+        "max": 127374.9999999851
+      },
+      "interval": {
+        "min": 115097.0,
+        "mean": 119704.6176470587,
+        "p95": 121024.9999999851,
+        "max": 176387.0
+      },
+      "cadence": {
+        "2": 237,
+        "3": 1
+      },
+      "late_frames": 1,
+      "enemy_distinct_positions": [
+        12,
+        11,
+        14
+      ],
+      "calibration": {
+        "cycles_per_line": 228,
+        "cycles_per_refresh": 59736,
+        "refresh_hz": 59.92274340431231,
+        "two_refresh_fps": 29.961371702156153,
+        "nominal_target_fps": 29.97,
+        "vblank_cycles": 11172.0,
+        "vblank_start_line": 244,
+        "vblank_start_cycle": 33.666666666666664,
+        "vblank_end_line": 31,
+        "vblank_end_cycle": 33.666666666666664,
+        "reserve_planning_cycles": 5000,
+        "all_status2_and_duration_checks_passed": true
+      }
+    },
+    "compared_intervals": 356,
+    "all_exposed_non_cycle_fields_identical": true,
+    "per_interval_observation_jitter_limit_cycles": 5,
+    "total_duration_delta_cycles": 0.0
+  },
+  "checks": {
+    "general_tests_passed": 446,
+    "component_tests_run": 88,
+    "component_tests_passed": 87,
+    "component_tests_skipped": 1,
+    "full_regression": "make test-experiments: passed",
+    "standalone_primitive_and_host_binding_checks": "passed",
+    "complete_rom_bytes_and_complete_symbol_tables_compared": true,
+    "workbook": "docs/cycle-budget.xlsx"
+  },
+  "limitations": [
+    "Zero extraction cost is proven for matching frozen profiles/configurations and inputs. Other hosts/assets/layouts/hardware need their own bindings and integration validation.",
+    "The performance comparison is a short three-moving-enemy active-play sample with HUD/audio/real sprite limits; no full-course or physical-hardware acceptance.",
+    "Inclusive parent/child costs overlap; VDP VR span and usable VBlank reserve remain distinct."
+  ],
+  "source_eof_normalization": {
+    "scope": "Remove trailing blank EOF lines only; assembler bytes/symbol fingerprints remain the acceptance gate.",
+    "files": {
+      "src/screen4/modules/audio/session.inc": {
+        "before_sha256": "10f62c167f547c30435c5e67b284bec9081640cdf21badc8bbf3dcc4e3624c57",
+        "after_sha256": "e23b815cca8b36dfa71fdbaa3a006e063cb673cccb087cf5583f5116a0cee247"
+      },
+      "src/screen4/modules/input/motion.inc": {
+        "before_sha256": "1879031c33775e563ddaa206717bcede84ceb5616b1d541198f90277f41fa768",
+        "after_sha256": "7120077a7e8c93437d3c29967987c593d1308621ea1708d87dd8168514fcc226"
+      },
+      "src/screen4/modules/interface/bitmap.inc": {
+        "before_sha256": "46681d514c68410a05ef1ab76603c84f9ebd3cabf4bf091dac2c1b6f8c42ba36",
+        "after_sha256": "bc226d0f1fae70f0145701539fd3715bfde9113d174a6d1f8a8ec7c4994a9d9b"
+      },
+      "src/screen4/modules/mapper/page0.inc": {
+        "before_sha256": "626fb03f47ef47956b93e73833e46d5e1843dc0199f27e96c70c679dcb8c1ec2",
+        "after_sha256": "855d642b5a19c655d495ea3c64d5cb24246eec00adcfacdb003fd60b38feb25c"
+      },
+      "src/screen4/modules/radar/blink.inc": {
+        "before_sha256": "3f0b1b8da46abcf8943564407c10d0a1bc91ea0533de02731e6e9a20a7f0eae3",
+        "after_sha256": "844270e242822e020d8a7a6cb12f01d17bbca5b4fa17f355795abfd99347779f"
+      },
+      "src/screen4/modules/radar/cache-build.inc": {
+        "before_sha256": "0d88ed723c6c76f0a0cdd6993c6cb927e6828cb98ff9e53074e33531a07f9f21",
+        "after_sha256": "da0c654d392aa5bb2b973c1a0e1d4fbc265817ec06f972bcfb3077de97a267bb"
+      },
+      "src/screen4/modules/radar/color.inc": {
+        "before_sha256": "dce6bb13b85c800213ccf84d7bad72462d8a3085b04c13c82b4e9a83df416b77",
+        "after_sha256": "6845e8fa18370400891cb684c7463004be57fccebebd42f7659989587400daf7"
+      },
+      "src/screen4/modules/renderer/session-banks.inc": {
+        "before_sha256": "7942097689c2df55d26631322998d596799f0ef0fdcad3492655d1bdaaa7e929",
+        "after_sha256": "505c46dbbe8cf8c1dfbb0d6c002ac1a9ee3c8261b8afc4f2c6e91e452e1f113c"
+      },
+      "src/screen4/modules/renderer/video.inc": {
+        "before_sha256": "62dcd2acd6e80a206e5bea78fe94a400c5f780c0e4655c6a3305e47672d74d47",
+        "after_sha256": "e714d345416c9929a6fe281033a47ee5c478a4657f6f68f87792878d764d3486"
+      },
+      "src/screen4/modules/session/boot.inc": {
+        "before_sha256": "8d9fac82c94440103cef3215b60110a8739f965fb18cf8f90fb7458e7ea9abce",
+        "after_sha256": "1a6835664664fd9de5390d47dd067ba2dfc0b4b76366d40e5f6b6549aacc5558"
+      },
+      "src/screen4/modules/session/lifecycle.inc": {
+        "before_sha256": "e5a4d479caa75d37e6977540ce83b2d443c6aa5b3cfd7cee2979a01444e7ecfc",
+        "after_sha256": "1b3ec2a462c39d2ece609d08c2b6c784eee345f744fb47a025861dcc95f23674"
+      },
+      "src/screen4/modules/session/state.inc": {
+        "before_sha256": "9eef598759a358ad941dc7ca03d8a57082a34727c546f35fde90b57a90f238ca",
+        "after_sha256": "436c9a662b62c9ea4d32dd173b197a964e7279fe0fc82e083e1e0627f895dec0"
+      },
+      "src/screen4/modules/session/ui-palette.inc": {
+        "before_sha256": "9c68890629ca27f161b6bec1900f7c3a6bc9eafbb772fa641d68ab7d40a90c15",
+        "after_sha256": "b5044f4a432ec574df8431370881cadb0ebf13609c8ffa7aaf8742d1e7622e5d"
+      },
+      "src/screen4/modules/session/world.inc": {
+        "before_sha256": "bd9e79901da2a33f7b79f2aa08ac1d4f45f7fb8497ff342dcdae2af71bbd6e93",
+        "after_sha256": "321508f788d0deb90ed03a5b56504c26fd92b17f7e306121db6583027007e29e"
+      }
+    }
+  }
+}

@@ -4,7 +4,9 @@ Issue: [#34](https://github.com/sandersouza/msxgp-newrallyx/issues/34).
 The current architecture is mapped in [architecture.md](architecture.md).
 This pass organizes navigation/output retention and relocates the complete
 SCREEN 4 component to `src/screen4/` without rewriting runtime logic.
-Zero-overhead module extraction remains issue #32.
+Subsequent source-only module extraction is implemented as a user-authorized
+subtask of #36, coordinated with #32. See the
+[module contracts and binary/map gate](../src/screen4/modules/README.md).
 
 ## Baseline before cleanup
 
@@ -125,13 +127,15 @@ Run the full-session profiler on the exact selected cartridge:
 
 ```sh
 make build
-.venv/bin/python -B src/screen4/session_profile.py --bundle references/experiments/full-session
-.venv/bin/python -B src/screen4/session_report.py --bundle references/experiments/full-session --out references/issue34/current-ledger
+.venv/bin/python -B src/screen4/session_profile.py --bundle references/experiments/full-session-64k
+.venv/bin/python -B src/screen4/session_report.py --bundle references/experiments/full-session-64k --out references/experiments/timing-report
 ```
 
 `session_profile.py` wraps the established PC/SP profiler through
 `session_profile_adapter.py`. Real keyboard/F5 input advances to native round 5;
-the fixture requires three enemies. The report rejects stationary-enemy samples
+the default fixture requires three enemies. Optional native-population workloads
+are documented in [the RAM-profile validation](ram-profile-validation.md).
+Use `MAPPER=1` and the bundle without `-64k` for 128 KiB. The report rejects stationary-enemy samples
 and verifies its ROM hash. `last-profile.txt` identifies the ignored raw capture.
 Use `--profile <capture>` on `session_report.py` to bind a report explicitly.
 An uninstrumented control run checks state/tick alignment and observation jitter.
@@ -152,20 +156,35 @@ measured hardware ceiling. Check late intervals and ready margins as well as FPS
 Launcher factory-turbo behavior is a different configuration; do not transfer
 fixed-clock figures to it without measurement.
 
-For the maintained workbook, run `session_report.py --out outputs/full-session`
-after validating the intended raw capture, then use the existing Node workbook
-generator in an environment where `@oai/artifact-tool` resolves:
+The maintained timing workbook is [docs/cycle-budget.xlsx](cycle-budget.xlsx).
+Its source [ledger](measurements/timing/cycle-ledger.json) and
+[workbook manifest](measurements/timing/workbooks.json) are versioned with it.
+Earlier full-session, first-stage, free-camera and component workbooks are kept
+under `docs/measurements/timing/archive/`, preserving their exact original bytes,
+ROM hashes and workload scopes. They are historical evidence, not substitutes
+for the current integrated measurement.
+
+Refresh the workbook after relevant timing measurements or when the measured
+ROM changes. Reuse a capture only when it matches that exact ROM:
 
 ```sh
-node src/screen4/session_workbook.mjs outputs/full-session/cycle-ledger.json references/issue34/cycle-budget.xlsx
+make profile-experiments  # collect a new profile when required
+make timing-workbook
 ```
 
-The two positional arguments are the input ledger and output workbook; choose a
-new output path before replacing a historical file. The package is supplied by
-the artifact-authoring environment, not by the Python/game setup. Older
-first-stage workbooks have different ROMs and workloads;
-they cannot substitute for the integrated report. Preserve the previous ledger
-before replacing it. This cleanup retains all existing workbooks unchanged.
+`timing-workbook` checks the last profile against the selected full-session ROM,
+regenerates the ledger and workbook in ignored `references/experiments/`, checks
+formulas, and publishes only the XLSX, source ledger and manifest to `docs/`.
+Replacing an existing canonical workbook retains its previous bytes in the
+archive unless that exact hash is already preserved. Raw traces and preview
+images stay ignored. Include the workbook, ledger and manifest in the same
+review as a timing change; do not edit measured values by hand.
+
+The Node generator takes an input ledger, an output **directory**, and an
+optional documentation directory. It uses a resolvable `@oai/artifact-tool` or
+the bundled Codex runtime; `ARTIFACT_TOOL_NODE_ROOT` can override the runtime
+directory containing `node_modules`. This is a workbook-authoring dependency,
+separate from the Python/game build requirements.
 
 ## Verification boundary
 
