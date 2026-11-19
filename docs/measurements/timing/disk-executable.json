@@ -1,0 +1,129 @@
+{
+  "rom": {
+    "mode": "rom",
+    "mapper_ram_kib": 4096,
+    "refresh_hz": 59.92274340431231,
+    "nominal_refresh_hz": 60,
+    "refresh_cycles": 59736,
+    "two_refresh_budget_cycles": 119472,
+    "artifact_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+    "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+    "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+    "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+    "work": {
+      "samples": 300,
+      "mean": 65440.126666667005,
+      "p95": 92395.33333332709,
+      "maximum": 124326.99999999718
+    },
+    "synchronization_wait": {
+      "samples": 300,
+      "mean": 42160.549999999486,
+      "p95": 59410.00000000399,
+      "maximum": 59710.00000000387
+    },
+    "publication": {
+      "samples": 300,
+      "mean": 4260.976666667159,
+      "p95": 6923.000000004438,
+      "maximum": 9159.000000012586
+    },
+    "presentation_period": {
+      "samples": 299,
+      "mean": 111880.12597547381,
+      "p95": 122291.6666666667,
+      "maximum": 179207.99999999785
+    },
+    "presented_fps": 31.9944670136026
+  },
+  "dos": {
+    "mode": "dos",
+    "mapper_ram_kib": 4096,
+    "refresh_hz": 59.92274340431231,
+    "nominal_refresh_hz": 60,
+    "refresh_cycles": 59736,
+    "two_refresh_budget_cycles": 119472,
+    "artifact_sha256": "0bf66c0b65c2986219cb5c0d5962bcb85f5f54c1d793fb57559800c89b49fd7c",
+    "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+    "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+    "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+    "work": {
+      "samples": 300,
+      "mean": 65422.06555555313,
+      "p95": 92367.3333332179,
+      "maximum": 124303.66666669154
+    },
+    "synchronization_wait": {
+      "samples": 300,
+      "mean": 42178.51666666894,
+      "p95": 59430.00000008198,
+      "maximum": 59725.00000008144
+    },
+    "publication": {
+      "samples": 300,
+      "mean": 4260.976666658045,
+      "p95": 6923.000000131609,
+      "maximum": 9158.999999974436
+    },
+    "presentation_period": {
+      "samples": 299,
+      "mean": 111880.13489409165,
+      "p95": 122291.66666670484,
+      "maximum": 179204.6666665286
+    },
+    "presented_fps": 31.994464463137096
+  },
+  "basic": {
+    "mode": "basic",
+    "mapper_ram_kib": 4096,
+    "refresh_hz": 59.92274340431231,
+    "nominal_refresh_hz": 60,
+    "refresh_cycles": 59736,
+    "two_refresh_budget_cycles": 119472,
+    "artifact_sha256": "0bf66c0b65c2986219cb5c0d5962bcb85f5f54c1d793fb57559800c89b49fd7c",
+    "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+    "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+    "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+    "work": {
+      "samples": 300,
+      "mean": 65243.44999999437,
+      "p95": 92316.33333338147,
+      "maximum": 124378.66666677418
+    },
+    "synchronization_wait": {
+      "samples": 300,
+      "mean": 41964.06666666991,
+      "p95": 59449.99999998193,
+      "maximum": 59690.00000000218
+    },
+    "publication": {
+      "samples": 300,
+      "mean": 4255.803333337433,
+      "p95": 6923.000000131609,
+      "maximum": 9159.000000177908
+    },
+    "presentation_period": {
+      "samples": 299,
+      "mean": 111480.56410256398,
+      "p95": 122291.66666670484,
+      "maximum": 179204.6666665286
+    },
+    "presented_fps": 32.10913964076069
+  },
+  "differential": {
+    "game.vram": {
+      "mismatched_bytes": 0,
+      "sha256": "05678040f97e4965981ff968dfe1b280c7fd194ee7056e1ea70fc7fe1885b695"
+    },
+    "game.regs": {
+      "mismatched_bytes": 0,
+      "sha256": "e0f4b846c18bb04ad541c36fd975d188250458578ab766d52266d514664507f4"
+    },
+    "game.psg": {
+      "mismatched_bytes": 0,
+      "sha256": "64d2e2e5ed05c3471c95b5485570c5bf1ce93e988a5ad6994c55f7cb57fb49aa"
+    },
+    "native_E000_E2FF_mismatched_bytes": 0
+  },
+  "scope": "300 natural first-round presentations, strict active endpoints; no complete-game or physical acceptance"
+}

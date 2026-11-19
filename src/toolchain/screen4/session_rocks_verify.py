@@ -7,7 +7,7 @@ for _tool_dir in (_ToolPath(__file__).resolve().parent, _ToolPath(__file__).reso
 from source_paths import source_path, RUNTIME
 import argparse,hashlib,json,os,re,shutil,subprocess,tempfile,statistics,math
 from pathlib import Path
-from session_reference import cartridge_path
+from session_reference import cartridge_path,mapper_type,bank_offset
 import sys
 ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT))
 from src.toolchain.msx.emulator import reference_machine,tcl
@@ -69,6 +69,7 @@ def verify(bundle):
     actor=s['Full_MSXActor'];actor_stub=bytes((0xf3,0x31,0xe0,0xf2,0xdd,0x21,0x88,0xe0,0xcd,actor&255,actor>>8,0xf3,0xc3,0,0xf1))
     nav_fixture=' '.join('{'+d.hex()+' '+str(mask)+'}' for d,mask in nav_cases)
     fixture=' '.join('{'+d.hex()+' '+str(cell-0x9800+0x3000)+'}' for d,cell in cases)
+    native_mapping=(f'debug write memory 0x7000 {bank_offset(bundle,bank)//8192};debug write memory 0x7800 {bank_offset(bundle,bank)//8192+1}' if mapper_type(bundle)=='ASCII8' else f'debug write memory 0x7000 {bank}')
     code=f'''set save_settings_on_exit false
 set renderer none
 set sound_driver null
@@ -78,7 +79,7 @@ set z80_freq_locked true
 filepool add -path {tcl(ROOT/'references/msxbios')} -types system_rom -position 1
 {reference_machine(ROOT,'Panasonic_FS-A1WSX')}
 set firmwareswitch off
-cart {tcl(out/'measured.rom')} -romtype ASCII16
+cart {tcl(out/'measured.rom')} -romtype {mapper_type(bundle)}
 reset
 activate_input_layer -blocking enemy_rock_proof
 set kind probe;set navcases {{{nav_fixture}}}
@@ -88,7 +89,7 @@ set results [open {tcl(out/'results.bin')} wb];set costs [open {tcl(out/'costs.t
 proc issue {{}} {{
  if {{$::index==[llength $::cases]}} {{close $::results;close $::costs;set ::kind navigation;set ::index 0;issue_nav;return}}
  lassign [lindex $::cases $::index] data stone
- debug write memory 0x7000 {bank}
+ {native_mapping}
  debug write_block memory 0x3000 [string repeat [binary format c 0] 2048]
  debug write memory $stone 16
  debug write_block memory 0xe088 [binary format H* $data]

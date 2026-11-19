@@ -7,7 +7,7 @@ for _tool_dir in (_ToolPath(__file__).resolve().parent, _ToolPath(__file__).reso
 from source_paths import source_path, RUNTIME
 import argparse,hashlib,json,math,os,re,shutil,statistics,subprocess,tempfile
 from pathlib import Path
-from session_reference import cartridge_path
+from session_reference import cartridge_path,mapper_type,bank_offset
 import sys
 ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT))
 from src.toolchain.msx.emulator import reference_machine,tcl
@@ -63,6 +63,7 @@ def verify(bundle):
             vectors.append(dict(**(case|dict(enemy0=544,enemy1=576,parked=False)),velocity=case['player'],expected=512))
     native=json.loads((bundle/'game-resources.json').read_text())['banks']['GAME_NATIVE_BANK']
     stub=bytes((0xf3,0x31,0xe0,0xf2,0xcd,0x0c,0xb6,0xf3,0xc3,0,0xf1)).hex()
+    native_mapping=(f'debug write memory 0x7000 {bank_offset(bundle,native)//8192};debug write memory 0x7800 {bank_offset(bundle,native)//8192+1}' if mapper_type(bundle)=='ASCII8' else f'debug write memory 0x7000 {native}')
     source=f'''set save_settings_on_exit false
 set renderer none
 set sound_driver null
@@ -72,7 +73,7 @@ set z80_freq_locked true
 filepool add -path {tcl(ROOT/'references/msxbios')} -types system_rom -position 1
 {reference_machine(ROOT,'Panasonic_FS-A1WSX')}
 set firmwareswitch off
-cart {tcl(out/'measured.rom')} -romtype ASCII16
+cart {tcl(out/'measured.rom')} -romtype {mapper_type(bundle)}
 reset
 activate_input_layer -blocking challenge_speed_proof
 set cases {{{' '.join('{'+ ' '.join(str(c[k]) for k in ('native_round','enemy0','enemy1','velocity','expected'))+'}' for c in vectors)}}}
@@ -84,7 +85,7 @@ proc issue {{}} {{
  lassign [lindex $::cases $::index] round e0 e1 velocity expected
  foreach {{a v}} [list 0xe1b0 $round] {{debug write memory $a $v}}
  word 0xe025 $e0;word 0xe029 $e1;word 0xe069 $velocity
- debug write memory 0x7000 {native}
+ {native_mapping}
  reg BC 0x1234
  debug write_block memory 0xf000 [binary format H* {stub}]
  reg PC 0xf000

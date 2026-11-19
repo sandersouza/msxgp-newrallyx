@@ -14,7 +14,16 @@ catch(e){
  artifact=await import(pathToFileURL(require.resolve('@oai/artifact-tool')).href);
 }
 const d=JSON.parse(await fs.readFile(input,'utf8'));
-if(d.turbo_matrix.length!==(d.asset_update?1:d.auto_policy?33:66)||d.turbo_matrix.some(r=>!r.passed))throw Error('Incomplete CPU matrix');
+if(d.compact_backend){
+ const required=new Set([
+  ...['ASCII8','MegaRAM'].flatMap(b=>[3,5,6].map(n=>`${b}|Panasonic_FS-A1WSX_${d.fixed_ram?'PLAIN64|0':'NR64|64'}|${n}`)),
+  'ASCII8|Panasonic_FS-A1WSX_NR128|128|3','ASCII8|Sony_HB-F1XDJ|64|3',
+  'ASCII8|Panasonic_FS-A1ST|256|3','ASCII8|Panasonic_FS-A1GT|512|3',
+ ]);
+ const observed=new Set(d.turbo_matrix.map(r=>`${r.backend}|${r.machine}|${r.mapper_kib}|${r.enemy_count}`));
+ if(observed.size!==required.size||d.turbo_matrix.length!==required.size||
+    [...required].some(k=>!observed.has(k))||d.turbo_matrix.some(r=>!r.passed||r.rom_sha256!==d.qualification_hashes[r.backend]))throw Error('Incomplete compact-game matrix');
+}else if(d.turbo_matrix.length!==(d.asset_update?1:d.auto_policy?33:66)||d.turbo_matrix.some(r=>!r.passed))throw Error('Incomplete CPU matrix');
 const hash=b=>createHash('sha256').update(b).digest('hex');
 const generatorHash=hash(await fs.readFile(new URL(import.meta.url)));
 const w=artifact.Workbook.create();
@@ -31,10 +40,10 @@ function sheet(name,title,headers,rows,widths){
  s.freezePanes.freezeRows(5);return s;
 }
 const hz=d.cpu_hz;
-const summary=sheet('Summary',d.asset_update?'Title asset update: current-ROM validation':d.auto_policy?'Issue39: automatic mapper and CPU selection':'Issue39: software-controlled CPU scopes', ['Measure','Value','Unit','Evidence'],[
+const summary=sheet('Summary',d.fixed_ram?'Issue42: fixed64KiB RAM, no RAM mapper':d.f10_feature?'F10 test mode: unchanged active-play timing':d.comparison_scope?'Issue42:744KiB game and768KiB MegaRAM':d.map_optimization?'Issue42: smaller maps, matched performance':d.rng_correction?'Issue42: original RNG lifecycle, matched performance':d.compact_backend?'Issue41: complete compact game and MegaRAM':d.asset_update?'Title asset update: current-ROM validation':d.auto_policy?'Issue39: automatic mapper and CPU selection':'Issue39: software-controlled CPU scopes', ['Measure','Value','Unit','Evidence'],[
  ['Primary ROM',d.rom_sha256,'SHA256',d.auto_policy?'MAPPER=auto TURBO=1; minimum64KiB, compact HUD':'TURBO=1,64KiB, compact HUD; opt-in candidate'],
- ['Cartridge bytes',d.rom_bytes,'bytes','2MiB hard limit; no image growth'],
- ['Machine',d.machine,'openMSX21.0','Physical hardware unavailable'],
+ ['Cartridge bytes',d.rom_bytes,'bytes',d.comparison_scope?'Fits768KiB; complete programmed image':d.compact_backend?'Strictly below1MiB; complete programmed image':'2MiB hard limit; no image growth'],
+ ['Machine',d.machine,d.emulator.split('\n')[0],'Physical hardware unavailable'],
  ['Native population',d.enemy_count,'enemies','Keyboard coin/start/F5; no population override'],
  ['Active presentations',d.active_frames,'frames','Both endpoints active; menus/death/bonus excluded'],
  ['Presentation rate',d.presented_fps,'FPS','Physical refresh is listed separately'],
@@ -45,9 +54,9 @@ const summary=sheet('Summary',d.asset_update?'Title asset update: current-ROM va
  ['Physical refresh',d.calibration.refresh_hz,'Hz','Native VDP endpoints checked'],
  ['Two-refresh target',d.calibration.two_refresh_fps,'FPS','Approximately30FPS target; no blanket acceptance'],
  ['VBlank reserve',5000,'reference cycles','Unverified planning assumption'],
- [d.auto_policy?'Automatic profile cases':'Paired profile cases',d.turbo_matrix.length,'runs',d.asset_update?'Current logo ROM: WSX64 only; earlier full matrix retains its original ROM hash':d.auto_policy?'One ROM; five targets plus Sony64 control; actual RAM/backend observed':'All five targets; stock Sony64 control;11 observed base-CPU checks'],
+ [d.auto_policy?'Automatic profile cases':'Paired profile cases',d.turbo_matrix.length,'runs',d.fixed_ram?'ASCII8/MegaRAM fixed64, zero mapper:3/5/6; ASCII8 mapper128/Sony64/ST256/GT512:3. NTSC only.':d.compact_backend?'ASCII8/MegaRAM WSX64:3/5/6; ASCII8 WSX128/Sony64/ST256/GT512:3. NTSC output only.':d.asset_update?'Current logo ROM: WSX64 only; earlier full matrix retains its original ROM hash':d.auto_policy?'One ROM; five targets plus Sony64 control; actual RAM/backend observed':'All five targets; stock Sony64 control;11 observed base-CPU checks'],
  ['Session regression cases',d.regression_matrix.length,'checks','Graphics, HUD, cars, radar, flags, challenge, two-player, attract, smoke'],
- ['Long/component cases',d.long_matrix.length,'checks','16000-refresh steering, smoke, audio, boot, speed, clipping'],
+ ['Long/component cases',d.long_matrix.length,'checks',d.fixed_ram?'F10, audio, boot, speed, stones and sprite clipping; separate native-tick/game-over proofs in report':'16000-refresh steering, smoke, audio, boot, speed, clipping'],
  ['CPU timing units','Elapsed guest time','s / ms','Source *_cycles = seconds x3579545 reference Hz; never R800 instruction cycles'],
  ['Source base',d.working_tree_base,'Git SHA','Authored source hashes are in the ledger'],
  ['User acceptance','Pending','audio / perception','No physical-machine claim; no issue closure'],
@@ -56,7 +65,7 @@ summary.getRange('A6:D24').format.wrapText=true;summary.getRange('A6:D24').forma
 summary.getRange('B11:B14').setNumberFormat('0.000');summary.getRange('B16:B17').setNumberFormat('0.000');
 const matrixSheet=sheet('CPU matrix',d.auto_policy?'One ROM: observed mapper capacity and CPU backend':'Same-machine base / factory-turbo workloads',
  ['Machine','RAM KiB','Enemies','CPU policy','Mean ms','P95 ms','Max ms','FPS','Late','Active','ROM SHA256'],
- d.turbo_matrix.map(r=>[r.machine,d.auto_policy?r.mapper_kib:r.ram_profile_kib,r.enemy_count,r.turbo?(r.actual_backend_kind===2?'R800 scopes':r.actual_backend_kind===1?'Z80 5.37MHz scopes':'Z80 fallback'):'Base Z80',...['mean','p95','max'].map(k=>r.work[k]/hz*1000),r.presented_fps,r.late_frames,r.active_frames,r.rom_sha256]),
+ d.turbo_matrix.map(r=>[(r.backend?r.backend+' / ':'')+r.machine,d.fixed_ram?r.main_ram_kib:d.auto_policy?r.mapper_kib:r.ram_profile_kib,r.enemy_count,r.turbo?(r.actual_backend_kind===2?'R800 scopes':r.actual_backend_kind===1?'Z80 5.37MHz scopes':'Z80 fallback'):'Base Z80',...['mean','p95','max'].map(k=>r.work[k]/hz*1000),r.presented_fps,r.late_frames,r.active_frames,r.rom_sha256]),
  [31,12,12,21,15,15,15,14,12,12,69]);
 matrixSheet.getRange(`E6:H${d.turbo_matrix.length+5}`).setNumberFormat('0.000');
 const routineSheet=sheet('Routines','Primary ROM: inclusive and self elapsed time',
@@ -105,6 +114,14 @@ for(const [name,range] of [['Summary','A1:D27'],['CPU matrix','A1:J18'],['Routin
  const png=await w.render({sheetName:name,range,scale:1,format:'png'});
  await fs.writeFile(path.join(out,name.toLowerCase().replaceAll(' ','-')+'.png'),new Uint8Array(await png.arrayBuffer()));
 }
+if(d.compact_backend)sheet('Lossless comparison',d.fixed_ram?'Previous mapper-backed game versus fixed-RAM binding; identical state/PSG rows':d.comparison_scope?'WSX64 route observations; state matching and native-tick checks reported separately':'Matched WSX64 active gameplay; baseline and both complete compact formats',
+ ['Enemies','Backend','Mean cycles','P95 cycles','Max cycles','FPS','Matching state/PSG rows','ROM SHA256'],
+ d.compact_comparisons.flatMap(c=>c.variants.map(r=>[c.enemies,r.backend,r.work.mean,r.work.p95,r.work.max,r.presented_fps,c.matched_rows,r.rom_sha256])),
+ [12,18,20,20,20,18,30,70]);
+if(d.comparison_scope)sheet('Matched work','Only identical camera, actor, tick, input, state and PSG rows; no sum of parent/child costs',
+ ['Enemies','Variant','Active matching rows','Mean cycles','P95 cycles','Max cycles','Longer individual spans'],
+ d.compact_comparisons.flatMap(c=>c.matched_active_work.map((r,i)=>[c.enemies,i?'ASCII8':'baseline',c.matched_active_rows,r.mean,r.p95,r.max,i?c.longer_matched_frames.length:0])),
+ [12,18,25,20,20,20,28]);
 const file=await artifact.SpreadsheetFile.exportXlsx(w);await file.save(path.join(out,'cycle-budget.xlsx'));
 const timing=path.join(docs,'measurements/timing'),manifestPath=path.join(timing,'workbooks.json');
 const manifest=JSON.parse(await fs.readFile(manifestPath,'utf8'));

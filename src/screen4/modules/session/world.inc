@@ -16,6 +16,10 @@
 ; Memory / hardware: Existing main segment, two 16 KiB map segments, normal/hidden flag
 ;   segments, native seed and exact cache metadata. No additional segment is allocated by
 ;   extraction.
+;   New games restore E002..EFFF only: E000..E001 is the machine-wide RNG
+;   stream, initialized once at boot and never part of a player snapshot.
+;   ColdBoot initializes C0EE invulnerability off once. The boot F10 latch may
+;   enable it later; ColdLoad/round/player transitions must retain that byte.
 ; Reuse boundary: Native map/round adapter. Cold world initialization composes the already
 ;   independent phase selector and shared-sprite helpers; they remain separately includable
 ;   through their existing files.
@@ -77,10 +81,10 @@ GameSession_ColdBoot:
     ld (Session_State),a
     ld (Full_Players),a
     call GameAudio_Init
-    IF SESSION_TEST_MODE
     xor a
-    ld (GameSession_TestHeld),a
     ld (GameSession_Invulnerable),a
+    IF SESSION_TEST_MODE
+    ld (GameSession_TestHeld),a
     ENDIF
     ret
 
@@ -107,9 +111,10 @@ GameSession_ColdLoad:
     ld (GameSession_RoundCaps+1),a
     ld a,PLAYER_DATA_BANK
     ld ($7000),a
-    ld hl,$a000
-    ld de,$e000
-    ld bc,4096
+    ; Keep the arcade's ongoing RNG through the captured player-state restore.
+    ld hl,$a002
+    ld de,$e002
+    ld bc,4094
     ldir
 .native:
     ld a,GAME_NATIVE_BANK

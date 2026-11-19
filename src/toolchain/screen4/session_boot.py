@@ -142,10 +142,10 @@ def plan_frames(frames,end,*,status_frames=(),status_bytes=()):
 STATUS_RECTS=((36,32,96,8),(36,48,96,8))
 
 
-def status_overlay(raw,font,ink,mapper_kib=None,turbo=False):
+def status_overlay(raw,font,ink,mapper_kib=None,turbo=False,ram_kind='mapper'):
     """Original-size arcade font; only the two user-authorized status rows."""
     data=bytearray(raw)
-    mapper='MAPPER 0000K' if mapper_kib is None else f'MAPPER {mapper_kib:4d}K'
+    mapper='MAPPER 0000K' if mapper_kib is None else f'{"RAM   " if ram_kind=="plain" else "MAPPER"} {mapper_kib:4d}K'
     for text,(x,y,w,h) in zip((mapper,'TURBO ON ' if turbo else 'TURBO OFF'),STATUS_RECTS):
         for i,char in enumerate(text):
             glyph=font[ord(char)*8:ord(char)*8+8]

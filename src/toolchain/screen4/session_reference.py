@@ -13,8 +13,25 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[3]))
 from src.toolchain.msx.artifacts import cartridge_path
 
 
+def mapper_type(bundle):
+    """Use the built cartridge's declared mapper; historical bundles use ASCII16."""
+    kind=json.loads((Path(bundle)/'session-build.json').read_text()).get('cartridge_mapper','ASCII16')
+    if kind not in ('ASCII16','ASCII8'):raise ValueError('Unsupported cartridge mapper')
+    return kind
+
+
+def bank_offset(bundle, bank):
+    """Locate a logical16KiB owner's stored prefix in either cartridge layout."""
+    profile=json.loads((Path(bundle)/'session-build.json').read_text())
+    if bank==profile['banks']['SESSION_BOOT_BANK'] and 'boot_source_offset' in profile:
+        return profile['boot_source_offset']
+    pages=profile.get('logical_bank_pages')
+    return int(pages[str(bank)])*8192 if pages is not None else bank*16384
+
+
 def runtime_symbols(table):
     """Select observer PCs for the machine's one-time chosen foreground loop."""
+    if 'GamePlain_IRQ' in table:table['clock_irq']=table['GamePlain_IRQ']
     if 'GameTurbo_Loop' in table and os.environ.get('NRX_REFERENCE_MACHINE','Panasonic_FS-A1WSX') in (
             'Panasonic_FS-A1FX','Panasonic_FS-A1WX','Panasonic_FS-A1WSX','Panasonic_FS-A1ST','Panasonic_FS-A1GT'):
         table['loop']=table['GameTurbo_Loop']
@@ -26,9 +43,14 @@ def runtime_guard(bundle):
     """Reject BIOS/cache numeric PC aliases before synthetic guest injection."""
     bundle=Path(bundle)
     build=json.loads((bundle/'session-build.json').read_text())
+    if build.get('world_storage')=='fixed':
+        at=bank_offset(bundle,build['banks']['SESSION_COLD_BANK'])+0x1000
+        prefix=cartridge_path(bundle).read_bytes()[at:at+16].hex()
+        return f'[debug read_block memory 0 16] eq [binary format H* {prefix}]'
     if not build.get('turbo',False):return '1'
     bank=build['banks']['SESSION_BOOT_BANK']
-    prefix=cartridge_path(bundle).read_bytes()[bank*16384:bank*16384+16].hex()
+    at=bank_offset(bundle,bank)
+    prefix=cartridge_path(bundle).read_bytes()[at:at+16].hex()
     return f'[debug read_block memory 0x2900 16] eq [binary format H* {prefix}]'
 
 

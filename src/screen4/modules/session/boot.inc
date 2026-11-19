@@ -5,6 +5,8 @@
 ;   available.
 ; Outputs: Loads existing Page0 cold/startup code, optionally replays boot, restores native
 ;   bitmap scratch/seed/audio and tail-enters GameSession_UI.
+;   The generated seed's first word is the original default-DIP bootstrap RNG.
+;   This is its only initialization; later new games preserve the ongoing word.
 ; Registers: Common caller-saved ABI; a lifecycle transition, not a short returning helper.
 ; Interrupts: Cold initialization owns display/IRQ state; no active-frame invocation.
 ; Memory / hardware: Existing cold 1400..1FFF, startup 2900..2FFF and native D300..F2FF

@@ -1,0 +1,78 @@
+{
+  "status": "Mandatory mapperless64KiB cartridge/MegaRAM gate is not met; release blocked.",
+  "owner_contract": [
+    {
+      "format": "ROM/cartridge",
+      "main_ram": "64KiB fixed RAM, no RAM mapper; cartridge bank controller allowed"
+    },
+    {
+      "format": "BIN/COM main-mapper edition",
+      "main_ram": "Compatible standard RAM mapper with required capacity: current experimental512KiB or legacy4MiB"
+    },
+    {
+      "format": "MegaRAM",
+      "main_ram": "64KiB fixed RAM, no RAM mapper; compatible MegaRAM with required capacity, current target768KiB"
+    }
+  ],
+  "cases": [
+    {
+      "mode": "rom",
+      "compatible": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "megaram_kib": null,
+      "complete_megaram_image_loaded": false,
+      "observed": "Title/coin/start reached; game fails before any presentation and returns into boot/title code",
+      "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "machine_config_sha256": "5e70a7573bf360ddd21fb6c9567ea47b6a5dd2048c42b042c559a3f0a86a944d",
+      "observer_sha256": "d68bdf9bdd1630ceb826dff45e7683c5697c2850b6ad2b2fcb8994361c9a6f28",
+      "log_sha256": "8d148500298236dda07535af96f0819e68fb712f30ca0302477bc984425bff23"
+    },
+    {
+      "mode": "dos",
+      "compatible": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "megaram_kib": 768,
+      "complete_megaram_image_loaded": true,
+      "observed": "Title/coin/start reached; game fails before any presentation and returns into boot/title code",
+      "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+      "machine_config_sha256": "5e70a7573bf360ddd21fb6c9567ea47b6a5dd2048c42b042c559a3f0a86a944d",
+      "observer_sha256": "e517a662882520896f2502b961cf4a3aaa6c01fb52221aad18755f4b0b4686f7",
+      "log_sha256": "01be4233495a3886f7a70080570d188ee15f4a92431b90af0fbf63c0269b307c"
+    },
+    {
+      "mode": "basic",
+      "compatible": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "megaram_kib": 768,
+      "complete_megaram_image_loaded": true,
+      "observed": "Title/coin/start reached; game fails before any presentation and returns into boot/title code",
+      "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+      "machine_config_sha256": "5e70a7573bf360ddd21fb6c9567ea47b6a5dd2048c42b042c559a3f0a86a944d",
+      "observer_sha256": "33f36c747c03fbd3e61388746408f59f725fa084a46045b4d82c1f6dfd304ff9",
+      "log_sha256": "fc400555300b3c53f00a6f78164e163fe932297d358e6e63d4b7466f28d34043"
+    }
+  ],
+  "root_cause": {
+    "source": "GameSession_CopyMap in generated modules/mapper/page0.inc; scripts/compact_game_build.py",
+    "mechanism": "Cold constructor writes portFC then uses SP4000/PUSH to fill a16KiB world bank at0000..3FFF. On fixed RAM FC writes do not select another bank, overwriting live Page0 code. Runtime world helpers also assume Page0 bank selection, so removing only that constructor is insufficient.",
+    "observation": "target=1 fc_before=255 fc_after=255 SP=62318 unchanged=0",
+    "inspected_main_code_bytes": 2016,
+    "changed_main_code_bytes": 2007,
+    "before_sha256": "101a3df304baeca1d368d95c52683ecbdbc3a4eea2b6b3ceb17d70091ff87475",
+    "after_sha256": "4c50dace6860e6115a6c69c2e76d373ae2aa0dd29396b942351e99e7f5eb684a",
+    "observer_sha256": "0eabc907e474afeae69b10c4837e3084e09e15a0e36dac562fe7a6b8c957f6c5",
+    "scope": "Read-only breakpoints around the first real cold map construction on the exact supported ROM. No code/state/payload injection."
+  },
+  "limits": [
+    "Reference openMSX FS-A1WSX-derived fixed64KiB RAM topology with no MemoryMapper device; no physical hardware result.",
+    "Previous64KiB mapper successes remain true for that distinct hardware profile; they do not establish fixed-RAM compatibility.",
+    "The512KiB diagnostic carrier requires512KiB RAM mapper and is separate from the owner-required cartridge target.",
+    "No runtime workaround, relaxed performance/graphics/audio/gameplay requirement or release is introduced."
+  ]
+}

@@ -1,0 +1,937 @@
+{
+  "program_sha256": "d6943e556fcd6ffc32bcc1cc4abbec2249c16a2059a3cdc0ba9c942dbb765d4c",
+  "program_bytes": 16384,
+  "inputs": [
+    {
+      "name": "nrx1-1.11n",
+      "size": 32,
+      "crc32": "a0a49017",
+      "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+    },
+    {
+      "name": "nrx1-7.8p",
+      "size": 256,
+      "crc32": "4e46f485",
+      "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+    },
+    {
+      "name": "nrx_chg1.8e",
+      "size": 2048,
+      "crc32": "1fff38a4",
+      "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+    },
+    {
+      "name": "nrx_chg2.8d",
+      "size": 2048,
+      "crc32": "85d9fffd",
+      "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+    },
+    {
+      "name": "nrx_prg1.1d",
+      "size": 4096,
+      "crc32": "ba7de9fc",
+      "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+    },
+    {
+      "name": "nrx_prg2.1e",
+      "size": 4096,
+      "crc32": "eedfccae",
+      "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+    },
+    {
+      "name": "nrx_prg3.1k",
+      "size": 4096,
+      "crc32": "b4d5d34a",
+      "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+    },
+    {
+      "name": "nrx_prg4.1l",
+      "size": 4096,
+      "crc32": "7da5496d",
+      "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+    },
+    {
+      "name": "rx1-2.4n",
+      "size": 32,
+      "crc32": "8f574815",
+      "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+    },
+    {
+      "name": "rx1-3.7k",
+      "size": 32,
+      "crc32": "b8861096",
+      "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+    },
+    {
+      "name": "rx1-4.2m",
+      "size": 256,
+      "crc32": "77245b66",
+      "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+    },
+    {
+      "name": "rx1-5.3p",
+      "size": 256,
+      "crc32": "4bad7017",
+      "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+    },
+    {
+      "name": "rx1-6.8m",
+      "size": 256,
+      "crc32": "3c16f62c",
+      "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+    }
+  ],
+  "emulator": "0.289 (unknown)",
+  "source_files": {
+    "scripts/arcade_maze_flags_probe.py": "b55afd0eb47767632a99db680d7affcded596501fba3fd65a3bfa56d8c42b3bc",
+    "src/toolchain/screen4/arcade-maze-flags.lua": "2b8f415a135fff419c5b6a6fd9cfabb4cac2458bad0953064bd667f38909ab2b",
+    "src/toolchain/screen4/arcade-maze-matrix.lua": "178c6d56c785b68d81fc570b82d024f35fe87e9d04c2315879b392703bc2346d"
+  },
+  "natural_runs": [
+    {
+      "start_delay_frames": 0,
+      "repeat": 0,
+      "round": 2,
+      "layout": 48,
+      "rng_before": 28363,
+      "rng_after": 7405,
+      "placement_rng_calls": 34,
+      "background_rng_calls": 1100,
+      "flag_positions_sha256": "325c9aa830b7e301ae7113676fc3ccebb1a61c11bfc9a97cd201f686caa63302",
+      "board_sha256": "b5ad9fdc1cdfd28018ce8cc0a56cb00ccbe73f5fa689534ed80b3704d0115af9",
+      "geometry_matches_rom": true,
+      "counts": {
+        "normal": 8,
+        "special": 1,
+        "lucky": 1
+      },
+      "evidence": "references/build/game-issue42/arcade-delay0-repeat0"
+    },
+    {
+      "start_delay_frames": 1,
+      "repeat": 0,
+      "round": 2,
+      "layout": 48,
+      "rng_before": 7702,
+      "rng_after": 7405,
+      "placement_rng_calls": 33,
+      "background_rng_calls": 1101,
+      "flag_positions_sha256": "325c9aa830b7e301ae7113676fc3ccebb1a61c11bfc9a97cd201f686caa63302",
+      "board_sha256": "b5ad9fdc1cdfd28018ce8cc0a56cb00ccbe73f5fa689534ed80b3704d0115af9",
+      "geometry_matches_rom": true,
+      "counts": {
+        "normal": 8,
+        "special": 1,
+        "lucky": 1
+      },
+      "evidence": "references/build/game-issue42/arcade-delay1-repeat0"
+    },
+    {
+      "start_delay_frames": 2,
+      "repeat": 0,
+      "round": 2,
+      "layout": 48,
+      "rng_before": 15404,
+      "rng_after": 7405,
+      "placement_rng_calls": 32,
+      "background_rng_calls": 1102,
+      "flag_positions_sha256": "325c9aa830b7e301ae7113676fc3ccebb1a61c11bfc9a97cd201f686caa63302",
+      "board_sha256": "b5ad9fdc1cdfd28018ce8cc0a56cb00ccbe73f5fa689534ed80b3704d0115af9",
+      "geometry_matches_rom": true,
+      "counts": {
+        "normal": 8,
+        "special": 1,
+        "lucky": 1
+      },
+      "evidence": "references/build/game-issue42/arcade-delay2-repeat0"
+    },
+    {
+      "start_delay_frames": 7,
+      "repeat": 0,
+      "round": 2,
+      "layout": 48,
+      "rng_before": 35201,
+      "rng_after": 19870,
+      "placement_rng_calls": 43,
+      "background_rng_calls": 1107,
+      "flag_positions_sha256": "97b92dfa5519b16ec5eefb82b782c0a4837eb768044188bf6c166b24a7c4acca",
+      "board_sha256": "267c9641b403f3e5ed8b83776e99cac38b1ec18dc0c076ae0cc333a2711a31be",
+      "geometry_matches_rom": true,
+      "counts": {
+        "normal": 8,
+        "special": 1,
+        "lucky": 1
+      },
+      "evidence": "references/build/game-issue42/arcade-delay7-repeat0"
+    },
+    {
+      "start_delay_frames": 60,
+      "repeat": 0,
+      "round": 2,
+      "layout": 48,
+      "rng_before": 48560,
+      "rng_after": 58528,
+      "placement_rng_calls": 20,
+      "background_rng_calls": 1160,
+      "flag_positions_sha256": "ca77b5d47a5926aaff70d5fe3abc2af572d49e20493a938a8eee91ee1fb198e5",
+      "board_sha256": "2af2ea084938cd41baec597b6c8a8fa616713d6042fdc3fd3a82e76b7c3d1630",
+      "geometry_matches_rom": true,
+      "counts": {
+        "normal": 8,
+        "special": 1,
+        "lucky": 1
+      },
+      "evidence": "references/build/game-issue42/arcade-delay60-repeat0"
+    },
+    {
+      "start_delay_frames": 180,
+      "repeat": 0,
+      "round": 2,
+      "layout": 48,
+      "rng_before": 46118,
+      "rng_after": 8966,
+      "placement_rng_calls": 34,
+      "background_rng_calls": 1280,
+      "flag_positions_sha256": "6e74049e69a00900085bffa91690d6e2b0da24e44a9cea2ad0bab84a8abc9e48",
+      "board_sha256": "b31a55fc48d7b9c8c10ba37f6feec8caaac3d62ff8b4621026718f7a448170df",
+      "geometry_matches_rom": true,
+      "counts": {
+        "normal": 8,
+        "special": 1,
+        "lucky": 1
+      },
+      "evidence": "references/build/game-issue42/arcade-delay180-repeat0"
+    },
+    {
+      "start_delay_frames": 0,
+      "repeat": 1,
+      "round": 2,
+      "layout": 48,
+      "rng_before": 28363,
+      "rng_after": 7405,
+      "placement_rng_calls": 34,
+      "background_rng_calls": 1100,
+      "flag_positions_sha256": "325c9aa830b7e301ae7113676fc3ccebb1a61c11bfc9a97cd201f686caa63302",
+      "board_sha256": "b5ad9fdc1cdfd28018ce8cc0a56cb00ccbe73f5fa689534ed80b3704d0115af9",
+      "geometry_matches_rom": true,
+      "counts": {
+        "normal": 8,
+        "special": 1,
+        "lucky": 1
+      },
+      "evidence": "references/build/game-issue42/arcade-delay0-repeat1"
+    }
+  ],
+  "distinct_placements": 4,
+  "controlled_matrix": {
+    "cases": [
+      {
+        "round": 2,
+        "seed": 1,
+        "layout": 48,
+        "rocks": 0,
+        "prng_advances": 19,
+        "rng_after": 5676,
+        "flags_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+        "board_sha256": "cb3e1fe1c0e437a8f2380b56df9d8b359838eacf99aa818a357622d654edea33",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 2,
+        "seed": 4660,
+        "layout": 48,
+        "rocks": 0,
+        "prng_advances": 19,
+        "rng_after": 6995,
+        "flags_sha256": "b6520e442223a53e63a530a8ce1d1d15c0847e2ff79a7fbc9c11dfb5fad44334",
+        "board_sha256": "8aec31fd6e02e3c50656d5406e4dfba8012eb00c0610649ccb9a4f8361dcb9d5",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 3,
+        "seed": 1,
+        "layout": 48,
+        "rocks": 2,
+        "prng_advances": 27,
+        "rng_after": 4512,
+        "flags_sha256": "3200a0f5ba7d3974974399cb4db2032ef53542528e6f2ae052bd79963191689c",
+        "board_sha256": "d5e3e972cb3d2cec9031d94c7e0fd8f0d10b5ee08e78c88d346edce7139341f1",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 3,
+        "seed": 4660,
+        "layout": 48,
+        "rocks": 2,
+        "prng_advances": 20,
+        "rng_after": 30502,
+        "flags_sha256": "25fcfa8a839b0ae774238a2ce7dd64d1cd622be361f6a19673995d863c9e0ef9",
+        "board_sha256": "360ed545ea25436de166cadf7b237647f4a750cb80f3507aeee6212448b4415d",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 4,
+        "seed": 1,
+        "layout": 48,
+        "rocks": 5,
+        "prng_advances": 29,
+        "rng_after": 34560,
+        "flags_sha256": "24c3937476fb62b54645410f4ed79a5b1c880ddb9a527f718b555cb47d355c39",
+        "board_sha256": "5c8250b59de8998e52b25eee3a4edb777007fed89f5e1eb847a2b8ad5e74e868",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 4,
+        "seed": 4660,
+        "layout": 48,
+        "rocks": 5,
+        "prng_advances": 45,
+        "rng_after": 19823,
+        "flags_sha256": "1f88cacc5bef192cb0f5877d065f64c6c559cf66c65257cacb95391d91eb7b57",
+        "board_sha256": "497a317ccd8e4c35bbb795c6b6e43169ecf6db9c7aecfcd69e44bcbe844740e4",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 5,
+        "seed": 1,
+        "layout": 49,
+        "rocks": 2,
+        "prng_advances": 26,
+        "rng_after": 26768,
+        "flags_sha256": "0713865f128d395a81f10e369ee514ea960fd3e315032aff89ecd3bd36b6173d",
+        "board_sha256": "a26507192814b1669cd83ceeb317f7028738bef3e4cfef4f596f12d6ce921f39",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 5,
+        "seed": 4660,
+        "layout": 49,
+        "rocks": 2,
+        "prng_advances": 14,
+        "rng_after": 39130,
+        "flags_sha256": "9508568fe1c78fae7b87cc1d011033e71469e860ce58ee43ef39185488973dd6",
+        "board_sha256": "1d0506c38fe46f56342a42dc63e72f5cc9f0567cf906a4782d9a919a5f658004",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 6,
+        "seed": 1,
+        "layout": 49,
+        "rocks": 3,
+        "prng_advances": 28,
+        "rng_after": 9024,
+        "flags_sha256": "ca0a4302d5bedf527167e82a1ae9355ebc5ab40a260944ab19f87ac70ad29884",
+        "board_sha256": "6f245c719c536a2105e6b268f4284daf735d9e5438f2453446361be3d8efbbb3",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 6,
+        "seed": 4660,
+        "layout": 49,
+        "rocks": 3,
+        "prng_advances": 15,
+        "rng_after": 12725,
+        "flags_sha256": "2395e38e16d371afa29398430a5e4fe110cbe4dd7b28a6dd801962aa04a19cdb",
+        "board_sha256": "371e4520df31fd88115a0f8735577b1c32b5885d182d10409031b7d6ceae386b",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 7,
+        "seed": 1,
+        "layout": 49,
+        "rocks": 3,
+        "prng_advances": 28,
+        "rng_after": 9024,
+        "flags_sha256": "ca0a4302d5bedf527167e82a1ae9355ebc5ab40a260944ab19f87ac70ad29884",
+        "board_sha256": "6f245c719c536a2105e6b268f4284daf735d9e5438f2453446361be3d8efbbb3",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 7,
+        "seed": 4660,
+        "layout": 49,
+        "rocks": 3,
+        "prng_advances": 15,
+        "rng_after": 12725,
+        "flags_sha256": "2395e38e16d371afa29398430a5e4fe110cbe4dd7b28a6dd801962aa04a19cdb",
+        "board_sha256": "371e4520df31fd88115a0f8735577b1c32b5885d182d10409031b7d6ceae386b",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 8,
+        "seed": 1,
+        "layout": 49,
+        "rocks": 7,
+        "prng_advances": 37,
+        "rng_after": 12447,
+        "flags_sha256": "8abb4c9adb6c32e4fa51c263ecfaed0e2e94e3142154b848fbb1b0636ef89e15",
+        "board_sha256": "cfa55ce98fdb8bb288cc9680f11dc1db770d7e8aded7fd45530c6c1de7119fa2",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 8,
+        "seed": 4660,
+        "layout": 49,
+        "rocks": 7,
+        "prng_advances": 22,
+        "rng_after": 56473,
+        "flags_sha256": "5ea77557023b0861c362be1575aa8e231f5f15f88fabe1c325dfedb11f27f3fa",
+        "board_sha256": "8a32b14e0208d271cc044e8ae38de3203c3568aee69cf8ef00e47e2c3c7d6616",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 9,
+        "seed": 1,
+        "layout": 50,
+        "rocks": 5,
+        "prng_advances": 27,
+        "rng_after": 4512,
+        "flags_sha256": "904ba1adb9867bf58f1788dc509ede85e4081d6e0b43aa520413e0d43b05b04d",
+        "board_sha256": "3c8fd6467a2d1cce50c56370da4493cb4f81ff632bd71cc28ea1bc8d3e75805a",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 9,
+        "seed": 4660,
+        "layout": 50,
+        "rocks": 5,
+        "prng_advances": 42,
+        "rng_after": 59821,
+        "flags_sha256": "dd1e10d3c58798a921c7e492c9051c96e4311d93fcf6ff1079fe2ecc1fa3093f",
+        "board_sha256": "4cc3f6e20f77cb5b6632bbc28a4fc3505249bdf7e0e9566584cfc5cf8ac4c068",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 10,
+        "seed": 1,
+        "layout": 50,
+        "rocks": 5,
+        "prng_advances": 27,
+        "rng_after": 4512,
+        "flags_sha256": "904ba1adb9867bf58f1788dc509ede85e4081d6e0b43aa520413e0d43b05b04d",
+        "board_sha256": "3c8fd6467a2d1cce50c56370da4493cb4f81ff632bd71cc28ea1bc8d3e75805a",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 10,
+        "seed": 4660,
+        "layout": 50,
+        "rocks": 5,
+        "prng_advances": 42,
+        "rng_after": 59821,
+        "flags_sha256": "dd1e10d3c58798a921c7e492c9051c96e4311d93fcf6ff1079fe2ecc1fa3093f",
+        "board_sha256": "4cc3f6e20f77cb5b6632bbc28a4fc3505249bdf7e0e9566584cfc5cf8ac4c068",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 11,
+        "seed": 1,
+        "layout": 50,
+        "rocks": 6,
+        "prng_advances": 29,
+        "rng_after": 34560,
+        "flags_sha256": "86911725b601270dfe0f0d29357bc73f498e7318e455e35d492eb3bc35eb8621",
+        "board_sha256": "32f313611275a6439e58f4eb8a03fc9d56a92dcc9cadefc66161d5c9a4ef7a75",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 11,
+        "seed": 4660,
+        "layout": 50,
+        "rocks": 6,
+        "prng_advances": 42,
+        "rng_after": 59821,
+        "flags_sha256": "dd1e10d3c58798a921c7e492c9051c96e4311d93fcf6ff1079fe2ecc1fa3093f",
+        "board_sha256": "62fbbe6fc40c1387f5cbaf16e67d0dbd86891bbebdfaa035d68be66052d9bb16",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 12,
+        "seed": 1,
+        "layout": 50,
+        "rocks": 10,
+        "prng_advances": 45,
+        "rng_after": 57264,
+        "flags_sha256": "f8a0e897ef1fa0519bc83c68f801c82c15ab57b588953526fe53b8ad92b2b2f5",
+        "board_sha256": "48268b710f15cf37f34e7fcd4d01038282789aaad275ffd33b281bd36dafd123",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 12,
+        "seed": 4660,
+        "layout": 50,
+        "rocks": 10,
+        "prng_advances": 46,
+        "rng_after": 39646,
+        "flags_sha256": "3567a4868953e86660b5eab16461916bae0f93d2ba99061a13958f21f8b358fb",
+        "board_sha256": "5a10c88748025dc9b3a9afc630ab1be0247ec7bc4622fad9ea2c017e62bbbbbb",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 13,
+        "seed": 1,
+        "layout": 51,
+        "rocks": 6,
+        "prng_advances": 28,
+        "rng_after": 9024,
+        "flags_sha256": "281249b16453eff9812c9405a92a4c86feef1f8e8dc529730638f4b0192b98fe",
+        "board_sha256": "d80d00cfa5e6292cde8c3e91792f29bb8d9a9da65afe7a075a65c37ef6fc04b1",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 13,
+        "seed": 4660,
+        "layout": 51,
+        "rocks": 6,
+        "prng_advances": 58,
+        "rng_after": 2494,
+        "flags_sha256": "00aae2f979e84f892569d53fe994ed1d57a7d50077ca54aa05a0bbaaee7a4e80",
+        "board_sha256": "286736432c654376657f4ef193a4d74e873d66e7fa28c83385dcd4954dae902d",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 14,
+        "seed": 1,
+        "layout": 51,
+        "rocks": 7,
+        "prng_advances": 29,
+        "rng_after": 34560,
+        "flags_sha256": "76025f4bf89051cdd7f8b295c60fa2a7fc47853983cd99558ae9bcdcc770da24",
+        "board_sha256": "239183ca461cd8cd6231a2b2a5239aa666c5e81dcbe0288b8dda52bbc9944ded",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 14,
+        "seed": 4660,
+        "layout": 51,
+        "rocks": 7,
+        "prng_advances": 64,
+        "rng_after": 45058,
+        "flags_sha256": "187815d3925c2f429968f35f234e5c9d8445fa1abf4950e2092be361e3ddfde9",
+        "board_sha256": "70f3c5a3332f10f463e2a5a50c839d57cb36aaa2eab4b195c4d93ccd0ec30c06",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 15,
+        "seed": 1,
+        "layout": 51,
+        "rocks": 7,
+        "prng_advances": 29,
+        "rng_after": 34560,
+        "flags_sha256": "76025f4bf89051cdd7f8b295c60fa2a7fc47853983cd99558ae9bcdcc770da24",
+        "board_sha256": "239183ca461cd8cd6231a2b2a5239aa666c5e81dcbe0288b8dda52bbc9944ded",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 15,
+        "seed": 4660,
+        "layout": 51,
+        "rocks": 7,
+        "prng_advances": 64,
+        "rng_after": 45058,
+        "flags_sha256": "187815d3925c2f429968f35f234e5c9d8445fa1abf4950e2092be361e3ddfde9",
+        "board_sha256": "70f3c5a3332f10f463e2a5a50c839d57cb36aaa2eab4b195c4d93ccd0ec30c06",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 16,
+        "seed": 1,
+        "layout": 51,
+        "rocks": 10,
+        "prng_advances": 92,
+        "rng_after": 27632,
+        "flags_sha256": "0a81e60bc85672c14e4c5dc2c277f39bc5521fb14907586139ceba68b86ee323",
+        "board_sha256": "36b132443cdd07c529e180ab3516ffab862cc2e6730aff126232479c00b60738",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 16,
+        "seed": 4660,
+        "layout": 51,
+        "rocks": 10,
+        "prng_advances": 66,
+        "rng_after": 49162,
+        "flags_sha256": "27ea43de226830bf7e7d3a840333a9adb6656fee47bb326d8c4617307df85eff",
+        "board_sha256": "add457bb3dc408253a6cf36ed469f6368dd7c38267776ac3525f6da8ff58643b",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 17,
+        "seed": 1,
+        "layout": 48,
+        "rocks": 8,
+        "prng_advances": 39,
+        "rng_after": 49788,
+        "flags_sha256": "e691007ed11563c83cbf49add59e7bf819387cc556ac2282e3eab3d8fb04369a",
+        "board_sha256": "fd43af043f7eeabe4f9cbfa4c37f7a9885a118f0ad31b7a91044e5dedb32d56e",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 17,
+        "seed": 4660,
+        "layout": 48,
+        "rocks": 8,
+        "prng_advances": 55,
+        "rng_after": 49463,
+        "flags_sha256": "bb46eaad684c6d78bd8247c75841f97c9b683609c0d801deac228dcda058eeab",
+        "board_sha256": "c93a21712e5748defe131ebf93ba3c2dc4c9a0c406d1e2e6bf367a2a49a1eed7",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 18,
+        "seed": 1,
+        "layout": 48,
+        "rocks": 8,
+        "prng_advances": 39,
+        "rng_after": 49788,
+        "flags_sha256": "e691007ed11563c83cbf49add59e7bf819387cc556ac2282e3eab3d8fb04369a",
+        "board_sha256": "fd43af043f7eeabe4f9cbfa4c37f7a9885a118f0ad31b7a91044e5dedb32d56e",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 18,
+        "seed": 4660,
+        "layout": 48,
+        "rocks": 8,
+        "prng_advances": 55,
+        "rng_after": 49463,
+        "flags_sha256": "bb46eaad684c6d78bd8247c75841f97c9b683609c0d801deac228dcda058eeab",
+        "board_sha256": "c93a21712e5748defe131ebf93ba3c2dc4c9a0c406d1e2e6bf367a2a49a1eed7",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 19,
+        "seed": 1,
+        "layout": 48,
+        "rocks": 8,
+        "prng_advances": 39,
+        "rng_after": 49788,
+        "flags_sha256": "e691007ed11563c83cbf49add59e7bf819387cc556ac2282e3eab3d8fb04369a",
+        "board_sha256": "fd43af043f7eeabe4f9cbfa4c37f7a9885a118f0ad31b7a91044e5dedb32d56e",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 19,
+        "seed": 4660,
+        "layout": 48,
+        "rocks": 8,
+        "prng_advances": 55,
+        "rng_after": 49463,
+        "flags_sha256": "bb46eaad684c6d78bd8247c75841f97c9b683609c0d801deac228dcda058eeab",
+        "board_sha256": "c93a21712e5748defe131ebf93ba3c2dc4c9a0c406d1e2e6bf367a2a49a1eed7",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 20,
+        "seed": 1,
+        "layout": 48,
+        "rocks": 12,
+        "prng_advances": 106,
+        "rng_after": 7166,
+        "flags_sha256": "06dfda98599b9d41487537af8e4824130f59eb42655841b584008ecde4a7215b",
+        "board_sha256": "28e9e663fd4faf90dc5b95920ca39c1511c7e1d1e80d27c529d1f28dff10451e",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 20,
+        "seed": 4660,
+        "layout": 48,
+        "rocks": 12,
+        "prng_advances": 66,
+        "rng_after": 49162,
+        "flags_sha256": "2c59188b64ce46805abaaff9238459c826c2b9711d614107fe291cfa3f359656",
+        "board_sha256": "90936515179d9d599fb91b9e5c5cb10ec976592f86c1f82227676eb3451340a7",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 21,
+        "seed": 1,
+        "layout": 49,
+        "rocks": 8,
+        "prng_advances": 45,
+        "rng_after": 57264,
+        "flags_sha256": "0a760f2b477f10192af373ec279795fb417366d98cd07541d26ddad316c9f7ae",
+        "board_sha256": "378e8e1e91648f3a25dc0c65fa15fb2daf84dd86cc8e3a00daf06f3fe5acb7f5",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 21,
+        "seed": 4660,
+        "layout": 49,
+        "rocks": 8,
+        "prng_advances": 45,
+        "rng_after": 19823,
+        "flags_sha256": "50dd568d5be352a7dbc226e1f0667667aca115484757a189d03bcc8410d01cce",
+        "board_sha256": "bb63bfaa52e3b13184f0e40f25c56fad7db2d6a279202e58c4edf52eb8c356cc",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 22,
+        "seed": 1,
+        "layout": 49,
+        "rocks": 8,
+        "prng_advances": 45,
+        "rng_after": 57264,
+        "flags_sha256": "0a760f2b477f10192af373ec279795fb417366d98cd07541d26ddad316c9f7ae",
+        "board_sha256": "378e8e1e91648f3a25dc0c65fa15fb2daf84dd86cc8e3a00daf06f3fe5acb7f5",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 22,
+        "seed": 4660,
+        "layout": 49,
+        "rocks": 8,
+        "prng_advances": 45,
+        "rng_after": 19823,
+        "flags_sha256": "50dd568d5be352a7dbc226e1f0667667aca115484757a189d03bcc8410d01cce",
+        "board_sha256": "bb63bfaa52e3b13184f0e40f25c56fad7db2d6a279202e58c4edf52eb8c356cc",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 23,
+        "seed": 1,
+        "layout": 49,
+        "rocks": 8,
+        "prng_advances": 45,
+        "rng_after": 57264,
+        "flags_sha256": "0a760f2b477f10192af373ec279795fb417366d98cd07541d26ddad316c9f7ae",
+        "board_sha256": "378e8e1e91648f3a25dc0c65fa15fb2daf84dd86cc8e3a00daf06f3fe5acb7f5",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 23,
+        "seed": 4660,
+        "layout": 49,
+        "rocks": 8,
+        "prng_advances": 45,
+        "rng_after": 19823,
+        "flags_sha256": "50dd568d5be352a7dbc226e1f0667667aca115484757a189d03bcc8410d01cce",
+        "board_sha256": "bb63bfaa52e3b13184f0e40f25c56fad7db2d6a279202e58c4edf52eb8c356cc",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 24,
+        "seed": 1,
+        "layout": 49,
+        "rocks": 12,
+        "prng_advances": 123,
+        "rng_after": 19277,
+        "flags_sha256": "adce1943e50163c6e79047405cc77bcd2c4008872d133013ecfde93d593e579f",
+        "board_sha256": "0d45a40cc67cda707f31fec917f79750dc1cc1847d05584feaa97ab14b9a2091",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 24,
+        "seed": 4660,
+        "layout": 49,
+        "rocks": 12,
+        "prng_advances": 65,
+        "rng_after": 24581,
+        "flags_sha256": "8deff2c9210e54ebe0e9182b310264056c7f9ce789b61d1816fc117bde54939a",
+        "board_sha256": "68353f4dcdd9d3e5a256c36bc3903f63e0b4d1119c6f81d90b9c1c5c9fdfb83c",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 25,
+        "seed": 1,
+        "layout": 50,
+        "rocks": 8,
+        "prng_advances": 33,
+        "rng_after": 62217,
+        "flags_sha256": "62bc3e55898684f77c1d63af3acb646c5a995924b4dfb21085bada32e1d6b8da",
+        "board_sha256": "9aa728e1b1a3bb582de5111d9bbd285188f43b3939d15572f58dc40cf061fd76",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 25,
+        "seed": 4660,
+        "layout": 50,
+        "rocks": 8,
+        "prng_advances": 42,
+        "rng_after": 59821,
+        "flags_sha256": "dd1e10d3c58798a921c7e492c9051c96e4311d93fcf6ff1079fe2ecc1fa3093f",
+        "board_sha256": "a0da16be4a342c204fe75020c7e79d41352136bc2f34a506c2e4d5b041886e3e",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 26,
+        "seed": 1,
+        "layout": 50,
+        "rocks": 8,
+        "prng_advances": 33,
+        "rng_after": 62217,
+        "flags_sha256": "62bc3e55898684f77c1d63af3acb646c5a995924b4dfb21085bada32e1d6b8da",
+        "board_sha256": "9aa728e1b1a3bb582de5111d9bbd285188f43b3939d15572f58dc40cf061fd76",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 26,
+        "seed": 4660,
+        "layout": 50,
+        "rocks": 8,
+        "prng_advances": 42,
+        "rng_after": 59821,
+        "flags_sha256": "dd1e10d3c58798a921c7e492c9051c96e4311d93fcf6ff1079fe2ecc1fa3093f",
+        "board_sha256": "a0da16be4a342c204fe75020c7e79d41352136bc2f34a506c2e4d5b041886e3e",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 27,
+        "seed": 1,
+        "layout": 50,
+        "rocks": 8,
+        "prng_advances": 33,
+        "rng_after": 62217,
+        "flags_sha256": "62bc3e55898684f77c1d63af3acb646c5a995924b4dfb21085bada32e1d6b8da",
+        "board_sha256": "9aa728e1b1a3bb582de5111d9bbd285188f43b3939d15572f58dc40cf061fd76",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 27,
+        "seed": 4660,
+        "layout": 50,
+        "rocks": 8,
+        "prng_advances": 42,
+        "rng_after": 59821,
+        "flags_sha256": "dd1e10d3c58798a921c7e492c9051c96e4311d93fcf6ff1079fe2ecc1fa3093f",
+        "board_sha256": "a0da16be4a342c204fe75020c7e79d41352136bc2f34a506c2e4d5b041886e3e",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 28,
+        "seed": 1,
+        "layout": 50,
+        "rocks": 12,
+        "prng_advances": 92,
+        "rng_after": 27632,
+        "flags_sha256": "564c408cee1c86f756248288b94794da8dfcf4ea53348d33a56596569bd0f13d",
+        "board_sha256": "e431a2951edf1cf4a9c7fe43e9fb07299ff3a600042aa580675af7f28ccb1c4f",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 28,
+        "seed": 4660,
+        "layout": 50,
+        "rocks": 12,
+        "prng_advances": 78,
+        "rng_after": 53779,
+        "flags_sha256": "0bbb3aed245dbc88c4161f1eb0948c12d1be776840ecf99c4538a1098636a57a",
+        "board_sha256": "cceeb9aeadb2edfd04770691360d815438e99000605ac43803202ddb05fdaa26",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 29,
+        "seed": 1,
+        "layout": 51,
+        "rocks": 8,
+        "prng_advances": 31,
+        "rng_after": 23682,
+        "flags_sha256": "70c8837a9c559b007b43d230777d84ad46bbf025e2678596792d08d5bf6235ae",
+        "board_sha256": "767eb5179f293e4e87e9fff6ff0ac916d92173bae03d068c5365319b4651979a",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 29,
+        "seed": 4660,
+        "layout": 51,
+        "rocks": 8,
+        "prng_advances": 64,
+        "rng_after": 45058,
+        "flags_sha256": "187815d3925c2f429968f35f234e5c9d8445fa1abf4950e2092be361e3ddfde9",
+        "board_sha256": "14b3eae53d917211a81b56a1e36d08dee1e2d207cb0a0fb0b64b3dce83b8695b",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 30,
+        "seed": 1,
+        "layout": 51,
+        "rocks": 8,
+        "prng_advances": 31,
+        "rng_after": 23682,
+        "flags_sha256": "70c8837a9c559b007b43d230777d84ad46bbf025e2678596792d08d5bf6235ae",
+        "board_sha256": "767eb5179f293e4e87e9fff6ff0ac916d92173bae03d068c5365319b4651979a",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 30,
+        "seed": 4660,
+        "layout": 51,
+        "rocks": 8,
+        "prng_advances": 64,
+        "rng_after": 45058,
+        "flags_sha256": "187815d3925c2f429968f35f234e5c9d8445fa1abf4950e2092be361e3ddfde9",
+        "board_sha256": "14b3eae53d917211a81b56a1e36d08dee1e2d207cb0a0fb0b64b3dce83b8695b",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 31,
+        "seed": 1,
+        "layout": 51,
+        "rocks": 8,
+        "prng_advances": 31,
+        "rng_after": 23682,
+        "flags_sha256": "70c8837a9c559b007b43d230777d84ad46bbf025e2678596792d08d5bf6235ae",
+        "board_sha256": "767eb5179f293e4e87e9fff6ff0ac916d92173bae03d068c5365319b4651979a",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 31,
+        "seed": 4660,
+        "layout": 51,
+        "rocks": 8,
+        "prng_advances": 64,
+        "rng_after": 45058,
+        "flags_sha256": "187815d3925c2f429968f35f234e5c9d8445fa1abf4950e2092be361e3ddfde9",
+        "board_sha256": "14b3eae53d917211a81b56a1e36d08dee1e2d207cb0a0fb0b64b3dce83b8695b",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 32,
+        "seed": 1,
+        "layout": 51,
+        "rocks": 12,
+        "prng_advances": 114,
+        "rng_after": 25,
+        "flags_sha256": "7c32b04f58348a5eb5cb4b44858fa77609250f8eff4330a5eb8a95c3031d51a4",
+        "board_sha256": "1a14422f068d7ace7f209cbe2328e519ce3e8b80d33e72565bc748948fe47c01",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 32,
+        "seed": 4660,
+        "layout": 51,
+        "rocks": 12,
+        "prng_advances": 67,
+        "rng_after": 32789,
+        "flags_sha256": "6a1f933c8df18658cadbc2efd0ccb3d6c82d7142c74d750dd7b1068e5e7bb07c",
+        "board_sha256": "a14cca79ea3d3faf75a73ad88aab4922adb45e0b31fc87565341c9895e0cf29a",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 33,
+        "seed": 1,
+        "layout": 48,
+        "rocks": 8,
+        "prng_advances": 39,
+        "rng_after": 49788,
+        "flags_sha256": "e691007ed11563c83cbf49add59e7bf819387cc556ac2282e3eab3d8fb04369a",
+        "board_sha256": "fd43af043f7eeabe4f9cbfa4c37f7a9885a118f0ad31b7a91044e5dedb32d56e",
+        "exact_original_objects_and_board": true
+      },
+      {
+        "round": 33,
+        "seed": 4660,
+        "layout": 48,
+        "rocks": 8,
+        "prng_advances": 55,
+        "rng_after": 49463,
+        "flags_sha256": "bb46eaad684c6d78bd8247c75841f97c9b683609c0d801deac228dcda058eeab",
+        "board_sha256": "c93a21712e5748defe131ebf93ba3c2dc4c9a0c406d1e2e6bf367a2a49a1eed7",
+        "exact_original_objects_and_board": true
+      }
+    ],
+    "passed": true,
+    "scope": "Controlled RAM seed and original08BF/08E7 entry, DI,32 rounds x2 seeds. No original ROM patches. Full1792-byte boards, flag/rock tables and PRNG compared; not natural course/lifecycle progression."
+  },
+  "scope": "Natural runs use real cold boots and keyboard credit/start with read-only observers, first round only. The separately labeled controlled matrix supplies RAM seed/PC/IFF and executes original code. No original ROM patches. Geometry, object placement and exact PRNG progression independently checked."
+}

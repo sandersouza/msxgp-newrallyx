@@ -5,7 +5,7 @@ import sys as _tool_sys
 for _tool_dir in (_ToolPath(__file__).resolve().parent, _ToolPath(__file__).resolve().parents[3]):
     if str(_tool_dir) not in _tool_sys.path: _tool_sys.path.insert(0, str(_tool_dir))
 from source_paths import source_path, RUNTIME
-from session_reference import cartridge_path
+from session_reference import cartridge_path,mapper_type
 
 import argparse,hashlib,json,os,re,subprocess,tempfile
 from pathlib import Path
@@ -21,6 +21,10 @@ def verify(bundle,frames):
     bundle=Path(bundle).resolve();out=Path(tempfile.mkdtemp(prefix='steering-proof-',dir=bundle))
     rom=(cartridge_path(bundle)).read_bytes();(out/'measured.rom').write_bytes(rom)
     syms={n:int(v,16) for n,v in re.findall(r'(?m)^([\w.]+): EQU 0x([\da-fA-F]+)',(bundle/'lab.sym').read_text())}
+    # Fixed RAM keeps its identical IRQ in Page3; count that actual service,
+    # not the retired resident entry. No guest clock or input behavior changes.
+    from session_reference import runtime_symbols
+    runtime_symbols(syms)
     program,_=acquire(ROOT)
     board=b''.join(cells_from_rom(program,0x30+i) for i in range(4));(out/'board.bin').write_bytes(board)
     script=(ROOT/'src/toolchain/msx/steering_probe.tcl').read_text()
@@ -29,6 +33,7 @@ def verify(bundle,frames):
     script=script.replace('after time 600',f'after time {max(600,round(frames/59.92*2))}')
     script=script.replace('puts stderr "Wall stress timeout"', 'puts stderr "Wall stress timeout PC=[reg PC] SP=[reg SP] CPU=[get_active_cpu] IM=[reg IM] I=[reg I] phase=$::phase n=$::n games=$::games state=[debug read memory 0xc7d0] ready=[debug read memory 0xc7dd]"')
     script=script.replace('source @MAPPER@\nnrallyx_reference_machine "Panasonic_FS-A1WSX"',reference_machine(ROOT,'Panasonic_FS-A1WSX'))
+    script=script.replace('-romtype ASCII16','-romtype '+mapper_type(bundle))
     script=script.replace('set z80_freq_locked false','set z80_freq_locked true')
     # The SCREEN4 loop does not expose the production present-state byte.
     script=script.replace('debug set_watchpoint write_mem 0xc000 {$wp_last_value==2}',
@@ -47,6 +52,22 @@ def verify(bundle,frames):
     script+=turbo_setup(syms,out,io=False)
     from session_auto_contract import setup as auto_setup
     script+=auto_setup(syms,out)
+    cheat=os.environ.get('NRX_STEERING_F10')=='1'
+    if cheat:
+        from session_reference import runtime_guard
+        script+=f'''
+set f10_armed 0
+debug set_bp {syms['GameSession_BootShow']} {{!$::f10_armed && {runtime_guard(bundle)}}} {{
+ set ::f10_armed 1;keymatrixdown 6 1;keymatrixdown 7 2
+}}
+debug set_bp {syms['GameSession_UI']} {{$::f10_armed==1}} {{
+ if {{![debug read memory {syms['GameSession_Invulnerable']}]}} {{puts stderr "F10 steering latch missing";exit 3}}
+ keymatrixup 7 2;keymatrixup 6 1;set ::f10_armed 2
+}}
+debug set_bp {syms['GameTurbo_FrameDone']} {{$::f10_armed==2 && $::phase eq "game"}} {{
+ if {{![debug read memory {syms['GameSession_Invulnerable']}]}} {{puts stderr "F10 steering latch reset";exit 3}}
+}}
+'''
     (out/'steering.tcl').write_text(script)
     with (out/'openmsx.log').open('w') as log:
         run=subprocess.run(['openmsx','-script',str(out/'steering.tcl')],timeout=300,stdout=log,stderr=subprocess.STDOUT,
@@ -54,6 +75,7 @@ def verify(bundle,frames):
     complete=out/'summary.tsv'
     report=dict(passed=run.returncode==0 and complete.exists(),requested_active_refreshes=frames,input_seed=seed,rom_sha256=hashlib.sha256(rom).hexdigest(),path=str(out),
         scope='Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze')
+    report['boot_f10_invulnerability']=cheat
     if complete.exists():
         report['observed']=list(map(int,complete.read_text().split()))
         report['passed'] &= report['observed'][4]>=16

@@ -1,5 +1,7 @@
 """Launch the current cartridge in an isolated openMSX session."""
 import os
+import json
+from pathlib import Path
 import shutil
 import subprocess
 from src.toolchain.scenes.bundle import digest
@@ -13,9 +15,28 @@ def tcl(value):
     return '"' + ''.join('\\'+c if c in '\\"$[]{}' else '\\n' if c=='\n' else c for c in value) + '"'
 
 
-def reference_machine(root, name):
-    return (f'source {tcl(root/"src/toolchain/msx/mapper_reference.tcl")}\n'
+def reference_machine(root, name, *, silent=True):
+    """Automated references never open a speaker; PSG/recording stays emulated.
+
+    Interactive user launches opt out explicitly. A null host driver preserves
+    sound registers, mixer recording and guest timing without disturbing users.
+    """
+    return (('set sound_driver null\n' if silent else '')+
+            f'source {tcl(root/"src/toolchain/msx/mapper_reference.tcl")}\n'
             f'nrallyx_reference_machine {tcl(name)}')
+
+
+def boot_test_key_bindings():
+    """Session-local host F10 maps to MSX Shift+F5; release both injected keys.
+
+    The MSX matrix has five function keys. This binding intentionally replaces
+    the host F10 action only in this launcher; save_settings_on_exit is false.
+    Firmware owns the boot-only latch and consumption until key release.
+    """
+    return ('proc nrx_boot_f10_down {} {keymatrixdown 6 1;keymatrixdown 7 2}\n'
+            'proc nrx_boot_f10_up {} {keymatrixup 7 2;keymatrixup 6 1}\n'
+            'bind F10 nrx_boot_f10_down\n'
+            'bind F10,release nrx_boot_f10_up')
 
 
 def retain_cartridge(rom, output):
@@ -37,6 +58,18 @@ def scanout_recording_tcl(output, startup_pc):
             '{puts stderr $problem;exit 2};set ::scanout_recording_started 1')
     return (f'debug set_bp {startup_pc} '
             '{![info exists ::scanout_recording_started]} {'+action+'}')
+
+
+def cartridge_mapper(rom):
+    """Use delivery metadata only when it describes these exact image bytes."""
+    rom=Path(rom)
+    manifest=rom.with_name('manifest.json')
+    if not manifest.exists():return 'ASCII16'
+    record=json.loads(manifest.read_text())
+    if record.get('rom_sha256')!=digest(rom):return 'ASCII16'
+    mapper=record.get('mapper','ASCII16')
+    if mapper not in ('ASCII8','ASCII16'):raise ValueError('Unsupported cartridge mapper')
+    return mapper
 
 
 def run(root, args):
@@ -61,9 +94,10 @@ def run(root, args):
     env = dict(os.environ, OPENMSX_HOME=str(output/'home'), OPENMSX_USER_DATA=str(output/'userdata'))
     # Session-local settings. "Locked" uses the machine-selected clock, including
     # factory CPU switching; false would force the user frequency override.
+    mapper=cartridge_mapper(args.rom)
     lines = ['set save_settings_on_exit false',
              f'filepool add -path {tcl(args.bios.resolve())} -types system_rom -position 1',
-             f'if {{[catch {{{reference_machine(root,args.machine)}}} problem]}} {{',
+             f'if {{[catch {{{reference_machine(root,args.machine,silent=False)}}} problem]}} {{',
              '  puts stderr "BIOS/machine load failed: $problem. Check machine ROM SHA-1 requirements and --bios."',
              '  exit 2', '}',
              'set firmwareswitch off', 'set speed 100', 'set throttle on',
@@ -72,7 +106,8 @@ def run(root, args):
              'set gamma 1.0', 'set brightness 0', 'set contrast 0',
              'set color_matrix {{1 0 0} {0 1 0} {0 0 1}}',
              'set scanline 0', 'set blur 0', 'set noise 0',
-             f'cart {tcl(retained)} -romtype ASCII16', 'reset']
+             f'cart {tcl(retained)} -romtype {mapper}', 'reset']
+    lines.append(boot_test_key_bindings())
     from .maze_capture import setup as capture_setup
     lines.extend(capture_setup(output))
     print(f'Diagnostics: {output}; F6 captures now; closing openMSX saves the replay.',flush=True)

@@ -1,5 +1,11 @@
 # Selectable cartridges and integration boundary
 
+Current optional test control: hold F10 (MSX Shift+F5) through the ROM/RAM
+opening until the title, then release. Cars/rocks cannot kill the player;
+walls remain solid. Reset clears the mode. This works with TEST_MODE=0;
+Return/equals controls remain specific to TEST_MODE=1. See the
+[current feature/qualification](../../docs/f10-invulnerability.md).
+
 Both maintained presenters build from the current checkout after PR #33 was
 merged on 2026-10-29. Earlier branch-isolation/merge-boundary records remain
 historical evidence; those branch names are not build prerequisites.

@@ -107,3 +107,6 @@ clean-preview:
 
 # SCREEN 4 component; keep the optional include for isolated legacy/tool fixtures.
 -include src/toolchain/screen4/targets.mk
+
+# Disk delivery keeps the normal cartridge build and export unchanged.
+-include src/disk/targets.mk

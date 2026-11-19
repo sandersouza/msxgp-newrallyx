@@ -1,5 +1,11 @@
 # Shared gameplay with the optimized SCREEN4 presenter
 
+Current optional test control: hold F10 (MSX Shift+F5) through the ROM/RAM
+opening until the title, then release. Cars/rocks cannot kill the player;
+walls remain solid. Reset clears the mode. This works with TEST_MODE=0;
+Return/equals controls remain specific to TEST_MODE=1. See the
+[current feature/qualification](../../docs/f10-invulnerability.md).
+
 The default `make build` and its `build-experiments` alias run complete sessions using revision
 `6d562a791b0cc242119a31dd686ff8e93eb94fe0` of the audio branch. Active gameplay
 keeps the accepted 200/56 framing, original-size cars, six-digit capped scores,
@@ -82,7 +88,7 @@ This is temporal approximation, not frame-for-frame emulation. Original pixels
 retain the established1:1 crop into256x212 and RGB333 mapping; active gameplay
 assets are unchanged. The final matrix endpoint is detected per native refresh.
 
-Any keyboard key skips startup. The cold UI IRQ scans all11 keyboard rows;
+Any keyboard key except Shift alone or Shift+F5 skips startup. The cold UI IRQ scans all11 keyboard rows;
 active-game IRQs never call that routine. Skip is checked between spans (at most
 256 transferred bytes) and during waits/initial HMMV clearing. A held skip key is
 consumed until every row releases, preventing accidental coin/start events.

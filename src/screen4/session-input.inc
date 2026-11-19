@@ -18,18 +18,8 @@ read_keys:
 ; Active gameplay never calls this IRQ path: no per-frame gameplay overhead.
 GameSession_BootKeyGate EQU $c0fb
 GameSession_BootSkip EQU $c0fc
-GameSession_BootAnyKey:
-    ; Called only by the cold IRQ, whose wrapper preserves DE.
-    ld e,10
-.row:
-    ld a,e
-    call read_keys
-    or a
-    ret nz
-    dec e
-    jp p,.row
-    xor a
-    ret
+; BootAnyKey lives in the existing Page0 startup worker; keep resident space
+; and the active input path unchanged. Boot replay and title release own it.
     ENDIF
 GameSession_LatchKeys:
     IF SESSION_HARDWARE_CHECK

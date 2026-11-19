@@ -9,7 +9,7 @@ import sys as _tool_sys
 for _tool_dir in (_ToolPath(__file__).resolve().parent, _ToolPath(__file__).resolve().parents[3]):
     if str(_tool_dir) not in _tool_sys.path: _tool_sys.path.insert(0, str(_tool_dir))
 from source_paths import source_path, RUNTIME
-from session_reference import cartridge_path
+from session_reference import cartridge_path,mapper_type
 
 import argparse,array,hashlib,json,math,os,re,subprocess,tempfile,wave
 from pathlib import Path
@@ -28,6 +28,11 @@ def verify(bundle):
     s={n:int(v,16) for n,v in re.findall(r'(?m)^([\w.]+): EQU 0x([\da-fA-F]+)',(bundle/'lab.sym').read_text())}
     from session_reference import runtime_symbols,runtime_guard
     runtime_symbols(s)
+    backend=json.loads((bundle/'session-build.json').read_text()).get('cartridge_mapper','ASCII16')
+    if backend=='MegaRAM':
+        from scripts.compact_game_verify import profile_startup
+        startup=profile_startup(out)
+    else:startup=f"cart {tcl(out/'measured.rom')} -romtype {mapper_type(bundle)}\nreset"
     def stub(address):return bytes((0xf3,0x31,0xe0,0xf2,0xcd,address&255,address>>8,0xf3,0xc3,0,0xf1)).hex()
     code=f'''set save_settings_on_exit false
 set renderer none
@@ -38,8 +43,7 @@ set z80_freq_locked true
 filepool add -path {tcl(ROOT/'references/msxbios')} -types system_rom -position 1
 {reference_machine(ROOT,'Panasonic_FS-A1WSX')}
 set firmwareswitch off
-cart {tcl(out/'measured.rom')} -romtype ASCII16
-reset
+{startup}
 activate_input_layer -blocking full_audio_proof
 set out {tcl(out)}
 set tick_stub [binary format H* {stub(s['GameAudio_Tick'])}]
@@ -164,6 +168,7 @@ proc menu {{}} {{
 after time 0.02 menu
 after time 90 {{puts stderr "Audio fixture timeout PC=[reg PC] SP=[reg SP] phase=$::phase state=[debug read memory 0xc7d0] ready=$::ready";exit 3}}
 '''
+    if backend=='MegaRAM':code=code.replace('after time 90','after time 600')
     (out/'audio.tcl').write_text('if {[catch {\n'+code+'\n} e]} {puts stderr $::errorInfo;exit 2}\n')
     with (out/'openmsx.log').open('w') as log:
         run=subprocess.run(['openmsx','-script',str(out/'audio.tcl')],timeout=120,stdout=log,stderr=subprocess.STDOUT,

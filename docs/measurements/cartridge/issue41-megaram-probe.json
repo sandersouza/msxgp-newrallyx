@@ -1,0 +1,15 @@
+{
+  "system_mapper_kib": 64,
+  "megaram_kib": 1024,
+  "banks_checked": [
+    0,
+    42,
+    64,
+    127
+  ],
+  "lower_and_upper_8k_windows_independent": true,
+  "negative_512k_control": true,
+  "passed": true,
+  "scope": "Synthetic emulator I/O and bank independence only; not a game loader, physical hardware, or timing qualification",
+  "source_reference": "https://github.com/openMSX/openMSX/blob/master/src/memory/MSXMegaRam.cc"
+}

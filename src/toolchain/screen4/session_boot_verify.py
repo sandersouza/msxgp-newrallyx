@@ -7,7 +7,7 @@ for _tool_dir in (_ToolPath(__file__).resolve().parent, _ToolPath(__file__).reso
 from source_paths import source_path, RUNTIME
 import argparse,hashlib,json,os,re,shutil,subprocess,tempfile,statistics,math
 from pathlib import Path
-from session_reference import cartridge_path
+from session_reference import cartridge_path,mapper_type,bank_offset
 import sys
 ROOT=Path(__file__).resolve().parents[3];sys.path.insert(0,str(ROOT))
 from src.toolchain.msx.emulator import reference_machine,tcl,scanout_recording_tcl
@@ -23,7 +23,7 @@ def verify(bundle):
     meta=json.loads((bundle/'session-boot.json').read_text());frames=meta['sample_frames']
     title=json.loads((bundle/'session-title.json').read_text())
     bank=json.loads((bundle/'session-build.json').read_text())['banks']['SESSION_BANK']
-    ui_prefix=(out/'measured.rom').read_bytes()[bank*16384:bank*16384+16].hex()
+    at=bank_offset(bundle,bank);ui_prefix=(out/'measured.rom').read_bytes()[at:at+16].hex()
     code=f'''set save_settings_on_exit false
 set renderer SDLGL-PP
 set sound_driver null
@@ -37,7 +37,7 @@ set limitsprites true
 filepool add -path {tcl(ROOT/'references/msxbios')} -types system_rom -position 1
 {reference_machine(ROOT,'Panasonic_FS-A1WSX')}
 set firmwareswitch off
-cart {tcl(out/'measured.rom')} -romtype ASCII16
+cart {tcl(out/'measured.rom')} -romtype {mapper_type(bundle)}
 reset
 activate_input_layer -blocking boot_cosmetics_proof
 {scanout_recording_tcl(out,s['boot'])}
@@ -109,7 +109,7 @@ after time 90 {{puts stderr "Boot/title timeout PC=[reg PC] state=[debug read me
             from session_boot import status_overlay
             with (out/'mapper-auto.tsv').open() as file:
                 observed=list(__import__('csv').DictReader(file,delimiter='\t'))[-1]
-            wanted=status_overlay(wanted,(bundle/'ui-font.bin').read_bytes(),meta['hardware_status']['ink'],int(observed['mapper_kib']),int(observed['turbo_kind'])>0)
+            wanted=status_overlay(wanted,(bundle/'ui-font.bin').read_bytes(),meta['hardware_status']['ink'],int(observed['mapper_kib']),int(observed['turbo_kind'])>0,'plain' if os.environ.get('NRX_REFERENCE_RAM_KIND')=='plain' else 'mapper')
         regs=(out/f'boot-{i}.regs').read_bytes();vram=(out/f'boot-{i}.vram').read_bytes();base=(regs[2]&96)*1024
         assert vram[base:base+27136]==wanted,('Boot differs from captured original pixels',i,n)
         assert regs[7]&15==0,('Hardware-check border is not the black boot-palette entry',i,regs[7])
@@ -131,7 +131,7 @@ after time 90 {{puts stderr "Boot/title timeout PC=[reg PC] state=[debug read me
     assert max(abs(v) for v in cadence_errors)<59736/3579545,cadence_errors
     assert abs(elapsed-meta['seconds'])<2*59736/3579545,(elapsed,meta['seconds'])
     build=json.loads((bundle/'session-build.json').read_text());rom=(out/'measured.rom').read_bytes();banks=build['banks']
-    image=b''.join(rom[banks[n]*16384:(banks[n]+1)*16384] for n in ('SESSION_IMAGE_BANK','SESSION_DATA_BANK'))
+    image=b''.join(rom[bank_offset(bundle,banks[n]):bank_offset(bundle,banks[n])+16384] for n in ('SESSION_IMAGE_BANK','SESSION_DATA_BANK'))
     production=Path(build['production_bundle'])
     defs={n:int(v[1:],16) if v.startswith('$') else int(v) for n,v in re.findall(r'(?m)^(\w+) EQU (\$[\da-fA-F]+|\d+)\s*$',(production/'config.inc').read_text())}
     source_rom=(production/'raster-scroll.rom').read_bytes()

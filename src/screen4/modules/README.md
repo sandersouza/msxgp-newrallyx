@@ -54,6 +54,16 @@ identified rather than advertised as general-purpose game logic.
 | [session/world.inc](session/world.inc), [session/lifecycle.inc](session/lifecycle.inc) | Cold round/map loading; menu, death, challenge and turn transitions. | Existing native state/layout/callback semantics. |
 | [renderer/session-banks.inc](renderer/session-banks.inc), [renderer/video.inc](renderer/video.inc) | Theme/phase mapping, cache prewarm and cold video restoration. | Packed eight-set SCREEN 4 layout; prewarm only while display is off. |
 | [radar/cache-build.inc](radar/cache-build.inc), [radar/color.inc](radar/color.inc) | Cold glyph/name caches, physical-clock blink and color priority. | Native flag/actor encoding and accepted palette. |
+
+The full-session RNG word E000..E001 is global, not player state. The boot seed
+is selected from the contributor ROM's original3A52 table with default DSW=C3.
+New-game restoration skips that word, and native first-round preparation no
+longer resets it. Foreground UI advances original8F24 once per elapsed refresh,
+reusing input_tick until gameplay video initialization resets that clock. The
+UI catch-up loop owns Page2 temporarily, clobbers AF/BC/DE/HL, preserves IX/IY/IFF
+and uses two loop-scratch stack bytes plus eight for the original PRNG call/
+saved pairs, excluding the unchanged IRQ envelope. No persistent buffer, IRQ work or active-frame
+RNG call is added; original gameplay advancement and pause policy remain intact.
 | [audio/session.inc](audio/session.inc), [audio/stop-completion.inc](audio/stop-completion.inc) | Native request-driven PSG, silence and completion settlement. | Different Tick/event ABI from first-stage audio; never include both implementations. |
 | [interface/decorations.inc](interface/decorations.inc), [interface/bitmap.inc](interface/bitmap.inc) | Player labels, point inscriptions and cold bitmap copy. | Existing UI/game scratch lifetimes and generated source banks. |
 | [input/motion.inc](input/motion.inc), [session-input.inc](../session-input.inc) | Native corner rollback, round accessor, keyboard/joystick and input edge policy. | Native encodings and ordering; another game supplies an adapter instead of a runtime branch. |
@@ -89,6 +99,13 @@ Important concrete exceptions:
   clobbers AF. CopyMap consumes A=ROM bank and C=RAM segment, copies exactly
   16 KiB and restores main Page0; AF/BC/DE/HL are scratch. PatchObject consumes
   B/C=top-left and IY=nine IDs; IY advances nine, C advances three, IX is preserved.
+  The compact generated binding fills the same destination using eight-word
+  constructors: first LD HL initializes the word, repeated words reuse it,
+  one-byte changes use LD H/L and all stores are PUSH HL, followed by JP.
+  Constructors preserve flags/BC/DE/IX/IY; the decoder retains its existing
+  C100..C101 saved-SP lifetime, DI ownership and original stack restoration.
+  Contiguous1024x3-byte descriptor tables are packed into declared holes before
+  constructors/replay. No active map access, mapper dispatch or RAM buffer changes.
 - `register`: A=value, B=VDP register; AF scratch, IFF unchanged. Serialize its
   control-latch pair externally. `stage_wait_command` returns EI and R15=0;
   it does not preserve an incoming DI state and is not an active-frame service.
@@ -178,3 +195,50 @@ that a 64 KiB image has identical bytes or symbols.
 Use [docs/cycle-budget.xlsx](../../../docs/cycle-budget.xlsx) for current
 ROM-bound measurements and both RAM profiles. General gameplay/perceptual and
 physical-cartridge acceptance remain separate from the zero-delta structural proof.
+
+The default complete game also passes through the functional
+[compact backend relink](../../../docs/issue41-compact-game.md). Its generated
+runtime contracts live in `contracts.json` under `generated_backends`, alongside
+matching generated inline headers. This is an explicitly measured storage/runtime
+change, outside the zero-delta source modularization proof. It retains existing
+main-RAM segments, installs foreground radar code at C110..C24F, and owns
+C100..C101 saved-SP scratch only during cold map construction. The data stack
+must be restored before any CALL/RET. Its LD A,I retry relies on the sole
+periodic acknowledged VDP IRQ and must not be reused as a generic NMI or
+multi-source interrupt-state primitive.
+
+The [boot F10 test latch](../../../docs/f10-invulnerability.md) is a separate
+functional feature under `generated_backends.boot_f10_test_latch`. It reuses
+C0EE and existing startup RAM; the no-contact Death_Begin prefix is unchanged.
+Its own integration/timing evidence accompanies the new ROM hash. The historical
+module-layout gate does not claim this requested behavior change is byte-identical.
+
+The experimental [512KiB packet backend](../../../docs/issue42-512-backend.md)
+has a separate `mapper512_packet_probe` contract. Its real-RAM fixture freezes
+gameplay and disables VDP IRQ generation; it is not a standalone game or a
+production Page1/IRQ allocation. Neither candidate passed complete memory and
+performance qualification. The default744KiB ROM and768KiB MegaRAM remain intact.
+
+The [cold-stage continuation](../../../docs/issue42-stage-overlays.md) adds
+`mapper512_cold_stage_probe`: bounded edge replacement and faithful ranking
+reconstruction during a stopped transition, plus cold-linked absolute packet
+variants. The owner permits longer inter-stage preparation, with no active-play
+timing concession. Diagnostic Page3 addresses/DI lifetimes are destructive
+fixtures; complete512KiB memory, loader, IRQ/audio and gameplay gates remain open.
+
+The [native512KiB loader binding](../../../docs/issue42-512-native-game.md)
+now connects DOS1/Disk BASIC filesystem calls to the real opening and stopped
+game transitions. Its `mapper512_native_game` contract records bootstrap reuse,
+the Page3 cold gate, PSG/IRQ ownership and terrain/UI ordering. This is a
+generated functional binding, separate from both the historical source-layout
+gate and the earlier synthetic/host-assisted proofs. Final performance,
+audio/lifecycle and hardware acceptance remain open; supported artifacts stay sealed.
+
+The [lifecycle continuation](../../../docs/issue42-512-lifecycle.md) repairs the
+experimental binding's missing fourth object template and challenge resume.
+`Mapper512_ResumeVideo` is a cold functional fix in existing resident padding,
+not an abstraction wrapper: it invalidates readiness/cache validity, rebuilds
+terrain and maps without rerolling the native board, then enters Video. The
+stopped filesystem borrows both flag segments, so cache validity must be cleared
+before that I/O. It adds one cold CALL stack word; active frame paths are intact.
+Templates occupy30:BD80..BE0F, four36-byte themes below the BE40 live helper.

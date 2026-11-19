@@ -1,0 +1,2155 @@
+{
+  "status": "Full-game512KiB RAM-active integration measured; standalone DOS/BASIC edition NOT qualified",
+  "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+  "program": {
+    "status": "Full-game RAM-active integration; cold cartridge/host provider still required. Not a standalone executable.",
+    "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+    "ram_kib": 512,
+    "stages": [
+      {
+        "family": 0,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162717,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 1,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162433,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 2,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162079,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 3,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 163121,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      }
+    ],
+    "raw_sites": {
+      "21229": 71,
+      "21305": 71,
+      "21367": 71,
+      "21561": 71,
+      "23034": 71,
+      "24740": 71,
+      "25229": 71,
+      "19496": 74,
+      "19513": 72,
+      "11930": 71,
+      "6994": 73,
+      "7003": 71
+    },
+    "raw_banks": {
+      "0": 0,
+      "1": 2,
+      "71": 4,
+      "72": 6,
+      "73": 8,
+      "74": 10,
+      "75": 12,
+      "86": 14,
+      "97": 16,
+      "108": 18,
+      "119": 20,
+      "120": 22,
+      "121": 24,
+      "122": 26,
+      "123": 28
+    },
+    "runtime_image_offset": 15680,
+    "runtime_image_bytes": 81,
+    "working_segments": {
+      "page3": 0,
+      "main": 1,
+      "maps": [
+        2,
+        3
+      ],
+      "flags": [
+        4,
+        5
+      ]
+    },
+    "hot_banks": {
+      "0": 6,
+      "71": 7,
+      "73": 8,
+      "123": 9,
+      "121": 10
+    },
+    "permission_rows": "Original32-byte stride in ring segment31,9000..A5BF; no Page0 overlay",
+    "unresolved": [
+      "Cartridge-free DOS/BASIC bootstrap, allocator and cold filesystem provider",
+      "Cold OS snapshot/directory/scratch peak in the same32 segments",
+      "Broader lifecycle, CPU/PAL matrix and strict cadence acceptance; see separate integration report"
+    ],
+    "runtime_files": {
+      "lab.sym": "d0e087761fb3e82ecc2c97cd7506f57ad04db1983c998d62da4334e5f50ebf4e",
+      "assembly/session-cold-linked.bin": "af025439e396f6841eeeb8feec51b54caa0750805a83b0c8e587010a2e826508",
+      "assembly/session-boot-linked.bin": "9fc407b12da1e48141bba479d9a66ff4b7fa44920e1bce7dd7e13ff43c74bdf7"
+    }
+  },
+  "memory": [
+    {
+      "segments": "0",
+      "owner": "Page3 native state, stack, IRQ, packet dispatcher"
+    },
+    {
+      "segments": "1",
+      "owner": "Main Page0 helpers, cache metadata, navigation, active audio/decor/turbo workers"
+    },
+    {
+      "segments": "2..3",
+      "owner": "Expanded mutable world maps"
+    },
+    {
+      "segments": "4..5",
+      "owner": "Expanded on/off flag caches"
+    },
+    {
+      "segments": "6",
+      "owner": "Resident full-game code"
+    },
+    {
+      "segments": "7",
+      "owner": "Original native core"
+    },
+    {
+      "segments": "8",
+      "owner": "PSG worker"
+    },
+    {
+      "segments": "9",
+      "owner": "Decorations and labels"
+    },
+    {
+      "segments": "10",
+      "owner": "UI/attract; temporary cold raw owner"
+    },
+    {
+      "segments": "11..18",
+      "owner": "64 packed HUD phase records"
+    },
+    {
+      "segments": "19",
+      "owner": "Current family eight edge records"
+    },
+    {
+      "segments": "20..30",
+      "owner": "Eleven complete packet-code closures"
+    },
+    {
+      "segments": "31",
+      "owner": "Position-independent ring and current terrain permissions"
+    }
+  ],
+  "public_artifacts": {
+    "dist/newrallyx.rom": {
+      "bytes": 761856,
+      "sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00"
+    },
+    "dist/compact/megaram/newrallyx-megaram.zip": {
+      "bytes": 187740,
+      "sha256": "ed50647304f1d647f1161a85f36f487129506cd76e3abdcecb8122ebf2c8768d"
+    },
+    "dist/disk/newrallyx-disk.zip": {
+      "bytes": 340034,
+      "sha256": "fca5d77ade0bc83156e37279c8968f6108e762ccb128f651c8e54741d3668428"
+    }
+  },
+  "preserved_startup_checks": [
+    {
+      "case": "compact-game",
+      "result": {
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "bytes": 761856,
+        "mode": "rom",
+        "megaram_kib": null,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.242601984021604,
+        "period_mean": 107679.44704570794,
+        "period_p95": 122290.66666666916,
+        "period_max": 179208.33333333462,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "compact-megaram-dos-768",
+      "result": {
+        "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+        "bytes": 761856,
+        "mode": "dos",
+        "megaram_kib": 768,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260198402163,
+        "period_mean": 107679.44704570786,
+        "period_p95": 122290.66666661829,
+        "period_max": 179208.3333333092,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "compact-megaram-basic-768",
+      "result": {
+        "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+        "bytes": 761856,
+        "mode": "basic",
+        "megaram_kib": 768,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260198402163,
+        "period_mean": 107679.44704570786,
+        "period_p95": 122291.66666670484,
+        "period_max": 179208.3333333092,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "disk-dos-4096",
+      "result": {
+        "mode": "dos",
+        "mapper_ram_kib": 4096,
+        "refresh_hz": 59.92274340431231,
+        "nominal_refresh_hz": 60,
+        "refresh_cycles": 59736,
+        "two_refresh_budget_cycles": 119472,
+        "artifact_sha256": "6e5dfc69e7f3d4303a967bf420cd952b680145258ec2099569af643831625e17",
+        "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+        "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+        "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+        "work": {
+          "samples": 300,
+          "mean": 65050.355555545815,
+          "p95": 91745.00000003721,
+          "maximum": 124356.6666667011
+        },
+        "synchronization_wait": {
+          "samples": 300,
+          "mean": 41371.03333333417,
+          "p95": 59470.000000085354,
+          "maximum": 59765.000000084816
+        },
+        "publication": {
+          "samples": 300,
+          "mean": 4245.456666668401,
+          "p95": 6923.000000131609,
+          "maximum": 9159.000000177908
+        },
+        "presentation_period": {
+          "samples": 299,
+          "mean": 110681.41248606467,
+          "p95": 122290.3333332561,
+          "maximum": 179207.66666668653
+        },
+        "presented_fps": 32.340976859603074
+      }
+    },
+    {
+      "case": "disk-basic-4096",
+      "result": {
+        "mode": "basic",
+        "mapper_ram_kib": 4096,
+        "refresh_hz": 59.92274340431231,
+        "nominal_refresh_hz": 60,
+        "refresh_cycles": 59736,
+        "two_refresh_budget_cycles": 119472,
+        "artifact_sha256": "6e5dfc69e7f3d4303a967bf420cd952b680145258ec2099569af643831625e17",
+        "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+        "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+        "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+        "work": {
+          "samples": 300,
+          "mean": 65050.355555547845,
+          "p95": 91745.00000003721,
+          "maximum": 124356.6666667011
+        },
+        "synchronization_wait": {
+          "samples": 300,
+          "mean": 41371.01666667115,
+          "p95": 59469.99999988188,
+          "maximum": 59765.000000084816
+        },
+        "publication": {
+          "samples": 300,
+          "mean": 4245.456666664332,
+          "p95": 6923.000000131609,
+          "maximum": 9159.000000177908
+        },
+        "presentation_period": {
+          "samples": 299,
+          "mean": 110681.41248606467,
+          "p95": 122291.66666670484,
+          "maximum": 179207.66666668653
+        },
+        "presented_fps": 32.340976859603074
+      }
+    }
+  ],
+  "tests": [
+    {
+      "suite": "tests",
+      "tests": 495,
+      "passed": true,
+      "skipped": 0
+    },
+    {
+      "suite": "components",
+      "tests": 94,
+      "passed": true,
+      "skipped": 1
+    }
+  ],
+  "historical_module_layout_passed": true,
+  "comparisons": [
+    {
+      "round": 5,
+      "enemies": 3,
+      "input_clock": "presentation",
+      "control": {
+        "passed": true,
+        "candidate": false,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 5,
+        "enemies": [
+          3
+        ],
+        "f10": false,
+        "transitions": false,
+        "work": {
+          "mean": 93772.52014651978,
+          "p95": 153868.99999998033,
+          "max": 229040.6666666503
+        },
+        "period": {
+          "mean": 131928.83882783877,
+          "p95": 180756.00000000643,
+          "max": 238945.33333333567
+        },
+        "active_frames": 182,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 0,
+        "cache_policy_checks": 0,
+        "immutable_hot_banks_checked": false,
+        "cartridge_windows_guarded": false,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-280",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "verification_script_sha256": "4e1b9eb3dd6b4938d8db390ac08dc8e054d2cb5263cef95de8a1a7dbdbfe226d",
+        "scope": "Frozen ASCII8 cartridge control on512KiB main RAM; existing expanded cache, HUD/audio and real sprite limits. This is not the RAM-active candidate.",
+        "input_clock": "presentation",
+        "trace_sha256": "959dab62111d97f1a9aca2cda3db957a0940f9d17d0e6e41cf50c3536488660b",
+        "presented_fps": 27.132392218437897
+      },
+      "candidate": {
+        "passed": true,
+        "candidate": true,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 5,
+        "enemies": [
+          3
+        ],
+        "f10": false,
+        "transitions": false,
+        "work": {
+          "mean": 93757.44688644582,
+          "p95": 152492.0000000218,
+          "max": 207612.33333333107
+        },
+        "period": {
+          "mean": 132248.56227106226,
+          "p95": 179212.3333333248,
+          "max": 238943.3333333406
+        },
+        "active_frames": 182,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 601,
+        "cache_policy_checks": 366,
+        "immutable_hot_banks_checked": true,
+        "cartridge_windows_guarded": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-280",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+          "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "active_ram_images": [
+            {
+              "family": 0,
+              "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+            },
+            {
+              "family": 1,
+              "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+            },
+            {
+              "family": 2,
+              "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+            },
+            {
+              "family": 3,
+              "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+            }
+          ]
+        },
+        "verification_script_sha256": "9088da50e239e7861115762ee9fe37f81c0fdf22872185649a4c9cb032d55663",
+        "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+        "input_clock": "presentation",
+        "trace_sha256": "772cf3b37f03585a46cfb895b843bfcfaf011fa4d22fe8abfc740b269b6d109d",
+        "presented_fps": 27.0667970867102
+      },
+      "matched": {
+        "count": 51,
+        "control": {
+          "mean": 96578.56209150444,
+          "p95": 144343.66666666622,
+          "max": 160789.3333333416
+        },
+        "candidate": {
+          "mean": 95832.6797385609,
+          "p95": 142980.66666667326,
+          "max": 159654.3333333221
+        },
+        "longer_spans": 0,
+        "max_work_delta": -217.99999997262057,
+        "scope": "Same presentation index, camera, native actor-state bytes E088..E167, elapsed-tick byte, enemy count and all14 PSG registers; not every native RAM byte or full-course equivalence."
+      }
+    },
+    {
+      "round": 10,
+      "enemies": 5,
+      "input_clock": "presentation",
+      "control": {
+        "passed": true,
+        "candidate": false,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 10,
+        "enemies": [
+          5
+        ],
+        "f10": false,
+        "transitions": false,
+        "input_clock": "presentation",
+        "work": {
+          "mean": 104888.67741935473,
+          "p95": 157941.33333335049,
+          "max": 203416.9999999963
+        },
+        "period": {
+          "mean": 142519.52419354834,
+          "p95": 180761.66666665493,
+          "max": 238945.33333333567
+        },
+        "active_frames": 124,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 0,
+        "cache_policy_checks": 0,
+        "immutable_hot_banks_checked": false,
+        "cartridge_windows_guarded": false,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-200",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-360",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "verification_script_sha256": "7f4a352bd682f329b248d3595220a518c1ba01f29f448079fdbb4f2eda118f43",
+        "scope": "Frozen ASCII8 cartridge control on512KiB main RAM; existing expanded cache, HUD/audio and real sprite limits. This is not the RAM-active candidate.",
+        "trace_sha256": "ccbbee6aacc5c862051d78121d63e0f07b8eb3ffe98ca67419d12997813b63f4",
+        "presented_fps": 25.116172820916848
+      },
+      "candidate": {
+        "passed": true,
+        "candidate": true,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 10,
+        "enemies": [
+          5
+        ],
+        "f10": false,
+        "transitions": false,
+        "work": {
+          "mean": 103125.75268816958,
+          "p95": 152677.33333332327,
+          "max": 202195.33333333675
+        },
+        "period": {
+          "mean": 140592.61559139765,
+          "p95": 180756.99999999127,
+          "max": 238946.33333334594
+        },
+        "active_frames": 124,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 552,
+        "cache_policy_checks": 366,
+        "immutable_hot_banks_checked": true,
+        "cartridge_windows_guarded": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-200",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-360",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+          "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "active_ram_images": [
+            {
+              "family": 0,
+              "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+            },
+            {
+              "family": 1,
+              "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+            },
+            {
+              "family": 2,
+              "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+            },
+            {
+              "family": 3,
+              "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+            }
+          ]
+        },
+        "verification_script_sha256": "0d09df4f10d9fea79fde5ee07d62b088d948b5f48df30670b415903e2abc04c5",
+        "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+        "input_clock": "presentation",
+        "trace_sha256": "0b9ab4d19fa57993b26a8ec9df29769aa1643fc57321c5e8e3075ca09b8f60ab",
+        "presented_fps": 25.4604054767939
+      },
+      "matched": {
+        "count": 16,
+        "control": {
+          "mean": 127858.04166666885,
+          "p95": 203416.9999999963,
+          "max": 203416.9999999963
+        },
+        "candidate": {
+          "mean": 126813.66666666337,
+          "p95": 202195.33333333675,
+          "max": 202195.33333333675
+        },
+        "longer_spans": 0,
+        "max_work_delta": -219.9999999931315,
+        "scope": "Same presentation index, camera, native actor-state bytes E088..E167, elapsed-tick byte, enemy count and all14 PSG registers; not every native RAM byte or full-course equivalence."
+      }
+    },
+    {
+      "round": 13,
+      "enemies": 6,
+      "input_clock": "presentation",
+      "control": {
+        "passed": true,
+        "candidate": false,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 13,
+        "enemies": [
+          6
+        ],
+        "f10": false,
+        "transitions": false,
+        "input_clock": "presentation",
+        "work": {
+          "mean": 118444.90977443673,
+          "p95": 198254.33333335002,
+          "max": 243250.66666667972
+        },
+        "period": {
+          "mean": 150879.12030075185,
+          "p95": 238944.33333335086,
+          "max": 298677.6666666731
+        },
+        "active_frames": 133,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 0,
+        "cache_policy_checks": 0,
+        "immutable_hot_banks_checked": false,
+        "cartridge_windows_guarded": false,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-200",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "verification_script_sha256": "6e8b8fb8bad3b9ba36c69a10850b8cfdacc34ec4864893fe22513a86976de388",
+        "scope": "Frozen ASCII8 cartridge control on512KiB main RAM; existing expanded cache, HUD/audio and real sprite limits. This is not the RAM-active candidate.",
+        "trace_sha256": "1ae345cf63f61df22063c8ca5d24c2653145a9f74ccc7c4d65a9618293a6cdfc",
+        "presented_fps": 23.72458821913056
+      },
+      "candidate": {
+        "passed": true,
+        "candidate": true,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 13,
+        "enemies": [
+          6
+        ],
+        "f10": false,
+        "transitions": false,
+        "work": {
+          "mean": 117780.2380952378,
+          "p95": 197103.66666665574,
+          "max": 242150.66666666316
+        },
+        "period": {
+          "mean": 150879.07268170433,
+          "p95": 238943.33333331515,
+          "max": 298682.66666664806
+        },
+        "active_frames": 133,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 585,
+        "cache_policy_checks": 366,
+        "immutable_hot_banks_checked": true,
+        "cartridge_windows_guarded": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-200",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+          "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "active_ram_images": [
+            {
+              "family": 0,
+              "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+            },
+            {
+              "family": 1,
+              "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+            },
+            {
+              "family": 2,
+              "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+            },
+            {
+              "family": 3,
+              "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+            }
+          ]
+        },
+        "verification_script_sha256": "bac2628d7956de84ea130f1e0fac8cc7a32c1d37780bdf411a8cefac93d9aac8",
+        "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+        "input_clock": "presentation",
+        "trace_sha256": "b48ff09dde36f491537894d1dae2aa37b600799d28640923b0af7869ccd7a000",
+        "presented_fps": 23.724595706864108
+      },
+      "matched": {
+        "count": 133,
+        "control": {
+          "mean": 118444.90977443673,
+          "p95": 198254.33333335002,
+          "max": 243250.66666667972
+        },
+        "candidate": {
+          "mean": 117780.2380952378,
+          "p95": 197103.66666665574,
+          "max": 242150.66666666316
+        },
+        "longer_spans": 0,
+        "max_work_delta": -217.9999999726133,
+        "scope": "Same presentation index, camera, native actor-state bytes E088..E167, elapsed-tick byte, enemy count and all14 PSG registers; not every native RAM byte or full-course equivalence."
+      }
+    },
+    {
+      "round": 5,
+      "enemies": 3,
+      "input_clock": "native",
+      "control": {
+        "passed": true,
+        "candidate": false,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 5,
+        "enemies": [
+          3
+        ],
+        "f10": false,
+        "transitions": false,
+        "input_clock": "native",
+        "work": {
+          "mean": 94143.96339113638,
+          "p95": 146774.33333332863,
+          "max": 186354.00000000076
+        },
+        "period": {
+          "mean": 132913.21772639698,
+          "p95": 179211.33333333995,
+          "max": 238944.99999999892
+        },
+        "active_frames": 173,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 0,
+        "cache_policy_checks": 0,
+        "immutable_hot_banks_checked": false,
+        "cartridge_windows_guarded": false,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-280",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "verification_script_sha256": "7142f33d4bfd772d341691cedc7c75672c93e33b9c5da223d074b94b32f87792",
+        "scope": "Frozen ASCII8 cartridge control on512KiB main RAM; existing expanded cache, HUD/audio and real sprite limits. This is not the RAM-active candidate.",
+        "trace_sha256": "191ec6aaafbe94232b105830b3e567d537e9b0e626238f1b3393ef22fa0b5d87",
+        "presented_fps": 26.931444902406355
+      },
+      "candidate": {
+        "passed": true,
+        "candidate": true,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 5,
+        "enemies": [
+          3
+        ],
+        "f10": false,
+        "transitions": false,
+        "input_clock": "native",
+        "work": {
+          "mean": 93480.58188824638,
+          "p95": 145641.66666666642,
+          "max": 185138.6666666632
+        },
+        "period": {
+          "mean": 132913.21772639692,
+          "p95": 179211.33333333995,
+          "max": 238944.6666666876
+        },
+        "active_frames": 173,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 594,
+        "cache_policy_checks": 366,
+        "immutable_hot_banks_checked": true,
+        "cartridge_windows_guarded": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-280",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+          "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "active_ram_images": [
+            {
+              "family": 0,
+              "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+            },
+            {
+              "family": 1,
+              "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+            },
+            {
+              "family": 2,
+              "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+            },
+            {
+              "family": 3,
+              "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+            }
+          ]
+        },
+        "verification_script_sha256": "059bd9a77054a4cdb4974a72f87bc75dd8437c0c0219b8b08492072f08cca017",
+        "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+        "trace_sha256": "b5f4011cd9f0793c64aa49a7d91ef254eda5ccfa13c97e0326ee5e684eba9db8",
+        "presented_fps": 26.93144490240637
+      },
+      "matched": {
+        "count": 173,
+        "control": {
+          "mean": 94143.96339113638,
+          "p95": 146774.33333332863,
+          "max": 186354.00000000076
+        },
+        "candidate": {
+          "mean": 93480.58188824638,
+          "p95": 145641.66666666642,
+          "max": 185138.6666666632
+        },
+        "longer_spans": 0,
+        "max_work_delta": -196.99999998610292,
+        "scope": "Same presentation index, camera, native actor-state bytes E088..E167, elapsed-tick byte, enemy count and all14 PSG registers; not every native RAM byte or full-course equivalence."
+      }
+    },
+    {
+      "round": 10,
+      "enemies": 5,
+      "input_clock": "native",
+      "control": {
+        "passed": true,
+        "candidate": false,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 10,
+        "enemies": [
+          5
+        ],
+        "f10": false,
+        "transitions": false,
+        "input_clock": "native",
+        "work": {
+          "mean": 105171.66666666623,
+          "p95": 160764.66666667626,
+          "max": 213820.6666666628
+        },
+        "period": {
+          "mean": 140675.42982456143,
+          "p95": 181101.6666666582,
+          "max": 238943.99999998868
+        },
+        "active_frames": 152,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 0,
+        "cache_policy_checks": 0,
+        "immutable_hot_banks_checked": false,
+        "cartridge_windows_guarded": false,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "verification_script_sha256": "cd9273981202bc2345409b8713956ddcb684fc0e673eb6ac36aa3ce172b3c646",
+        "scope": "Frozen ASCII8 cartridge control on512KiB main RAM; existing expanded cache, HUD/audio and real sprite limits. This is not the RAM-active candidate.",
+        "trace_sha256": "f2bc5390fff2a004b161a4383a927a18d7d4c09b503c3283d98230ba811417ec",
+        "presented_fps": 25.44541718809111
+      },
+      "candidate": {
+        "passed": true,
+        "candidate": true,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 10,
+        "enemies": [
+          5
+        ],
+        "f10": false,
+        "transitions": false,
+        "input_clock": "native",
+        "work": {
+          "mean": 104429.02396514166,
+          "p95": 159618.66666667108,
+          "max": 195337.6666666491
+        },
+        "period": {
+          "mean": 139755.95860566443,
+          "p95": 181100.9999999847,
+          "max": 238943.66666667734
+        },
+        "active_frames": 153,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 587,
+        "cache_policy_checks": 366,
+        "immutable_hot_banks_checked": true,
+        "cartridge_windows_guarded": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+          "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "active_ram_images": [
+            {
+              "family": 0,
+              "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+            },
+            {
+              "family": 1,
+              "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+            },
+            {
+              "family": 2,
+              "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+            },
+            {
+              "family": 3,
+              "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+            }
+          ]
+        },
+        "verification_script_sha256": "b016466ee1f43f8b10d99e85de5cdb6c8b2090221337ef9544d1f006d853ea27",
+        "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+        "trace_sha256": "cde79caf96eaa120f9e57d733dbfe3247944034c02db577bf5059519bb16c021",
+        "presented_fps": 25.61282564058716
+      },
+      "matched": {
+        "count": 140,
+        "control": {
+          "mean": 103583.29047619014,
+          "p95": 159875.66666666226,
+          "max": 196553.0000000121
+        },
+        "candidate": {
+          "mean": 102892.43095238114,
+          "p95": 159589.0000000053,
+          "max": 195337.6666666491
+        },
+        "longer_spans": 0,
+        "max_work_delta": -196.99999998610292,
+        "scope": "Same presentation index, camera, native actor-state bytes E088..E167, elapsed-tick byte, enemy count and all14 PSG registers; not every native RAM byte or full-course equivalence."
+      }
+    },
+    {
+      "round": 13,
+      "enemies": 6,
+      "input_clock": "native",
+      "control": {
+        "passed": true,
+        "candidate": false,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 13,
+        "enemies": [
+          6
+        ],
+        "f10": false,
+        "transitions": false,
+        "input_clock": "native",
+        "work": {
+          "mean": 114431.09670781772,
+          "p95": 172884.66666665644,
+          "max": 261366.9999999788
+        },
+        "period": {
+          "mean": 146356.15226337436,
+          "p95": 234230.33333334466,
+          "max": 298681.0000000152
+        },
+        "active_frames": 162,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 0,
+        "cache_policy_checks": 0,
+        "immutable_hot_banks_checked": false,
+        "cartridge_windows_guarded": false,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "verification_script_sha256": "ae716d0559650581f17d7c869716572cd7f55bfd1ab6fe19859f20ab2128114b",
+        "scope": "Frozen ASCII8 cartridge control on512KiB main RAM; existing expanded cache, HUD/audio and real sprite limits. This is not the RAM-active candidate.",
+        "trace_sha256": "ba45cadfeee69530e123a7374c2257f867f18ea857370b282da08ee485910ede",
+        "presented_fps": 24.45776924743451
+      },
+      "candidate": {
+        "passed": true,
+        "candidate": true,
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "machine": "Panasonic_FS-A1WSX_NR512",
+        "main_ram_kib": 512,
+        "frames": 360,
+        "native_round": 13,
+        "enemies": [
+          6
+        ],
+        "f10": false,
+        "transitions": false,
+        "input_clock": "native",
+        "work": {
+          "mean": 113069.72597136901,
+          "p95": 171285.66666665883,
+          "max": 244152.66666667446
+        },
+        "period": {
+          "mean": 145458.2719836399,
+          "p95": 182027.33333333346,
+          "max": 298676.6666666628
+        },
+        "active_frames": 163,
+        "cold_epochs": 0,
+        "cold_bank_refills": 0,
+        "observed_irqs": 616,
+        "cache_policy_checks": 366,
+        "immutable_hot_banks_checked": true,
+        "cartridge_windows_guarded": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+          "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "active_ram_images": [
+            {
+              "family": 0,
+              "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+            },
+            {
+              "family": 1,
+              "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+            },
+            {
+              "family": 2,
+              "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+            },
+            {
+              "family": 3,
+              "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+            }
+          ]
+        },
+        "verification_script_sha256": "c31b8f99b9b4051585863b8ca6c8f39d75cd2bf574b1ddd3fe7cefb98b134038",
+        "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+        "trace_sha256": "b67596737561e916c5441547d8cfdf9ea4db938530d9e992cdcc4e7239e3f5e7",
+        "presented_fps": 24.608741401813173
+      },
+      "matched": {
+        "count": 152,
+        "control": {
+          "mean": 110814.80921052532,
+          "p95": 171424.33333332362,
+          "max": 228983.0000000025
+        },
+        "candidate": {
+          "mean": 110075.09429824432,
+          "p95": 169867.00000001315,
+          "max": 227659.99999998749
+        },
+        "longer_spans": 0,
+        "max_work_delta": -217.9999999726133,
+        "scope": "Same presentation index, camera, native actor-state bytes E088..E167, elapsed-tick byte, enemy count and all14 PSG registers; not every native RAM byte or full-course equivalence."
+      }
+    }
+  ],
+  "f10_family_transitions": [
+    {
+      "passed": true,
+      "candidate": true,
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "machine": "Panasonic_FS-A1WSX_NR512",
+      "main_ram_kib": 512,
+      "frames": 240,
+      "native_round": 4,
+      "enemies": [
+        3,
+        7
+      ],
+      "f10": true,
+      "transitions": true,
+      "work": {
+        "mean": 95261.76150627671,
+        "p95": 161310.00000000815,
+        "max": 224278.66666666037
+      },
+      "period": {
+        "mean": 129219.70711297075,
+        "p95": 181101.99999999494,
+        "max": 243317.66666665484
+      },
+      "active_frames": 239,
+      "cold_epochs": 1,
+      "cold_bank_refills": 4,
+      "observed_irqs": 531,
+      "cache_policy_checks": 247,
+      "immutable_hot_banks_checked": true,
+      "cartridge_windows_guarded": true,
+      "graphics": {
+        "passed": true,
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-120",
+            "layout": 0,
+            "native_round": 4,
+            "player": 1,
+            "enemies": 7,
+            "stones": 5,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-160",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-200",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-240",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-40",
+            "layout": 0,
+            "native_round": 4,
+            "player": 1,
+            "enemies": 7,
+            "stones": 5,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-80",
+            "layout": 0,
+            "native_round": 4,
+            "player": 1,
+            "enemies": 7,
+            "stones": 5,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "active_ram_images": [
+          {
+            "family": 0,
+            "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+          },
+          {
+            "family": 1,
+            "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+          },
+          {
+            "family": 2,
+            "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+          },
+          {
+            "family": 3,
+            "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+          }
+        ]
+      },
+      "verification_script_sha256": "53468f373f4c9cbcc92ece7e79b38c8d48cdeaf2383fa84530dec41629d558f0",
+      "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+      "input_clock": "presentation",
+      "trace_sha256": "a2406536ee0c130a39ea2237caafbc005fa937a2d27586718752ce0bf80c6eeb",
+      "presented_fps": 27.70123133672305
+    },
+    {
+      "passed": true,
+      "candidate": true,
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "machine": "Panasonic_FS-A1WSX_NR512",
+      "main_ram_kib": 512,
+      "frames": 240,
+      "native_round": 8,
+      "enemies": [
+        4,
+        7
+      ],
+      "f10": true,
+      "transitions": true,
+      "work": {
+        "mean": 101251.10041841031,
+        "p95": 169624.99999999782,
+        "max": 234416.6666666564
+      },
+      "period": {
+        "mean": 134218.55230125532,
+        "p95": 181101.33333332144,
+        "max": 294742.66666664614
+      },
+      "active_frames": 239,
+      "cold_epochs": 1,
+      "cold_bank_refills": 4,
+      "observed_irqs": 551,
+      "cache_policy_checks": 247,
+      "immutable_hot_banks_checked": true,
+      "cartridge_windows_guarded": true,
+      "graphics": {
+        "passed": true,
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 2,
+            "native_round": 9,
+            "player": 1,
+            "enemies": 4,
+            "stones": 5,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-120",
+            "layout": 1,
+            "native_round": 8,
+            "player": 1,
+            "enemies": 7,
+            "stones": 7,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-160",
+            "layout": 2,
+            "native_round": 9,
+            "player": 1,
+            "enemies": 4,
+            "stones": 5,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-200",
+            "layout": 2,
+            "native_round": 9,
+            "player": 1,
+            "enemies": 4,
+            "stones": 5,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-240",
+            "layout": 2,
+            "native_round": 9,
+            "player": 1,
+            "enemies": 4,
+            "stones": 5,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-40",
+            "layout": 1,
+            "native_round": 8,
+            "player": 1,
+            "enemies": 7,
+            "stones": 7,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-80",
+            "layout": 1,
+            "native_round": 8,
+            "player": 1,
+            "enemies": 7,
+            "stones": 7,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "active_ram_images": [
+          {
+            "family": 0,
+            "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+          },
+          {
+            "family": 1,
+            "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+          },
+          {
+            "family": 2,
+            "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+          },
+          {
+            "family": 3,
+            "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+          }
+        ]
+      },
+      "verification_script_sha256": "ae5e44f19a531f8e8e1d9ed8819bac73c72f6f28d842ee522110b4b95a81d6b9",
+      "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+      "input_clock": "presentation",
+      "trace_sha256": "70bdde8e34e08531355b3eb551ae724e87252f20dd842d3cf142959063dbaa99",
+      "presented_fps": 26.669524731317797
+    },
+    {
+      "passed": true,
+      "candidate": true,
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "machine": "Panasonic_FS-A1WSX_NR512",
+      "main_ram_kib": 512,
+      "frames": 240,
+      "native_round": 12,
+      "enemies": [
+        6,
+        7
+      ],
+      "f10": true,
+      "transitions": true,
+      "work": {
+        "mean": 105932.29986053106,
+        "p95": 157221.0000000038,
+        "max": 213459.666666673
+      },
+      "period": {
+        "mean": 136468.00697350057,
+        "p95": 180762.33333332842,
+        "max": 240841.6666666646
+      },
+      "active_frames": 239,
+      "cold_epochs": 1,
+      "cold_bank_refills": 4,
+      "observed_irqs": 560,
+      "cache_policy_checks": 247,
+      "immutable_hot_banks_checked": true,
+      "cartridge_windows_guarded": true,
+      "graphics": {
+        "passed": true,
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 3,
+            "native_round": 13,
+            "player": 1,
+            "enemies": 6,
+            "stones": 6,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-120",
+            "layout": 2,
+            "native_round": 12,
+            "player": 1,
+            "enemies": 7,
+            "stones": 10,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-160",
+            "layout": 3,
+            "native_round": 13,
+            "player": 1,
+            "enemies": 6,
+            "stones": 6,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-200",
+            "layout": 3,
+            "native_round": 13,
+            "player": 1,
+            "enemies": 6,
+            "stones": 6,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-240",
+            "layout": 3,
+            "native_round": 13,
+            "player": 1,
+            "enemies": 6,
+            "stones": 6,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-40",
+            "layout": 2,
+            "native_round": 12,
+            "player": 1,
+            "enemies": 7,
+            "stones": 10,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-80",
+            "layout": 2,
+            "native_round": 12,
+            "player": 1,
+            "enemies": 7,
+            "stones": 10,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "active_ram_images": [
+          {
+            "family": 0,
+            "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+          },
+          {
+            "family": 1,
+            "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+          },
+          {
+            "family": 2,
+            "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+          },
+          {
+            "family": 3,
+            "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+          }
+        ]
+      },
+      "verification_script_sha256": "f4e8ac3f99e737fff523fdc80bd3f1bc68ca937acd64751d480c8e92670005f9",
+      "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+      "input_clock": "presentation",
+      "trace_sha256": "bd0d331e915ac0a671d53d1dbd34cc2ba2fcab5b3008cc204da41709b6bb3cce",
+      "presented_fps": 26.229920692657863
+    },
+    {
+      "passed": true,
+      "candidate": true,
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "machine": "Panasonic_FS-A1WSX_NR512",
+      "main_ram_kib": 512,
+      "frames": 240,
+      "native_round": 16,
+      "enemies": [
+        6,
+        7
+      ],
+      "f10": true,
+      "transitions": true,
+      "work": {
+        "mean": 111354.75313807481,
+        "p95": 174171.66666665825,
+        "max": 245542.33333335328
+      },
+      "period": {
+        "mean": 142466.6108786611,
+        "p95": 182075.3333333426,
+        "max": 298678.3333333466
+      },
+      "active_frames": 239,
+      "cold_epochs": 1,
+      "cold_bank_refills": 4,
+      "observed_irqs": 584,
+      "cache_policy_checks": 247,
+      "immutable_hot_banks_checked": true,
+      "cartridge_windows_guarded": true,
+      "graphics": {
+        "passed": true,
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 17,
+            "player": 1,
+            "enemies": 6,
+            "stones": 8,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-120",
+            "layout": 3,
+            "native_round": 16,
+            "player": 1,
+            "enemies": 7,
+            "stones": 10,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-160",
+            "layout": 0,
+            "native_round": 17,
+            "player": 1,
+            "enemies": 6,
+            "stones": 8,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-200",
+            "layout": 0,
+            "native_round": 17,
+            "player": 1,
+            "enemies": 6,
+            "stones": 8,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-240",
+            "layout": 0,
+            "native_round": 17,
+            "player": 1,
+            "enemies": 6,
+            "stones": 8,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-40",
+            "layout": 3,
+            "native_round": 16,
+            "player": 1,
+            "enemies": 7,
+            "stones": 10,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-80",
+            "layout": 3,
+            "native_round": 16,
+            "player": 1,
+            "enemies": 7,
+            "stones": 10,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof. ROM hash identifies oracle/bootstrap input only; active RAM image seals are separate.",
+        "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "active_ram_images": [
+          {
+            "family": 0,
+            "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+          },
+          {
+            "family": 1,
+            "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+          },
+          {
+            "family": 2,
+            "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+          },
+          {
+            "family": 3,
+            "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+          }
+        ]
+      },
+      "verification_script_sha256": "6013ea3031e6ae5a1bb18de706a3a12e7d802e993a77679203fe50cc1c8ea64e",
+      "scope": "Complete active game in32 actual RAM segments, with real IRQ/HUD/audio/native logic and strict VDP timing. Diagnostic host/cartridge cold provider and takeover remain explicit; no standalone512KiB loader or hardware acceptance.",
+      "input_clock": "presentation",
+      "trace_sha256": "b9faa53ff46ec8794439d0f4ff7d0f508be9102bb20eefaafbf4ba7282a488f1",
+      "presented_fps": 25.12550118180814
+    }
+  ],
+  "static_proofs": {
+    "ordered_production_packet_references": 4384,
+    "linked_closure_entries": 11320,
+    "allocation": "Declared live masks reject all overlapping source fields, including FF payloads. All32 actual segments are owned; no spare hot segment."
+  },
+  "timing": {
+    "machine": "Panasonic_FS-A1WSX_NR512",
+    "emulator": "openMSX22",
+    "cpu": "Automatic Panasonic Z80 acceleration scopes; base3.579545MHz, accelerated5.369317MHz",
+    "reference_hz": 3579545,
+    "video": "128KiB VRAM, SCREEN4 gameplay, NTSC59.922743Hz; real IRQ and sprite limits, strict VDP callbacks",
+    "workload": "360 presentations/route, keyboard credit/start/F5 to rounds5/10/13, seed1234 before start; HUD and audio enabled. Independent presentation-clock and native-tick-clock direction schedules.",
+    "work": "Inclusive GameTurbo_Loop to wait_blank in elapsed guest time x3579545; synchronization excluded. Never R800 instruction cycles.",
+    "calls_per_presented_frame": 1,
+    "self_cycles": null,
+    "synchronization": "Period includes work, wait and commit. Work excludes wait; period-work is not a measured VBlank/commit breakdown.",
+    "remaining_budget": "Two-refresh elapsed target approximately119470 reference cycles. No measured drawing/VBlank reserve; do not subtract an assumed5000-cycle reserve as hardware evidence.",
+    "limits": "Route aggregates differ when cadence changes sampled inputs/native grouping. Native-clock scheduling reduces this mismatch without forcing ticks. Presentation-clock three-enemy route is0.24% slower in FPS; retained explicitly. No universal speedup or complete no-regression qualification."
+  },
+  "audio": "Original PSG worker stays resident and immutable apart from link operands. All14 PSG registers match in paired samples. No audio waveform/listening or exhaustive event-sequence acceptance.",
+  "preserved_timing": {
+    "ledger_sha256": "7cfd950882a88cd8d9fe70919a909b56c99f899bed3389d68830a49b13e720a6",
+    "workbook_sha256": "c19093e1953486e3b30108fceae49f2507381a2330668df77aa313befdb5d7cd",
+    "scope": "Canonical F10-enabled744KiB cartridge timing remains unchanged. Experimental512KiB results have a separate ledger/workbook."
+  },
+  "source_files": {
+    "scripts/mapper512_integrate.py": "5b3cae93c3f4ec564ac091da0545a7457bf2d0ce5dd8cfe13bec598990be147a",
+    "scripts/mapper512_integrated_verify.py": "173dc84ed18aaf4379be72d55eab47f312ecc7d84ea12630ac712938812cd2a2",
+    "scripts/mapper512_integrated_report.py": "ce1eb0d50747bca4e38dc9c7503ba66205773a26ac39dc280ff333f64a30faf1",
+    "scripts/mapper512_workbook.mjs": "aa618b18d1e95d46e4b48f8eecc140a2ab66b22d81b8937d8cf10ec8822e4c3a",
+    "scripts/mapper512_backend.py": "d7b6b9639bb217872d8f9d083c5872e1af939c76d81dbdfbd6a573a62db36fcd",
+    "scripts/compact_transfer.py": "bf4e7a810eeee0e29e8981d82360847b161e573bcb081b46ae2b1a799a3db64c",
+    "scripts/compact_game_build.py": "7496f1e5781678af9da3cbce2ba72c204f39a719727194d74f065f95ee1a807d",
+    "tests/test_mapper512_integration.py": "0973acbdd7eb060116f3b1987766227177e1277dccbb65e47e3c26792f76995a",
+    "src/screen4/modules/contracts.json": "5be78f36160ba6f4745c16be71f8652a956fa19b3fd14f4183fa0c79476dcf7d",
+    "src/toolchain/screen4/targets.mk": "1618a5147d01fdb35a602467a001f0444a075c8f8db35f403dc65b73288e61c0"
+  },
+  "decision": "Keep public ROM and both disk packages unchanged. Continue independent cold-loader/OS-lifetime work; do not promote or publish this host-assisted integration.",
+  "limits": [
+    "Cartridge/bootstrap plus host-filled cold provider; no standalone512KiB executable.",
+    "Hot images are four alternative512KiB layouts with six placeholder work segments, not four runnable ROMs or installed OS reservations.",
+    "Cold F5 transitions exercise all four family boundaries but are not naturally earned full-course clears.",
+    "OS snapshots, directory, disk I/O, allocator, initial boot atlas and cold scratch peak are unresolved. Ring31 is hot and cannot be counted as a scratch segment.",
+    "64KiB cartridge and MegaRAM768KiB remain supported separately;512KiB main-mapper requires no MegaRAM but is not yet delivered.",
+    "Broader two-player/attract/restart lifecycle, PAL50, other CPUs, long routes, human audio/perception and physical hardware remain unqualified.",
+    "No commit, push, merge or release."
+  ],
+  "frame_ledger": "docs/measurements/timing/mapper512-integrated.json"
+}
