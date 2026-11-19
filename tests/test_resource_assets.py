@@ -24,6 +24,21 @@ class ResourceAssetsTests(unittest.TestCase):
             with self.assertRaises(ValueError):publish(root,rom)
             self.assertEqual(changed.read_bytes(),b'keep')
 
+    def test_odd_ascii8_page_count_preserves_resident_and_can_rebuild(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);rom=root/'game.rom'
+            rom.write_bytes(bytes(16384)+bytes([23])*8192)
+            target=publish(root,rom,bank_bytes=8192)
+            manifest=json.loads((target/'manifest.json').read_text())
+            self.assertEqual(manifest['bank_count'],3)
+            self.assertEqual(manifest['first_resource_bank'],2)
+            self.assertEqual(manifest['resources'][0]['rom_offset'],16384)
+            self.assertEqual((target/'bank-002.bin').read_bytes(),bytes([23])*8192)
+            self.assertEqual(publish(root,rom,bank_bytes=8192),target)
+            rom.write_bytes(bytes(32768))
+            self.assertEqual(publish(root,rom),target)
+            self.assertTrue((target/'bank-001.bin').exists())
+
     def test_invalid_rom_and_configuration(self):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);rom=root/'game.rom';rom.write_bytes(b'short')

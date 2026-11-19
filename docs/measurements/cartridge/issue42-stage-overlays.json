@@ -1,0 +1,783 @@
+{
+  "status": "Cold-stage components qualified; complete512KiB game NOT qualified",
+  "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+  "owner_constraint": "Longer inter-stage preparation is allowed; active gameplay speed and all quality/format requirements remain strict. No release.",
+  "packet_executions": 52608,
+  "packet_results": {
+    "absolute": {
+      "passed": true,
+      "scope": "Isolated real-RAM packet execution, not complete512KiB game or DOS startup. Cartridge keyboard startup initializes video/Page0, then CPU unmaps cartridge Page1/Page2. Host fixture injection, all4384 production packet references, flat relative and compact suffix variants, both extreme pattern tables. All128KiB VRAM, BC/DE/HL/IX/IY/SP/IFF checked. VDP IRQ generation disabled; actual Page1 return/dispatch and whole-game IRQ/audio not qualified.",
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "main_ram_kib": 512,
+      "packet_references": 4384,
+      "executions": 26304,
+      "strict_vram_callbacks": 0,
+      "variant": "absolute",
+      "packet_delta_cycles": {
+        "mean": 25.831432481666603,
+        "p95": 44.00000004440881,
+        "min": -5.086894816486165e-08,
+        "max": 66.00000001574517,
+        "slower": 8540,
+        "unchanged": 228
+      },
+      "costs": [
+        {
+          "stage": "baseline",
+          "mean": 9252.548585766544,
+          "p95": 11904.99999999858,
+          "max": 29974.00000001291,
+          "samples": 8768
+        },
+        {
+          "stage": "relative",
+          "mean": 9230.025319343156,
+          "p95": 11812.000000036513,
+          "max": 30011.000000010947,
+          "samples": 8768
+        },
+        {
+          "stage": "absolute",
+          "mean": 9278.38001824821,
+          "p95": 11938.000000006452,
+          "max": 29996.000000035114,
+          "samples": 8768
+        }
+      ],
+      "component_performance_gate": "Not qualified for production: some packet bodies regress; complete mapping/dispatch and whole-game costs remain unmeasured. This does not prove every conceivable512KiB backend impossible."
+    },
+    "absolute-flat": {
+      "passed": true,
+      "scope": "Isolated real-RAM packet execution, not complete512KiB game or DOS startup. Cartridge keyboard startup initializes video/Page0, then CPU unmaps cartridge Page1/Page2. Host fixture injection, all4384 production packet references, baseline/relative/selected candidate, both extreme pattern tables. All128KiB VRAM, BC/DE/HL/IX/IY/SP/IFF checked. VDP IRQ generation disabled; actual Page1 return/dispatch and whole-game IRQ/audio not qualified.",
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "main_ram_kib": 512,
+      "packet_references": 4384,
+      "executions": 26304,
+      "strict_vram_callbacks": 0,
+      "variant": "absolute-flat",
+      "packet_delta_cycles": {
+        "mean": -1.3344261543284079e-10,
+        "p95": 5.0868038670159876e-08,
+        "min": -5.086985765956342e-08,
+        "max": 5.086985765956342e-08,
+        "slower": 0,
+        "unchanged": 8768
+      },
+      "costs": [
+        {
+          "stage": "baseline",
+          "mean": 9252.548585766302,
+          "p95": 11904.99999999858,
+          "max": 29974.00000001291,
+          "samples": 8768
+        },
+        {
+          "stage": "relative",
+          "mean": 9230.025319343127,
+          "p95": 11811.999999985645,
+          "max": 30011.000000010947,
+          "samples": 8768
+        },
+        {
+          "stage": "absolute-flat",
+          "mean": 9252.548585766168,
+          "p95": 11904.99999999858,
+          "max": 29974.00000001291,
+          "samples": 8768
+        }
+      ],
+      "component_performance_gate": "Packet body cost unchanged; resident capacity, complete mapping/dispatch, IRQ and whole-game costs remain unqualified."
+    }
+  },
+  "cold_overlay": {
+    "passed": true,
+    "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+    "main_ram_kib": 512,
+    "decoder_bytes": 212,
+    "ranking_code_bytes": 173,
+    "backing_bytes": 15371,
+    "active_edge_bytes": 16384,
+    "previous_active_edge_bytes": 65536,
+    "saved_active_source_bytes": 49152,
+    "transition_pairs": 16,
+    "successful_decodes": 32,
+    "malformed_rejections": 8,
+    "retained_source_unchanged": true,
+    "unrelated_ram_and_vram_unchanged": true,
+    "transition_cycles": {
+      "mean": 1016019.999999999,
+      "p95": 1035676.0000000094,
+      "max": 1035676.0000000094
+    },
+    "transition_ms": {
+      "mean": 283.8405439797513,
+      "p95": 289.3317446770496,
+      "max": 289.3317446770496
+    },
+    "rank_bytes_checked": 16640,
+    "ranking_basis_bytes": 8896,
+    "ranking_basis_lz_bytes": 8463,
+    "ranking_cycles": {
+      "mean": 1494794.4999999972,
+      "p95": 1494831.0000000028,
+      "max": 1494831.0000000028
+    },
+    "ranking_ms": {
+      "mean": 417.5934371547214,
+      "p95": 417.60363398141465,
+      "max": 417.60363398141465
+    },
+    "measurement": "Inclusive CALL/decode/RET/terminal JP on base Z80 at3579545Hz; VDP IRQ generation off. Extra cold preparation, not complete phase-transition duration.",
+    "stages": [
+      {
+        "layout": 0,
+        "compressed_bytes": 3778,
+        "expanded_sha256": "bec70c0e67fabc2aab0c8a780b29afcb8889953364111d43add12779cbfcfd48"
+      },
+      {
+        "layout": 1,
+        "compressed_bytes": 3949,
+        "expanded_sha256": "5316cdab98382109516f4a688bc2733e70676b5210da7b4e5e7f95c2858056e1"
+      },
+      {
+        "layout": 2,
+        "compressed_bytes": 3905,
+        "expanded_sha256": "d8d0eb20bc6b3882b4e827ca0fbf6e99ef318878e25e55fe83a79ab83908512a"
+      },
+      {
+        "layout": 3,
+        "compressed_bytes": 3739,
+        "expanded_sha256": "e28303c5e46c961efb79ac8fac7d797288517e4560fc9ce6be3ba8eda9654a3f"
+      }
+    ],
+    "scope": "Destructive real-RAM cold overlay component after cartridge keyboard bootstrap. CPU replaces one16KiB edge-data window. Original metadata bytes preserved, not relinked/executed. No complete512KiB allocation, DOS/BASIC startup, production IRQ, audio or gameplay-speed qualification."
+  },
+  "stage_sources": [
+    {
+      "layout": 0,
+      "active_records": 72,
+      "fixed_source_segments": 9,
+      "live_bytes": 107825,
+      "ranking_bytes_reclaimed": 12480
+    },
+    {
+      "layout": 1,
+      "active_records": 72,
+      "fixed_source_segments": 9,
+      "live_bytes": 107697,
+      "ranking_bytes_reclaimed": 12480
+    },
+    {
+      "layout": 2,
+      "active_records": 72,
+      "fixed_source_segments": 9,
+      "live_bytes": 107697,
+      "ranking_bytes_reclaimed": 12480
+    },
+    {
+      "layout": 3,
+      "active_records": 72,
+      "fixed_source_segments": 9,
+      "live_bytes": 107569,
+      "ranking_bytes_reclaimed": 12480
+    }
+  ],
+  "ranking_backing_bytes": 8467,
+  "rejected_direct_ranking_backing_bytes": 15047,
+  "allocation": [
+    {
+      "variant": "absolute-suffix",
+      "layout": null,
+      "code_windows": 12,
+      "code_live_bytes": 189931,
+      "helper_bytes": 4620,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107825,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 491520,
+      "provisional_live_bytes": 527982,
+      "provisional_margin_512k": -3694,
+      "proposed_postboot_lifetime_bytes": 524089,
+      "proposed_postboot_margin_512k": 199,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak"
+      ]
+    },
+    {
+      "variant": "absolute-suffix",
+      "layout": 0,
+      "code_windows": 11,
+      "code_live_bytes": 162599,
+      "helper_bytes": 4235,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107825,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 475136,
+      "provisional_live_bytes": 500265,
+      "provisional_margin_512k": 24023,
+      "proposed_postboot_lifetime_bytes": 496372,
+      "proposed_postboot_margin_512k": 27916,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak",
+        "Persistent per-family code reconstruction backing"
+      ]
+    },
+    {
+      "variant": "absolute-suffix",
+      "layout": 1,
+      "code_windows": 11,
+      "code_live_bytes": 162319,
+      "helper_bytes": 4235,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107697,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 475136,
+      "provisional_live_bytes": 499857,
+      "provisional_margin_512k": 24431,
+      "proposed_postboot_lifetime_bytes": 495964,
+      "proposed_postboot_margin_512k": 28324,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak",
+        "Persistent per-family code reconstruction backing"
+      ]
+    },
+    {
+      "variant": "absolute-suffix",
+      "layout": 2,
+      "code_windows": 11,
+      "code_live_bytes": 161976,
+      "helper_bytes": 4235,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107697,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 475136,
+      "provisional_live_bytes": 499514,
+      "provisional_margin_512k": 24774,
+      "proposed_postboot_lifetime_bytes": 495621,
+      "proposed_postboot_margin_512k": 28667,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak",
+        "Persistent per-family code reconstruction backing"
+      ]
+    },
+    {
+      "variant": "absolute-suffix",
+      "layout": 3,
+      "code_windows": 11,
+      "code_live_bytes": 163060,
+      "helper_bytes": 4235,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107569,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 475136,
+      "provisional_live_bytes": 500470,
+      "provisional_margin_512k": 23818,
+      "proposed_postboot_lifetime_bytes": 496577,
+      "proposed_postboot_margin_512k": 27711,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak",
+        "Persistent per-family code reconstruction backing"
+      ]
+    },
+    {
+      "variant": "absolute-flat",
+      "layout": null,
+      "code_windows": 15,
+      "code_live_bytes": 238316,
+      "helper_bytes": 5775,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107825,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 540672,
+      "provisional_live_bytes": 577522,
+      "provisional_margin_512k": -53234,
+      "proposed_postboot_lifetime_bytes": 573629,
+      "proposed_postboot_margin_512k": -49341,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak"
+      ]
+    },
+    {
+      "variant": "absolute-flat",
+      "layout": 0,
+      "code_windows": 13,
+      "code_live_bytes": 198972,
+      "helper_bytes": 5005,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107825,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 507904,
+      "provisional_live_bytes": 537408,
+      "provisional_margin_512k": -13120,
+      "proposed_postboot_lifetime_bytes": 533515,
+      "proposed_postboot_margin_512k": -9227,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak",
+        "Persistent per-family code reconstruction backing"
+      ]
+    },
+    {
+      "variant": "absolute-flat",
+      "layout": 1,
+      "code_windows": 13,
+      "code_live_bytes": 198748,
+      "helper_bytes": 5005,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107697,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 507904,
+      "provisional_live_bytes": 537056,
+      "provisional_margin_512k": -12768,
+      "proposed_postboot_lifetime_bytes": 533163,
+      "proposed_postboot_margin_512k": -8875,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak",
+        "Persistent per-family code reconstruction backing"
+      ]
+    },
+    {
+      "variant": "absolute-flat",
+      "layout": 2,
+      "code_windows": 13,
+      "code_live_bytes": 198392,
+      "helper_bytes": 5005,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107697,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 507904,
+      "provisional_live_bytes": 536700,
+      "provisional_margin_512k": -12412,
+      "proposed_postboot_lifetime_bytes": 532807,
+      "proposed_postboot_margin_512k": -8519,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak",
+        "Persistent per-family code reconstruction backing"
+      ]
+    },
+    {
+      "variant": "absolute-flat",
+      "layout": 3,
+      "code_windows": 13,
+      "code_live_bytes": 199422,
+      "helper_bytes": 5005,
+      "cold_helper_bytes": 385,
+      "source_live_bytes": 107569,
+      "fixed_source_segments": 9,
+      "work_segments": 6,
+      "hot_raw_segments": 3,
+      "fixed_physical_bytes": 507904,
+      "provisional_live_bytes": 537602,
+      "provisional_margin_512k": -13314,
+      "proposed_postboot_lifetime_bytes": 533709,
+      "proposed_postboot_margin_512k": -9421,
+      "complete_allocation": false,
+      "missing": [
+        "Relinked metadata/bank directory and actual fragment packing",
+        "Always-available IRQ/dispatch/decoder and stack lifetimes",
+        "Active UI/decor/terrain permissions cannot be decompressed per frame; their residency is unresolved",
+        "Boot replay versus renderer creation and DOS/BASIC takeover peak",
+        "Persistent per-family code reconstruction backing"
+      ]
+    }
+  ],
+  "cold_backing": {
+    "opaque_raw": [
+      {
+        "logical_bank": 1,
+        "bytes": 4857
+      },
+      {
+        "logical_bank": 72,
+        "bytes": 3041
+      },
+      {
+        "logical_bank": 74,
+        "bytes": 3500
+      },
+      {
+        "logical_bank": 75,
+        "bytes": 1622
+      },
+      {
+        "logical_bank": 86,
+        "bytes": 1585
+      },
+      {
+        "logical_bank": 97,
+        "bytes": 1615
+      },
+      {
+        "logical_bank": 108,
+        "bytes": 1576
+      },
+      {
+        "logical_bank": 119,
+        "bytes": 626
+      },
+      {
+        "logical_bank": 120,
+        "bytes": 1710
+      },
+      {
+        "logical_bank": 121,
+        "bytes": 5931
+      },
+      {
+        "logical_bank": 122,
+        "bytes": 5393
+      },
+      {
+        "logical_bank": 123,
+        "bytes": 2040
+      }
+    ],
+    "map_bytes": 18473,
+    "ring_bytes": 1934,
+    "full_backing_bytes": 77765,
+    "proposed_boot_tail_discard_backing_bytes": 73872,
+    "limits": "No boot atlas backing after replay in these prospective post-boot counts. Neither post-boot disposal nor reconstruction peak is qualified. Per-family code recipes are excluded and flagged in their rows."
+  },
+  "tests": [
+    {
+      "suite": "tests",
+      "tests": 491,
+      "passed": true,
+      "skipped": 0
+    },
+    {
+      "suite": "components",
+      "tests": 94,
+      "passed": true,
+      "skipped": 1
+    }
+  ],
+  "historical_module_layout_passed": true,
+  "preserved_startup_checks": [
+    {
+      "case": "compact-game",
+      "result": {
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "bytes": 761856,
+        "mode": "rom",
+        "megaram_kib": null,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.242601984021604,
+        "period_mean": 107679.44704570794,
+        "period_p95": 122290.66666666916,
+        "period_max": 179208.33333333462,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "compact-game-ram512",
+      "result": {
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "bytes": 761856,
+        "mode": "rom",
+        "megaram_kib": null,
+        "expanded_slot": false,
+        "main_ram_kib": 512,
+        "frames": 300,
+        "smoke_presented_fps": 32.99613582111491,
+        "period_mean": 108483.76365663324,
+        "period_p95": 122291.33333332994,
+        "period_max": 179208.33333333462,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "compact-megaram-dos-768",
+      "result": {
+        "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+        "bytes": 761856,
+        "mode": "dos",
+        "megaram_kib": 768,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260198402163,
+        "period_mean": 107679.44704570786,
+        "period_p95": 122290.66666661829,
+        "period_max": 179208.3333333092,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "compact-megaram-basic-768",
+      "result": {
+        "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+        "bytes": 761856,
+        "mode": "basic",
+        "megaram_kib": 768,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260198402163,
+        "period_mean": 107679.44704570786,
+        "period_p95": 122291.66666670484,
+        "period_max": 179208.3333333092,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "disk-dos-4096",
+      "result": {
+        "mode": "dos",
+        "mapper_ram_kib": 4096,
+        "refresh_hz": 59.92274340431231,
+        "nominal_refresh_hz": 60,
+        "refresh_cycles": 59736,
+        "two_refresh_budget_cycles": 119472,
+        "artifact_sha256": "6e5dfc69e7f3d4303a967bf420cd952b680145258ec2099569af643831625e17",
+        "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+        "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+        "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+        "work": {
+          "samples": 300,
+          "mean": 65050.355555545815,
+          "p95": 91745.00000003721,
+          "maximum": 124356.6666667011
+        },
+        "synchronization_wait": {
+          "samples": 300,
+          "mean": 41371.03333333417,
+          "p95": 59470.000000085354,
+          "maximum": 59765.000000084816
+        },
+        "publication": {
+          "samples": 300,
+          "mean": 4245.456666668401,
+          "p95": 6923.000000131609,
+          "maximum": 9159.000000177908
+        },
+        "presentation_period": {
+          "samples": 299,
+          "mean": 110681.41248606467,
+          "p95": 122290.3333332561,
+          "maximum": 179207.66666668653
+        },
+        "presented_fps": 32.340976859603074
+      }
+    },
+    {
+      "case": "disk-basic-4096",
+      "result": {
+        "mode": "basic",
+        "mapper_ram_kib": 4096,
+        "refresh_hz": 59.92274340431231,
+        "nominal_refresh_hz": 60,
+        "refresh_cycles": 59736,
+        "two_refresh_budget_cycles": 119472,
+        "artifact_sha256": "6e5dfc69e7f3d4303a967bf420cd952b680145258ec2099569af643831625e17",
+        "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+        "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+        "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+        "work": {
+          "samples": 300,
+          "mean": 65050.355555547845,
+          "p95": 91745.00000003721,
+          "maximum": 124356.6666667011
+        },
+        "synchronization_wait": {
+          "samples": 300,
+          "mean": 41371.01666667115,
+          "p95": 59469.99999988188,
+          "maximum": 59765.000000084816
+        },
+        "publication": {
+          "samples": 300,
+          "mean": 4245.456666664332,
+          "p95": 6923.000000131609,
+          "maximum": 9159.000000177908
+        },
+        "presentation_period": {
+          "samples": 299,
+          "mean": 110681.41248606467,
+          "p95": 122291.66666670484,
+          "maximum": 179207.66666668653
+        },
+        "presented_fps": 32.340976859603074
+      }
+    }
+  ],
+  "default_preserved": {
+    "artifacts": {
+      "dist/newrallyx.rom": {
+        "bytes": 761856,
+        "sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00"
+      },
+      "dist/compact/megaram/newrallyx-megaram.zip": {
+        "bytes": 187740,
+        "sha256": "ed50647304f1d647f1161a85f36f487129506cd76e3abdcecb8122ebf2c8768d"
+      },
+      "dist/disk/newrallyx-disk.zip": {
+        "bytes": 340034,
+        "sha256": "fca5d77ade0bc83156e37279c8968f6108e762ccb128f651c8e54741d3668428"
+      }
+    },
+    "symbol_sha256": "4be5ef9c9f49b86139056d6c559922632aba2a4b1996525a0fe4944c93eec326",
+    "timing_ledger_sha256": "7cfd950882a88cd8d9fe70919a909b56c99f899bed3389d68830a49b13e720a6",
+    "timing_workbook_sha256": "c19093e1953486e3b30108fceae49f2507381a2330668df77aa313befdb5d7cd",
+    "scope": "Byte-identical F10-enabled744KiB ROM and both DOS/BASIC packages. No default runtime source changed. Current active-game timing stays bound to44be6037; new component cycles do not replace it."
+  },
+  "component_cycle_ledger": {
+    "machine": "Panasonic_FS-A1WSX_NR512",
+    "cpu": "Base Z80",
+    "cpu_hz": 3579545,
+    "video": "SCREEN4/128KiB VRAM; NTSC59.922743Hz; VDP IRQ generation off",
+    "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+    "workload": "Isolated original packet references and cold overlay/rank fixtures; no active game timing",
+    "calls_per_presented_frame": null,
+    "self_cycles": null,
+    "synchronization_waits": "None inserted by these fixtures; production IRQ/VDP waits not qualified",
+    "remaining_gameplay_budget": null,
+    "notes": "Inclusive packet rows include transfer workers; self costs not separately instrumented. Cold rows include CALL/RET/terminal JP. Never add parent/child costs or interpret them as gameplay FPS.",
+    "cold_decode_cycles": {
+      "mean": 1016019.999999999,
+      "p95": 1035676.0000000094,
+      "max": 1035676.0000000094
+    },
+    "cold_rank_cycles": {
+      "mean": 1494794.4999999972,
+      "p95": 1494831.0000000028,
+      "max": 1494831.0000000028
+    }
+  },
+  "source_files": {
+    "scripts/mapper512_backend.py": "d7b6b9639bb217872d8f9d083c5872e1af939c76d81dbdfbd6a573a62db36fcd",
+    "scripts/mapper512_verify.py": "8640a1cd0b78f286188c2d1f9e6fdb81a2bae145789a206ff7e56adf86e573ab",
+    "scripts/mapper512_stage_verify.py": "a46dbd8e6b303d21300c1acbbd75a58174594ac6f167ffc49b8124d1c9686c96",
+    "scripts/mapper512_stage_report.py": "adf0e553508611b5eb4b50020f872844ed6ffe06ac194af6bf8dc822c4ff8e89",
+    "scripts/mapper512_rank.py": "53988438476a49013cadfbcee706ff30a2a6b3da9187564607bdb154eeb1d987",
+    "src/disk/mapper512-stage.asm": "abe5d8119a902fb148c3237a57768d496ab50279597625c7543f8ab045c7af2f",
+    "src/disk/mapper512-ranking.asm": "8dd82f684891291aee2fab108bdb7a71ff0c4ff30cd06230950a0a7264d60372",
+    "tests/test_mapper512_backend.py": "1b43b338090ea9d00140acf51278369f54e325bbf36917f6e19e91ef319c51bc",
+    "src/screen4/modules/contracts.json": "3eab83a76f021535f0a5930b2c0905f3e17f0a5e1f7b83bdf2ea932584cb6a18"
+  },
+  "decision": "Preserve public artifacts. Flat absolute bodies have no added packet cycles, but no full512KiB capacity/performance pass. Suffix bodies add cycles and are not promoted on storage savings. Continue only with measured full-game dispatch/IRQ/native/audio integration; no active decompression or hidden recurring pause.",
+  "limits": "Automated/source and openMSX22 base-Z80/NTSC component evidence. Cartridge-assisted bootstrap, host fixtures and disabled VDP IRQ generation. No physical hardware, PAL50, complete512KiB loader, full-course gameplay or subjective acceptance."
+}

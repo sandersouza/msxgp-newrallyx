@@ -5,7 +5,7 @@ import sys as _tool_sys
 for _tool_dir in (_ToolPath(__file__).resolve().parent, _ToolPath(__file__).resolve().parents[3]):
     if str(_tool_dir) not in _tool_sys.path: _tool_sys.path.insert(0, str(_tool_dir))
 from source_paths import source_path, RUNTIME
-from session_reference import cartridge_path
+from session_reference import cartridge_path,mapper_type
 
 import argparse,hashlib,json,os,re,shutil,subprocess,tempfile
 from pathlib import Path
@@ -19,7 +19,8 @@ def verify(bundle):
     bundle=Path(bundle).resolve();out=Path(tempfile.mkdtemp(prefix='boot-skip-proof-',dir=bundle))
     shutil.copyfile(cartridge_path(bundle),out/'measured.rom')
     s={n:int(v,16) for n,v in re.findall(r'(?m)^([\w.]+): EQU 0x([\da-fA-F]+)',(bundle/'lab.sym').read_text())}
-    cases=[(r,1,.02) for r in range(11)]+[(0,32,5.0),(7,128,11.1),(0,2,.5)]
+    # Shift is a boot modifier for F10(Shift+F5), so use Ctrl to cover row6.
+    cases=[(r,2 if r==6 else 1,.02) for r in range(11)]+[(0,32,5.0),(7,128,11.1),(0,2,.5)]
     code=f'''set save_settings_on_exit false
 set renderer SDLGL-PP
 set sound_driver null
@@ -33,7 +34,7 @@ set limitsprites true
 filepool add -path {tcl(ROOT/'references/msxbios')} -types system_rom -position 1
 {reference_machine(ROOT,'Panasonic_FS-A1WSX')}
 set firmwareswitch off
-cart {tcl(out/'measured.rom')} -romtype ASCII16
+cart {tcl(out/'measured.rom')} -romtype {mapper_type(bundle)}
 reset
 activate_input_layer -blocking boot_skip_proof
 set cases {{{' '.join('{%d %d %.2f}'%c for c in cases)}}}

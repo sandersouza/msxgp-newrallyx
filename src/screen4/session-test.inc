@@ -1,4 +1,5 @@
-; New test controls are completely absent from a TEST_MODE=0 build.
+; Equals/Return test controls require TEST_MODE=1. The normal boot F10 latch
+; shares Invulnerable, initialized once at ColdBoot and retained until reset.
 GameSession_TestHeld EQU $c0ed
 GameSession_Invulnerable EQU $c0ee
     IF SESSION_TEST_MODE

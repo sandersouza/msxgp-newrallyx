@@ -1,0 +1,3576 @@
+{
+  "status": "Natural sound synchronization explained and checked on observed events; nine-cycle phase-cache reduction validated across six matched DOS/BASIC gameplay routes. Experimental; no release.",
+  "baseline": {
+    "resource_sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5",
+    "bridge_sha256": "60843241d534f459d76a8319872ed5ad8dd5192994f4f9ec7bdf79b3dcf0aedd",
+    "files": [
+      {
+        "name": "NRX512.BAS",
+        "bytes": 47,
+        "sha256": "f088e88d90e2e0fea1dc1643ac31623e45fbcc0c44838782a43c0c7675bb6934"
+      },
+      {
+        "name": "NRX512.BIN",
+        "bytes": 12177,
+        "sha256": "6f4965140adbfe30c421236357fa6c1037af20851784b8a1f6ba3ed0d1716338"
+      },
+      {
+        "name": "NRX512.COM",
+        "bytes": 12170,
+        "sha256": "eef6c360b5a74060e531ccd1a0dd454392b6e7da884338a89e2af56214b91821"
+      },
+      {
+        "name": "NRX512.DAT",
+        "bytes": 509771,
+        "sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5"
+      }
+    ],
+    "active_images": [
+      {
+        "family": 0,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162717,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "e17faf9d5272c0b0b9be16fe8a11378924cfcda10f83a04678b103fcc8adf3fa",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 1,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162433,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "6c5682d24185cfb7f1e9745c4e412e87564dc3edeaf35d292fb7172a0e8abb67",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 2,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162079,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "662e06a4b0ca469ab349303f2f9f6bd5a0565ac376a55d65913f84701651da9a",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 3,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 163121,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "a3b94de24063d28eb0b141c9833af7a67c6039cc4bb4aa156f0e24da9cc8e4a9",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      }
+    ]
+  },
+  "candidate": {
+    "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+    "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+    "files": [
+      {
+        "name": "NRX512.BAS",
+        "bytes": 47,
+        "sha256": "f088e88d90e2e0fea1dc1643ac31623e45fbcc0c44838782a43c0c7675bb6934"
+      },
+      {
+        "name": "NRX512.BIN",
+        "bytes": 12177,
+        "sha256": "4e5496ec9b4bc792cc10aae48f72886c5dbc3fdaa7df9e7d1d8bf0d68494690b"
+      },
+      {
+        "name": "NRX512.COM",
+        "bytes": 12170,
+        "sha256": "098355075248aa2cef29cd75164ff78015f0c13020021412bdfd5dfdec0c849a"
+      },
+      {
+        "name": "NRX512.DAT",
+        "bytes": 509773,
+        "sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414"
+      }
+    ],
+    "active_images": [
+      {
+        "family": 0,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162717,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "e17faf9d5272c0b0b9be16fe8a11378924cfcda10f83a04678b103fcc8adf3fa",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 1,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162433,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "6c5682d24185cfb7f1e9745c4e412e87564dc3edeaf35d292fb7172a0e8abb67",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 2,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162079,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "662e06a4b0ca469ab349303f2f9f6bd5a0565ac376a55d65913f84701651da9a",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 3,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 163121,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "a3b94de24063d28eb0b141c9833af7a67c6039cc4bb4aa156f0e24da9cc8e4a9",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      }
+    ],
+    "resource_bytes": 509773,
+    "bridge_bytes": 11756
+  },
+  "phase": {
+    "input_context_pairs": 3002,
+    "no_irq_timing_pairs": 3000,
+    "inclusive_cycle_delta": {
+      "mean": -9.000000001200506,
+      "p95": -8.999999965151744,
+      "max": -8.999999863414814
+    },
+    "calls_per_normal_presented_frame": 1,
+    "remaining_budget_gain_cycles": 9,
+    "selected_slots_equal": true,
+    "all_symbols_identical": true,
+    "all_four_immutable_hot_images_identical": true,
+    "source": "Generated session-phase.inc common exit: reuse original target B instead of reloading global phase; two unreachable padding bytes retain every downstream address.",
+    "method": "Entry through matched PC/SP return, inclusive of optional bank-selector child. IRQ-overlapped calls excluded from exact-cycle cohort, not relabeled as self costs. No parent/child cost addition."
+  },
+  "performance": [
+    {
+      "mode": "dos",
+      "round": 5,
+      "control": {
+        "passed": true,
+        "mode": "dos",
+        "frames": 360,
+        "native_round": 5,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "diagnostic_state_writes": 2,
+        "active_frames": 173,
+        "work": {
+          "mean": 93486.81310211822,
+          "p95": 144456.66666666814,
+          "max": 185301.66666668205
+        },
+        "period": {
+          "mean": 132913.2350674374,
+          "p95": 179210.33333327883,
+          "max": 238947.66666664206
+        },
+        "immutable_live_bytes_checked": 328395,
+        "resource_sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5",
+        "bridge_sha256": "60843241d534f459d76a8319872ed5ad8dd5192994f4f9ec7bdf79b3dcf0aedd",
+        "verification_script_sha256": "e59f97be2e877d02faf68d0505adaec76e11ba6b900cf6ac0f6a7712cc6f4635",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-sync-baseline/dos-r5-f100-3fdf4ho7",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-280",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "dos",
+        "frames": 360,
+        "native_round": 5,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "profile_audio": false,
+        "diagnostic_state_writes": 2,
+        "active_frames": 173,
+        "work": {
+          "mean": 93477.81310211778,
+          "p95": 144447.66666670298,
+          "max": 185292.66666661517
+        },
+        "period": {
+          "mean": 132913.1946050097,
+          "p95": 179211.3333333654,
+          "max": 238948.6666666269
+        },
+        "immutable_live_bytes_checked": 328395,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "verification_script_sha256": "4962f7add844ae3e9a614364f5cd8eb983b69d46bcada52f5454231001062f72",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-game/dos-r5-f100-swgt354u",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-280",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "equal_frame_states": 360,
+      "active_pairs": 173,
+      "work_delta": {
+        "mean": -9.000000000436053,
+        "p95": -8.999999965133611,
+        "max": -8.999999863415724
+      },
+      "period_delta": {
+        "mean": -2.8295390721824435e-13,
+        "p95": 6.00000001067383,
+        "max": 6.000000112413545
+      },
+      "same_refresh_counts": true
+    },
+    {
+      "mode": "dos",
+      "round": 10,
+      "control": {
+        "passed": true,
+        "mode": "dos",
+        "frames": 360,
+        "native_round": 10,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "diagnostic_state_writes": 2,
+        "active_frames": 152,
+        "work": {
+          "mean": 104899.47807016139,
+          "p95": 159685.6666666971,
+          "max": 211450.33333325316
+        },
+        "period": {
+          "mean": 140675.4122807026,
+          "p95": 181102.00000009668,
+          "max": 238947.66666654035
+        },
+        "immutable_live_bytes_checked": 328041,
+        "resource_sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5",
+        "bridge_sha256": "60843241d534f459d76a8319872ed5ad8dd5192994f4f9ec7bdf79b3dcf0aedd",
+        "verification_script_sha256": "1f5f71b36b222d29ce6293a9d0d68ab87470c86fbf92051c478044c1581c23af",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-sync-baseline/dos-r10-f100-7vs1pijd",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "dos",
+        "frames": 360,
+        "native_round": 10,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "profile_audio": false,
+        "diagnostic_state_writes": 2,
+        "active_frames": 152,
+        "work": {
+          "mean": 104890.47807017616,
+          "p95": 159676.6666666302,
+          "max": 211441.33333338975
+        },
+        "period": {
+          "mean": 140675.42543859716,
+          "p95": 181103.0000000815,
+          "max": 238943.66666660106
+        },
+        "immutable_live_bytes_checked": 328041,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "verification_script_sha256": "b8d3b6a02ef3c90e4aa47f3b1eb453ec09e16dadd9e27ffcaac3948fbd759398",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-game/dos-r10-f100-rqofn86z",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "equal_frame_states": 360,
+      "active_pairs": 152,
+      "work_delta": {
+        "mean": -8.99999998523086,
+        "p95": -8.999999863415724,
+        "max": -8.999999659921741
+      },
+      "period_delta": {
+        "mean": -0.013888889243470556,
+        "p95": 5.9999999089413905,
+        "max": 6.000000315892976
+      },
+      "same_refresh_counts": true
+    },
+    {
+      "mode": "dos",
+      "round": 13,
+      "control": {
+        "passed": true,
+        "mode": "dos",
+        "frames": 360,
+        "native_round": 13,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "diagnostic_state_writes": 2,
+        "active_frames": 163,
+        "work": {
+          "mean": 113050.43149284898,
+          "p95": 171390.6666666931,
+          "max": 245312.66666659433
+        },
+        "period": {
+          "mean": 145458.302658487,
+          "p95": 182029.666666589,
+          "max": 298676.6666665611
+        },
+        "immutable_live_bytes_checked": 328955,
+        "resource_sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5",
+        "bridge_sha256": "60843241d534f459d76a8319872ed5ad8dd5192994f4f9ec7bdf79b3dcf0aedd",
+        "verification_script_sha256": "d99384581d978bd75c00bdb00165af788a83e7e911767f45f0244a48921d9c26",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-sync-baseline/dos-r13-f100-rimwj9ki",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "dos",
+        "frames": 360,
+        "native_round": 13,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "profile_audio": false,
+        "diagnostic_state_writes": 2,
+        "active_frames": 163,
+        "work": {
+          "mean": 113041.43149284075,
+          "p95": 171381.66666662623,
+          "max": 245303.66666673092
+        },
+        "period": {
+          "mean": 145458.3210633947,
+          "p95": 182030.66666657382,
+          "max": 298682.6666666735
+        },
+        "immutable_live_bytes_checked": 328955,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "verification_script_sha256": "3c15e96219d439d02d9fd9894aa1448ca4d130a15c7de97cf77d65042ea75edb",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-game/dos-r13-f100-qii84dpj",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "equal_frame_states": 360,
+      "active_pairs": 163,
+      "work_delta": {
+        "mean": -9.000000008218885,
+        "p95": -8.999999863415724,
+        "max": -8.999999659950845
+      },
+      "period_delta": {
+        "mean": 5.65281273641934e-10,
+        "p95": 5.999999908948666,
+        "max": 6.000000112428097
+      },
+      "same_refresh_counts": true
+    },
+    {
+      "mode": "basic",
+      "round": 5,
+      "control": {
+        "passed": true,
+        "mode": "basic",
+        "frames": 360,
+        "native_round": 5,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "diagnostic_state_writes": 2,
+        "active_frames": 173,
+        "work": {
+          "mean": 93457.69749518731,
+          "p95": 145680.6666667104,
+          "max": 185153.6666666899
+        },
+        "period": {
+          "mean": 132913.22350674335,
+          "p95": 179210.66666664102,
+          "max": 238944.6666666876
+        },
+        "immutable_live_bytes_checked": 328395,
+        "resource_sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5",
+        "bridge_sha256": "60843241d534f459d76a8319872ed5ad8dd5192994f4f9ec7bdf79b3dcf0aedd",
+        "verification_script_sha256": "e43dabc22e768cfc972832c9155b663a41e885fa3eba62f93eec1872cd3b059c",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-sync-baseline/basic-r5-f100-u2u31h4o",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-280",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "basic",
+        "frames": 360,
+        "native_round": 5,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "profile_audio": false,
+        "diagnostic_state_writes": 2,
+        "active_frames": 173,
+        "work": {
+          "mean": 93448.69749517864,
+          "p95": 145671.66666664352,
+          "max": 185144.66666672475
+        },
+        "period": {
+          "mean": 132913.2119460505,
+          "p95": 179212.3333333502,
+          "max": 238945.66666667242
+        },
+        "immutable_live_bytes_checked": 328395,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "verification_script_sha256": "1da8b0090ae1459e6584e485cf7e18f4f3984b22bbf8b69b9c3fd0ae6a10d676",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-game/basic-r5-f100-xjht__7k",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-280",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 1,
+              "native_round": 5,
+              "player": 1,
+              "enemies": 3,
+              "stones": 2,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "equal_frame_states": 360,
+      "active_pairs": 173,
+      "work_delta": {
+        "mean": -9.000000008669494,
+        "p95": -8.999999965133611,
+        "max": -8.999999863415724
+      },
+      "period_delta": {
+        "mean": -2.627429138455126e-13,
+        "p95": 5.9999999089413905,
+        "max": 6.000000112413545
+      },
+      "same_refresh_counts": true
+    },
+    {
+      "mode": "basic",
+      "round": 10,
+      "control": {
+        "passed": true,
+        "mode": "basic",
+        "frames": 360,
+        "native_round": 10,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "diagnostic_state_writes": 2,
+        "active_frames": 152,
+        "work": {
+          "mean": 104899.4780701788,
+          "p95": 159685.6666666971,
+          "max": 211450.33333345663
+        },
+        "period": {
+          "mean": 140675.44517543894,
+          "p95": 181101.99999989322,
+          "max": 238942.66666661622
+        },
+        "immutable_live_bytes_checked": 328041,
+        "resource_sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5",
+        "bridge_sha256": "60843241d534f459d76a8319872ed5ad8dd5192994f4f9ec7bdf79b3dcf0aedd",
+        "verification_script_sha256": "04d18c0711315c75392c69ef2b2c48c986de35e37d514516a9b9082588076b2b",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-sync-baseline/basic-r10-f100-q7p5eb_m",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "basic",
+        "frames": 360,
+        "native_round": 10,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "profile_audio": false,
+        "diagnostic_state_writes": 2,
+        "active_frames": 152,
+        "work": {
+          "mean": 104890.47807017616,
+          "p95": 159676.6666666302,
+          "max": 211441.33333338975
+        },
+        "period": {
+          "mean": 140675.4583333335,
+          "p95": 181102.99999987803,
+          "max": 238943.66666660106
+        },
+        "immutable_live_bytes_checked": 328041,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "verification_script_sha256": "0c956df224ccda324c97ab4c324233f2cc0eff518b74732f4ad17b7ff4160916",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-game/basic-r10-f100-leeqktma",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 2,
+              "native_round": 10,
+              "player": 1,
+              "enemies": 5,
+              "stones": 5,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "equal_frame_states": 360,
+      "active_pairs": 152,
+      "work_delta": {
+        "mean": -9.000000002634614,
+        "p95": -8.999999863415724,
+        "max": -8.999999659936293
+      },
+      "period_delta": {
+        "mean": -6.265407945546839e-13,
+        "p95": 5.999999908948666,
+        "max": 6.000000315892976
+      },
+      "same_refresh_counts": true
+    },
+    {
+      "mode": "basic",
+      "round": 13,
+      "control": {
+        "passed": true,
+        "mode": "basic",
+        "frames": 360,
+        "native_round": 13,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "diagnostic_state_writes": 2,
+        "active_frames": 163,
+        "work": {
+          "mean": 113043.69529653482,
+          "p95": 171390.66666648965,
+          "max": 245278.66666670336
+        },
+        "period": {
+          "mean": 145458.2842535793,
+          "p95": 182027.3333333589,
+          "max": 298677.6666665459
+        },
+        "immutable_live_bytes_checked": 328955,
+        "resource_sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5",
+        "bridge_sha256": "60843241d534f459d76a8319872ed5ad8dd5192994f4f9ec7bdf79b3dcf0aedd",
+        "verification_script_sha256": "426fc00ee124dbaf574beda3210b4db2e5c9ae05fdb645f6981410e84faa15a7",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-sync-baseline/basic-r13-f100-3tdyndsv",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "basic",
+        "frames": 360,
+        "native_round": 13,
+        "f10": false,
+        "transitions": false,
+        "seed": 4660,
+        "input_clock": "native",
+        "profile_audio": false,
+        "diagnostic_state_writes": 2,
+        "active_frames": 163,
+        "work": {
+          "mean": 113034.69529652162,
+          "p95": 171381.6666668297,
+          "max": 245269.66666683997
+        },
+        "period": {
+          "mean": 145458.302658487,
+          "p95": 182032.66666674695,
+          "max": 298678.6666665307
+        },
+        "immutable_live_bytes_checked": 328955,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "verification_script_sha256": "fdb6a17bcf31625ebb93eb78f666a7472605dd0777f98e8ce9e633c6c82425af",
+        "cartridge": false,
+        "host_payload_injections": 0,
+        "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+        "path": "references/build/game-mapper512-game/basic-r13-f100-th5z__ew",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-240",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-40",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            },
+            {
+              "snapshot": "frame-80",
+              "layout": 3,
+              "native_round": 13,
+              "player": 1,
+              "enemies": 6,
+              "stones": 6,
+              "flags": 0
+            }
+          ]
+        },
+        "opening": {
+          "passed": true,
+          "frames": 71,
+          "publication_tick_error_max": 0
+        }
+      },
+      "equal_frame_states": 360,
+      "active_pairs": 163,
+      "work_delta": {
+        "mean": -9.000000013211443,
+        "p95": -8.999999863415724,
+        "max": -8.999999659950845
+      },
+      "period_delta": {
+        "mean": 5.656450715226431e-10,
+        "p95": 5.9999999089413905,
+        "max": 6.000000315892976
+      },
+      "same_refresh_counts": true
+    }
+  ],
+  "natural_audio": [
+    {
+      "mode": "dos",
+      "f10": false,
+      "players": 2,
+      "native_states_equal": 4096,
+      "control": {
+        "passed": true,
+        "mode": "rom",
+        "ticks": 4096,
+        "f10": false,
+        "players": 2,
+        "trace_sha256": "8a9a9577f6353e74a0856224c08c60c61e75f006b0a9a6ebdfabec361b37e92c",
+        "script_sha256": "769446f37f8b45158ab606e2ab202e0c1402229d6ba6c00c38e317de85f97e8a",
+        "path": "references/build/game-compact-runtime/tick-rom-f100-p2-0ojcvl3g",
+        "observation": "=4096 deaths=3 turns=3 contacts=3",
+        "scope": "Original E000..E2FF and14 PSG registers per native tick, held-up keyboard with seed1234; no clock override/code/OS/payload injection. Natural collisions/restarts enabled unless actual boot F10 is held.",
+        "cold_loads": [
+          {
+            "kind": "0",
+            "player": "0",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          },
+          {
+            "kind": "1",
+            "player": "1",
+            "players": "2",
+            "round": "1",
+            "f10": "0"
+          },
+          {
+            "kind": "2",
+            "player": "0",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          },
+          {
+            "kind": "2",
+            "player": "1",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          }
+        ],
+        "audio_sync": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 2,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 1
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "dos",
+        "ticks": 4096,
+        "f10": false,
+        "players": 2,
+        "trace_sha256": "d4757563c6d1354c93caa0aa87d5e0b9442c1e901a1ae19cb815a2aa8f5f60a2",
+        "script_sha256": "1c562731f899196f5c12d8be0864033f34326ee8a742de81a566d520f5a47182",
+        "path": "references/build/game-mapper512-game/tick-dos-f100-p2-e3iqrrzn",
+        "observation": "=4096 deaths=3 turns=3 contacts=3",
+        "scope": "Original E000..E2FF and14 PSG registers per native tick, held-up keyboard with seed1234; no clock override/code/OS/payload injection. Natural collisions/restarts enabled unless actual boot F10 is held.",
+        "cold_loads": [
+          {
+            "kind": "0",
+            "player": "0",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          },
+          {
+            "kind": "1",
+            "player": "1",
+            "players": "2",
+            "round": "1",
+            "f10": "0"
+          },
+          {
+            "kind": "2",
+            "player": "0",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          },
+          {
+            "kind": "2",
+            "player": "1",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          }
+        ],
+        "audio_sync": true,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 2,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 1
+            }
+          ]
+        }
+      },
+      "worker_steps": 2047,
+      "music_effect_and_envelope_registers_equal": 2047,
+      "all14_psg_equal": 1977,
+      "intentional_engine_gain_differences": 70,
+      "physical_gain_formula_checks": 1853,
+      "event_latencies": [
+        {
+          "event": {
+            "native": "507",
+            "clock": "1551",
+            "epoch": "1",
+            "event": "flag",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        },
+        {
+          "event": {
+            "native": "1077",
+            "clock": "2121",
+            "epoch": "1",
+            "event": "death",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        },
+        {
+          "event": {
+            "native": "1361",
+            "clock": "2405",
+            "epoch": "2",
+            "event": "flag",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        },
+        {
+          "event": {
+            "native": "2275",
+            "clock": "3319",
+            "epoch": "2",
+            "event": "death",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        },
+        {
+          "event": {
+            "native": "3473",
+            "clock": "4517",
+            "epoch": "3",
+            "event": "death",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        }
+      ],
+      "logical_audio_state_equal_except_engine_volume_shadow_and_dirty": true,
+      "worker_cycles": {
+        "mean": 3015.8842208095302,
+        "p95": 3697.999999935705,
+        "max": 6933.9999999646725
+      }
+    },
+    {
+      "mode": "basic",
+      "f10": false,
+      "players": 2,
+      "native_states_equal": 4096,
+      "control": {
+        "passed": true,
+        "mode": "rom",
+        "ticks": 4096,
+        "f10": false,
+        "players": 2,
+        "trace_sha256": "8a9a9577f6353e74a0856224c08c60c61e75f006b0a9a6ebdfabec361b37e92c",
+        "script_sha256": "769446f37f8b45158ab606e2ab202e0c1402229d6ba6c00c38e317de85f97e8a",
+        "path": "references/build/game-compact-runtime/tick-rom-f100-p2-0ojcvl3g",
+        "observation": "=4096 deaths=3 turns=3 contacts=3",
+        "scope": "Original E000..E2FF and14 PSG registers per native tick, held-up keyboard with seed1234; no clock override/code/OS/payload injection. Natural collisions/restarts enabled unless actual boot F10 is held.",
+        "cold_loads": [
+          {
+            "kind": "0",
+            "player": "0",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          },
+          {
+            "kind": "1",
+            "player": "1",
+            "players": "2",
+            "round": "1",
+            "f10": "0"
+          },
+          {
+            "kind": "2",
+            "player": "0",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          },
+          {
+            "kind": "2",
+            "player": "1",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          }
+        ],
+        "audio_sync": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 2,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 1
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "basic",
+        "ticks": 4096,
+        "f10": false,
+        "players": 2,
+        "trace_sha256": "d4757563c6d1354c93caa0aa87d5e0b9442c1e901a1ae19cb815a2aa8f5f60a2",
+        "script_sha256": "462717d04d5ef5b9e6ac7a9755c5271fd0028e4f2c79c97bae52b5e03cd68690",
+        "path": "references/build/game-mapper512-game/tick-basic-f100-p2-9zt1mxf1",
+        "observation": "=4096 deaths=3 turns=3 contacts=3",
+        "scope": "Original E000..E2FF and14 PSG registers per native tick, held-up keyboard with seed1234; no clock override/code/OS/payload injection. Natural collisions/restarts enabled unless actual boot F10 is held.",
+        "cold_loads": [
+          {
+            "kind": "0",
+            "player": "0",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          },
+          {
+            "kind": "1",
+            "player": "1",
+            "players": "2",
+            "round": "1",
+            "f10": "0"
+          },
+          {
+            "kind": "2",
+            "player": "0",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          },
+          {
+            "kind": "2",
+            "player": "1",
+            "players": "2",
+            "round": "2",
+            "f10": "0"
+          }
+        ],
+        "audio_sync": true,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 2,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 1
+            }
+          ]
+        }
+      },
+      "worker_steps": 2047,
+      "music_effect_and_envelope_registers_equal": 2047,
+      "all14_psg_equal": 1977,
+      "intentional_engine_gain_differences": 70,
+      "physical_gain_formula_checks": 1853,
+      "event_latencies": [
+        {
+          "event": {
+            "native": "507",
+            "clock": "1551",
+            "epoch": "1",
+            "event": "flag",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        },
+        {
+          "event": {
+            "native": "1077",
+            "clock": "2121",
+            "epoch": "1",
+            "event": "death",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        },
+        {
+          "event": {
+            "native": "1361",
+            "clock": "2405",
+            "epoch": "2",
+            "event": "flag",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        },
+        {
+          "event": {
+            "native": "2275",
+            "clock": "3319",
+            "epoch": "2",
+            "event": "death",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        },
+        {
+          "event": {
+            "native": "3473",
+            "clock": "4517",
+            "epoch": "3",
+            "event": "death",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        }
+      ],
+      "logical_audio_state_equal_except_engine_volume_shadow_and_dirty": true,
+      "worker_cycles": {
+        "mean": 3015.884220810574,
+        "p95": 3698.0000000374416,
+        "max": 6934.0000000155405
+      }
+    },
+    {
+      "mode": "basic",
+      "f10": true,
+      "players": 1,
+      "native_states_equal": 4096,
+      "control": {
+        "passed": true,
+        "mode": "rom",
+        "ticks": 4096,
+        "f10": true,
+        "players": 1,
+        "trace_sha256": "ca6125f19d90b546d9463f29be1274ce92d1288e32fac10ba354add3ca2f3be2",
+        "script_sha256": "469c0e9a54180efe66d744db7170f1b4fbefd4fb9d1fcc3059f2a1fb2a988ad6",
+        "path": "references/build/game-compact-runtime/tick-rom-f101-p1-y5vfihjn",
+        "observation": "=4096 deaths=0 turns=0 contacts=24",
+        "scope": "Original E000..E2FF and14 PSG registers per native tick, held-up keyboard with seed1234; no clock override/code/OS/payload injection. Natural collisions/restarts enabled unless actual boot F10 is held.",
+        "cold_loads": [
+          {
+            "kind": "0",
+            "player": "0",
+            "players": "1",
+            "round": "2",
+            "f10": "1"
+          }
+        ],
+        "audio_sync": true,
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 1
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "passed": true,
+        "mode": "basic",
+        "ticks": 4096,
+        "f10": true,
+        "players": 1,
+        "trace_sha256": "4ed74ce0f3838f5c1ca279d4cdcada2a178ecc3e63bae29e0c2c3bd2601b7112",
+        "script_sha256": "40a42f093f7a2ccf9ffbb4fb4ac3546b1ff0ac4ab567b0a1a0cdf89f9052e544",
+        "path": "references/build/game-mapper512-game/tick-basic-f101-p1-omy8rfgr",
+        "observation": "=4096 deaths=0 turns=0 contacts=24",
+        "scope": "Original E000..E2FF and14 PSG registers per native tick, held-up keyboard with seed1234; no clock override/code/OS/payload injection. Natural collisions/restarts enabled unless actual boot F10 is held.",
+        "cold_loads": [
+          {
+            "kind": "0",
+            "player": "0",
+            "players": "1",
+            "round": "2",
+            "f10": "1"
+          }
+        ],
+        "audio_sync": true,
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "graphics": {
+          "passed": true,
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 1
+            }
+          ]
+        }
+      },
+      "worker_steps": 2048,
+      "music_effect_and_envelope_registers_equal": 2048,
+      "all14_psg_equal": 2048,
+      "intentional_engine_gain_differences": 0,
+      "physical_gain_formula_checks": 2041,
+      "event_latencies": [
+        {
+          "event": {
+            "native": "507",
+            "clock": "1549",
+            "epoch": "1",
+            "event": "flag",
+            "value": "1"
+          },
+          "control_entry_return_ticks": [
+            2,
+            2
+          ],
+          "candidate_entry_return_ticks": [
+            2,
+            2
+          ]
+        }
+      ],
+      "logical_audio_state_equal_except_engine_volume_shadow_and_dirty": true,
+      "worker_cycles": {
+        "mean": 3089.632812500667,
+        "p95": 3697.999999935705,
+        "max": 6968.999999993061
+      }
+    }
+  ],
+  "pcm": [
+    {
+      "mode": "dos",
+      "matching_full_psg_samples": 857,
+      "control": {
+        "clear_cue": {
+          "frames": 53,
+          "nominal_seconds": 1.7689443770088098,
+          "original": {
+            "inputs": {
+              "emulator": "0.289 (unknown)",
+              "script_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+              "seed_sha256": "22b3e32d734ecc7e9eae263ffb6095f7f55e3ce0e5836517ca46d399cc6b5670",
+              "roms": [
+                {
+                  "name": "nrx1-1.11n",
+                  "size": 32,
+                  "crc32": "a0a49017",
+                  "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+                },
+                {
+                  "name": "nrx1-7.8p",
+                  "size": 256,
+                  "crc32": "4e46f485",
+                  "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+                },
+                {
+                  "name": "nrx_chg1.8e",
+                  "size": 2048,
+                  "crc32": "1fff38a4",
+                  "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+                },
+                {
+                  "name": "nrx_chg2.8d",
+                  "size": 2048,
+                  "crc32": "85d9fffd",
+                  "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+                },
+                {
+                  "name": "nrx_prg1.1d",
+                  "size": 4096,
+                  "crc32": "ba7de9fc",
+                  "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+                },
+                {
+                  "name": "nrx_prg2.1e",
+                  "size": 4096,
+                  "crc32": "eedfccae",
+                  "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+                },
+                {
+                  "name": "nrx_prg3.1k",
+                  "size": 4096,
+                  "crc32": "b4d5d34a",
+                  "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+                },
+                {
+                  "name": "nrx_prg4.1l",
+                  "size": 4096,
+                  "crc32": "7da5496d",
+                  "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+                },
+                {
+                  "name": "rx1-2.4n",
+                  "size": 32,
+                  "crc32": "8f574815",
+                  "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+                },
+                {
+                  "name": "rx1-3.7k",
+                  "size": 32,
+                  "crc32": "b8861096",
+                  "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+                },
+                {
+                  "name": "rx1-4.2m",
+                  "size": 256,
+                  "crc32": "77245b66",
+                  "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+                },
+                {
+                  "name": "rx1-5.3p",
+                  "size": 256,
+                  "crc32": "4bad7017",
+                  "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+                },
+                {
+                  "name": "rx1-6.8m",
+                  "size": 256,
+                  "crc32": "3c16f62c",
+                  "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+                }
+              ]
+            },
+            "completion_call": 107,
+            "nominal_arcade_hz": 60.60606060606061,
+            "seconds": 1.7654999999999998,
+            "wsg_sha256": "cd90e4a80d775faf17b88d2df1040de6b07def2f010a717699115e854c7d27cf",
+            "wav_sha256": "ee91195c99ee3e14f91c14f8a00988855ed1c177ad0de17415175faed31cd274",
+            "original_wait_addresses": [
+              "1B03",
+              "1B0A"
+            ],
+            "port_score_parts": [
+              8,
+              9,
+              10
+            ],
+            "port_score_frames_30hz": 53,
+            "scope": "Original2580 routine at one call per original video tick; clear request28 and contributor RAM seed, no original ROM writes. Original1B03 minimum-settle/1B0A sound-ready waits inspected separately. Controlled sound fixture, not natural playthrough."
+          },
+          "compared_voice_samples": 135,
+          "max_pitch_error_cents": 7.7168236776012105,
+          "scope": "All three note voices against original WSG on paired native ticks; PSG period quantization, not waveform/timbre equivalence."
+        },
+        "passed": true,
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-compact-runtime/audio-proof-jeu_w8t_",
+        "seconds": 28.57108843537415,
+        "engine": [
+          {
+            "velocity": 0,
+            "expected_fundamental_hz": 49.93784877232143,
+            "measured_pcm_hz": 49.88791092354911,
+            "all_four_headings_identical": true
+          },
+          {
+            "velocity": 1,
+            "expected_fundamental_hz": 49.80444401157614,
+            "measured_pcm_hz": 49.75463956756456,
+            "all_four_headings_identical": true
+          },
+          {
+            "velocity": 2,
+            "expected_fundamental_hz": 49.80444401157614,
+            "measured_pcm_hz": 49.75463956756456,
+            "all_four_headings_identical": true
+          }
+        ],
+        "smoke": [
+          {
+            "cue": "smoke1",
+            "rms": 2741.2574429693063,
+            "levels": [
+              16,
+              16
+            ],
+            "tone_periods": [
+              51,
+              45
+            ],
+            "envelope_shape": 8,
+            "leased_channels": [
+              "B",
+              "C"
+            ],
+            "sound_frames": 2,
+            "native_placement_trigger": true,
+            "baseline_rms": 467.3932640588231,
+            "amplitude_ratio": 5.864991333346023,
+            "gain_db": 15.365347493966068
+          },
+          {
+            "cue": "smoke2",
+            "rms": 2635.468012045947,
+            "levels": [
+              16,
+              16
+            ],
+            "tone_periods": [
+              51,
+              45
+            ],
+            "envelope_shape": 8,
+            "leased_channels": [
+              "B",
+              "C"
+            ],
+            "sound_frames": 2,
+            "native_placement_trigger": true,
+            "baseline_rms": 457.35800657544866,
+            "amplitude_ratio": 5.762374276072029,
+            "gain_db": 15.212029260609004
+          }
+        ],
+        "crash": [
+          {
+            "cue": "crash1",
+            "initial_rms": 5819.546594820625,
+            "tail_rms": 309.0275921682299,
+            "low_band_power": 710512179880638.6,
+            "band_hz": [
+              30,
+              200
+            ],
+            "window_seconds": [
+              0.02,
+              0.28
+            ],
+            "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+          },
+          {
+            "cue": "crash2",
+            "initial_rms": 5810.720373482577,
+            "tail_rms": 300.0838427302798,
+            "low_band_power": 832005820655802.1,
+            "band_hz": [
+              30,
+              200
+            ],
+            "window_seconds": [
+              0.02,
+              0.28
+            ],
+            "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+          }
+        ],
+        "cue_ticks_30hz": {
+          "complete": 54,
+          "gameover": 249,
+          "challenge_intro": 193,
+          "challenge": 31,
+          "cold": 12
+        },
+        "audio_costs": [
+          {
+            "name": "GameAudio_Tick (engine)",
+            "calls": 180,
+            "inclusive": {
+              "mean": 2335.3111111110243,
+              "p95": 3054.0000000059754,
+              "max": 3970.0000000044447
+            }
+          },
+          {
+            "name": "GameAudio_Tick (smoke_active)",
+            "calls": 4,
+            "inclusive": {
+              "mean": 3846.5000000029227,
+              "p95": 4326.000000006516,
+              "max": 4326.000000006516
+            }
+          },
+          {
+            "name": "GameAudio_Tick (smoke_resume)",
+            "calls": 32,
+            "inclusive": {
+              "mean": 2257.0625000008645,
+              "p95": 3809.000000006116,
+              "max": 3809.000000006116
+            }
+          },
+          {
+            "name": "GameAudio_Tick (crash)",
+            "calls": 72,
+            "inclusive": {
+              "mean": 2678.7916666658766,
+              "p95": 3479.0000000036966,
+              "max": 4272.999999996955
+            }
+          },
+          {
+            "name": "GameAudio_Tick (complete)",
+            "calls": 54,
+            "inclusive": {
+              "mean": 3358.611111111994,
+              "p95": 3651.9999999979514,
+              "max": 3680.999999990225
+            }
+          },
+          {
+            "name": "GameAudio_Tick (fuel)",
+            "calls": 30,
+            "inclusive": {
+              "mean": 2499.166666665658,
+              "p95": 3793.999999979416,
+              "max": 3794.00000000485
+            }
+          },
+          {
+            "name": "GameSession_AudioStop",
+            "calls": 1,
+            "inclusive": {
+              "mean": 2656.0000000054465,
+              "p95": 2656.0000000054465,
+              "max": 2656.0000000054465
+            }
+          },
+          {
+            "name": "GameAudio_Tick (gameover)",
+            "calls": 249,
+            "inclusive": {
+              "mean": 2721.3293172691892,
+              "p95": 3658.000000008631,
+              "max": 6584.999999996257
+            }
+          },
+          {
+            "name": "GameAudio_Tick (challenge_intro)",
+            "calls": 193,
+            "inclusive": {
+              "mean": 2242.196891191933,
+              "p95": 3515.000000016909,
+              "max": 6561.999999989229
+            }
+          },
+          {
+            "name": "GameAudio_Tick (challenge)",
+            "calls": 31,
+            "inclusive": {
+              "mean": 3059.5161290320534,
+              "p95": 3854.999999994738,
+              "max": 7201.000000007556
+            }
+          }
+        ],
+        "audio_cost_method": "Sound-only fixtures; breakpoint at worker entry and exact caller return address before trailing instructions. Guest elapsed inclusive cycles including RET; no tracked child self costs, no active-game FPS claim.",
+        "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance."
+      },
+      "candidate": {
+        "clear_cue": {
+          "frames": 53,
+          "nominal_seconds": 1.7689443770088098,
+          "original": {
+            "inputs": {
+              "emulator": "0.289 (unknown)",
+              "script_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+              "seed_sha256": "22b3e32d734ecc7e9eae263ffb6095f7f55e3ce0e5836517ca46d399cc6b5670",
+              "roms": [
+                {
+                  "name": "nrx1-1.11n",
+                  "size": 32,
+                  "crc32": "a0a49017",
+                  "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+                },
+                {
+                  "name": "nrx1-7.8p",
+                  "size": 256,
+                  "crc32": "4e46f485",
+                  "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+                },
+                {
+                  "name": "nrx_chg1.8e",
+                  "size": 2048,
+                  "crc32": "1fff38a4",
+                  "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+                },
+                {
+                  "name": "nrx_chg2.8d",
+                  "size": 2048,
+                  "crc32": "85d9fffd",
+                  "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+                },
+                {
+                  "name": "nrx_prg1.1d",
+                  "size": 4096,
+                  "crc32": "ba7de9fc",
+                  "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+                },
+                {
+                  "name": "nrx_prg2.1e",
+                  "size": 4096,
+                  "crc32": "eedfccae",
+                  "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+                },
+                {
+                  "name": "nrx_prg3.1k",
+                  "size": 4096,
+                  "crc32": "b4d5d34a",
+                  "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+                },
+                {
+                  "name": "nrx_prg4.1l",
+                  "size": 4096,
+                  "crc32": "7da5496d",
+                  "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+                },
+                {
+                  "name": "rx1-2.4n",
+                  "size": 32,
+                  "crc32": "8f574815",
+                  "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+                },
+                {
+                  "name": "rx1-3.7k",
+                  "size": 32,
+                  "crc32": "b8861096",
+                  "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+                },
+                {
+                  "name": "rx1-4.2m",
+                  "size": 256,
+                  "crc32": "77245b66",
+                  "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+                },
+                {
+                  "name": "rx1-5.3p",
+                  "size": 256,
+                  "crc32": "4bad7017",
+                  "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+                },
+                {
+                  "name": "rx1-6.8m",
+                  "size": 256,
+                  "crc32": "3c16f62c",
+                  "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+                }
+              ]
+            },
+            "completion_call": 107,
+            "nominal_arcade_hz": 60.60606060606061,
+            "seconds": 1.7654999999999998,
+            "wsg_sha256": "cd90e4a80d775faf17b88d2df1040de6b07def2f010a717699115e854c7d27cf",
+            "wav_sha256": "ee91195c99ee3e14f91c14f8a00988855ed1c177ad0de17415175faed31cd274",
+            "original_wait_addresses": [
+              "1B03",
+              "1B0A"
+            ],
+            "port_score_parts": [
+              8,
+              9,
+              10
+            ],
+            "port_score_frames_30hz": 53,
+            "scope": "Original2580 routine at one call per original video tick; clear request28 and contributor RAM seed, no original ROM writes. Original1B03 minimum-settle/1B0A sound-ready waits inspected separately. Controlled sound fixture, not natural playthrough."
+          },
+          "compared_voice_samples": 135,
+          "max_pitch_error_cents": 7.7168236776012105,
+          "scope": "All three note voices against original WSG on paired native ticks; PSG period quantization, not waveform/timbre equivalence."
+        },
+        "passed": true,
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-mapper512-game-runtime/audio-proof-a2c6kqte",
+        "seconds": 28.57106575963719,
+        "engine": [
+          {
+            "velocity": 0,
+            "expected_fundamental_hz": 49.93784877232143,
+            "measured_pcm_hz": 49.88791092354911,
+            "all_four_headings_identical": true
+          },
+          {
+            "velocity": 1,
+            "expected_fundamental_hz": 49.80444401157614,
+            "measured_pcm_hz": 49.75463956756456,
+            "all_four_headings_identical": true
+          },
+          {
+            "velocity": 2,
+            "expected_fundamental_hz": 49.80444401157614,
+            "measured_pcm_hz": 49.75463956756456,
+            "all_four_headings_identical": true
+          }
+        ],
+        "smoke": [
+          {
+            "cue": "smoke1",
+            "rms": 2724.07362714013,
+            "levels": [
+              16,
+              16
+            ],
+            "tone_periods": [
+              51,
+              45
+            ],
+            "envelope_shape": 8,
+            "leased_channels": [
+              "B",
+              "C"
+            ],
+            "sound_frames": 2,
+            "native_placement_trigger": true,
+            "baseline_rms": 467.3932640588231,
+            "amplitude_ratio": 5.82822611409585,
+            "gain_db": 15.310727849602081
+          },
+          {
+            "cue": "smoke2",
+            "rms": 2615.1237872272354,
+            "levels": [
+              16,
+              16
+            ],
+            "tone_periods": [
+              51,
+              45
+            ],
+            "envelope_shape": 8,
+            "leased_channels": [
+              "B",
+              "C"
+            ],
+            "sound_frames": 2,
+            "native_placement_trigger": true,
+            "baseline_rms": 457.35800657544866,
+            "amplitude_ratio": 5.717892219288891,
+            "gain_db": 15.144719295328342
+          }
+        ],
+        "crash": [
+          {
+            "cue": "crash1",
+            "initial_rms": 5764.595832388177,
+            "tail_rms": 298.9197115160576,
+            "low_band_power": 786360990931367.0,
+            "band_hz": [
+              30,
+              200
+            ],
+            "window_seconds": [
+              0.02,
+              0.28
+            ],
+            "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+          },
+          {
+            "cue": "crash2",
+            "initial_rms": 5989.478729407071,
+            "tail_rms": 298.8747855141688,
+            "low_band_power": 799707174424663.2,
+            "band_hz": [
+              30,
+              200
+            ],
+            "window_seconds": [
+              0.02,
+              0.28
+            ],
+            "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+          }
+        ],
+        "cue_ticks_30hz": {
+          "complete": 54,
+          "gameover": 249,
+          "challenge_intro": 193,
+          "challenge": 31,
+          "cold": 12
+        },
+        "audio_costs": [
+          {
+            "name": "GameAudio_Tick (engine)",
+            "calls": 180,
+            "inclusive": {
+              "mean": 2287.311111109516,
+              "p95": 3005.9999999586857,
+              "max": 3921.9999999953066
+            }
+          },
+          {
+            "name": "GameAudio_Tick (smoke_active)",
+            "calls": 4,
+            "inclusive": {
+              "mean": 3798.4999999874262,
+              "p95": 4277.9999999846605,
+              "max": 4277.9999999846605
+            }
+          },
+          {
+            "name": "GameAudio_Tick (smoke_resume)",
+            "calls": 32,
+            "inclusive": {
+              "mean": 2209.062500010007,
+              "p95": 3760.9999999969777,
+              "max": 3760.9999999969777
+            }
+          },
+          {
+            "name": "GameAudio_Tick (crash)",
+            "calls": 72,
+            "inclusive": {
+              "mean": 2630.7916666632736,
+              "p95": 3431.0000000199925,
+              "max": 4224.9999999751
+            }
+          },
+          {
+            "name": "GameAudio_Tick (complete)",
+            "calls": 54,
+            "inclusive": {
+              "mean": 3310.6111111136884,
+              "p95": 3604.0000000396813,
+              "max": 3633.000000006521
+            }
+          },
+          {
+            "name": "GameAudio_Tick (fuel)",
+            "calls": 30,
+            "inclusive": {
+              "mean": 2451.166666659063,
+              "p95": 3746.0000000211458,
+              "max": 3746.0000000211458
+            }
+          },
+          {
+            "name": "GameSession_AudioStop",
+            "calls": 1,
+            "inclusive": {
+              "mean": 2655.9999999800125,
+              "p95": 2655.9999999800125,
+              "max": 2655.9999999800125
+            }
+          },
+          {
+            "name": "GameAudio_Tick (gameover)",
+            "calls": 249,
+            "inclusive": {
+              "mean": 2673.3293172676094,
+              "p95": 3609.9999999486245,
+              "max": 6536.999999987119
+            }
+          },
+          {
+            "name": "GameAudio_Tick (challenge_intro)",
+            "calls": 193,
+            "inclusive": {
+              "mean": 2194.1968911945237,
+              "p95": 3467.000000084073,
+              "max": 6513.999999929222
+            }
+          },
+          {
+            "name": "GameAudio_Tick (challenge)",
+            "calls": 31,
+            "inclusive": {
+              "mean": 3011.5161290417855,
+              "p95": 3807.000000011034,
+              "max": 7152.9999999984175
+            }
+          }
+        ],
+        "audio_cost_method": "Sound-only fixtures; breakpoint at worker entry and exact caller return address before trailing instructions. Guest elapsed inclusive cycles including RET; no tracked child self costs, no active-game FPS claim.",
+        "scope": "Existing synthetic sound-event/velocity PSG and recorded-PCM fixture after real512KiB DOS/BASIC boot; no physical/listening or natural gameplay acceptance.",
+        "mode": "dos",
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "cartridge": false
+      },
+      "wave_sha256": "a29c8da2842435310ef8323edcc0f1415de0f6ff8dfb3a3384c196ee7b1574cf"
+    },
+    {
+      "mode": "basic",
+      "matching_full_psg_samples": 857,
+      "control": {
+        "clear_cue": {
+          "frames": 53,
+          "nominal_seconds": 1.7689443770088098,
+          "original": {
+            "inputs": {
+              "emulator": "0.289 (unknown)",
+              "script_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+              "seed_sha256": "22b3e32d734ecc7e9eae263ffb6095f7f55e3ce0e5836517ca46d399cc6b5670",
+              "roms": [
+                {
+                  "name": "nrx1-1.11n",
+                  "size": 32,
+                  "crc32": "a0a49017",
+                  "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+                },
+                {
+                  "name": "nrx1-7.8p",
+                  "size": 256,
+                  "crc32": "4e46f485",
+                  "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+                },
+                {
+                  "name": "nrx_chg1.8e",
+                  "size": 2048,
+                  "crc32": "1fff38a4",
+                  "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+                },
+                {
+                  "name": "nrx_chg2.8d",
+                  "size": 2048,
+                  "crc32": "85d9fffd",
+                  "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+                },
+                {
+                  "name": "nrx_prg1.1d",
+                  "size": 4096,
+                  "crc32": "ba7de9fc",
+                  "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+                },
+                {
+                  "name": "nrx_prg2.1e",
+                  "size": 4096,
+                  "crc32": "eedfccae",
+                  "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+                },
+                {
+                  "name": "nrx_prg3.1k",
+                  "size": 4096,
+                  "crc32": "b4d5d34a",
+                  "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+                },
+                {
+                  "name": "nrx_prg4.1l",
+                  "size": 4096,
+                  "crc32": "7da5496d",
+                  "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+                },
+                {
+                  "name": "rx1-2.4n",
+                  "size": 32,
+                  "crc32": "8f574815",
+                  "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+                },
+                {
+                  "name": "rx1-3.7k",
+                  "size": 32,
+                  "crc32": "b8861096",
+                  "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+                },
+                {
+                  "name": "rx1-4.2m",
+                  "size": 256,
+                  "crc32": "77245b66",
+                  "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+                },
+                {
+                  "name": "rx1-5.3p",
+                  "size": 256,
+                  "crc32": "4bad7017",
+                  "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+                },
+                {
+                  "name": "rx1-6.8m",
+                  "size": 256,
+                  "crc32": "3c16f62c",
+                  "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+                }
+              ]
+            },
+            "completion_call": 107,
+            "nominal_arcade_hz": 60.60606060606061,
+            "seconds": 1.7654999999999998,
+            "wsg_sha256": "cd90e4a80d775faf17b88d2df1040de6b07def2f010a717699115e854c7d27cf",
+            "wav_sha256": "ee91195c99ee3e14f91c14f8a00988855ed1c177ad0de17415175faed31cd274",
+            "original_wait_addresses": [
+              "1B03",
+              "1B0A"
+            ],
+            "port_score_parts": [
+              8,
+              9,
+              10
+            ],
+            "port_score_frames_30hz": 53,
+            "scope": "Original2580 routine at one call per original video tick; clear request28 and contributor RAM seed, no original ROM writes. Original1B03 minimum-settle/1B0A sound-ready waits inspected separately. Controlled sound fixture, not natural playthrough."
+          },
+          "compared_voice_samples": 135,
+          "max_pitch_error_cents": 7.7168236776012105,
+          "scope": "All three note voices against original WSG on paired native ticks; PSG period quantization, not waveform/timbre equivalence."
+        },
+        "passed": true,
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-compact-runtime/audio-proof-jeu_w8t_",
+        "seconds": 28.57108843537415,
+        "engine": [
+          {
+            "velocity": 0,
+            "expected_fundamental_hz": 49.93784877232143,
+            "measured_pcm_hz": 49.88791092354911,
+            "all_four_headings_identical": true
+          },
+          {
+            "velocity": 1,
+            "expected_fundamental_hz": 49.80444401157614,
+            "measured_pcm_hz": 49.75463956756456,
+            "all_four_headings_identical": true
+          },
+          {
+            "velocity": 2,
+            "expected_fundamental_hz": 49.80444401157614,
+            "measured_pcm_hz": 49.75463956756456,
+            "all_four_headings_identical": true
+          }
+        ],
+        "smoke": [
+          {
+            "cue": "smoke1",
+            "rms": 2741.2574429693063,
+            "levels": [
+              16,
+              16
+            ],
+            "tone_periods": [
+              51,
+              45
+            ],
+            "envelope_shape": 8,
+            "leased_channels": [
+              "B",
+              "C"
+            ],
+            "sound_frames": 2,
+            "native_placement_trigger": true,
+            "baseline_rms": 467.3932640588231,
+            "amplitude_ratio": 5.864991333346023,
+            "gain_db": 15.365347493966068
+          },
+          {
+            "cue": "smoke2",
+            "rms": 2635.468012045947,
+            "levels": [
+              16,
+              16
+            ],
+            "tone_periods": [
+              51,
+              45
+            ],
+            "envelope_shape": 8,
+            "leased_channels": [
+              "B",
+              "C"
+            ],
+            "sound_frames": 2,
+            "native_placement_trigger": true,
+            "baseline_rms": 457.35800657544866,
+            "amplitude_ratio": 5.762374276072029,
+            "gain_db": 15.212029260609004
+          }
+        ],
+        "crash": [
+          {
+            "cue": "crash1",
+            "initial_rms": 5819.546594820625,
+            "tail_rms": 309.0275921682299,
+            "low_band_power": 710512179880638.6,
+            "band_hz": [
+              30,
+              200
+            ],
+            "window_seconds": [
+              0.02,
+              0.28
+            ],
+            "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+          },
+          {
+            "cue": "crash2",
+            "initial_rms": 5810.720373482577,
+            "tail_rms": 300.0838427302798,
+            "low_band_power": 832005820655802.1,
+            "band_hz": [
+              30,
+              200
+            ],
+            "window_seconds": [
+              0.02,
+              0.28
+            ],
+            "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+          }
+        ],
+        "cue_ticks_30hz": {
+          "complete": 54,
+          "gameover": 249,
+          "challenge_intro": 193,
+          "challenge": 31,
+          "cold": 12
+        },
+        "audio_costs": [
+          {
+            "name": "GameAudio_Tick (engine)",
+            "calls": 180,
+            "inclusive": {
+              "mean": 2335.3111111110243,
+              "p95": 3054.0000000059754,
+              "max": 3970.0000000044447
+            }
+          },
+          {
+            "name": "GameAudio_Tick (smoke_active)",
+            "calls": 4,
+            "inclusive": {
+              "mean": 3846.5000000029227,
+              "p95": 4326.000000006516,
+              "max": 4326.000000006516
+            }
+          },
+          {
+            "name": "GameAudio_Tick (smoke_resume)",
+            "calls": 32,
+            "inclusive": {
+              "mean": 2257.0625000008645,
+              "p95": 3809.000000006116,
+              "max": 3809.000000006116
+            }
+          },
+          {
+            "name": "GameAudio_Tick (crash)",
+            "calls": 72,
+            "inclusive": {
+              "mean": 2678.7916666658766,
+              "p95": 3479.0000000036966,
+              "max": 4272.999999996955
+            }
+          },
+          {
+            "name": "GameAudio_Tick (complete)",
+            "calls": 54,
+            "inclusive": {
+              "mean": 3358.611111111994,
+              "p95": 3651.9999999979514,
+              "max": 3680.999999990225
+            }
+          },
+          {
+            "name": "GameAudio_Tick (fuel)",
+            "calls": 30,
+            "inclusive": {
+              "mean": 2499.166666665658,
+              "p95": 3793.999999979416,
+              "max": 3794.00000000485
+            }
+          },
+          {
+            "name": "GameSession_AudioStop",
+            "calls": 1,
+            "inclusive": {
+              "mean": 2656.0000000054465,
+              "p95": 2656.0000000054465,
+              "max": 2656.0000000054465
+            }
+          },
+          {
+            "name": "GameAudio_Tick (gameover)",
+            "calls": 249,
+            "inclusive": {
+              "mean": 2721.3293172691892,
+              "p95": 3658.000000008631,
+              "max": 6584.999999996257
+            }
+          },
+          {
+            "name": "GameAudio_Tick (challenge_intro)",
+            "calls": 193,
+            "inclusive": {
+              "mean": 2242.196891191933,
+              "p95": 3515.000000016909,
+              "max": 6561.999999989229
+            }
+          },
+          {
+            "name": "GameAudio_Tick (challenge)",
+            "calls": 31,
+            "inclusive": {
+              "mean": 3059.5161290320534,
+              "p95": 3854.999999994738,
+              "max": 7201.000000007556
+            }
+          }
+        ],
+        "audio_cost_method": "Sound-only fixtures; breakpoint at worker entry and exact caller return address before trailing instructions. Guest elapsed inclusive cycles including RET; no tracked child self costs, no active-game FPS claim.",
+        "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance."
+      },
+      "candidate": {
+        "clear_cue": {
+          "frames": 53,
+          "nominal_seconds": 1.7689443770088098,
+          "original": {
+            "inputs": {
+              "emulator": "0.289 (unknown)",
+              "script_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+              "seed_sha256": "22b3e32d734ecc7e9eae263ffb6095f7f55e3ce0e5836517ca46d399cc6b5670",
+              "roms": [
+                {
+                  "name": "nrx1-1.11n",
+                  "size": 32,
+                  "crc32": "a0a49017",
+                  "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+                },
+                {
+                  "name": "nrx1-7.8p",
+                  "size": 256,
+                  "crc32": "4e46f485",
+                  "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+                },
+                {
+                  "name": "nrx_chg1.8e",
+                  "size": 2048,
+                  "crc32": "1fff38a4",
+                  "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+                },
+                {
+                  "name": "nrx_chg2.8d",
+                  "size": 2048,
+                  "crc32": "85d9fffd",
+                  "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+                },
+                {
+                  "name": "nrx_prg1.1d",
+                  "size": 4096,
+                  "crc32": "ba7de9fc",
+                  "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+                },
+                {
+                  "name": "nrx_prg2.1e",
+                  "size": 4096,
+                  "crc32": "eedfccae",
+                  "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+                },
+                {
+                  "name": "nrx_prg3.1k",
+                  "size": 4096,
+                  "crc32": "b4d5d34a",
+                  "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+                },
+                {
+                  "name": "nrx_prg4.1l",
+                  "size": 4096,
+                  "crc32": "7da5496d",
+                  "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+                },
+                {
+                  "name": "rx1-2.4n",
+                  "size": 32,
+                  "crc32": "8f574815",
+                  "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+                },
+                {
+                  "name": "rx1-3.7k",
+                  "size": 32,
+                  "crc32": "b8861096",
+                  "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+                },
+                {
+                  "name": "rx1-4.2m",
+                  "size": 256,
+                  "crc32": "77245b66",
+                  "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+                },
+                {
+                  "name": "rx1-5.3p",
+                  "size": 256,
+                  "crc32": "4bad7017",
+                  "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+                },
+                {
+                  "name": "rx1-6.8m",
+                  "size": 256,
+                  "crc32": "3c16f62c",
+                  "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+                }
+              ]
+            },
+            "completion_call": 107,
+            "nominal_arcade_hz": 60.60606060606061,
+            "seconds": 1.7654999999999998,
+            "wsg_sha256": "cd90e4a80d775faf17b88d2df1040de6b07def2f010a717699115e854c7d27cf",
+            "wav_sha256": "ee91195c99ee3e14f91c14f8a00988855ed1c177ad0de17415175faed31cd274",
+            "original_wait_addresses": [
+              "1B03",
+              "1B0A"
+            ],
+            "port_score_parts": [
+              8,
+              9,
+              10
+            ],
+            "port_score_frames_30hz": 53,
+            "scope": "Original2580 routine at one call per original video tick; clear request28 and contributor RAM seed, no original ROM writes. Original1B03 minimum-settle/1B0A sound-ready waits inspected separately. Controlled sound fixture, not natural playthrough."
+          },
+          "compared_voice_samples": 135,
+          "max_pitch_error_cents": 7.7168236776012105,
+          "scope": "All three note voices against original WSG on paired native ticks; PSG period quantization, not waveform/timbre equivalence."
+        },
+        "passed": true,
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-mapper512-game-runtime/audio-proof-mock5eu2",
+        "seconds": 28.57106575963719,
+        "engine": [
+          {
+            "velocity": 0,
+            "expected_fundamental_hz": 49.93784877232143,
+            "measured_pcm_hz": 49.88791092354911,
+            "all_four_headings_identical": true
+          },
+          {
+            "velocity": 1,
+            "expected_fundamental_hz": 49.80444401157614,
+            "measured_pcm_hz": 49.75463956756456,
+            "all_four_headings_identical": true
+          },
+          {
+            "velocity": 2,
+            "expected_fundamental_hz": 49.80444401157614,
+            "measured_pcm_hz": 49.75463956756456,
+            "all_four_headings_identical": true
+          }
+        ],
+        "smoke": [
+          {
+            "cue": "smoke1",
+            "rms": 2255.140072084623,
+            "levels": [
+              16,
+              16
+            ],
+            "tone_periods": [
+              51,
+              45
+            ],
+            "envelope_shape": 8,
+            "leased_channels": [
+              "B",
+              "C"
+            ],
+            "sound_frames": 2,
+            "native_placement_trigger": true,
+            "baseline_rms": 467.3932640588231,
+            "amplitude_ratio": 4.824930621594936,
+            "gain_db": 13.669821458777125
+          },
+          {
+            "cue": "smoke2",
+            "rms": 2377.447805379459,
+            "levels": [
+              16,
+              16
+            ],
+            "tone_periods": [
+              51,
+              45
+            ],
+            "envelope_shape": 8,
+            "leased_channels": [
+              "B",
+              "C"
+            ],
+            "sound_frames": 2,
+            "native_placement_trigger": true,
+            "baseline_rms": 457.35800657544866,
+            "amplitude_ratio": 5.198220586933708,
+            "gain_db": 14.31709409758778
+          }
+        ],
+        "crash": [
+          {
+            "cue": "crash1",
+            "initial_rms": 6018.285469282688,
+            "tail_rms": 305.85158373515935,
+            "low_band_power": 774393057084544.4,
+            "band_hz": [
+              30,
+              200
+            ],
+            "window_seconds": [
+              0.02,
+              0.28
+            ],
+            "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+          },
+          {
+            "cue": "crash2",
+            "initial_rms": 5900.764661190786,
+            "tail_rms": 293.5252652021626,
+            "low_band_power": 777655649524199.8,
+            "band_hz": [
+              30,
+              200
+            ],
+            "window_seconds": [
+              0.02,
+              0.28
+            ],
+            "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+          }
+        ],
+        "cue_ticks_30hz": {
+          "complete": 54,
+          "gameover": 249,
+          "challenge_intro": 193,
+          "challenge": 31,
+          "cold": 12
+        },
+        "audio_costs": [
+          {
+            "name": "GameAudio_Tick (engine)",
+            "calls": 180,
+            "inclusive": {
+              "mean": 2287.311111110364,
+              "p95": 3005.9999999586857,
+              "max": 3921.9999999953066
+            }
+          },
+          {
+            "name": "GameAudio_Tick (smoke_active)",
+            "calls": 4,
+            "inclusive": {
+              "mean": 3798.4999999874262,
+              "p95": 4277.9999999846605,
+              "max": 4277.9999999846605
+            }
+          },
+          {
+            "name": "GameAudio_Tick (smoke_resume)",
+            "calls": 32,
+            "inclusive": {
+              "mean": 2209.062500010007,
+              "p95": 3760.9999999969777,
+              "max": 3760.9999999969777
+            }
+          },
+          {
+            "name": "GameAudio_Tick (crash)",
+            "calls": 72,
+            "inclusive": {
+              "mean": 2630.791666660448,
+              "p95": 3431.0000000199925,
+              "max": 4224.9999999751
+            }
+          },
+          {
+            "name": "GameAudio_Tick (complete)",
+            "calls": 54,
+            "inclusive": {
+              "mean": 3310.6111111042683,
+              "p95": 3604.0000000396813,
+              "max": 3633.000000006521
+            }
+          },
+          {
+            "name": "GameAudio_Tick (fuel)",
+            "calls": 30,
+            "inclusive": {
+              "mean": 2451.166666655672,
+              "p95": 3746.0000000211458,
+              "max": 3746.0000000211458
+            }
+          },
+          {
+            "name": "GameSession_AudioStop",
+            "calls": 1,
+            "inclusive": {
+              "mean": 2655.9999999800125,
+              "p95": 2655.9999999800125,
+              "max": 2655.9999999800125
+            }
+          },
+          {
+            "name": "GameAudio_Tick (gameover)",
+            "calls": 249,
+            "inclusive": {
+              "mean": 2673.329317267201,
+              "p95": 3609.9999999486245,
+              "max": 6536.999999987119
+            }
+          },
+          {
+            "name": "GameAudio_Tick (challenge_intro)",
+            "calls": 193,
+            "inclusive": {
+              "mean": 2194.1968911939966,
+              "p95": 3467.000000084073,
+              "max": 6513.999999929222
+            }
+          },
+          {
+            "name": "GameAudio_Tick (challenge)",
+            "calls": 31,
+            "inclusive": {
+              "mean": 3011.5161290483493,
+              "p95": 3807.000000011034,
+              "max": 7152.9999999984175
+            }
+          }
+        ],
+        "audio_cost_method": "Sound-only fixtures; breakpoint at worker entry and exact caller return address before trailing instructions. Guest elapsed inclusive cycles including RET; no tracked child self costs, no active-game FPS claim.",
+        "scope": "Existing synthetic sound-event/velocity PSG and recorded-PCM fixture after real512KiB DOS/BASIC boot; no physical/listening or natural gameplay acceptance.",
+        "mode": "basic",
+        "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+        "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+        "cartridge": false
+      },
+      "wave_sha256": "0fa2e8a55ee0d9a91275eeca381db713ba2996120da8955d9b98878681e641f4"
+    }
+  ],
+  "wrap": {
+    "passed": true,
+    "mode": "basic",
+    "frames": 240,
+    "native_round": 16,
+    "f10": true,
+    "transitions": true,
+    "seed": null,
+    "input_clock": "native",
+    "profile_audio": false,
+    "diagnostic_state_writes": 0,
+    "active_frames": 238,
+    "work": {
+      "mean": 110644.28291316345,
+      "p95": 155365.66666673942,
+      "max": 241910.00000002029
+    },
+    "period": {
+      "mean": 144333.2282913176,
+      "p95": 182030.33333331338,
+      "max": 298675.9999998367
+    },
+    "immutable_live_bytes_checked": 328807,
+    "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+    "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+    "verification_script_sha256": "18d066221e222343d98398af47499e548413d7ee09b41797a2f188d4c2246d54",
+    "cartridge": false,
+    "host_payload_injections": 0,
+    "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+    "path": "references/build/game-mapper512-game/basic-r16-f101-syrzh7qv",
+    "graphics": {
+      "passed": true,
+      "snapshots": [
+        {
+          "snapshot": "final",
+          "layout": 0,
+          "native_round": 17,
+          "player": 1,
+          "enemies": 6,
+          "stones": 8,
+          "flags": 0
+        },
+        {
+          "snapshot": "frame-120",
+          "layout": 3,
+          "native_round": 16,
+          "player": 1,
+          "enemies": 7,
+          "stones": 10,
+          "flags": 0
+        },
+        {
+          "snapshot": "frame-160",
+          "layout": 0,
+          "native_round": 17,
+          "player": 1,
+          "enemies": 6,
+          "stones": 8,
+          "flags": 0
+        },
+        {
+          "snapshot": "frame-200",
+          "layout": 0,
+          "native_round": 17,
+          "player": 1,
+          "enemies": 6,
+          "stones": 8,
+          "flags": 0
+        },
+        {
+          "snapshot": "frame-240",
+          "layout": 0,
+          "native_round": 17,
+          "player": 1,
+          "enemies": 6,
+          "stones": 8,
+          "flags": 0
+        },
+        {
+          "snapshot": "frame-40",
+          "layout": 3,
+          "native_round": 16,
+          "player": 1,
+          "enemies": 7,
+          "stones": 10,
+          "flags": 0
+        },
+        {
+          "snapshot": "frame-80",
+          "layout": 3,
+          "native_round": 16,
+          "player": 1,
+          "enemies": 7,
+          "stones": 10,
+          "flags": 0
+        }
+      ]
+    },
+    "opening": {
+      "passed": true,
+      "frames": 71,
+      "publication_tick_error_max": 0
+    }
+  },
+  "presentation_clock_route": {
+    "candidate": {
+      "passed": true,
+      "mode": "dos",
+      "frames": 360,
+      "native_round": 5,
+      "f10": false,
+      "transitions": false,
+      "seed": 4660,
+      "input_clock": "presentation",
+      "profile_audio": false,
+      "diagnostic_state_writes": 2,
+      "active_frames": 182,
+      "work": {
+        "mean": 93703.86996336802,
+        "p95": 152451.99999996755,
+        "max": 208788.33333326248
+      },
+      "period": {
+        "mean": 132248.55677655656,
+        "p95": 179211.0000000032,
+        "max": 238944.33333332543
+      },
+      "immutable_live_bytes_checked": 328395,
+      "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+      "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+      "verification_script_sha256": "e9fabb358fdf49a25b637a4ce53759bd1e302e4204412dcef61ab7a23520adfb",
+      "cartridge": false,
+      "host_payload_injections": 0,
+      "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+      "path": "references/build/game-mapper512-game/dos-r5-f100-9ilr4jii",
+      "graphics": {
+        "passed": true,
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-240",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-280",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-40",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-80",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          }
+        ]
+      },
+      "opening": {
+        "passed": true,
+        "frames": 71,
+        "publication_tick_error_max": 0
+      }
+    },
+    "cartridge": {
+      "passed": true,
+      "candidate": false,
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "stage_images": null,
+      "machine": "Panasonic_FS-A1WSX_NR512",
+      "main_ram_kib": 512,
+      "frames": 360,
+      "native_round": 5,
+      "enemies": [
+        3
+      ],
+      "f10": false,
+      "transitions": false,
+      "input_clock": "presentation",
+      "cold_storage": false,
+      "installed_ram_images": null,
+      "cold_storage_scope": null,
+      "work": {
+        "mean": 93772.52014651978,
+        "p95": 153868.99999998033,
+        "max": 229040.6666666503
+      },
+      "period": {
+        "mean": 131928.83882783877,
+        "p95": 180756.00000000643,
+        "max": 238945.33333333567
+      },
+      "active_frames": 182,
+      "cold_epochs": 0,
+      "cold_bank_refills": 0,
+      "observed_irqs": 0,
+      "cache_policy_checks": 0,
+      "immutable_hot_banks_checked": false,
+      "cartridge_windows_guarded": false,
+      "path": "references/build/game-mapper512-integrated/control-r5-9h1_mljo",
+      "verification_script_sha256": "77a01766386e8294bc95a1b43dc71c526d76c99d32291bf3e6f34b438293511c",
+      "scope": "Frozen ASCII8 cartridge control on512KiB main RAM; existing expanded cache, HUD/audio and real sprite limits. This is not the RAM-active candidate.",
+      "graphics": {
+        "passed": true,
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-240",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-280",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-40",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-80",
+            "layout": 1,
+            "native_round": 5,
+            "player": 1,
+            "enemies": 3,
+            "stones": 2,
+            "flags": 0
+          }
+        ]
+      }
+    },
+    "mean_interval_delta_percent": 0.24234121330743985,
+    "scope": "Different trajectories after earlier candidate publication; not a matched-workload speed comparison."
+  },
+  "tests": {
+    "general": 508,
+    "components": 94,
+    "skipped": 1,
+    "module_layout": true
+  },
+  "preserved": [
+    {
+      "session": "compact-game",
+      "report_sha256": "39e1c0a89a5e76d444643d0b614ee8c45ea442ce91aa03a786ad5ebf5ce9d3dd",
+      "report": {
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "bytes": 761856,
+        "mode": "rom",
+        "megaram_kib": null,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.242601984021604,
+        "period_mean": 107679.44704570794,
+        "period_p95": 122290.66666666916,
+        "period_max": 179208.33333333462,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "session": "compact-megaram-dos-768",
+      "report_sha256": "a81aa7b5a23147d472a4589507516020795f31fad38b4e2afc583ba9d43cb333",
+      "report": {
+        "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+        "bytes": 761856,
+        "mode": "dos",
+        "megaram_kib": 768,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260198402163,
+        "period_mean": 107679.44704570786,
+        "period_p95": 122290.66666661829,
+        "period_max": 179208.3333333092,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "session": "compact-megaram-basic-768",
+      "report_sha256": "8c1e8719c35d85551700e45cbf6001d4eb3d85d48c7925cdfc546fb8b222935d",
+      "report": {
+        "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+        "bytes": 761856,
+        "mode": "basic",
+        "megaram_kib": 768,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260198402163,
+        "period_mean": 107679.44704570786,
+        "period_p95": 122291.66666670484,
+        "period_max": 179208.3333333092,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "session": "disk-dos-4096",
+      "report_sha256": "c0b56b0413993db105bf351dfd4ef436ff8f7ba2f689fe1c93210981d16ebd09",
+      "report": {
+        "mode": "dos",
+        "mapper_ram_kib": 4096,
+        "refresh_hz": 59.92274340431231,
+        "nominal_refresh_hz": 60,
+        "refresh_cycles": 59736,
+        "two_refresh_budget_cycles": 119472,
+        "artifact_sha256": "6e5dfc69e7f3d4303a967bf420cd952b680145258ec2099569af643831625e17",
+        "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+        "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+        "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+        "work": {
+          "samples": 300,
+          "mean": 65050.355555545815,
+          "p95": 91745.00000003721,
+          "maximum": 124356.6666667011
+        },
+        "synchronization_wait": {
+          "samples": 300,
+          "mean": 41371.03333333417,
+          "p95": 59470.000000085354,
+          "maximum": 59765.000000084816
+        },
+        "publication": {
+          "samples": 300,
+          "mean": 4245.456666668401,
+          "p95": 6923.000000131609,
+          "maximum": 9159.000000177908
+        },
+        "presentation_period": {
+          "samples": 299,
+          "mean": 110681.41248606467,
+          "p95": 122290.3333332561,
+          "maximum": 179207.66666668653
+        },
+        "presented_fps": 32.340976859603074
+      }
+    },
+    {
+      "session": "disk-basic-4096",
+      "report_sha256": "6464a226ca6222cb82350e465f76ccc296c31e493fd2c043211ae917a467607a",
+      "report": {
+        "mode": "basic",
+        "mapper_ram_kib": 4096,
+        "refresh_hz": 59.92274340431231,
+        "nominal_refresh_hz": 60,
+        "refresh_cycles": 59736,
+        "two_refresh_budget_cycles": 119472,
+        "artifact_sha256": "6e5dfc69e7f3d4303a967bf420cd952b680145258ec2099569af643831625e17",
+        "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+        "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+        "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+        "work": {
+          "samples": 300,
+          "mean": 65050.355555547845,
+          "p95": 91745.00000003721,
+          "maximum": 124356.6666667011
+        },
+        "synchronization_wait": {
+          "samples": 300,
+          "mean": 41371.01666667115,
+          "p95": 59469.99999988188,
+          "maximum": 59765.000000084816
+        },
+        "publication": {
+          "samples": 300,
+          "mean": 4245.456666664332,
+          "p95": 6923.000000131609,
+          "maximum": 9159.000000177908
+        },
+        "presentation_period": {
+          "samples": 299,
+          "mean": 110681.41248606467,
+          "p95": 122291.66666670484,
+          "maximum": 179207.66666668653
+        },
+        "presented_fps": 32.340976859603074
+      }
+    }
+  ],
+  "seals": [
+    {
+      "path": "dist/newrallyx.rom",
+      "sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "bytes": 761856
+    },
+    {
+      "path": "dist/compact/megaram/newrallyx-megaram.zip",
+      "sha256": "ed50647304f1d647f1161a85f36f487129506cd76e3abdcecb8122ebf2c8768d",
+      "bytes": 187740
+    },
+    {
+      "path": "dist/disk/newrallyx-disk.zip",
+      "sha256": "fca5d77ade0bc83156e37279c8968f6108e762ccb128f651c8e54741d3668428",
+      "bytes": 340034
+    },
+    {
+      "path": "docs/cycle-budget.xlsx",
+      "sha256": "c19093e1953486e3b30108fceae49f2507381a2330668df77aa313befdb5d7cd",
+      "bytes": 42084
+    }
+  ],
+  "sources": {
+    "scripts/mapper512_game.py": "30624ed3ce818985e4b84a4e1b2dced7441ef18619d2606fc64634546d93838d",
+    "scripts/mapper512_tick_verify.py": "133f49e40771e4ed73467c83174d24df59b84f1277d54cc319598d3f824e2d89",
+    "scripts/mapper512_game_verify.py": "0df56acda2cfe62e518bb5ac6c4d235efdb6acf735a3c709030da37ee3577921",
+    "scripts/mapper512_sync_baseline.py": "ed8a50d44f62d03a94b3592f4e932f0da7ae7c01f158c156078d5b9af21c17ab",
+    "scripts/mapper512_audio_sync_report.py": "8919f14ce60ebe1162f58345fb408b9a00e066b40b3b45e2567b0aaa4b4aaa3f"
+  },
+  "cycle_ledger": {
+    "cpu_hz": 3579545,
+    "refresh_cycles": 59736,
+    "refresh_hz": 59.92274340431231,
+    "two_refresh_cycles": 119472,
+    "method": "Work=Loop to wait_blank, period=FrameDone to FrameDone; elapsed Z80-reference cycles include IRQ/VDP stalls. Function inclusive means include children; self unmeasured. Parent work and child phase costs are not added.",
+    "vblank": "No newly measured usable-VBlank bound;5000-cycle reserve remains an assumption.",
+    "scope": "Natural sound workers and matched3/5/6-enemy full-game routes, standard locked Z80/NTSC, HUD and real sprite limits."
+  },
+  "limits": [
+    "Fixed-up natural route covers two captures, three deaths and player restores; F10 blocks24 contacts. Smoke/complete manual courses and every lifecycle/event combination remain separate.",
+    "Per-native-tick raw PSG sampling is not synchronized to30Hz sound updates. Engine gain deliberately follows the free physical clock and must not be reset to force equality.",
+    "No universal speedup, subjective listening, physical hardware, PAL, DOS2/Nextor or full reset/error qualification. No commit/push/merge/release."
+  ]
+}

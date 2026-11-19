@@ -1,0 +1,2137 @@
+{
+  "status": "Conservative per-resource OS scatter/restore reference; cold-only emulator proof",
+  "plan": {
+    "status": "Cartridge-free cold I/O/OS-lifetime diagnostic, not standalone game",
+    "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+    "active_images": [
+      {
+        "family": 0,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162717,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 1,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162433,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 2,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 162079,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      },
+      {
+        "family": 3,
+        "code_windows": 11,
+        "closure_checks": 2830,
+        "code_bytes": 163121,
+        "hot_segments": 32,
+        "cold_scratch_segment": null,
+        "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962",
+        "bytes": 524288,
+        "edge_packet_model_delta_max": 3
+      }
+    ],
+    "context_bytes": 32768,
+    "context_fragments": 130,
+    "context": [
+      [
+        31,
+        9664,
+        6720,
+        0
+      ],
+      [
+        31,
+        1934,
+        2162,
+        6720
+      ],
+      [
+        19,
+        1848,
+        200,
+        8882
+      ],
+      [
+        19,
+        3896,
+        200,
+        9082
+      ],
+      [
+        19,
+        5944,
+        200,
+        9282
+      ],
+      [
+        19,
+        7992,
+        200,
+        9482
+      ],
+      [
+        19,
+        10040,
+        200,
+        9682
+      ],
+      [
+        19,
+        12088,
+        200,
+        9882
+      ],
+      [
+        19,
+        14136,
+        200,
+        10082
+      ],
+      [
+        19,
+        16184,
+        200,
+        10282
+      ],
+      [
+        11,
+        1598,
+        194,
+        10482
+      ],
+      [
+        12,
+        1598,
+        194,
+        10676
+      ],
+      [
+        11,
+        1089,
+        191,
+        10870
+      ],
+      [
+        11,
+        3137,
+        191,
+        11061
+      ],
+      [
+        11,
+        5185,
+        191,
+        11252
+      ],
+      [
+        11,
+        7233,
+        191,
+        11443
+      ],
+      [
+        11,
+        9281,
+        191,
+        11634
+      ],
+      [
+        11,
+        11329,
+        191,
+        11825
+      ],
+      [
+        11,
+        13377,
+        191,
+        12016
+      ],
+      [
+        11,
+        15425,
+        191,
+        12207
+      ],
+      [
+        12,
+        1089,
+        191,
+        12398
+      ],
+      [
+        12,
+        3137,
+        191,
+        12589
+      ],
+      [
+        12,
+        5185,
+        191,
+        12780
+      ],
+      [
+        12,
+        7233,
+        191,
+        12971
+      ],
+      [
+        12,
+        9281,
+        191,
+        13162
+      ],
+      [
+        12,
+        11329,
+        191,
+        13353
+      ],
+      [
+        12,
+        13377,
+        191,
+        13544
+      ],
+      [
+        12,
+        15425,
+        191,
+        13735
+      ],
+      [
+        13,
+        1089,
+        191,
+        13926
+      ],
+      [
+        13,
+        3137,
+        191,
+        14117
+      ],
+      [
+        13,
+        5185,
+        191,
+        14308
+      ],
+      [
+        13,
+        7233,
+        191,
+        14499
+      ],
+      [
+        13,
+        9281,
+        191,
+        14690
+      ],
+      [
+        13,
+        11329,
+        191,
+        14881
+      ],
+      [
+        13,
+        13377,
+        191,
+        15072
+      ],
+      [
+        13,
+        15425,
+        191,
+        15263
+      ],
+      [
+        14,
+        1089,
+        191,
+        15454
+      ],
+      [
+        14,
+        3137,
+        191,
+        15645
+      ],
+      [
+        14,
+        5185,
+        191,
+        15836
+      ],
+      [
+        14,
+        7233,
+        191,
+        16027
+      ],
+      [
+        14,
+        9281,
+        166,
+        16218
+      ],
+      [
+        14,
+        9447,
+        25,
+        49152
+      ],
+      [
+        14,
+        11329,
+        191,
+        49177
+      ],
+      [
+        14,
+        13377,
+        191,
+        49368
+      ],
+      [
+        14,
+        15425,
+        191,
+        49559
+      ],
+      [
+        15,
+        1089,
+        191,
+        49750
+      ],
+      [
+        15,
+        1601,
+        191,
+        49941
+      ],
+      [
+        15,
+        3137,
+        191,
+        50132
+      ],
+      [
+        15,
+        5185,
+        191,
+        50323
+      ],
+      [
+        15,
+        7233,
+        191,
+        50514
+      ],
+      [
+        15,
+        9281,
+        191,
+        50705
+      ],
+      [
+        15,
+        11329,
+        191,
+        50896
+      ],
+      [
+        15,
+        13377,
+        191,
+        51087
+      ],
+      [
+        15,
+        15425,
+        191,
+        51278
+      ],
+      [
+        16,
+        1089,
+        191,
+        51469
+      ],
+      [
+        16,
+        3137,
+        191,
+        51660
+      ],
+      [
+        16,
+        5185,
+        191,
+        51851
+      ],
+      [
+        16,
+        7233,
+        191,
+        52042
+      ],
+      [
+        16,
+        9281,
+        191,
+        52233
+      ],
+      [
+        16,
+        11329,
+        191,
+        52424
+      ],
+      [
+        16,
+        13377,
+        191,
+        52615
+      ],
+      [
+        16,
+        15425,
+        191,
+        52806
+      ],
+      [
+        17,
+        1089,
+        191,
+        52997
+      ],
+      [
+        17,
+        3137,
+        191,
+        53188
+      ],
+      [
+        17,
+        5185,
+        191,
+        53379
+      ],
+      [
+        17,
+        7233,
+        191,
+        53570
+      ],
+      [
+        17,
+        9281,
+        191,
+        53761
+      ],
+      [
+        17,
+        11329,
+        191,
+        53952
+      ],
+      [
+        17,
+        13377,
+        191,
+        54143
+      ],
+      [
+        17,
+        15425,
+        191,
+        54334
+      ],
+      [
+        18,
+        1089,
+        191,
+        54525
+      ],
+      [
+        18,
+        3137,
+        191,
+        54716
+      ],
+      [
+        18,
+        5185,
+        191,
+        54907
+      ],
+      [
+        18,
+        7233,
+        191,
+        55098
+      ],
+      [
+        18,
+        9281,
+        191,
+        55289
+      ],
+      [
+        18,
+        11329,
+        191,
+        55480
+      ],
+      [
+        18,
+        13377,
+        191,
+        55671
+      ],
+      [
+        18,
+        15425,
+        191,
+        55862
+      ],
+      [
+        16,
+        1607,
+        185,
+        56053
+      ],
+      [
+        11,
+        840,
+        184,
+        56238
+      ],
+      [
+        11,
+        2888,
+        184,
+        56422
+      ],
+      [
+        11,
+        4936,
+        184,
+        56606
+      ],
+      [
+        11,
+        6984,
+        184,
+        56790
+      ],
+      [
+        11,
+        9032,
+        184,
+        56974
+      ],
+      [
+        11,
+        11080,
+        184,
+        57158
+      ],
+      [
+        11,
+        13128,
+        184,
+        57342
+      ],
+      [
+        11,
+        15176,
+        184,
+        57526
+      ],
+      [
+        12,
+        840,
+        184,
+        57710
+      ],
+      [
+        12,
+        2888,
+        184,
+        57894
+      ],
+      [
+        12,
+        4936,
+        184,
+        58078
+      ],
+      [
+        12,
+        6984,
+        184,
+        58262
+      ],
+      [
+        12,
+        9032,
+        184,
+        58446
+      ],
+      [
+        12,
+        11080,
+        184,
+        58630
+      ],
+      [
+        12,
+        13128,
+        184,
+        58814
+      ],
+      [
+        12,
+        15176,
+        184,
+        58998
+      ],
+      [
+        13,
+        840,
+        184,
+        59182
+      ],
+      [
+        13,
+        2888,
+        184,
+        59366
+      ],
+      [
+        13,
+        4936,
+        184,
+        59550
+      ],
+      [
+        13,
+        6984,
+        184,
+        59734
+      ],
+      [
+        13,
+        9032,
+        184,
+        59918
+      ],
+      [
+        13,
+        11080,
+        184,
+        60102
+      ],
+      [
+        13,
+        13128,
+        184,
+        60286
+      ],
+      [
+        13,
+        15176,
+        184,
+        60470
+      ],
+      [
+        14,
+        840,
+        184,
+        60654
+      ],
+      [
+        14,
+        2888,
+        184,
+        60838
+      ],
+      [
+        14,
+        4936,
+        184,
+        61022
+      ],
+      [
+        14,
+        6984,
+        184,
+        61206
+      ],
+      [
+        14,
+        9032,
+        184,
+        61390
+      ],
+      [
+        14,
+        11080,
+        184,
+        61574
+      ],
+      [
+        14,
+        13128,
+        184,
+        61758
+      ],
+      [
+        14,
+        15176,
+        184,
+        61942
+      ],
+      [
+        15,
+        840,
+        184,
+        62126
+      ],
+      [
+        15,
+        2888,
+        184,
+        62310
+      ],
+      [
+        15,
+        4936,
+        184,
+        62494
+      ],
+      [
+        15,
+        6984,
+        184,
+        62678
+      ],
+      [
+        15,
+        9032,
+        184,
+        62862
+      ],
+      [
+        15,
+        11080,
+        184,
+        63046
+      ],
+      [
+        15,
+        13128,
+        184,
+        63230
+      ],
+      [
+        15,
+        15176,
+        184,
+        63414
+      ],
+      [
+        16,
+        840,
+        184,
+        63598
+      ],
+      [
+        16,
+        2888,
+        184,
+        63782
+      ],
+      [
+        16,
+        4936,
+        184,
+        63966
+      ],
+      [
+        16,
+        6984,
+        184,
+        64150
+      ],
+      [
+        16,
+        9032,
+        184,
+        64334
+      ],
+      [
+        16,
+        11080,
+        184,
+        64518
+      ],
+      [
+        16,
+        13128,
+        184,
+        64702
+      ],
+      [
+        16,
+        15176,
+        184,
+        64886
+      ],
+      [
+        17,
+        840,
+        184,
+        65070
+      ],
+      [
+        17,
+        2888,
+        184,
+        65254
+      ],
+      [
+        17,
+        4936,
+        98,
+        65438
+      ]
+    ],
+    "bridge": {
+      "bank": 30,
+      "offset": 4096,
+      "bytes": 5022,
+      "reserved_end": 15936,
+      "sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f"
+    },
+    "loader_bytes": 397,
+    "resource_bytes": 494414,
+    "resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+    "records": [
+      {
+        "family": 0,
+        "bank": 6,
+        "offset": 8,
+        "compressed": 12495,
+        "checksum": 16038
+      },
+      {
+        "family": 0,
+        "bank": 7,
+        "offset": 12503,
+        "compressed": 7165,
+        "checksum": 16404
+      },
+      {
+        "family": 0,
+        "bank": 8,
+        "offset": 19668,
+        "compressed": 7891,
+        "checksum": 14714
+      },
+      {
+        "family": 0,
+        "bank": 9,
+        "offset": 27559,
+        "compressed": 2036,
+        "checksum": 13135
+      },
+      {
+        "family": 0,
+        "bank": 10,
+        "offset": 29595,
+        "compressed": 5927,
+        "checksum": 57795
+      },
+      {
+        "family": 0,
+        "bank": 11,
+        "offset": 35522,
+        "compressed": 5855,
+        "checksum": 44855
+      },
+      {
+        "family": 0,
+        "bank": 12,
+        "offset": 41377,
+        "compressed": 5811,
+        "checksum": 44345
+      },
+      {
+        "family": 0,
+        "bank": 13,
+        "offset": 47188,
+        "compressed": 6212,
+        "checksum": 29341
+      },
+      {
+        "family": 0,
+        "bank": 14,
+        "offset": 53400,
+        "compressed": 6203,
+        "checksum": 36174
+      },
+      {
+        "family": 0,
+        "bank": 15,
+        "offset": 59603,
+        "compressed": 5869,
+        "checksum": 50920
+      },
+      {
+        "family": 0,
+        "bank": 16,
+        "offset": 65472,
+        "compressed": 6124,
+        "checksum": 38121
+      },
+      {
+        "family": 0,
+        "bank": 17,
+        "offset": 71596,
+        "compressed": 6133,
+        "checksum": 33276
+      },
+      {
+        "family": 0,
+        "bank": 18,
+        "offset": 77729,
+        "compressed": 6142,
+        "checksum": 32485
+      },
+      {
+        "family": 0,
+        "bank": 19,
+        "offset": 83871,
+        "compressed": 3983,
+        "checksum": 46452
+      },
+      {
+        "family": 0,
+        "bank": 20,
+        "offset": 87854,
+        "compressed": 6365,
+        "checksum": 7787
+      },
+      {
+        "family": 0,
+        "bank": 21,
+        "offset": 94219,
+        "compressed": 5960,
+        "checksum": 575
+      },
+      {
+        "family": 0,
+        "bank": 22,
+        "offset": 100179,
+        "compressed": 6000,
+        "checksum": 7280
+      },
+      {
+        "family": 0,
+        "bank": 23,
+        "offset": 106179,
+        "compressed": 5624,
+        "checksum": 25410
+      },
+      {
+        "family": 0,
+        "bank": 24,
+        "offset": 111803,
+        "compressed": 6084,
+        "checksum": 13337
+      },
+      {
+        "family": 0,
+        "bank": 25,
+        "offset": 117887,
+        "compressed": 6089,
+        "checksum": 12029
+      },
+      {
+        "family": 0,
+        "bank": 26,
+        "offset": 123976,
+        "compressed": 5846,
+        "checksum": 46335
+      },
+      {
+        "family": 0,
+        "bank": 27,
+        "offset": 129822,
+        "compressed": 5748,
+        "checksum": 47575
+      },
+      {
+        "family": 0,
+        "bank": 28,
+        "offset": 135570,
+        "compressed": 5879,
+        "checksum": 35631
+      },
+      {
+        "family": 0,
+        "bank": 29,
+        "offset": 141449,
+        "compressed": 5511,
+        "checksum": 39551
+      },
+      {
+        "family": 0,
+        "bank": 30,
+        "offset": 146960,
+        "compressed": 1885,
+        "checksum": 12990
+      },
+      {
+        "family": 0,
+        "bank": 31,
+        "offset": 148845,
+        "compressed": 1879,
+        "checksum": 29552
+      },
+      {
+        "family": 1,
+        "bank": 11,
+        "offset": 150724,
+        "compressed": 5851,
+        "checksum": 42746
+      },
+      {
+        "family": 1,
+        "bank": 12,
+        "offset": 156575,
+        "compressed": 5804,
+        "checksum": 39281
+      },
+      {
+        "family": 1,
+        "bank": 13,
+        "offset": 162379,
+        "compressed": 6244,
+        "checksum": 30821
+      },
+      {
+        "family": 1,
+        "bank": 14,
+        "offset": 168623,
+        "compressed": 6216,
+        "checksum": 37548
+      },
+      {
+        "family": 1,
+        "bank": 15,
+        "offset": 174839,
+        "compressed": 5872,
+        "checksum": 52133
+      },
+      {
+        "family": 1,
+        "bank": 16,
+        "offset": 180711,
+        "compressed": 6121,
+        "checksum": 35148
+      },
+      {
+        "family": 1,
+        "bank": 17,
+        "offset": 186832,
+        "compressed": 6115,
+        "checksum": 34170
+      },
+      {
+        "family": 1,
+        "bank": 18,
+        "offset": 192947,
+        "compressed": 6157,
+        "checksum": 35796
+      },
+      {
+        "family": 1,
+        "bank": 19,
+        "offset": 199104,
+        "compressed": 4164,
+        "checksum": 50689
+      },
+      {
+        "family": 1,
+        "bank": 20,
+        "offset": 203268,
+        "compressed": 6365,
+        "checksum": 7787
+      },
+      {
+        "family": 1,
+        "bank": 21,
+        "offset": 209633,
+        "compressed": 5960,
+        "checksum": 575
+      },
+      {
+        "family": 1,
+        "bank": 22,
+        "offset": 215593,
+        "compressed": 6000,
+        "checksum": 7280
+      },
+      {
+        "family": 1,
+        "bank": 23,
+        "offset": 221593,
+        "compressed": 5043,
+        "checksum": 40956
+      },
+      {
+        "family": 1,
+        "bank": 24,
+        "offset": 226636,
+        "compressed": 6197,
+        "checksum": 55154
+      },
+      {
+        "family": 1,
+        "bank": 25,
+        "offset": 232833,
+        "compressed": 6074,
+        "checksum": 13232
+      },
+      {
+        "family": 1,
+        "bank": 26,
+        "offset": 238907,
+        "compressed": 5860,
+        "checksum": 44189
+      },
+      {
+        "family": 1,
+        "bank": 27,
+        "offset": 244767,
+        "compressed": 5760,
+        "checksum": 52814
+      },
+      {
+        "family": 1,
+        "bank": 28,
+        "offset": 250527,
+        "compressed": 5878,
+        "checksum": 37663
+      },
+      {
+        "family": 1,
+        "bank": 29,
+        "offset": 256405,
+        "compressed": 5486,
+        "checksum": 41226
+      },
+      {
+        "family": 1,
+        "bank": 30,
+        "offset": 261891,
+        "compressed": 1778,
+        "checksum": 58217
+      },
+      {
+        "family": 1,
+        "bank": 31,
+        "offset": 263669,
+        "compressed": 1861,
+        "checksum": 10007
+      },
+      {
+        "family": 2,
+        "bank": 11,
+        "offset": 265530,
+        "compressed": 5868,
+        "checksum": 44222
+      },
+      {
+        "family": 2,
+        "bank": 12,
+        "offset": 271398,
+        "compressed": 5813,
+        "checksum": 41679
+      },
+      {
+        "family": 2,
+        "bank": 13,
+        "offset": 277211,
+        "compressed": 6244,
+        "checksum": 28595
+      },
+      {
+        "family": 2,
+        "bank": 14,
+        "offset": 283455,
+        "compressed": 6209,
+        "checksum": 37348
+      },
+      {
+        "family": 2,
+        "bank": 15,
+        "offset": 289664,
+        "compressed": 5857,
+        "checksum": 50719
+      },
+      {
+        "family": 2,
+        "bank": 16,
+        "offset": 295521,
+        "compressed": 6129,
+        "checksum": 37298
+      },
+      {
+        "family": 2,
+        "bank": 17,
+        "offset": 301650,
+        "compressed": 6135,
+        "checksum": 35209
+      },
+      {
+        "family": 2,
+        "bank": 18,
+        "offset": 307785,
+        "compressed": 6140,
+        "checksum": 36081
+      },
+      {
+        "family": 2,
+        "bank": 19,
+        "offset": 313925,
+        "compressed": 4106,
+        "checksum": 55577
+      },
+      {
+        "family": 2,
+        "bank": 20,
+        "offset": 318031,
+        "compressed": 6365,
+        "checksum": 7787
+      },
+      {
+        "family": 2,
+        "bank": 21,
+        "offset": 324396,
+        "compressed": 5960,
+        "checksum": 575
+      },
+      {
+        "family": 2,
+        "bank": 22,
+        "offset": 330356,
+        "compressed": 6000,
+        "checksum": 7280
+      },
+      {
+        "family": 2,
+        "bank": 23,
+        "offset": 336356,
+        "compressed": 5021,
+        "checksum": 62641
+      },
+      {
+        "family": 2,
+        "bank": 24,
+        "offset": 341377,
+        "compressed": 6217,
+        "checksum": 58791
+      },
+      {
+        "family": 2,
+        "bank": 25,
+        "offset": 347594,
+        "compressed": 6078,
+        "checksum": 13307
+      },
+      {
+        "family": 2,
+        "bank": 26,
+        "offset": 353672,
+        "compressed": 5866,
+        "checksum": 43476
+      },
+      {
+        "family": 2,
+        "bank": 27,
+        "offset": 359538,
+        "compressed": 5736,
+        "checksum": 49888
+      },
+      {
+        "family": 2,
+        "bank": 28,
+        "offset": 365274,
+        "compressed": 5885,
+        "checksum": 35512
+      },
+      {
+        "family": 2,
+        "bank": 29,
+        "offset": 371159,
+        "compressed": 5498,
+        "checksum": 37907
+      },
+      {
+        "family": 2,
+        "bank": 30,
+        "offset": 376657,
+        "compressed": 1707,
+        "checksum": 20133
+      },
+      {
+        "family": 2,
+        "bank": 31,
+        "offset": 378364,
+        "compressed": 1903,
+        "checksum": 15173
+      },
+      {
+        "family": 3,
+        "bank": 11,
+        "offset": 380267,
+        "compressed": 5854,
+        "checksum": 41720
+      },
+      {
+        "family": 3,
+        "bank": 12,
+        "offset": 386121,
+        "compressed": 5823,
+        "checksum": 47869
+      },
+      {
+        "family": 3,
+        "bank": 13,
+        "offset": 391944,
+        "compressed": 6236,
+        "checksum": 29880
+      },
+      {
+        "family": 3,
+        "bank": 14,
+        "offset": 398180,
+        "compressed": 6203,
+        "checksum": 34623
+      },
+      {
+        "family": 3,
+        "bank": 15,
+        "offset": 404383,
+        "compressed": 5863,
+        "checksum": 47452
+      },
+      {
+        "family": 3,
+        "bank": 16,
+        "offset": 410246,
+        "compressed": 6113,
+        "checksum": 36587
+      },
+      {
+        "family": 3,
+        "bank": 17,
+        "offset": 416359,
+        "compressed": 6122,
+        "checksum": 35081
+      },
+      {
+        "family": 3,
+        "bank": 18,
+        "offset": 422481,
+        "compressed": 6181,
+        "checksum": 34603
+      },
+      {
+        "family": 3,
+        "bank": 19,
+        "offset": 428662,
+        "compressed": 3928,
+        "checksum": 11992
+      },
+      {
+        "family": 3,
+        "bank": 20,
+        "offset": 432590,
+        "compressed": 6365,
+        "checksum": 7787
+      },
+      {
+        "family": 3,
+        "bank": 21,
+        "offset": 438955,
+        "compressed": 5960,
+        "checksum": 575
+      },
+      {
+        "family": 3,
+        "bank": 22,
+        "offset": 444915,
+        "compressed": 6000,
+        "checksum": 7280
+      },
+      {
+        "family": 3,
+        "bank": 23,
+        "offset": 450915,
+        "compressed": 4348,
+        "checksum": 62339
+      },
+      {
+        "family": 3,
+        "bank": 24,
+        "offset": 455263,
+        "compressed": 6230,
+        "checksum": 46355
+      },
+      {
+        "family": 3,
+        "bank": 25,
+        "offset": 461493,
+        "compressed": 6110,
+        "checksum": 8667
+      },
+      {
+        "family": 3,
+        "bank": 26,
+        "offset": 467603,
+        "compressed": 5816,
+        "checksum": 46821
+      },
+      {
+        "family": 3,
+        "bank": 27,
+        "offset": 473419,
+        "compressed": 5774,
+        "checksum": 47112
+      },
+      {
+        "family": 3,
+        "bank": 28,
+        "offset": 479193,
+        "compressed": 5886,
+        "checksum": 35304
+      },
+      {
+        "family": 3,
+        "bank": 29,
+        "offset": 485079,
+        "compressed": 5524,
+        "checksum": 35726
+      },
+      {
+        "family": 3,
+        "bank": 30,
+        "offset": 490603,
+        "compressed": 1972,
+        "checksum": 41345
+      },
+      {
+        "family": 3,
+        "bank": 31,
+        "offset": 492575,
+        "compressed": 1839,
+        "checksum": 19643
+      },
+      {
+        "family": 0,
+        "bank": 11,
+        "offset": 35522,
+        "compressed": 5855,
+        "checksum": 44855
+      },
+      {
+        "family": 0,
+        "bank": 12,
+        "offset": 41377,
+        "compressed": 5811,
+        "checksum": 44345
+      },
+      {
+        "family": 0,
+        "bank": 13,
+        "offset": 47188,
+        "compressed": 6212,
+        "checksum": 29341
+      },
+      {
+        "family": 0,
+        "bank": 14,
+        "offset": 53400,
+        "compressed": 6203,
+        "checksum": 36174
+      },
+      {
+        "family": 0,
+        "bank": 15,
+        "offset": 59603,
+        "compressed": 5869,
+        "checksum": 50920
+      },
+      {
+        "family": 0,
+        "bank": 16,
+        "offset": 65472,
+        "compressed": 6124,
+        "checksum": 38121
+      },
+      {
+        "family": 0,
+        "bank": 17,
+        "offset": 71596,
+        "compressed": 6133,
+        "checksum": 33276
+      },
+      {
+        "family": 0,
+        "bank": 18,
+        "offset": 77729,
+        "compressed": 6142,
+        "checksum": 32485
+      },
+      {
+        "family": 0,
+        "bank": 19,
+        "offset": 83871,
+        "compressed": 3983,
+        "checksum": 46452
+      },
+      {
+        "family": 0,
+        "bank": 20,
+        "offset": 87854,
+        "compressed": 6365,
+        "checksum": 7787
+      },
+      {
+        "family": 0,
+        "bank": 21,
+        "offset": 94219,
+        "compressed": 5960,
+        "checksum": 575
+      },
+      {
+        "family": 0,
+        "bank": 22,
+        "offset": 100179,
+        "compressed": 6000,
+        "checksum": 7280
+      },
+      {
+        "family": 0,
+        "bank": 23,
+        "offset": 106179,
+        "compressed": 5624,
+        "checksum": 25410
+      },
+      {
+        "family": 0,
+        "bank": 24,
+        "offset": 111803,
+        "compressed": 6084,
+        "checksum": 13337
+      },
+      {
+        "family": 0,
+        "bank": 25,
+        "offset": 117887,
+        "compressed": 6089,
+        "checksum": 12029
+      },
+      {
+        "family": 0,
+        "bank": 26,
+        "offset": 123976,
+        "compressed": 5846,
+        "checksum": 46335
+      },
+      {
+        "family": 0,
+        "bank": 27,
+        "offset": 129822,
+        "compressed": 5748,
+        "checksum": 47575
+      },
+      {
+        "family": 0,
+        "bank": 28,
+        "offset": 135570,
+        "compressed": 5879,
+        "checksum": 35631
+      },
+      {
+        "family": 0,
+        "bank": 29,
+        "offset": 141449,
+        "compressed": 5511,
+        "checksum": 39551
+      },
+      {
+        "family": 0,
+        "bank": 30,
+        "offset": 146960,
+        "compressed": 1885,
+        "checksum": 12990
+      },
+      {
+        "family": 0,
+        "bank": 31,
+        "offset": 148845,
+        "compressed": 1879,
+        "checksum": 29552
+      }
+    ],
+    "declared_common_hole_bytes": 63937,
+    "union_mask_sha256": "cc7935c7ff0e1362854eabb891525d6f45628c67a181b80d931778e96508fdc1"
+  },
+  "runs": [
+    {
+      "passed": true,
+      "mode": "dos",
+      "ram_kib": 512,
+      "fault": null,
+      "negative": false,
+      "resource_reads": 110,
+      "cold_cycles": {
+        "mean": 8812501.218181815,
+        "p95": 10037315.000000015,
+        "max": 10145203.99999993
+      },
+      "script_sha256": "17bb5e52ac6e25c68b0c0d67f2e7d63b3f3d18efcb8820840e6cbff328ea3150",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": null,
+      "expected_failure_index": null,
+      "masked_span_checks": 4980,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/dos-512-valid-ansbs43t",
+      "total_read_cycles": 969375133.9999996,
+      "resource_costs": [
+        10002507.000000004,
+        8246092.000000003,
+        9301750.000000002,
+        7141330.000000002,
+        8183477.999999993,
+        7357194.000000001,
+        8742297.999999993,
+        8138540.000000009,
+        8135508.999999998,
+        8793806.00000001,
+        8087711.000000003,
+        8899265.999999983,
+        8820257.999999998,
+        7695099.999999994,
+        9338712.000000002,
+        8426104.000000007,
+        8539455.999999981,
+        9079870.000000007,
+        8522207.999999994,
+        9997923.999999987,
+        9144121.999999981,
+        8384330.999999986,
+        9243596.999999985,
+        9116648.00000004,
+        6821039.00000002,
+        6963103.9999999795,
+        8849075.999999968,
+        8084655.999999999,
+        8913224.00000002,
+        9635016.000000024,
+        8123261.000000027,
+        8874759.999999989,
+        8959219.999999996,
+        8170319.999999996,
+        8559978.999999989,
+        8614763.000000024,
+        10011045.000000037,
+        9205052.999999996,
+        8245459.9999999795,
+        9293595.999999998,
+        9335495.999999974,
+        8550918.000000002,
+        9159668.999999993,
+        9223622.999999987,
+        9897972.0,
+        6848833.000000015,
+        7027371.999999992,
+        9677942.99999998,
+        8785746.000000015,
+        8246180.000000041,
+        9677855.999999978,
+        9661779.0,
+        8199937.999999932,
+        9733473.999999922,
+        9665392.000000004,
+        7828543.99999993,
+        9401774.000000004,
+        9296946.000000026,
+        9310049.999999952,
+        9007097.000000015,
+        8658585.999999965,
+        10062153.99999999,
+        10073596.999999996,
+        8519628.000000006,
+        9975929.999999998,
+        9190697.000000047,
+        7643965.999999987,
+        7095317.999999989,
+        9024903.000000002,
+        8852818.999999983,
+        9018212.000000011,
+        8980410.000000006,
+        9056993.999999998,
+        9689705.999999909,
+        9016816.999999918,
+        9050138.999999953,
+        9203098.000000061,
+        9504749.000000022,
+        10037315.000000015,
+        9411003.000000034,
+        8872331.000000024,
+        10145203.99999993,
+        10122461.999999974,
+        9998729.999999989,
+        10069155.000000058,
+        9370634.00000002,
+        9976415.000000063,
+        7825884.00000001,
+        8485724.999999937,
+        8356742.999999967,
+        8734637.999999994,
+        8128464.000000014,
+        8138570.999999946,
+        8773683.00000006,
+        8102146.999999985,
+        8904288.00000002,
+        8831403.000000048,
+        7690723.000000012,
+        9341104.00000002,
+        8420426.000000006,
+        8537072.999999978,
+        9086205.99999994,
+        8520210.999999909,
+        9997926.999999966,
+        9119626.000000015,
+        8406835.999999927,
+        9219794.99999999,
+        9135445.000000043,
+        6825440.00000007,
+        6973819.000000096
+      ]
+    },
+    {
+      "passed": true,
+      "mode": "dos",
+      "ram_kib": 512,
+      "fault": "missing",
+      "negative": true,
+      "resource_reads": 0,
+      "cold_cycles": null,
+      "script_sha256": "83b2422158fba1e6e5d6df02b5c992bb80e36f9fb19d70d20fd438001f89c896",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": true,
+      "expected_failure_index": 0,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/dos-512-missing-100yzn0j"
+    },
+    {
+      "passed": true,
+      "mode": "dos",
+      "ram_kib": 512,
+      "fault": "truncated",
+      "negative": true,
+      "resource_reads": 0,
+      "cold_cycles": null,
+      "script_sha256": "9782c0850cc129ae213795dd7369c65f9bb202c037014082c9fac9328f472e8c",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": true,
+      "expected_failure_index": 0,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/dos-512-truncated-4i7fov9z"
+    },
+    {
+      "passed": true,
+      "mode": "dos",
+      "ram_kib": 512,
+      "fault": "checksum",
+      "negative": true,
+      "resource_reads": 0,
+      "cold_cycles": null,
+      "script_sha256": "23e14f8abd6d833cbc200f5e6295c1a8f3f99be68b34e3fb1a113ee4a7d32c53",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": true,
+      "expected_failure_index": 0,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/dos-512-checksum-8csdwgnf"
+    },
+    {
+      "passed": true,
+      "mode": "dos",
+      "ram_kib": 512,
+      "fault": "late",
+      "negative": true,
+      "resource_reads": 26,
+      "cold_cycles": {
+        "mean": 8461462.846153848,
+        "p95": 9339184.000000011,
+        "max": 9592499.000000002
+      },
+      "script_sha256": "3647deefdb6c458b17b7fd6a67cfed6271d2f0e7ecdd2d335aa8631ea2848361",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": true,
+      "expected_failure_index": 26,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/dos-512-late-xitnbzu2"
+    },
+    {
+      "passed": true,
+      "mode": "dos",
+      "ram_kib": 256,
+      "fault": null,
+      "negative": true,
+      "resource_reads": 0,
+      "cold_cycles": null,
+      "script_sha256": "b29537a828d821d8fbf7fbefa58f4bd9e820f30bbbdee49b382869444b6a57d4",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": true,
+      "rejected_hot_data_preserved": null,
+      "expected_failure_index": null,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/dos-256-valid-shfslc4r"
+    },
+    {
+      "passed": true,
+      "mode": "basic",
+      "ram_kib": 512,
+      "fault": null,
+      "negative": false,
+      "resource_reads": 110,
+      "cold_cycles": {
+        "mean": 8764212.945454545,
+        "p95": 9963699.000000048,
+        "max": 10755251.000000007
+      },
+      "script_sha256": "f10db54320ba69aff4efb963cc4d1756c074e5ffb67d3f12c27ebe6ebcd5d951",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": null,
+      "expected_failure_index": null,
+      "masked_span_checks": 4980,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/basic-512-valid-qzziqe6z",
+      "total_read_cycles": 964063424.0000001,
+      "resource_costs": [
+        10755251.000000007,
+        8181220.999999998,
+        9253050.999999996,
+        7115809.999999997,
+        8177360.000000006,
+        8724597.000000002,
+        7998004.000000003,
+        8844666.000000015,
+        8063125.000000003,
+        8024938.000000015,
+        8826792.000000006,
+        8112298.000000013,
+        8083340.000000005,
+        8376084.000000007,
+        8633716.000000002,
+        8398660.000000015,
+        9184844.99999999,
+        8330346.000000007,
+        9244372.0,
+        9203852.000000013,
+        8380919.9999999935,
+        9092936.999999985,
+        9226237.99999998,
+        8342162.000000023,
+        6772327.000000007,
+        7703424.999999985,
+        8062506.000000011,
+        8781048.99999998,
+        8915910.000000004,
+        8846419.000000004,
+        8797928.99999998,
+        8150285.9999999935,
+        8880511.000000002,
+        8847003.999999976,
+        7806554.0000000065,
+        9341340.999999983,
+        9933522.999999983,
+        8472336.999999998,
+        8920003.999999983,
+        8602218.00000001,
+        9258364.99999999,
+        9232830.999999981,
+        8422710.000000035,
+        9222415.000000007,
+        9811124.000000015,
+        6816249.999999955,
+        7014855.000000008,
+        9597344.00000003,
+        8018550.000000005,
+        8960734.000000013,
+        9618925.000000054,
+        8917134.99999998,
+        8914508.000000069,
+        9641533.00000001,
+        8905652.999999957,
+        8506189.99999996,
+        8630253.00000001,
+        9326873.000000004,
+        9935117.000000007,
+        8246668.999999944,
+        9334846.00000007,
+        10072594.999999942,
+        9275582.000000013,
+        9203296.000000007,
+        9271650.999999952,
+        9152517.999999963,
+        7571188.00000002,
+        7075794.00000003,
+        8953213.999999989,
+        9542257.999999998,
+        8253437.999999971,
+        8971030.000000028,
+        9684332.999999959,
+        8933066.99999992,
+        9025537.999999927,
+        9691307.999999912,
+        9176086.999999983,
+        10185393.000000032,
+        9302554.999999955,
+        9334022.999999946,
+        9539236.000000078,
+        9388541.0,
+        10119175.999999993,
+        9963699.000000048,
+        9244766.999999981,
+        10065821.000000091,
+        9252475.000000002,
+        7741054.000000022,
+        8446160.000000032,
+        9056203.999999983,
+        8001715.0000000335,
+        8847716.99999999,
+        8067497.0000000615,
+        8028661.999999963,
+        8814976.999999974,
+        8116675.999999954,
+        8079645.999999932,
+        8371732.999999961,
+        8641115.999999965,
+        8386863.000000068,
+        9179786.000000006,
+        8327358.999999888,
+        9228173.000000015,
+        9215655.000000149,
+        8392686.999999989,
+        9089245.00000001,
+        9230625.00000004,
+        8334064.000000073,
+        6784146.000000054,
+        7692273.000000092
+      ]
+    },
+    {
+      "passed": true,
+      "mode": "basic",
+      "ram_kib": 512,
+      "fault": "missing",
+      "negative": true,
+      "resource_reads": 0,
+      "cold_cycles": null,
+      "script_sha256": "e989f0af1d76464dc5142df206840c752e7ee3b6536ab91df150826c85abdd28",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": true,
+      "expected_failure_index": 0,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/basic-512-missing-4z40hocj"
+    },
+    {
+      "passed": true,
+      "mode": "basic",
+      "ram_kib": 512,
+      "fault": "truncated",
+      "negative": true,
+      "resource_reads": 0,
+      "cold_cycles": null,
+      "script_sha256": "e30a69bf7daaa317e2b285272760cd90050cf4415807ea291eb15cecddec7217",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": true,
+      "expected_failure_index": 0,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/basic-512-truncated-253g4xcc"
+    },
+    {
+      "passed": true,
+      "mode": "basic",
+      "ram_kib": 512,
+      "fault": "checksum",
+      "negative": true,
+      "resource_reads": 0,
+      "cold_cycles": null,
+      "script_sha256": "5d223e0d7ea2e99393400d2ae3cc4fb3c8559c49538a152f4cae21c2137fa01a",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": true,
+      "expected_failure_index": 0,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/basic-512-checksum-kqa8jd1s"
+    },
+    {
+      "passed": true,
+      "mode": "basic",
+      "ram_kib": 512,
+      "fault": "late",
+      "negative": true,
+      "resource_reads": 26,
+      "cold_cycles": {
+        "mean": 8486089.15384615,
+        "p95": 9253039.0,
+        "max": 10378442.0
+      },
+      "script_sha256": "462f2dea5f1ff024c0de63059478d13d4774817eb97d890f6680c36b76228645",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": null,
+      "rejected_hot_data_preserved": true,
+      "expected_failure_index": 26,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/basic-512-late-trpuvkwo"
+    },
+    {
+      "passed": true,
+      "mode": "basic",
+      "ram_kib": 256,
+      "fault": null,
+      "negative": true,
+      "resource_reads": 0,
+      "cold_cycles": null,
+      "script_sha256": "41a12db81e153a1872762c57c4912895512d0d80c54050fe2e4bc93ae8707e89",
+      "source_bridge_sha256": "ea544eaf6c0ad48003e14fb95daee0ea8f71f4ce014110169fca91f529ea170f",
+      "source_resource_sha256": "5eb380c1d011a653544f44becb87f0962d1ab9a7d13332aee6df82f7378fa3a9",
+      "context_bytes": 32768,
+      "context_fragments": 130,
+      "host_payload_injections": 0,
+      "cartridge_attached": false,
+      "capacity_probe_restored": true,
+      "rejected_hot_data_preserved": null,
+      "expected_failure_index": null,
+      "masked_span_checks": null,
+      "scope": "Guest filesystem/decode/masked-copy/OS-state proof with all four production hot layouts. Synthetic game work state; no original-game bootstrap, active gameplay, F10 key activation or FPS qualification.",
+      "path": "references/build/game-mapper512-cold/basic-256-valid-1pzsphgr"
+    }
+  ],
+  "source_files": {
+    "src/disk/mapper512-cold.asm": "c411afe4f811730d8c3010935c3ef5771fc9e83654e10637664a19c558336154",
+    "src/disk/mapper512-cold-loader.asm": "916ec061228c6b08c0be0f9b321cf3ee0c02cd467d2c046e3cbf919844298a2d",
+    "scripts/mapper512_cold.py": "b26a0df0cfb1aa8dc1b6e0df7d467a037ceb64069099d145152998000183895a",
+    "scripts/mapper512_cold_verify.py": "72f2d246166139e00da08f3a46b169471867d4163bfd512eeb386bfc1ca9c96f",
+    "scripts/mapper512_integrate.py": "f03f71cd025c6d6958b1a98581c60c9c7e8af3460666c79b0218ee8a56fdaf6a"
+  },
+  "limits": "No cartridge/debug payload injection; synthetic game work state. No native bootstrap/active gameplay/F10 activation or FPS qualification. Per-resource Read inclusive excludes caller CALL/loop."
+}

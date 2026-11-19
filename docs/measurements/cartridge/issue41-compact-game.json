@@ -1,0 +1,924 @@
+{
+  "bytes": 1007616,
+  "hashes": {
+    "baseline": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+    "ASCII8": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+    "MegaRAM": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8"
+  },
+  "saved_bytes": 1040384,
+  "performance": [
+    {
+      "enemies": 3,
+      "variants": [
+        {
+          "backend": "baseline",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 75838.30801687915,
+            "p95": 111036.33333332837,
+            "max": 127439.33333335817
+          },
+          "presented_fps": 29.965997589656936,
+          "active_frames": 237,
+          "late_frames": 19,
+          "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+          "passed": true,
+          "log": "references/build/game/profile-u49rhm9q",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 75556.83825597996,
+            "p95": 110912.33333334327,
+            "max": 127315.33333332837
+          },
+          "presented_fps": 29.96599582552921,
+          "active_frames": 237,
+          "late_frames": 19,
+          "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-3b276blt",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 75556.8382559879,
+            "p95": 110912.33333349228,
+            "max": 127315.33333349228
+          },
+          "presented_fps": 29.966001117912995,
+          "active_frames": 237,
+          "late_frames": 19,
+          "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+          "passed": true,
+          "log": "references/build/game-compact-megaram-runtime/profile-uiksmvui",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        }
+      ],
+      "matched_rows": 356,
+      "matched_fields": [
+        "cx",
+        "cy",
+        "enemy_positions",
+        "elapsed_ticks",
+        "active_start",
+        "active_end",
+        "psg"
+      ]
+    },
+    {
+      "enemies": 5,
+      "variants": [
+        {
+          "backend": "baseline",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 5,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 88177.3095238091,
+            "p95": 130171.66666662693,
+            "max": 173091.33333334327
+          },
+          "presented_fps": 28.872424175060818,
+          "active_frames": 238,
+          "late_frames": 42,
+          "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+          "passed": true,
+          "log": "references/build/game/profile-8i19izf5",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 5,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 87868.4929971978,
+            "p95": 129908.66666665673,
+            "max": 173063.9999999702
+          },
+          "presented_fps": 28.87241765171567,
+          "active_frames": 238,
+          "late_frames": 42,
+          "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-779t572a",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 5,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 87868.49299719655,
+            "p95": 129908.66666698456,
+            "max": 173064.0
+          },
+          "presented_fps": 28.872417651715494,
+          "active_frames": 238,
+          "late_frames": 42,
+          "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+          "passed": true,
+          "log": "references/build/game-compact-megaram-runtime/profile-hfge9d2m",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        }
+      ],
+      "matched_rows": 356,
+      "matched_fields": [
+        "cx",
+        "cy",
+        "enemy_positions",
+        "elapsed_ticks",
+        "active_start",
+        "active_end",
+        "psg"
+      ]
+    },
+    {
+      "enemies": 6,
+      "variants": [
+        {
+          "backend": "baseline",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 6,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 90412.24789915854,
+            "p95": 133387.66666665673,
+            "max": 170967.66666665673
+          },
+          "presented_fps": 28.700851536954445,
+          "active_frames": 238,
+          "late_frames": 36,
+          "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+          "passed": true,
+          "log": "references/build/game/profile-n1opmyng",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 6,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 90135.75070027982,
+            "p95": 133091.66666665673,
+            "max": 170802.9999999702
+          },
+          "presented_fps": 28.700852826164013,
+          "active_frames": 238,
+          "late_frames": 36,
+          "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-qslj_1ib",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 6,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 90135.75070027844,
+            "p95": 133091.66666674614,
+            "max": 170803.00000023842
+          },
+          "presented_fps": 28.700852826163956,
+          "active_frames": 238,
+          "late_frames": 36,
+          "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+          "passed": true,
+          "log": "references/build/game-compact-megaram-runtime/profile-g8vbwmxf",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        }
+      ],
+      "matched_rows": 356,
+      "matched_fields": [
+        "cx",
+        "cy",
+        "enemy_positions",
+        "elapsed_ticks",
+        "active_start",
+        "active_end",
+        "psg"
+      ]
+    }
+  ],
+  "cpu_matrix": [
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "ram_profile_kib": 64,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 75556.83825597996,
+        "p95": 110912.33333334327,
+        "max": 127315.33333332837
+      },
+      "presented_fps": 29.96599582552921,
+      "active_frames": 237,
+      "late_frames": 19,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "passed": true,
+      "log": "references/build/game-compact-runtime/profile-3b276blt",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "ram_profile_kib": 64,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 75556.8382559879,
+        "p95": 110912.33333349228,
+        "max": 127315.33333349228
+      },
+      "presented_fps": 29.966001117912995,
+      "active_frames": 237,
+      "late_frames": 19,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "passed": true,
+      "log": "references/build/game-compact-megaram-runtime/profile-uiksmvui",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "ram_profile_kib": 64,
+      "enemy_count": 5,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 87868.4929971978,
+        "p95": 129908.66666665673,
+        "max": 173063.9999999702
+      },
+      "presented_fps": 28.87241765171567,
+      "active_frames": 238,
+      "late_frames": 42,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "passed": true,
+      "log": "references/build/game-compact-runtime/profile-779t572a",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "ram_profile_kib": 64,
+      "enemy_count": 5,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 87868.49299719655,
+        "p95": 129908.66666698456,
+        "max": 173064.0
+      },
+      "presented_fps": 28.872417651715494,
+      "active_frames": 238,
+      "late_frames": 42,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "passed": true,
+      "log": "references/build/game-compact-megaram-runtime/profile-hfge9d2m",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "ram_profile_kib": 64,
+      "enemy_count": 6,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 90135.75070027982,
+        "p95": 133091.66666665673,
+        "max": 170802.9999999702
+      },
+      "presented_fps": 28.700852826164013,
+      "active_frames": 238,
+      "late_frames": 36,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "passed": true,
+      "log": "references/build/game-compact-runtime/profile-qslj_1ib",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "ram_profile_kib": 64,
+      "enemy_count": 6,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 90135.75070027844,
+        "p95": 133091.66666674614,
+        "max": 170803.00000023842
+      },
+      "presented_fps": 28.700852826163956,
+      "active_frames": 238,
+      "late_frames": 36,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "passed": true,
+      "log": "references/build/game-compact-megaram-runtime/profile-g8vbwmxf",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Sony_HB-F1XDJ",
+      "mapper_kib": 64,
+      "ram_profile_kib": 64,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 0,
+      "work": {
+        "mean": 82535.277310925,
+        "p95": 113701.0000000149,
+        "max": 146954.9999999851
+      },
+      "presented_fps": 29.46766104243495,
+      "active_frames": 238,
+      "late_frames": 28,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "passed": true,
+      "log": "references/build/game-compact-runtime/profile-kbwnze4a",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1ST",
+      "mapper_kib": 256,
+      "ram_profile_kib": 256,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 2,
+      "work": {
+        "mean": 73624.7468354431,
+        "p95": 103119.0,
+        "max": 141331.0000000149
+      },
+      "presented_fps": 30.80626602972101,
+      "active_frames": 237,
+      "late_frames": 21,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "passed": true,
+      "log": "references/build/game-compact-runtime/profile-m5iazp_4",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1GT",
+      "mapper_kib": 512,
+      "ram_profile_kib": 512,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 2,
+      "work": {
+        "mean": 73624.7468354431,
+        "p95": 103119.0,
+        "max": 141331.0000000149
+      },
+      "presented_fps": 30.80626602972101,
+      "active_frames": 237,
+      "late_frames": 21,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "passed": true,
+      "log": "references/build/game-compact-runtime/profile-gpkpc_zt",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "mapper_kib": 128,
+      "ram_profile_kib": 128,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 74934.14345991448,
+        "p95": 105837.66666664183,
+        "max": 123036.33333334327
+      },
+      "presented_fps": 30.029361515139662,
+      "active_frames": 237,
+      "late_frames": 18,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "passed": true,
+      "log": "references/build/game-compact-runtime/profile-ct10rz87",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+    }
+  ],
+  "regression": [
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "flags",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 12,
+      "log": "references/build/game-compact-runtime/session-start-g1bfiz17/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "controls",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 2,
+      "log": "references/build/game-compact-runtime/session-start-uvrndmlm/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Sony_HB-F1XDJ",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "controls",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 2,
+      "log": "references/build/game-compact-runtime/session-start-kk26mjw9/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "smoke",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 301,
+      "log": "references/build/game-compact-runtime/session-start-fu922o3q/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "integration",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 14,
+      "log": "references/build/game-compact-runtime/session-start-2oq1_sgp/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "attract",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 3,
+      "log": "references/build/game-compact-runtime/session-start-3bz58qwf/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "mapper_kib": 128,
+      "turbo": true,
+      "case": "smoke",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 301,
+      "log": "references/build/game-compact-runtime/session-start-9gak02yf/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "radar",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 257,
+      "log": "references/build/game-compact-runtime/session-start-ls9hbgo6/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "two-player",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 2,
+      "log": "references/build/game-compact-runtime/session-start-1c_thp5q/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1GT",
+      "mapper_kib": 512,
+      "turbo": true,
+      "case": "controls",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 2,
+      "log": "references/build/game-compact-runtime/session-start-r_3mtr1t/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "start",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 2,
+      "log": "references/build/game-compact-runtime/session-start-tq59mvhh/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1ST",
+      "mapper_kib": 256,
+      "turbo": true,
+      "case": "controls",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "snapshots": 2,
+      "log": "references/build/game-compact-runtime/session-start-eaa0d8ec/result.json"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "radar",
+      "passed": true,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "snapshots": 257,
+      "log": "references/build/game-compact-megaram-runtime/session-start-hmtxnw68/result.json"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "integration",
+      "passed": true,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "snapshots": 14,
+      "log": "references/build/game-compact-megaram-runtime/session-start-hdcrja97/result.json"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "controls",
+      "passed": true,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "snapshots": 2,
+      "log": "references/build/game-compact-megaram-runtime/session-start-vsba8464/result.json"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "two-player",
+      "passed": true,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "snapshots": 3,
+      "log": "references/build/game-compact-megaram-runtime/session-start-iysmjxxy/result.json"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "flags",
+      "passed": true,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "snapshots": 12,
+      "log": "references/build/game-compact-megaram-runtime/session-start-rzasjwij/result.json"
+    }
+  ],
+  "components": [
+    {
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "steering-proof-*",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "log": "references/build/game-compact-runtime/steering-proof-qrszi0h7/report.json"
+    },
+    {
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "audio-proof-*",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "log": "references/build/game-compact-runtime/audio-proof-daepphof/report.json"
+    },
+    {
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "boot-proof-*",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "log": "references/build/game-compact-runtime/boot-proof-d9gwz5s0/report.json"
+    },
+    {
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "boot-skip-proof-*",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "log": "references/build/game-compact-runtime/boot-skip-proof-p9bj1qvw/report.json"
+    },
+    {
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "speed-proof-*",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "log": "references/build/game-compact-runtime/speed-proof-si_rehnl/report.json"
+    },
+    {
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "rocks-proof-*",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "log": "references/build/game-compact-runtime/rocks-proof-gsssrer9/report.json"
+    },
+    {
+      "machine": "Panasonic_FS-A1WSX_NR64",
+      "mapper_kib": 64,
+      "turbo": true,
+      "case": "sprite-clip-proof-*",
+      "passed": true,
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+      "log": "references/build/game-compact-runtime/sprite-clip-proof-mewo03ke/report.json"
+    }
+  ],
+  "maps": [
+    {
+      "backend": "baseline",
+      "calls": 26,
+      "maps": 8,
+      "iff_values": [
+        0
+      ],
+      "inclusive_cycles": {
+        "mean": 376938.9999999981,
+        "p95": 376939.00000001275,
+        "max": 376939.00000001275
+      },
+      "exact_16k_bytes": true,
+      "ix_iy_iff_preserved": true
+    },
+    {
+      "backend": "ASCII8",
+      "calls": 68,
+      "maps": 8,
+      "iff_values": [
+        0
+      ],
+      "inclusive_cycles": {
+        "mean": 304540.00000000093,
+        "p95": 304540.0000000163,
+        "max": 304540.0000000163
+      },
+      "exact_16k_bytes": true,
+      "ix_iy_iff_preserved": true
+    },
+    {
+      "backend": "MegaRAM",
+      "calls": 40,
+      "maps": 8,
+      "iff_values": [
+        0
+      ],
+      "inclusive_cycles": {
+        "mean": 304539.99999999086,
+        "p95": 304540.00000016886,
+        "max": 304540.00000016886
+      },
+      "exact_16k_bytes": true,
+      "ix_iy_iff_preserved": true
+    }
+  ],
+  "megaram": {
+    "programmed_bytes": 1007616,
+    "physical_padded_bytes": 1015808,
+    "pages_8k": 123,
+    "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+    "data_sha256": "e91ed1878450b5797ab2386d2172079c7192df7b2c01d49116a39f35af89e280",
+    "minimum_main_ram_kib": 64,
+    "minimum_megaram_kib": 1024,
+    "loader_bytes": 971,
+    "compressed_bytes": 405941
+  },
+  "loader_checks": [
+    {
+      "source": "references/sessions/compact-megaram-basic-512/report.json",
+      "passed": true,
+      "mode": "basic",
+      "megaram_kib": 512,
+      "negative": "capacity",
+      "image_unchanged": true,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8"
+    },
+    {
+      "source": "references/sessions/compact-megaram-dos-1024-missing/report.json",
+      "passed": true,
+      "mode": "dos",
+      "megaram_kib": 1024,
+      "negative": "missing",
+      "image_unchanged": true,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8"
+    },
+    {
+      "source": "references/sessions/compact-megaram-dos-1024-expanded/report.json",
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "bytes": 1007616,
+      "mode": "dos",
+      "megaram_kib": 1024,
+      "expanded_slot": true,
+      "main_ram_kib": 64,
+      "frames": 300,
+      "smoke_presented_fps": 33.366418618002804,
+      "period_mean": 107279.86845039047,
+      "period_p95": 122289.33333327128,
+      "period_max": 179205.33333325296,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+    },
+    {
+      "source": "references/sessions/compact-megaram-basic-1024/report.json",
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "bytes": 1007616,
+      "mode": "basic",
+      "megaram_kib": 1024,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "frames": 300,
+      "smoke_presented_fps": 33.366418618002804,
+      "period_mean": 107279.86845039047,
+      "period_p95": 122293.33333341405,
+      "period_max": 179210.33333338055,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+    },
+    {
+      "source": "references/sessions/compact-megaram-dos-1024/report.json",
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+      "bytes": 1007616,
+      "mode": "dos",
+      "megaram_kib": 1024,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "frames": 300,
+      "smoke_presented_fps": 33.36641861800302,
+      "period_mean": 107279.86845038978,
+      "period_p95": 122290.66666672002,
+      "period_max": 179205.33333345645,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+    },
+    {
+      "source": "references/sessions/compact-megaram-basic-1024-distance/report.json",
+      "passed": true,
+      "mode": "basic",
+      "megaram_kib": 1024,
+      "negative": "distance",
+      "image_unchanged": true,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8"
+    },
+    {
+      "source": "references/sessions/compact-megaram-dos-1024-count/report.json",
+      "passed": true,
+      "mode": "dos",
+      "megaram_kib": 1024,
+      "negative": "count",
+      "image_unchanged": true,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "rom_sha256": "dbdfb5e2bcf9602f2809bc3e0f2035eecc5d2c3d11d25638a14f5cfe5fd6e8e8"
+    }
+  ],
+  "source_files": {
+    "scripts/compact_game_build.py": "612e9ed22c88f9288f5aaa29376c04f26cdc6aea693768e59668c042b789142d",
+    "scripts/compact_game_verify.py": "44600e1bbe845258a5eaf563271f478d4c9a661de8f5aac519e3064ad31aca8d",
+    "scripts/compact_game_report.py": "cf8fea344e4a31bca096c7630cb016f0a7b05b6cfca88f3657e2486e58c678b2",
+    "scripts/compact_map_contract.py": "27bba4e4a0d404872558dae1a97fbbdd1ff94398709a3cbb508fe4dcb942decf",
+    "scripts/renderer_image_build.py": "e18808790b053471cdd60a877f9066b3bc28dc6ecd3de13d882ab687e9861cf3",
+    "scripts/renderer_window_probe.py": "609a404f0834cc47fb9e8b423e4407eed321d89e1aef74fb564a7eab47d0d2f4",
+    "scripts/megaram_package.py": "d6559b88dff8d5ef3accd2051597951bf9b1b3343c8942a108af772ed04dad41",
+    "src/disk/megaram-loader.asm": "57013ae600781191a416ce83fe8438c2db5e996541e17ea0f8fb35b777e2232b",
+    "src/toolchain/screen4/session_build.py": "c8b06db1ba2a14b97177e5c2d0205074383e1630f70898df29b851191c832469",
+    "src/toolchain/screen4/session_profile_adapter.py": "dd056294155ab0fa7a7e6e1b6d542c5d9fbaaeae66ed05632167f2b379d0e9ed"
+  },
+  "limitations": "Emulator/automated evidence; controlled fixtures distinguished by each source report. No hardware or subjective listening acceptance. NTSC output at59.922743Hz; no PAL50 timing claim."
+}

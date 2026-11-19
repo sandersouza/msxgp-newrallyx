@@ -52,6 +52,23 @@ class GraphicsPacking(unittest.TestCase):
 
 
 class ColdPacking(unittest.TestCase):
+    def test_8k_same_bank_cross_hole_reuse_preserves_frames_and_live_fields(self):
+        from scripts.renderer_image_build import replay
+        page=8192
+        image=bytearray(b'\xff'*page)
+        command=bytes((1,10,0,8))+b'abcdefgh'
+        pointers,report=pack_replay([dict(data=command+b'\0')]*2,image,
+            [(1,100,120),(1,200,220)],bank_bytes=page,reuse_across_holes=True)
+        self.assertEqual(report['literal_reuses'],1)
+        self.assertEqual(report['chains'],1)
+        for bank,address in pointers.values():
+            self.assertEqual(replay(bytes(page)+image,bank,address,page),[(10,b'abcdefgh',False)])
+        for begin,end in [(0,100),(120,200),(220,page)]:
+            self.assertEqual(image[begin:end],b'\xff'*(end-begin))
+        for kwargs in [dict(bank_bytes=4096),dict(bank_bytes=page)]:
+            with self.assertRaises(ValueError):
+                pack_replay([dict(data=b'\0')],image,[(1,page,page+10)],**kwargs)
+
     def test_chain_and_literal_addresses_relocate_and_preserve_frame_entries(self):
         image=bytearray(b'\xff'*(2*BANK_BYTES))
         command=bytes((1,10,0,8))+b'abcdefgh'

@@ -113,8 +113,12 @@ GameSession_BootShow:
     out ($9a),a
     out ($9a),a
     reg 7,BLACK
+    ; F10 is MSX Shift+F5. Commit only at the opening-to-title boundary;
+    ; the ordinary skip gate consumes the held combination before coin/start.
+    call GameSession_BootCommitF10
+    jr nz,.consume
     ; A skipped key is consumed until all rows are released on the title.
-    ; Natural completion disables the boot-only keyboard gate immediately.
+    ; Natural completion without F10 disables the gate immediately.
     ld a,(GameSession_BootSkip)
     or a
     jr nz,.consume

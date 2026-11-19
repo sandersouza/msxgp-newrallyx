@@ -1,0 +1,28 @@
+{
+  "source_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+  "allocation_sha256": "61dacd4b9aec009c36aa95e75075442fd84db7ddb628b0903ebe0b352a58ecff",
+  "allocated_bytes": 1040384,
+  "pages_8k": 127,
+  "below_1mib": true,
+  "raw_banks_preserved": 18,
+  "raw_allocated_bytes": 294912,
+  "hot_allocated_bytes": 729088,
+  "map_banks": 10,
+  "map_compressed_bytes": 23164,
+  "boot_frames": 71,
+  "boot_encoded_bytes": 194374,
+  "boot_chains": 575,
+  "ring_bytes": 1934,
+  "runtime_reservation_bytes": 1024,
+  "all_maps_host_roundtrip": true,
+  "boot_prefix_rehomed_bytes": 4452,
+  "extra_cold_pages_8k": 2,
+  "all_boot_frame_final_bytes_independently_equal": true,
+  "source_files": {
+    "scripts/renderer_image_build.py": "fcba25654504b39361600b028e070004d6f05473c83adbbbfda5cc9a60211d97",
+    "scripts/renderer_window_probe.py": "a2be33a5523ac9318b9cf3ccc26798858b9ca9ee9b251a14870074b77c76dd32",
+    "scripts/disk_package.py": "362b3e543a874c54a7a12ca2921d334dde224e4309d5f3b410b30a44dd22587c",
+    "src/toolchain/screen4/rom_pack.py": "4324bf4b9d684e086ec1c97c3d4a88b28a601453620aba5591add8b885c8c92f"
+  },
+  "caveat": "NON-BOOTABLE allocation experiment. Remaining raw bank and caller addresses are not relinked; omitted legacy atlas liveness is unproven; 1024-byte runtime reserve is not an implemented backend. No full-game or performance acceptance."
+}

@@ -3,7 +3,17 @@
 The playable cartridge is **`dist/newrallyx.rom`**, accompanied by its compact
 `manifest.json`. `make run` loads this exact file; `MAPPER=1` changes only the
 emulated RAM to128KiB. Explicit test/diagnostic/legacy modes use named `dist/`
-subdirectories. Select ASCII16 in WebMSX; no duplicate filename-hint ROM is made.
+subdirectories. Select ASCII8 for the default game in WebMSX; named diagnostics
+may use other explicit mappers. The experimental512KiB RAM-backend test carrier
+at `dist/experimental/mapper512/newrallyx-512-test.rom` uses ASCII8 and requires
+512KiB main mapper RAM. It is distinct from the default744KiB cartridge for64KiB
+machines; see [its scope and controls](issue42-512-lifecycle.md).
+The corrected fixed64KiB test cartridge is also retained at
+`dist/experimental/fixedram/newrallyx.rom`, with identical bytes to the default
+cartridge and its own manifest. It needs no RAM mapper. Its MegaRAM test package
+is under `dist/experimental/fixedram/megaram/`; the normal local package remains
+`dist/compact/megaram/newrallyx-megaram.zip`. No release is implied.
+No duplicate filename-hint ROM is made.
 
 ## Retention policy
 

@@ -9,6 +9,13 @@ import json
 import os
 
 def adapt(source,base):
+    fixed=json.loads((base/'session-build.json').read_text()).get('world_storage')=='fixed'
+    if fixed:
+        source=source.replace(r'Reference RAM mapper: (\d+) bytes; machine: (\S+)',r'Reference (?:plain RAM|RAM mapper): (\d+) bytes;(?: RAM mapper: 0 bytes;)? machine: (\S+)')
+        for name in ['GamePlain_LoadRun','GamePlain_LoadColumns','GamePlain_Address','GamePlain_Ram','GamePlain_Rom','GamePlain_RestoreOne']:
+            source=source.replace("    'clock_irq':'VBlank ISR body'",f"    {name!r}:'Fixed-RAM world accessor; inclusive child cost',\n    'clock_irq':'VBlank ISR body'")
+        plain=os.environ.get('NRX_REFERENCE_RAM_KIND')=='plain'
+        source=source.replace("    (out/'summary.json').write_text",f"    metadata['main_ram_kind']={'plain' if plain else 'mapper'!r}\n    metadata['main_ram_kib']=metadata['mapper_ram_kib']\n    metadata['mapper_ram_kib']={0 if plain else 'metadata[\"mapper_ram_kib\"]'}\n    (out/'summary.json').write_text")
     source=source.replace("BASE/'fixed-hud.rom'",'cartridge_path(BASE)')
     source=source.replace('from src.toolchain.msx.emulator import reference_machine, tcl',
         'from src.toolchain.msx.artifacts import cartridge_path\nfrom src.toolchain.msx.emulator import reference_machine, tcl')
@@ -46,9 +53,9 @@ def adapt(source,base):
         r'[expr {{[llength $::stack]==1}}]\t$vf\t$vt\t$s2\t[machine_info VDP_frame_count]\t[machine_info VDP_cycle_in_frame]\t[debug read "VDP status regs" 2]"')
     source=source.replace('0 $ret $sp $::frame]',
         '0 $ret $sp $::frame [machine_info VDP_frame_count] [machine_info VDP_cycle_in_frame] [debug read "VDP status regs" 2]]')
-    source=source.replace(r'active_end"',r'active_end\tenemy_positions\tr9\tr18"')
+    source=source.replace(r'active_end"',r'active_end\tenemy_positions\tr9\tr18\tpsg"')
     source=source.replace(r'[active_gameplay]"',
-        r'[active_gameplay]\t[binary encode hex [debug read_block memory 0xe088 224]]\t[debug read "VDP regs" 9]\t[debug read "VDP regs" 18]"')
+        r'[active_gameplay]\t[binary encode hex [debug read_block memory 0xe088 224]]\t[debug read "VDP regs" 9]\t[debug read "VDP regs" 18]\t[binary encode hex [debug read_block {{PSG regs}} 0 14]]"')
     source=source.replace('else 120',f'else {last}')
     source=source.replace('after time 30','after time 90')
     source=source.replace("workload='Integrated first-stage deterministic keyboard route; frames5..120'",
@@ -142,10 +149,70 @@ def adapt(source,base):
     """
     autostart=autostart.replace('[debug read memory 0xe1b0]==5',f'[debug read memory 0xe1b0]=={target}')
     autostart=autostart.replace('[debug read memory 0xe24e]!=3',f'[debug read memory 0xe24e]!={enemies}')
+    seed=os.environ.get('NRX_PROFILE_SEED')
+    if seed is not None:
+        seed=int(seed,0)
+        if not 0<=seed<65536:raise ValueError('Controlled RNG seed must fit a word')
+        # Compare the same original placements/route after a seed-lifecycle fix.
+        # Explicit diagnostic RAM injection only; never a production ROM patch.
+        autostart+='\nCONTROLLED_RNG_HOOK\n'
     source=source.replace("debug set_bp {syms['loop']} {{}} {{next_frame}}",
         "{autostart}\ndebug set_bp {syms['loop']} {{$::full_profile_ready}} {{next_frame}}")
     # Inject the Tcl string as a local of the inner profiler main().
     source=source.replace('    script = f\'\'\'', '    autostart='+repr(autostart)+'\n    script = f\'\'\'')
+    if seed is not None:
+        hook="debug set_bp {syms['Full_NextBody']} {{[debug read_block memory 0x8000 32] eq [binary format H* {native_prefix.hex()}]}} {{debug write memory 0xe000 "+str(seed&255)+";debug write memory 0xe001 "+str(seed>>8)+"}}"
+        source=source.replace('    script = f\'\'\'', '    autostart=autostart.replace("CONTROLLED_RNG_HOOK",f'+repr(hook)+')\n    script = f\'\'\'')
     if turbo:
         source=source.replace('metadata = dict(timing_units=',f'metadata = dict(profile_native_round={target}, profile_enemy_count={enemies}, timing_units=')
+    # The profiler observes the linked mapper layout rather than assuming that
+    # each logical bank is a consecutive16 KiB file block. Keep old bundles'
+    # defaults and their observer guards unchanged.
+    kind=json.loads((base/'session-build.json').read_text()).get('cartridge_mapper','ASCII16')
+    if 'Compact_ExactHead:' in (base/'lab.sym').read_text():
+        source=source.replace("    'clock_irq':'VBlank ISR body'", "    'Compact_ExactTransfer':'Exact-count VDP worker; all head/tail aliases, matched PC/SP return',\n    'clock_irq':'VBlank ISR body'")
+        source=source.replace("    syms['HUD_NameStores'] =", "    syms['Compact_ExactTransfer']=syms['Compact_ExactHead']\n    syms['HUD_NameStores'] =",1)
+        source=source.replace('proc enter {{name}} {{\n', '''proc enter {{name}} {{
+ if {{$name eq "Compact_ExactTransfer" && [reg PC]<0x3000 && [debug read_block memory 0x1400 16] ne $::cold_prefix}} {{incr ::page2_rejected;return}}
+''')
+        alias='''
+    exact_entries=[syms['Compact_ExactTailEnd']-2*n if n<=64 else syms['Compact_ExactHead']+2*(255-n) for n in range(16,256)]
+    exact_entries += [syms['Compact_ExactShortEnd']-2*n for n in range(2,16)]
+    for pc in sorted(set(exact_entries)-{syms['Compact_ExactHead']}):
+        script+=f'set entries({pc}) Compact_ExactTransfer\\nset returns({pc}) [debug set_bp {pc} {{}} {{hit {pc}}}]\\n'
+'''
+        source=source.replace("    script += 'after time 90",alias+"    script += 'after time 90")
+    if kind in ('ASCII8','MegaRAM'):
+        source=source.replace('from src.toolchain.msx.artifacts import cartridge_path',
+            'from src.toolchain.msx.artifacts import cartridge_path\nfrom session_reference import bank_offset')
+        source=source.replace('-romtype ASCII16','-romtype ASCII8')
+        source=source.replace('native_prefix=measured_bytes[native_bank*16384:native_bank*16384+32]',
+            'native_at=bank_offset(BASE,native_bank)\n    native_prefix=measured_bytes[native_at:native_at+32]')
+        # ASCII8 keeps lower/upper Page2 windows independent. A retained native
+        # lower half is insufficient when pooled render code occupies the upper
+        # half: its numeric PCs can alias native entry/return observers.
+        source=source.replace("    page2_setup='set page2_rejected 0\\n'",
+            "    page2_setup='set page2_rejected 0\\n'\n    for name in ROUTINES:\n        if 0x8000<=syms[name]<0xc000 and name!='HUD_NameStores':\n            entry=native_at+syms[name]-0x8000\n            signature=measured_bytes[entry:entry+16]\n            assert signature!=bytes([255])*16\n            page2_setup+=f'set native_entry({name}) [binary format H* {signature.hex()}]\\n'")
+        source=source.replace('proc enter {{name}} {{\n', '''proc enter {{name}} {{
+ if {{[info exists ::native_entry($name)] && [debug read_block memory [reg PC] 16] ne $::native_entry($name)}} {{incr ::page2_rejected;return}}
+''')
+        source=source.replace('cold_prefix=measured_bytes[cold_bank*16384:cold_bank*16384+16]',
+            'cold_at=bank_offset(BASE,cold_bank)\n    cold_prefix=measured_bytes[cold_at:cold_at+16]')
+        source=source.replace("syms['HUD_NameStores'] = 0xa300","syms['HUD_NameStores'] = syms['Compact_Names']")
+        line='    if {{$name eq "HUD_NameStores" && [debug read_block memory 0x8000 32] ne [lindex $::phase_prefix [debug read memory 0xc01d]]}} {{incr ::page2_rejected;return}}\n'
+        assert line in source
+        source=source.replace(line,'')
+        source='\n'.join(line for line in source.splitlines() if
+            'prefixes=[measured_bytes[(4+n)*16384:' not in line and
+            "page2_setup+='set phase_prefix [list '" not in line)+'\n'
+        source=source.replace("'HUD_NameStores': 'Compiled HUD name stores'", "'HUD_NameStores': 'Compact immediate HUD and guard name stores'")
+    if kind=='MegaRAM':
+        source=source.replace('    script = f\'\'\'', "    from scripts.compact_game_verify import profile_startup\n    megaram_startup=profile_startup(out)\n    script = f\'\'\'")
+        anchor="cart {tcl(out/'measured.rom')} -romtype ASCII8\nreset"
+        assert anchor in source
+        source=source.replace(anchor,'{megaram_startup}')
+        source=source.replace('after time 90','after time 600')
+    if seed is not None:
+        # Add this last: earlier metadata adapters match the original prefix.
+        source=source.replace('metadata = dict(',f'metadata = dict(controlled_rng_seed={seed},',1)
     return source

@@ -1,0 +1,645 @@
+{
+  "status": "Experimental component backend; complete512KiB executable not delivered or qualified",
+  "reference_rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c",
+  "configuration": {
+    "machine": "Panasonic_FS-A1WSX_NR512",
+    "ram_kib": 512,
+    "video": "SCREEN4 display on,128KiB VRAM, real VDP timing",
+    "cpu_hz": 3579545,
+    "emulator": "openMSX 22.0\nflavour: opt\ncomponents: CORE GL LASERDISC",
+    "vdp_irq_generation": false,
+    "calls_per_presented_frame": "Not measured: isolated fixtures, not gameplay FPS"
+  },
+  "allocation": {
+    "status": "Packet backend only; no complete512KiB executable",
+    "source_rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c",
+    "references": 4384,
+    "records": 96,
+    "slot_bytes": 2048,
+    "data_live_bytes": 160041,
+    "unique_programs": 2550,
+    "unique_code_bytes": 264984,
+    "hot_physical_segments": 27,
+    "hot_bytes": 442368,
+    "main_work_segments": 4,
+    "uncompressed_hot_owner_segments": 5,
+    "current_expanded_cache_work_segments": 6,
+    "provisional_bytes_before_cold_resources": 589824,
+    "slots_verified": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "ordered_source_control_and_final_b_verified": true,
+    "packet_only_delta_cycles": {
+      "mean": -22.523266423357665,
+      "min": -460,
+      "max": 37,
+      "slower": 2005,
+      "unchanged": 96
+    },
+    "suffix": {
+      "code_windows": 14,
+      "code_live_bytes": 219731,
+      "code_window_sizes": [
+        15934,
+        15795,
+        15917,
+        15838,
+        15818,
+        15934,
+        15874,
+        15871,
+        15875,
+        15922,
+        15876,
+        15935,
+        15829,
+        13313
+      ],
+      "hot_bytes": 425984,
+      "provisional_total_before_cold": 573440,
+      "extra_jumps": {
+        "mean": 3.208485401459854,
+        "max": 17
+      },
+      "packet_only_delta_cycles": {
+        "mean": 12.77007299270073,
+        "min": -394,
+        "max": 151,
+        "slower": 3078
+      }
+    },
+    "compact_suffix": {
+      "code_windows": 10,
+      "code_live_bytes": 137265,
+      "header_workers": 29,
+      "hot_bytes": 360448,
+      "provisional_total_with_64k_work_and_native_audio_resident": 475136,
+      "provisional_total_with_current_expanded_cache": 507904,
+      "packet_only_delta_cycles": {
+        "mean": 58.1706204379562,
+        "min": 0,
+        "max": 99,
+        "slower": 4288
+      }
+    },
+    "hoisted_suffix": {
+      "code_windows": 12,
+      "code_live_bytes": 184187,
+      "common_header_bytes": 14,
+      "header_call_overhead_cycles": 0,
+      "hot_bytes": 393216,
+      "provisional_total_with_64k_work_and_native_audio_resident": 507904,
+      "provisional_total_with_current_expanded_cache": 540672,
+      "packet_only_delta_cycles": {
+        "mean": 12.18544708029197,
+        "min": -416,
+        "max": 151,
+        "slower": 3069
+      }
+    },
+    "limits": "No dispatch/mapping/D-E setup cost included. Full metadata relocations, cold-resource backing, loader/OS lifetimes, IRQ restoration and whole-game performance remain unqualified. Compressed file size is not resident usage."
+  },
+  "execution": {
+    "compact": {
+      "passed": true,
+      "scope": "Isolated real-RAM packet execution, not complete512KiB game or DOS startup. Cartridge keyboard startup initializes video/Page0, then CPU unmaps cartridge Page1/Page2. Host fixture injection, all4384 production packet references, flat relative and compact suffix variants, both extreme pattern tables. All128KiB VRAM, BC/DE/HL/IX/IY/SP/IFF checked. VDP IRQ generation disabled; actual Page1 return/dispatch and whole-game IRQ/audio not qualified.",
+      "reference_rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c",
+      "main_ram_kib": 512,
+      "packet_references": 4384,
+      "executions": 26304,
+      "strict_vram_callbacks": 0,
+      "variant": "compact",
+      "packet_delta_cycles": {
+        "mean": 58.17062043808995,
+        "p95": 77.00000000141335,
+        "min": -5.0868393941527756e-08,
+        "max": 99.00000002361594,
+        "slower": 8576,
+        "unchanged": 192
+      },
+      "costs": [
+        {
+          "stage": "baseline",
+          "mean": 9252.54858576635,
+          "p95": 11904.99999999858,
+          "max": 29974.00000001291,
+          "samples": 8768
+        },
+        {
+          "stage": "relative",
+          "mean": 9230.02531934299,
+          "p95": 11812.000000036513,
+          "max": 30011.000000010947,
+          "samples": 8768
+        },
+        {
+          "stage": "compact",
+          "mean": 9310.719206204441,
+          "p95": 11978.000000009828,
+          "max": 30061.99999999999,
+          "samples": 8768
+        }
+      ],
+      "component_performance_gate": "Not qualified for production: some packet bodies regress; complete mapping/dispatch and whole-game costs remain unmeasured. This does not prove every conceivable512KiB backend impossible."
+    },
+    "hoisted": {
+      "passed": true,
+      "scope": "Isolated real-RAM packet execution, not complete512KiB game or DOS startup. Cartridge keyboard startup initializes video/Page0, then CPU unmaps cartridge Page1/Page2. Host fixture injection, all4384 production packet references, flat relative and compact suffix variants, both extreme pattern tables. All128KiB VRAM, BC/DE/HL/IX/IY/SP/IFF checked. VDP IRQ generation disabled; actual Page1 return/dispatch and whole-game IRQ/audio not qualified.",
+      "reference_rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c",
+      "main_ram_kib": 512,
+      "packet_references": 4384,
+      "executions": 26304,
+      "strict_vram_callbacks": 0,
+      "variant": "hoisted",
+      "packet_delta_cycles": {
+        "mean": 12.185447080004387,
+        "p95": 73.99999999607098,
+        "min": -416.00000004528556,
+        "max": 151.0000000483542,
+        "slower": 6116,
+        "unchanged": 214
+      },
+      "costs": [
+        {
+          "stage": "baseline",
+          "mean": 9252.548585766493,
+          "p95": 11904.99999999858,
+          "max": 29974.00000001291,
+          "samples": 8768
+        },
+        {
+          "stage": "relative",
+          "mean": 9230.02531934299,
+          "p95": 11812.000000036513,
+          "max": 30011.000000010947,
+          "samples": 8768
+        },
+        {
+          "stage": "hoisted",
+          "mean": 9264.734032846498,
+          "p95": 11834.000000007847,
+          "max": 30033.00000003315,
+          "samples": 8768
+        }
+      ],
+      "component_performance_gate": "Not qualified for production: some packet bodies regress; complete mapping/dispatch and whole-game costs remain unmeasured. This does not prove every conceivable512KiB backend impossible."
+    }
+  },
+  "cold_reference": {
+    "raw_owner_reference_bytes": 33390,
+    "expanded_map_reference_bytes": 18473,
+    "atlas_reference_lz_bytes": 29065,
+    "atlas_bytes": 36375,
+    "ring_worker_bytes": 1934,
+    "raw_owners": [
+      {
+        "logical_bank": 1,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 4755,
+        "sha256": "6e66165754e86e90113151e5d634f1c51d1a989b2ccc254137ee27ab51b4a62b"
+      },
+      {
+        "logical_bank": 72,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 3041,
+        "sha256": "2698b1c8893f726872b1c8e9d0cc8b83e3a92ab5f1d619c010fa5c0be4cd4df9"
+      },
+      {
+        "logical_bank": 74,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 3500,
+        "sha256": "edd39833ffde631d9da1af97b8fb649f0589f3b58af36f64f8345746ebe604a6"
+      },
+      {
+        "logical_bank": 75,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1622,
+        "sha256": "ff166d3a68a5a9d8a52adb2bde84b5fdad72a1e8392b3c90015c0bbd18acad51"
+      },
+      {
+        "logical_bank": 86,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1585,
+        "sha256": "a2396d7b470c1910dfa3a65edc34baa1675cffb4f02d7eec944e7b461b7985e8"
+      },
+      {
+        "logical_bank": 97,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1615,
+        "sha256": "efc742362e06dc96736180f9613c3491f7d978468ceee1c511aeb4ddb9fc62b8"
+      },
+      {
+        "logical_bank": 108,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1576,
+        "sha256": "1917be774e294026d719846d34aea724744cc42448f0ce936d520a45f14eeb5e"
+      },
+      {
+        "logical_bank": 119,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 626,
+        "sha256": "aafb5422804202b31692be4d4a74b778386b485e08775177d590a1bf1e673214"
+      },
+      {
+        "logical_bank": 120,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1710,
+        "sha256": "e0fb874b11e93cb57a79d04ad16a9e0acaffd63ae97339e9369399d9d7c9d853"
+      },
+      {
+        "logical_bank": 121,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 5931,
+        "sha256": "d516b5e3a60cdac4d0ce2a2e7e7396a369d6ffba2583ced85962a711e33a158b"
+      },
+      {
+        "logical_bank": 122,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 5389,
+        "sha256": "14b6e17ce638a15906d210cd83b157333c8bcac245f9ba7307f1de8f014c5d59"
+      },
+      {
+        "logical_bank": 123,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 2040,
+        "sha256": "181599ca62255aeefbc80843f6b35fad75d2bde04029f76c2224e492ca5feb33"
+      }
+    ],
+    "maps": [
+      {
+        "logical_bank": 76,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 3041,
+        "sha256": "c74a1da6f76fa4800c99b7d877f3360051025e0db6ba5a7362533eea7716f53d"
+      },
+      {
+        "logical_bank": 77,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1611,
+        "sha256": "30e96fcb18547c561bc8ec838602328556a3218e7ebf7f25711ae4e519ebdfd7"
+      },
+      {
+        "logical_bank": 87,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 2799,
+        "sha256": "6ec65b01cd7c165dabfb364e8bb5768861513ced2a54debedac039a4599c6862"
+      },
+      {
+        "logical_bank": 88,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1562,
+        "sha256": "db76d953e63a49e9aec48b9aead39b5895a5c5d98b4cbf1e88f538179fda37cc"
+      },
+      {
+        "logical_bank": 98,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 3116,
+        "sha256": "4a018528eca12b12bca26637ad8e9b1377284a635b120c8bbe3582e4002fec75"
+      },
+      {
+        "logical_bank": 99,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1499,
+        "sha256": "8b6880dd5aeeb676f7818541a897c6d0d37f7c7a585319e70d2b99621283b03e"
+      },
+      {
+        "logical_bank": 109,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 3219,
+        "sha256": "3db09b0fe928542435d49f31648c218e2a18524f35ed995c63fd5074062eeb36"
+      },
+      {
+        "logical_bank": 110,
+        "expanded_bytes": 16384,
+        "reference_lz_bytes": 1626,
+        "sha256": "f926b3ec90a1b721dd0c5c947d0d77a0a27458b4a61dae2a78fa4bcb10683718"
+      }
+    ],
+    "limits": "Reference bytes/compressor, not a linked512KiB cold format or a minimum-size proof. Raw72/74 are treated as cold; restart must cache its8 bytes. Bootstrap/decode/IRQ/metadata adaptation and overlapping lifetimes are unimplemented.",
+    "reference_bytes": 82862
+  },
+  "provisional_ram_budgets": [
+    {
+      "variant": "compact",
+      "work_segments": 4,
+      "cache_policy": "Existing64KiB tier",
+      "provisional_bytes_including_reference_cold": 505666,
+      "margin_512k": 18622,
+      "fixed_segment_bytes": 475136,
+      "live_source_code_worker_and_hot_owner_bytes": 357268,
+      "limits": "Optimistic pooling into every declared source/code hole; excludes new dispatch/IRQ/decode/directory/staging overhead and does not establish feasible initialization lifetimes."
+    },
+    {
+      "variant": "compact",
+      "work_segments": 6,
+      "cache_policy": "Current expanded tier selected on512KiB",
+      "provisional_bytes_including_reference_cold": 538434,
+      "margin_512k": -14146,
+      "fixed_segment_bytes": 507904,
+      "live_source_code_worker_and_hot_owner_bytes": 357268,
+      "limits": "Optimistic pooling into every declared source/code hole; excludes new dispatch/IRQ/decode/directory/staging overhead and does not establish feasible initialization lifetimes."
+    },
+    {
+      "variant": "hoisted",
+      "work_segments": 4,
+      "cache_policy": "Existing64KiB tier",
+      "provisional_bytes_including_reference_cold": 546398,
+      "margin_512k": -22110,
+      "fixed_segment_bytes": 507904,
+      "live_source_code_worker_and_hot_owner_bytes": 398000,
+      "limits": "Optimistic pooling into every declared source/code hole; excludes new dispatch/IRQ/decode/directory/staging overhead and does not establish feasible initialization lifetimes."
+    },
+    {
+      "variant": "hoisted",
+      "work_segments": 6,
+      "cache_policy": "Current expanded tier selected on512KiB",
+      "provisional_bytes_including_reference_cold": 579166,
+      "margin_512k": -54878,
+      "fixed_segment_bytes": 540672,
+      "live_source_code_worker_and_hot_owner_bytes": 398000,
+      "limits": "Optimistic pooling into every declared source/code hole; excludes new dispatch/IRQ/decode/directory/staging overhead and does not establish feasible initialization lifetimes."
+    }
+  ],
+  "tests": [
+    {
+      "suite": "tests",
+      "passed": true,
+      "tests": 486,
+      "skipped": 0
+    },
+    {
+      "suite": "components",
+      "passed": true,
+      "tests": 94,
+      "skipped": 1
+    }
+  ],
+  "current_expanded_cache": {
+    "expanded": true,
+    "work_segments": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      0
+    ],
+    "count": 6,
+    "scope": "Read-only unchanged-ROM512KiB startup snapshot; Page3 mapper identity also observed at packet bootstrap."
+  },
+  "preserved_startup_checks": [
+    {
+      "case": "compact-game",
+      "result": {
+        "rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c",
+        "bytes": 761856,
+        "mode": "rom",
+        "megaram_kib": null,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260714653365,
+        "period_mean": 107679.43032329986,
+        "period_p95": 122291.6666666667,
+        "period_max": 179208.33333333462,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "compact-game-ram512",
+      "result": {
+        "rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c",
+        "bytes": 761856,
+        "mode": "rom",
+        "megaram_kib": null,
+        "expanded_slot": false,
+        "main_ram_kib": 512,
+        "frames": 300,
+        "smoke_presented_fps": 32.99613073487213,
+        "period_mean": 108483.78037904121,
+        "period_p95": 122290.3333333324,
+        "period_max": 179208.33333333462,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "compact-megaram-dos-768",
+      "result": {
+        "rom_sha256": "f149f34816d99db21e46b4a2b3a6d17d769ffd49c515b906613131d0c5f255fb",
+        "bytes": 761856,
+        "mode": "dos",
+        "megaram_kib": 768,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260714653358,
+        "period_mean": 107679.43032330008,
+        "period_p95": 122291.66666660311,
+        "period_max": 179208.3333334109,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "f149f34816d99db21e46b4a2b3a6d17d769ffd49c515b906613131d0c5f255fb",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "compact-megaram-basic-768",
+      "result": {
+        "rom_sha256": "f149f34816d99db21e46b4a2b3a6d17d769ffd49c515b906613131d0c5f255fb",
+        "bytes": 761856,
+        "mode": "basic",
+        "megaram_kib": 768,
+        "expanded_slot": false,
+        "main_ram_kib": 64,
+        "frames": 300,
+        "smoke_presented_fps": 33.24260714653358,
+        "period_mean": 107679.43032330008,
+        "period_p95": 122291.66666660311,
+        "period_max": 179208.3333334109,
+        "graphics": {
+          "passed": true,
+          "rom_sha256": "f149f34816d99db21e46b4a2b3a6d17d769ffd49c515b906613131d0c5f255fb",
+          "snapshots": [
+            {
+              "snapshot": "final",
+              "layout": 0,
+              "native_round": 2,
+              "player": 1,
+              "enemies": 1,
+              "stones": 0,
+              "flags": 0
+            }
+          ],
+          "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+        },
+        "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+        "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+      }
+    },
+    {
+      "case": "disk-dos-4096",
+      "result": {
+        "mode": "dos",
+        "mapper_ram_kib": 4096,
+        "refresh_hz": 59.92274340431231,
+        "nominal_refresh_hz": 60,
+        "refresh_cycles": 59736,
+        "two_refresh_budget_cycles": 119472,
+        "artifact_sha256": "2bf745f615649f7d465ab55a11e9b4e2f80ebc340ca627f8fc6690e0f59ddc75",
+        "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+        "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+        "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+        "work": {
+          "samples": 300,
+          "mean": 65050.35555555937,
+          "p95": 91745.00000003721,
+          "maximum": 124356.6666667011
+        },
+        "synchronization_wait": {
+          "samples": 300,
+          "mean": 41371.01666666233,
+          "p95": 59469.99999988188,
+          "maximum": 59764.999999881344
+        },
+        "publication": {
+          "samples": 300,
+          "mean": 4245.456666666367,
+          "p95": 6923.000000131609,
+          "maximum": 9159.000000177908
+        },
+        "presentation_period": {
+          "samples": 299,
+          "mean": 110681.41248606467,
+          "p95": 122291.66666670484,
+          "maximum": 179207.66666668653
+        },
+        "presented_fps": 32.340976859603074
+      }
+    },
+    {
+      "case": "disk-basic-4096",
+      "result": {
+        "mode": "basic",
+        "mapper_ram_kib": 4096,
+        "refresh_hz": 59.92274340431231,
+        "nominal_refresh_hz": 60,
+        "refresh_cycles": 59736,
+        "two_refresh_budget_cycles": 119472,
+        "artifact_sha256": "2bf745f615649f7d465ab55a11e9b4e2f80ebc340ca627f8fc6690e0f59ddc75",
+        "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+        "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+        "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+        "work": {
+          "samples": 300,
+          "mean": 65020.56444444618,
+          "p95": 91780.99999989782,
+          "maximum": 124281.66666661848
+        },
+        "synchronization_wait": {
+          "samples": 300,
+          "mean": 41007.76666665956,
+          "p95": 59350.000000075226,
+          "maximum": 59730.00000000556
+        },
+        "publication": {
+          "samples": 300,
+          "mean": 4240.283333335581,
+          "p95": 6923.000000131609,
+          "maximum": 9159.000000177908
+        },
+        "presentation_period": {
+          "samples": 299,
+          "mean": 110281.84949832775,
+          "p95": 122291.66666670484,
+          "maximum": 179207.66666668653
+        },
+        "presented_fps": 32.45815169298805
+      }
+    }
+  ],
+  "module_layout_passed": true,
+  "default_preserved": {
+    "artifacts": {
+      "dist/newrallyx.rom": {
+        "bytes": 761856,
+        "sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c"
+      },
+      "dist/compact/megaram/newrallyx-megaram.zip": {
+        "bytes": 187548,
+        "sha256": "1372ca645f3ac5ba59b406f2f6e73cc00d221c52c2984c333d042070bd68ef66"
+      },
+      "dist/disk/newrallyx-disk.zip": {
+        "bytes": 339754,
+        "sha256": "1be5d140e9f89032adfd9954ddbbe97f794c5eade663e3039440ddaa4400bc8f"
+      }
+    },
+    "source_files_verified": 12,
+    "symbol_sha256": "a317f81f2dd3d703f3ab23a0ef49d65147ca4dcace1996e90ba2cce8e893cbfa",
+    "timing_ledger_sha256": "1fac5e427f3e251054985d10cc30a72c3079d7a98beb0d43a3fd915c7d42d9ef",
+    "timing_workbook_sha256": "11b440a8ba8802be99e86078e30529b813e973552d97ee520f5b365d64dc801c",
+    "scope": "Byte-identical744KiB public ROM, both disk packages and default source implementation. Existing whole-game evidence remains bound to its original hash; no512KiB whole-game/audio claim."
+  },
+  "source_files": {
+    "scripts/mapper512_backend.py": "8764761cf84835510584b6ac8fde5afc5da61b68bfa1e79260ef3494bddfe84a",
+    "scripts/mapper512_verify.py": "7fdd013ab7273c6aa733825b651ad85612afec4425c54c8793113dca2a92f287",
+    "scripts/mapper512_report.py": "d8aec8ab2e736f98b2dcc693aaf2139b58d6fd32866550a9a38a76699b1f4726",
+    "tests/test_mapper512_backend.py": "a58c13b1e0bf0e03ef6f36e42c4214b537ba9543c3e596d6de48e58b145ea697",
+    "src/screen4/modules/contracts.json": "c7bd0b88adb319775600c69ae642b01457adf36bad9d718fb563685bff8b2c07"
+  },
+  "decision": "Do not promote either512KiB prototype. Preserve744KiB/768KiB as the stable fallback. The owner requested no release yet; current component failures do not establish that all512KiB designs are impossible or trigger a merge/release."
+}

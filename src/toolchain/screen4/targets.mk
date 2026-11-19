@@ -21,6 +21,7 @@ SESSION_DIAGNOSTIC = $(if $(filter classic,$(HUD_VARIANT)),classic-hud-,)$(if $(
 SESSION_DIAGNOSTIC_NAME = $(patsubst %-,%,$(SESSION_DIAGNOSTIC))
 FULL_SESSION_BUNDLE = references/build/game$(if $(filter 1,$(TEST_MODE)),-test,)$(if $(strip $(SESSION_DIAGNOSTIC_NAME)),-$(SESSION_DIAGNOSTIC_NAME),)
 FULL_SESSION_ROM = dist/$(if $(filter 1,$(TEST_MODE)),test/,)$(if $(strip $(SESSION_DIAGNOSTIC_NAME)),diagnostic/$(SESSION_DIAGNOSTIC_NAME)/,)newrallyx.rom
+FULL_SESSION_RUNTIME_BUNDLE = $(if $(or $(filter 1,$(TEST_MODE)),$(strip $(SESSION_DIAGNOSTIC_NAME))),$(FULL_SESSION_BUNDLE),references/build/game-fixedram-runtime)
 
 HUD_HIGH_SCORE ?= 20000
 HUD_SCORE ?= 0
@@ -87,33 +88,36 @@ run: export NRX_REFERENCE_RAM_KIB = $(if $(or $(filter 1,$(LEGACY)),$(filter 1,$
 run-full-session test-full-session profile-full-session: export NRX_REFERENCE_RAM_KIB = $(if $(filter 1,$(MAPPER)),128,64)
 
 test-full-session: build-full-session
-	@$(PYTHON) -B src/toolchain/screen4/session_boot_module_verify.py --bundle "$(FULL_SESSION_BUNDLE)"
-	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --scenario controls --contracts
+	@$(PYTHON) -B src/toolchain/screen4/session_boot_module_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)"
+	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --scenario controls --contracts
 	@$(PYTHON) -B -m unittest discover -s src/toolchain/screen4 -p 'test_*.py'
-	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --scenario start --contracts
-	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --scenario integration --contracts
-	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --scenario two-player --contracts
-	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --scenario flags --contracts
-	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --scenario attract --contracts
-	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --scenario radar --contracts
-	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --scenario smoke --contracts
-	@$(PYTHON) -B src/toolchain/screen4/session_rocks_verify.py --bundle "$(FULL_SESSION_BUNDLE)"
-	@$(PYTHON) -B src/toolchain/screen4/session_speed_verify.py --bundle "$(FULL_SESSION_BUNDLE)"
-	@$(PYTHON) -B src/toolchain/screen4/session_steering_verify.py --bundle "$(FULL_SESSION_BUNDLE)" --frames 16000
-	@$(PYTHON) -B src/toolchain/screen4/session_audio_verify.py --bundle "$(FULL_SESSION_BUNDLE)"
-	@$(PYTHON) -B src/toolchain/screen4/session_sprite_verify.py --bundle "$(FULL_SESSION_BUNDLE)"
+	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --scenario start --contracts
+	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --scenario integration --contracts
+	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --scenario two-player --contracts
+	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --scenario flags --contracts
+	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --scenario attract --contracts
+	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --scenario radar --contracts
+	@$(PYTHON) -B src/toolchain/screen4/session_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --scenario smoke --contracts
+	@$(PYTHON) -B src/toolchain/screen4/session_rocks_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)"
+	@$(PYTHON) -B src/toolchain/screen4/session_speed_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)"
+	@$(PYTHON) -B src/toolchain/screen4/session_steering_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --frames 16000
+	@$(PYTHON) -B src/toolchain/screen4/session_audio_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)"
+	@$(PYTHON) -B src/toolchain/screen4/session_sprite_verify.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)"
 
 profile-full-session: build-full-session
-	@$(PYTHON) -B src/toolchain/screen4/session_profile.py --bundle "$(FULL_SESSION_BUNDLE)"
-	@$(PYTHON) -B src/toolchain/screen4/session_report.py --bundle "$(FULL_SESSION_BUNDLE)"
+	@$(PYTHON) -B src/toolchain/screen4/session_profile.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)"
+	@$(PYTHON) -B src/toolchain/screen4/session_report.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)"
 
 .PHONY: timing-workbook
 TIMING_LEDGER ?= docs/measurements/timing/cycle-ledger.json
+# Experimental ledgers may use a separate writer without replacing the
+# canonical cartridge workbook. The default writer and output stay unchanged.
+TIMING_WORKBOOK_GENERATOR ?= src/toolchain/screen4/turbo_workbook.mjs
 timing-workbook:
 ifeq ($(TURBO),1)
-	@node src/toolchain/screen4/turbo_workbook.mjs "$(TIMING_LEDGER)" references/validation/timing docs
+	@node "$(TIMING_WORKBOOK_GENERATOR)" "$(TIMING_LEDGER)" references/validation/timing docs
 else
-	@$(PYTHON) -B src/toolchain/screen4/session_report.py --bundle "$(FULL_SESSION_BUNDLE)" --out references/validation/timing-report
+	@$(PYTHON) -B src/toolchain/screen4/session_report.py --bundle "$(FULL_SESSION_RUNTIME_BUNDLE)" --out references/validation/timing-report
 	@node src/toolchain/screen4/session_workbook.mjs references/validation/timing-report/cycle-ledger.json references/validation/timing docs
 endif
 

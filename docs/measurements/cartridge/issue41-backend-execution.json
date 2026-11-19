@@ -1,0 +1,175 @@
+[
+  {
+    "backend": "ASCII16 control",
+    "transfers": 4384,
+    "passed": true,
+    "system_ram_kib": 64,
+    "diagnostic_bytes": 2048000,
+    "diagnostic_sha256": "1bc47cab6ba7a506caff50a4cd59aa074e835ca7c9f9593e5830e8fc72728df6",
+    "machine": "Panasonic_FS-A1WSX_NR64",
+    "cpu": "z80",
+    "cpu_hz": 3579545,
+    "vdp": "V9958;128KiB VRAM;cmdtiming real;hardware sprite limits enabled",
+    "transfer_video": "SCREEN4;display off",
+    "boot_video": "SCREEN5;display on after state0;IRQ disabled",
+    "transfer_timing_scope": "One transfer per diagnostic dispatch; no frame, IRQ audio, gameplay, visible drawing or synchronization workload",
+    "decoder_and_setup_bytes": 376,
+    "source_files": {
+      "scripts/renderer_backend_verify.py": "4282d523d5faa7a65cb7aa07f1dcf712a7d70e6c457658d357f5bb7788ff8a09",
+      "scripts/megaram_window_probe.py": "451d8185cd9f966bd553909e4acc7067315511f8a0fe8bb2c4e6cb4aae0223b3",
+      "tests/fixtures/issue41-map-decoder.inc": "c4dc8c6b3de4724523c0849d35221036d623e70a0e8e572a3ad6b925f2a785d7",
+      "src/screen4/session-boot.inc": "e64c697773e19dac1d36ca4066cd6f5c5f1fd54b09025de0ced676e3cae33d69"
+    },
+    "transfer_cycles": {
+      "mean": 10104.447308394114,
+      "p95": 13014.999999998507,
+      "maximum": 32920.0000000063
+    },
+    "with_dispatch_cycles": {
+      "mean": 10206.447308394165,
+      "p95": 13116.99999999567,
+      "maximum": 33021.999999997104
+    },
+    "decoded_map_banks": 0,
+    "map_decode_cycles": null,
+    "boot_states": 71,
+    "boot_draw_cycles": {
+      "mean": 237807.90140845123,
+      "p95": 850693.0000000075,
+      "maximum": 2491927.9999999963
+    },
+    "scope": "Guest transfer/map/replay components with independent RAM/VRAM checks. No complete game, disk-to-MegaRAM loader, integrated deadlines or full-frame performance qualification"
+  },
+  {
+    "backend": "ASCII8",
+    "transfers": 4384,
+    "passed": true,
+    "system_ram_kib": 64,
+    "diagnostic_bytes": 1040384,
+    "diagnostic_sha256": "50baface3a5527fb7f5475c8bbb1f4c7aae8ebaa19c8faa09f6ea8ce914bab78",
+    "machine": "Panasonic_FS-A1WSX_NR64",
+    "cpu": "z80",
+    "cpu_hz": 3579545,
+    "vdp": "V9958;128KiB VRAM;cmdtiming real;hardware sprite limits enabled",
+    "transfer_video": "SCREEN4;display off",
+    "boot_video": "SCREEN5;display on after state0;IRQ disabled",
+    "transfer_timing_scope": "One transfer per diagnostic dispatch; no frame, IRQ audio, gameplay, visible drawing or synchronization workload",
+    "decoder_and_setup_bytes": 376,
+    "source_files": {
+      "scripts/renderer_backend_verify.py": "4282d523d5faa7a65cb7aa07f1dcf712a7d70e6c457658d357f5bb7788ff8a09",
+      "scripts/megaram_window_probe.py": "451d8185cd9f966bd553909e4acc7067315511f8a0fe8bb2c4e6cb4aae0223b3",
+      "tests/fixtures/issue41-map-decoder.inc": "c4dc8c6b3de4724523c0849d35221036d623e70a0e8e572a3ad6b925f2a785d7",
+      "src/screen4/session-boot.inc": "e64c697773e19dac1d36ca4066cd6f5c5f1fd54b09025de0ced676e3cae33d69"
+    },
+    "transfer_cycles": {
+      "mean": 10104.447308394114,
+      "p95": 13014.999999998507,
+      "maximum": 32920.0000000063
+    },
+    "with_dispatch_cycles": {
+      "mean": 10206.447308394165,
+      "p95": 13116.99999999567,
+      "maximum": 33021.999999997104
+    },
+    "decoded_map_banks": 10,
+    "map_decode_cycles": {
+      "mean": 739828.1000000017,
+      "p95": 881573.0000000069,
+      "maximum": 881573.0000000069
+    },
+    "boot_states": 71,
+    "boot_draw_cycles": {
+      "mean": 238952.0422535208,
+      "p95": 861252.9999999958,
+      "maximum": 2507083.999999989
+    },
+    "scope": "Guest transfer/map/replay components with independent RAM/VRAM checks. No complete game, disk-to-MegaRAM loader, integrated deadlines or full-frame performance qualification",
+    "transfer_delta_cycles_vs_ascii16": {
+      "mean": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "slower": 0,
+      "unchanged": 4384,
+      "faster": 0
+    },
+    "boot_delta_cycles_vs_ascii16": {
+      "mean": 1144.1408450704225,
+      "minimum": -2159.0,
+      "maximum": 40395.0,
+      "slower": 29,
+      "unchanged": 19,
+      "faster": 23
+    },
+    "boot_original_tick_gap_probe": {
+      "minimum_remaining_cycles": 26600.00000000345,
+      "overruns": 0,
+      "caveat": "Drawing only with visible SCREEN5 from the second state. IRQ, key scanning, publication and integrated cold scheduling excluded; not deadline acceptance."
+    }
+  },
+  {
+    "backend": "MegaRAM",
+    "transfers": 4384,
+    "passed": true,
+    "system_ram_kib": 64,
+    "diagnostic_bytes": 1040384,
+    "diagnostic_sha256": "376db0f2eb91d0da82d1bdb53492b3c86e076dd637280c2bb26122450dcc3328",
+    "machine": "Panasonic_FS-A1WSX_NR64",
+    "cpu": "z80",
+    "cpu_hz": 3579545,
+    "vdp": "V9958;128KiB VRAM;cmdtiming real;hardware sprite limits enabled",
+    "transfer_video": "SCREEN4;display off",
+    "boot_video": "SCREEN5;display on after state0;IRQ disabled",
+    "transfer_timing_scope": "One transfer per diagnostic dispatch; no frame, IRQ audio, gameplay, visible drawing or synchronization workload",
+    "decoder_and_setup_bytes": 376,
+    "source_files": {
+      "scripts/renderer_backend_verify.py": "4282d523d5faa7a65cb7aa07f1dcf712a7d70e6c457658d357f5bb7788ff8a09",
+      "scripts/megaram_window_probe.py": "451d8185cd9f966bd553909e4acc7067315511f8a0fe8bb2c4e6cb4aae0223b3",
+      "tests/fixtures/issue41-map-decoder.inc": "c4dc8c6b3de4724523c0849d35221036d623e70a0e8e572a3ad6b925f2a785d7",
+      "src/screen4/session-boot.inc": "e64c697773e19dac1d36ca4066cd6f5c5f1fd54b09025de0ced676e3cae33d69"
+    },
+    "transfer_cycles": {
+      "mean": 10104.447308394176,
+      "p95": 13014.99999999215,
+      "maximum": 32920.0000000063
+    },
+    "with_dispatch_cycles": {
+      "mean": 10206.447308394165,
+      "p95": 13116.99999999567,
+      "maximum": 33022.00000000982
+    },
+    "decoded_map_banks": 10,
+    "map_decode_cycles": {
+      "mean": 739828.1000000004,
+      "p95": 881572.9999999942,
+      "maximum": 881572.9999999942
+    },
+    "boot_states": 71,
+    "boot_draw_cycles": {
+      "mean": 238952.04225352028,
+      "p95": 861252.9999999958,
+      "maximum": 2507084.0000000014
+    },
+    "scope": "Guest transfer/map/replay components with independent RAM/VRAM checks. No complete game, disk-to-MegaRAM loader, integrated deadlines or full-frame performance qualification",
+    "transfer_delta_cycles_vs_ascii16": {
+      "mean": 0.0,
+      "minimum": 0.0,
+      "maximum": 0.0,
+      "slower": 0,
+      "unchanged": 4384,
+      "faster": 0
+    },
+    "boot_delta_cycles_vs_ascii16": {
+      "mean": 1144.1408450704225,
+      "minimum": -2159.0,
+      "maximum": 40395.0,
+      "slower": 29,
+      "unchanged": 19,
+      "faster": 23
+    },
+    "boot_original_tick_gap_probe": {
+      "minimum_remaining_cycles": 26599.99999999073,
+      "overruns": 0,
+      "caveat": "Drawing only with visible SCREEN5 from the second state. IRQ, key scanning, publication and integrated cold scheduling excluded; not deadline acceptance."
+    }
+  }
+]

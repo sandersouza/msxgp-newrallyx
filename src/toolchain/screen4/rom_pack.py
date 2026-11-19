@@ -116,16 +116,21 @@ def pack_hud(image, hud_data, active, out):
     return image,relocations,patches
 
 
-def pack_replay(records, image, holes):
+def pack_replay(records, image, holes, *, bank_bytes=BANK_BYTES,
+                reuse_across_holes=False):
     """Encode existing boot commands into holes, preserving all frame entries.
 
     The existing opcodes 3/4 handle arbitrary chain addresses and same-bank
-    literal pointers. Literal dictionaries reset at each fragment. At least
+    literal pointers. By default literal dictionaries reset at each fragment.
+    The experimental8 KiB allocator may reuse earlier literals in the same
+    immutable bank across disjoint declared holes. At least
     four bytes are reserved for a chain even when a fragment ends a frame.
     """
+    if bank_bytes not in (8192,16384):
+        raise ValueError('Replay windows must be8 or16 KiB')
     previous = {}
     for bank,begin,end in sorted(holes):
-        if (not 1 <= bank <= len(image)//BANK_BYTES or not 0 <= begin < end <= BANK_BYTES or
+        if (not 1 <= bank <= len(image)//bank_bytes or not 0 <= begin < end <= bank_bytes or
                 begin < previous.get(bank,0)):
             raise ValueError('Invalid/overlapping cold packing holes')
         previous[bank] = end
@@ -133,13 +138,14 @@ def pack_replay(records, image, holes):
     current = None
     used = encoded = chains = reuses = 0
     literals = {}
+    bank_literals = {}
     pointers = {}
     chunks = []
 
     def write(data):
         nonlocal used,encoded
         bank,begin,_ = current
-        at = (bank-1)*BANK_BYTES+begin+used
+        at = (bank-1)*bank_bytes+begin+used
         image[at:at+len(data)] = data
         used += len(data)
         encoded += len(data)
@@ -170,8 +176,8 @@ def pack_replay(records, image, holes):
                     chains += 1
                 current = next_segment
                 used = 0
-                literals = {}
-                reused = False
+                literals = bank_literals.setdefault(current[0],{}) if reuse_across_holes else {}
+                reused = raw is not None and len(raw)>2 and raw in literals
                 chunks.append(list(current))
             if at == 0:
                 pointers[frame] = (current[0],0x8000+current[1]+used)

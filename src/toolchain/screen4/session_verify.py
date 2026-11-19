@@ -5,7 +5,7 @@ import sys as _tool_sys
 for _tool_dir in (_ToolPath(__file__).resolve().parent, _ToolPath(__file__).resolve().parents[3]):
     if str(_tool_dir) not in _tool_sys.path: _tool_sys.path.insert(0, str(_tool_dir))
 from source_paths import source_path, RUNTIME
-from session_reference import cartridge_path
+from session_reference import cartridge_path,mapper_type,bank_offset
 
 import argparse,hashlib,json,os,re,subprocess,tempfile
 from pathlib import Path
@@ -24,6 +24,12 @@ def run(bundle,*,headless=False,scenario='start'):
     syms={n:int(v,16) for n,v in re.findall(r'(?m)^([\w.]+): EQU 0x([\da-fA-F]+)',(bundle/'lab.sym').read_text())}
     from session_reference import runtime_symbols
     runtime_symbols(syms)
+    backend=json.loads((bundle/'session-build.json').read_text()).get('cartridge_mapper','ASCII16')
+    compact=backend in ('ASCII8','MegaRAM')
+    if backend=='MegaRAM':
+        from scripts.compact_game_verify import profile_startup
+        startup=profile_startup(out)
+    else:startup=f"cart {tcl(out/'measured.rom')} -romtype {mapper_type(bundle)}\nreset"
     setup=f'''set save_settings_on_exit false
 {'set renderer none' if headless else 'set renderer SDLGL-PP'}
 set sound_driver null
@@ -45,8 +51,7 @@ set color_matrix {{{{1 0 0}} {{0 1 0}} {{0 0 1}}}}
 filepool add -path {tcl(ROOT/'references/msxbios')} -types system_rom -position 1
 {reference_machine(ROOT,'Panasonic_FS-A1WSX')}
 set firmwareswitch off
-cart {tcl(out/'measured.rom')} -romtype ASCII16
-reset
+{startup}
 activate_input_layer -blocking full_session_verification
 {'' if headless else scanout_recording_tcl(out,syms['boot'])}
 set out {tcl(out)}
@@ -66,6 +71,9 @@ debug set_bp {syms['frame_done']} {{[info exists ::capture_next]}} {{
  if {{$name eq "moving"}} {{set ::captured_moving 1}}
 }}
 '''
+    sys.path.insert(0,str(ROOT/'scripts'))
+    from compact_map_contract import hooks as compact_map_hooks
+    setup+=compact_map_hooks(bundle,out,syms,rom)
     script=r'''
 proc step {} {
  incr ::age
@@ -102,18 +110,31 @@ after time 0.02 poll
 '''
     if 'GameSession_AudioStop.done' in syms:
         cold=json.loads((bundle/'session-build.json').read_text())['banks']['SESSION_COLD_BANK']
-        prefix=rom[cold*16384:cold*16384+16].hex()
+        at=bank_offset(bundle,cold);prefix=rom[at:at+16].hex()
+        if 'GameSession_UI.random' in syms:
+            # Read-only lifecycle observers: the captured player seed must not
+            # replace the global RNG, including an alternate-player restore.
+            setup+=f'''
+set rng_events [open [file join $out rng-lifecycle.tsv] w]
+puts $rng_events "event\\tkind\\trng\\tplayer\\tround"
+proc rng_event {{name}} {{
+ set rng [expr {{[debug read memory 0xe000]+256*[debug read memory 0xe001]}}]
+ puts $::rng_events "$name\\t[debug read memory 0xc0dd]\\t$rng\\t[debug read memory 0xc7ec]\\t[debug read memory 0xe1b0]";flush $::rng_events
+}}
+'''
+            for label,event in [('GameSession_ColdLoad','load'),('GameSession_ColdLoad.native','native'),('GameSession_ColdLoad.prepared','prepared')]:
+                setup+=f'debug set_bp {syms[label]} {{[debug read_block memory 0x1400 16] eq [binary format H* {prefix}]}} {{rng_event {event}}}\n'
         setup+=f'''
 set silence_checks 0
 set cold_hooks [open [file join $out cold-hooks.tsv] w]
-puts $cold_hooks "routine\tinclusive_cycles\tself_cycles"
+puts $cold_hooks "routine\tinclusive_cycles\tself_cycles\tstart_time\tend_time\tstart_vframe\tstart_vtick\tend_vframe\tend_vtick"
 set cold_stack {{}}
-proc cold_enter {{name}} {{lappend ::cold_stack [list $name [machine_info time] 0]}}
+proc cold_enter {{name}} {{lappend ::cold_stack [list $name [machine_info time] 0 [machine_info VDP_frame_count] [machine_info VDP_cycle_in_frame]]}}
 proc cold_leave {{name}} {{
- lassign [lindex $::cold_stack end] owner start child
+ lassign [lindex $::cold_stack end] owner start child vf vt
  if {{$owner ne $name}} {{puts stderr "Cold hook nesting mismatch $owner/$name";exit 2;return}}
  set cycles [expr {{([machine_info time]-$start)*3579545}}]
- puts $::cold_hooks "$name\t$cycles\t[expr {{$cycles-$child}}]";flush $::cold_hooks
+ puts $::cold_hooks "$name\t$cycles\t[expr {{$cycles-$child}}]\t$start\t[machine_info time]\t$vf\t$vt\t[machine_info VDP_frame_count]\t[machine_info VDP_cycle_in_frame]";flush $::cold_hooks
  set ::cold_stack [lrange $::cold_stack 0 end-1]
  if {{[llength $::cold_stack]}} {{set parent [lindex $::cold_stack end];lset parent 2 [expr {{[lindex $parent 2]+$cycles}}];lset ::cold_stack end $parent}}
 }}
@@ -129,7 +150,7 @@ debug set_bp {syms['GameSession_AudioStop.done']} {{[debug read_block memory 0x1
             setup+=f'debug set_bp {syms[name+".done"]} {{[debug read_block memory 0x1400 16] eq [binary format H* {prefix}]}} {{cold_leave {name}}}\n'
         name='GameSession_ChallengeFrame'
         ui=json.loads((bundle/'session-build.json').read_text())['banks']['SESSION_BANK']
-        ui_prefix=rom[ui*16384:ui*16384+16].hex()
+        at=bank_offset(bundle,ui);ui_prefix=rom[at:at+16].hex()
         setup+=f'debug set_bp {syms[name]} {{[debug read_block memory 0x8000 16] eq [binary format H* {ui_prefix}]}} {{cold_enter {name}}}\n'
         for label in (name+'.delay_done',name+'.unit_done',name+'.number_done','Full_UIChallengeWait.done','Full_UIChallengeWait.wait_done'):
             setup+=f'debug set_bp {syms[label]} {{[debug read_block memory 0x8000 16] eq [binary format H* {ui_prefix}]}} {{cold_leave {name}}}\n'
@@ -137,6 +158,13 @@ debug set_bp {syms['GameSession_AudioStop.done']} {{[debug read_block memory 0x1
         if 'GameSession_ChallengeReveal' in syms:
             setup+=f'set challenge_reveal_base {syms["GameSession_ChallengeReveal"]}\n'
         script=source_path('session-scenarios.tcl').read_text().replace('@SCENARIO@',scenario)
+    controlled_seed=os.environ.get('NRX_VERIFY_SEED')
+    if controlled_seed is not None:
+        controlled_seed=int(controlled_seed,0)
+        assert 0<=controlled_seed<65536
+        bank=json.loads((bundle/'game-resources.json').read_text())['banks']['GAME_NATIVE_BANK']
+        at=bank_offset(bundle,bank);native_prefix=rom[at:at+32].hex()
+        setup+=f'debug set_bp {syms["Full_NextBody"]} {{[debug read_block memory 0x8000 32] eq [binary format H* {native_prefix}]}} {{debug write memory 0xe000 {controlled_seed&255};debug write memory 0xe001 {controlled_seed>>8}}}\n'
     if scenario=='two-player':
         # Inject completed death at a presentation boundary. An asynchronous
         # debug write can otherwise race the CPU-scope transition-state guard.
@@ -169,6 +197,30 @@ debug set_bp {syms['frame_done']} {{$::phase eq "smoke_action"}} {{
         enabled=json.loads((bundle/'session-build.json').read_text())['banks']['SESSION_TEST_MODE']
         setup+=f"set test_enabled {enabled}\n"+source_path('session-controls.tcl').read_text()
         stub=bytes((0x31,0xe0,0xf2,0xcd,syms['Death_Begin']&255,syms['Death_Begin']>>8,0xc3,0,0xf1))
+        if compact:
+            # This fixture calls native Page2 code outside its normal mapper
+            # owner. Bind it explicitly and restore both observed windows.
+            native=json.loads((bundle/'session-build.json').read_text())['banks']['GAME_NATIVE_BANK'] if 'GAME_NATIVE_BANK' in json.loads((bundle/'session-build.json').read_text())['banks'] else 71
+            prefix=bytes((0x31,0xe0,0xf2,0x3e,native,0xcd))+syms['Compact_Map16'].to_bytes(2,'little')
+            stub=prefix+stub[3:-3]
+            setup+=f'set f [open {tcl(out/"measured.rom")} rb];set control_rom [read $f];close $f\n'
+            setup+='''
+proc control_pages {} {
+ set pages {}
+ foreach address {0x8000 0xa000} {
+  set bytes [debug read_block memory $address 8192];set found -1
+  for {set n 0} {$n<[string length $::control_rom]/8192} {incr n} {
+   if {[string range $::control_rom [expr {$n*8192}] [expr {$n*8192+8191}]] eq $bytes} {set found $n;break}
+  }
+  if {$found<0} {error "Cannot identify fixture Page2 owner"}
+  lappend pages $found
+ }
+ return $pages
+}
+'''
+            lower_high,upper_high=(128,160) if backend=='MegaRAM' else (112,120)
+            bind_controls='lassign [control_pages] lower upper;set control_stub [binary format H* '+stub.hex()+'];append control_stub [binary format c* [list 62 $lower 50 0 '+str(lower_high)+' 62 $upper 50 0 '+str(upper_high)+' 195 0 241]]'
+        else:bind_controls='set control_stub [binary format H* '+stub.hex()+']'
         setup+=f'''
 debug set_bp {syms['frame_done']} {{[info exists ::death_request]}} {{
  lassign $::death_request kind ::death_expected;unset ::death_request
@@ -178,7 +230,8 @@ debug set_bp {syms['frame_done']} {{[info exists ::death_request]}} {{
  debug write memory {syms['Rock_Contact']} [expr {{$kind eq "rock"}}]
  debug write memory {syms['Enemy_Contact']} [expr {{$kind eq "enemy"}}]
  debug write memory {syms['Death_State']} 0
- debug write_block memory 0xf000 [binary format H* {stub.hex()}]
+ {bind_controls}
+ debug write_block memory 0xf000 $control_stub
  reg PC 0xf000
 }}
 debug set_bp 0xf100 {{[info exists ::death_saved]}} {{
@@ -264,11 +317,16 @@ debug set_bp {syms['GameSession_CompletionWait']} {{[debug read memory 0xc7d0]==
             script=script.replace('set ::flag_order {0 9 8 1 2 3 4 5 6 7}', 'set ::flag_order {'+order+'}')
         native=json.loads((bundle/'game-resources.json').read_text())['banks']['GAME_NATIVE_BANK']
         code=bytearray((0x31,0xe0,0xf2,0x3e,native,0x32,0,0x70))
+        if compact:
+            code[-3:]=bytes((0xcd,syms['Compact_Map16']&255,syms['Compact_Map16']>>8))
         for name in ('Flag_Update','Score_Update','Fuel_Begin','Parameters_Update'):
             code.extend((0xcd,syms[name]&255,syms[name]>>8))
         code.extend((0xaf,0x32,syms['Flag_Jobs']&255,syms['Flag_Jobs']>>8))
         for name in ('Round_Frame','Game_Events'):code.extend((0xcd,syms[name]&255,syms[name]>>8))
-        code.extend((0x3a,0x1d,0xc0,0xc6,4,0x32,0,0x70,0xc3,0,0xf1))
+        if compact:
+            code.extend((0xcd,syms['GameSession_PhaseBank']&255,syms['GameSession_PhaseBank']>>8,0xc3,0,0xf1))
+        else:
+            code.extend((0x3a,0x1d,0xc0,0xc6,4,0x32,0,0x70,0xc3,0,0xf1))
         setup+='set flag_stub {'+' '.join(map(str,code))+'}\n'
         setup+=f'''
 debug set_bp {syms['frame_done']} {{[info exists ::flag_request]}} {{
@@ -298,6 +356,7 @@ debug set_bp 0xf100 {{[info exists ::saved_registers]}} {{
     setup+=turbo_setup(syms,out)
     from session_auto_contract import setup as auto_setup
     setup+=auto_setup(syms,out)
+    if backend=='MegaRAM':script=script.replace('after time 180','after time 600').replace('after time 90','after time 600')
     (out/'session.tcl').write_text('if {[catch {\n'+setup+script+'\n} problem]} {puts stderr $problem;exit 2}\n')
     with (out/'openmsx.log').open('w') as log:
         result=subprocess.run(['openmsx','-script',str(out/'session.tcl')],timeout=150,stdout=log,stderr=subprocess.STDOUT,
@@ -305,9 +364,23 @@ debug set_bp 0xf100 {{[info exists ::saved_registers]}} {{
     assert result.returncode==0,(out,(out/'openmsx.log').read_text()[-1200:])
     report=dict(rom_sha256=hashlib.sha256(rom).hexdigest(),scenario=scenario,passed=True,source=str(out),
                 snapshots=[p.stem for p in out.glob('*.ram')],input='Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source')
-    machine=re.search(r'Reference RAM mapper: (\d+) bytes; machine: (\S+)',(out/'openmsx.log').read_text())
+    if controlled_seed is not None:report['controlled_rng_seed']=controlled_seed
+    machine=re.search(r'Reference (?:plain RAM|RAM mapper): (\d+) bytes;(?: RAM mapper: 0 bytes;)? machine: (\S+)',(out/'openmsx.log').read_text())
     assert machine,'Missing actual machine/RAM evidence'
-    report.update(machine=machine[2],mapper_ram_kib=int(machine[1])//1024)
+    plain=os.environ.get('NRX_REFERENCE_RAM_KIND')=='plain'
+    report.update(machine=machine[2],main_ram_kib=int(machine[1])//1024,main_ram_kind='plain' if plain else 'mapper',mapper_ram_kib=0 if plain else int(machine[1])//1024)
+    if (out/'rng-lifecycle.tsv').exists():
+        import csv
+        rows=list(csv.DictReader((out/'rng-lifecycle.tsv').open(),delimiter='\t'))
+        assert len(rows)%3==0
+        for i in range(0,len(rows),3):
+            before,native,prepared=rows[i:i+3]
+            assert [r['event'] for r in (before,native,prepared)]==['load','native','prepared']
+            assert before['rng']==native['rng'], 'Seed copy replaced global RNG'
+            if before['kind']=='2':assert native['rng']==prepared['rng'], 'Player restore advanced/reset RNG'
+        report['rng_lifecycle']=dict(passed=True,transitions=len(rows)//3,
+            kinds=sorted({int(r['kind']) for r in rows}),observations=rows,
+            scope='Read-only seed-copy and restore checks; scenario transition injections remain explicitly labeled')
     if scenario=='flags':
         start,heard,bonus,fuel=map(float,(out/'clear-order.tsv').read_text().split())
         report['clear_sequence']=dict(settlement_start=start,first_audible_mode4=heard,bonus_start=bonus,settlement_seconds=bonus-start,fuel_before_bonus=int(fuel),fuel_and_score_stable_during_music=True,flag_order=os.environ.get('NRX_TEST_FLAG_ORDER','0 9 8 1 2 3 4 5 6 7'))

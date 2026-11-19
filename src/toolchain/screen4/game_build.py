@@ -113,6 +113,13 @@ def append_resources(root,out,banks,*,enemies=1,legacy_render=False,full_session
     code=game_core.patch_native(code,program)
     data=bytearray(data)
     seed=bytearray(relocated_seed(video))
+    if full_session:
+        # Original3A52 selects the boot RNG word from default DSW=C3 (service
+        # off, easy,1 coin/credit). Never start the stream from the captured
+        # in-progress video seed. Read contributor ROM data, not a new PRNG.
+        dip=0xc3
+        index=((dip<<3)|(dip>>5))&6
+        seed[:2]=program[0x3aab+index:0x3aad+index]
     seed[0x99e:0x9a0]=(0xe3f0).to_bytes(2,'little');seed[0x3f0]=255
     data[0x2000:0x3000]=seed
     cleared=bytes(0 if c in (1,2,4) else c for c in cells)

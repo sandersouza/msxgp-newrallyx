@@ -9,6 +9,12 @@
 ; Interrupts: Owns blocking cold UI HALT/display/DI/EI sequence. Never call as an IRQ service
 ;   or renderer callback.
 ; Memory / hardware: Existing session/native/UI aliases and their cold/game lifetimes.
+;   UI alone reuses input_tick as its last consumed refresh. Native RNG E000
+;   advances once per elapsed refresh; active play retains its existing call.
+;   The catch-up loop clobbers AF/BC/DE/HL, preserves IX/IY/IFF, owns Page2
+;   briefly. Stack: two-byte loop scratch plus eight bytes for the original
+;   PRNG CALL/three saved pairs, excluding the unchanged IRQ stack envelope.
+;   IRQ never accesses that mapping.
 ; Reuse boundary: Game-specific policy with direct native entry calls. Supply another
 ;   assembly-time policy for another game.
 ; Keep this summary synchronized with the registry and modules/README.md.
@@ -25,10 +31,27 @@ GameSession_UI:
     ld hl,GameSession_UIPalette
     ld bc,$209a
     otir
+    ld hl,(clock_ticks)
+    ld (input_tick),hl
     ei
 .frame:
     ld hl,(clock_ticks)
+    ld de,(input_tick)
     ld (input_tick),hl
+    or a
+    sbc hl,de
+    ld a,GAME_NATIVE_BANK
+    ld ($7000),a
+.random:
+    ld a,h
+    or l
+    jr z,.ui
+    dec hl
+    push hl
+    call $8f24              ; Original PRNG, also used unchanged in Game_Frame.
+    pop hl
+    jr .random
+.ui:
     ld a,SESSION_BANK
     ld ($7000),a
     call $8000

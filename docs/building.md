@@ -58,7 +58,14 @@ The first preparation takes longer. Later builds verify and reuse valid bundles;
 if one bundle is missing, its stage is regenerated. Modified, incomplete or
 incompatible bundles cause an error instead of being silently overwritten.
 
-The playable result is **`dist/newrallyx.rom`**. Its cartridge type is **ASCII16**.
+The playable local candidate is **`dist/newrallyx.rom`**, **ASCII8**, 761,856 bytes.
+It runs with64KiB fixed RAM and no RAM mapper. `make build-megaram` also packages
+MSX-DOS/Disk BASIC files for 768 KiB MegaRAM plus 64 KiB main RAM; see the
+[complete qualification and reproduction](issue42-768-optimization.md).
+The supported standard-mapper executable still needs4MiB; the separate512KiB
+backend remains experimental. Cartridge and MegaRAM need no standard RAM mapper;
+see [fixed-RAM qualification](issue42-fixedram64.md).
+Release publication remains subject to owner approval.
 The hard size limit is 2,097,152 bytes. One ROM supports 64KiB RAM and detects
 larger mapper RAM and supported CPU acceleration automatically.
 
@@ -72,7 +79,7 @@ make run MAPPER=1  # Same ROM; emulator configured with 128KiB instead of 64KiB
 Running the MSX emulator also requires your own BIOS files under
 `references/msxbios/`; see [emulator setup](setup.md). BIOS files are unnecessary
 for `make build`. Loading the delivered cartridge in WebMSX requires selecting
-ASCII16. Final physical-hardware and perceptual acceptance remain separate from
+ASCII8 for the default build. Final physical-hardware and perceptual acceptance remain separate from
 host/emulator test results.
 
 ## Optional extraction commands

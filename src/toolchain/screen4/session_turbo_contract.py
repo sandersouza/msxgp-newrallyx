@@ -23,7 +23,9 @@ debug set_bp {syms['loop']} {{[debug read memory 0x4000]==65 && [debug read memo
     machine=os.environ.get('NRX_REFERENCE_MACHINE','Panasonic_FS-A1WSX')
     expected=2 if machine in ('Panasonic_FS-A1ST','Panasonic_FS-A1GT') else 1 if machine in ('Panasonic_FS-A1FX','Panasonic_FS-A1WX','Panasonic_FS-A1WSX') else 0
     bank=json.loads((out.parent/'session-build.json').read_text())['banks']['SESSION_BOOT_BANK']
-    prefix=(out/'measured.rom').read_bytes()[bank*16384:bank*16384+16].hex()
+    from session_reference import bank_offset
+    at=bank_offset(out.parent,bank)
+    prefix=(out/'measured.rom').read_bytes()[at:at+16].hex()
     code=f'''
 set turbo_started 0
 set turbo_main_prefix [binary format H* {prefix}]
@@ -91,4 +93,7 @@ debug set_watchpoint read_io 0xa2 {{$::turbo_started}} {{turbo_io}}
 debug set_watchpoint write_io {{0xa9 0xab}} {{$::turbo_started}} {{turbo_io}}
 debug set_watchpoint read_io 0xa9 {{$::turbo_started}} {{turbo_io}}
 '''
+    if json.loads((out.parent/'session-build.json').read_text()).get('world_storage')=='fixed':
+        from session_reference import runtime_guard
+        code=code.replace('[debug read_block memory 0x2900 16] eq $::turbo_main_prefix',runtime_guard(out.parent))
     return code if io else code.split('proc turbo_io')[0]

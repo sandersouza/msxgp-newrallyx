@@ -82,6 +82,7 @@ def report(bundle,out,profile=None,comparison=None):
         timing_units=data.get('timing_units','Z80 cycles at fixed 3579545 Hz'),cpu_policy=data.get('cpu_policy','Fixed base Z80 clock'),
         cpu_hz=hz,machine=data['machine'],mapper_ram_kib=data.get('mapper_ram_kib',128),emulator=data['emulator'],workload=data['workload'],
         native_round=data.get('profile_native_round',5),enemy_count=data.get('profile_enemy_count',3),
+        controlled_rng_seed=data.get('controlled_rng_seed'),
         profile_path=str(profile.resolve()),method=data['method'],control=data['control_check'],
         limitsprites=True,hud=True,audio=True,total_intervals=len(states),active_frames=len(ids),
         active_seconds=sum(f['cycles'] for f in active['frames'])/hz,presented_fps=active['presented_fps'],
@@ -145,7 +146,7 @@ def report(bundle,out,profile=None,comparison=None):
             for line in (Path(case['source'])/'clear-costs.tsv').read_text().splitlines():
                 name,value=line.split();groups.setdefault(name,[]).append(float(value))
         result['verification']['clear_sequence']=dict(passed=True,cases=cases,
-            original=json.loads((bundle.parents[0]/'arcade-clear-audio/reference.json').read_text()),
+            original=json.loads((RUNTIME.parents[1]/'references/cache/arcade-clear-audio/reference.json').read_text()),
             cost_groups=[dict(name='GameSession_CompletionWait ('+n+')',calls=len(v),inclusive=distribution(v)) for n,v in groups.items()],
             extra_active_selector_cycles_per_call=5,extra_state_ram_bytes=0,extra_resident_code_ram_bytes=33,extra_vram_bytes=0,
             scope='Controlled first-phase normal/S/L last-flag contacts and paused clear; foreground settlement, not VBlank or a scanline hook. Minimum/flag wait and converter-entry groups do not overlap. Converter entry includes the original Completion_Begin child; self costs not separated.')

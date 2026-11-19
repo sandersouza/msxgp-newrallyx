@@ -205,18 +205,240 @@
       "ledger": "measurements/timing/archive/retained-5197a285f6fed365/cycle-ledger.json",
       "ledger_sha256": "cef81eab32726257cdb94fe8a5f2c223a8083bcba2c73b69a7d84baa122d7687",
       "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-9b9944995304f615/cycle-budget.xlsx",
+      "bytes": 39784,
+      "sha256": "9b9944995304f6153720a2bde1330eba751aebc98aefc0cafcefb75b49f152f3",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-9b9944995304f615/cycle-ledger.json",
+      "ledger_sha256": "cef81eab32726257cdb94fe8a5f2c223a8083bcba2c73b69a7d84baa122d7687",
+      "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-a33b9ff099e73220/cycle-budget.xlsx",
+      "bytes": 39789,
+      "sha256": "a33b9ff099e7322024e4473586359984353e0e3702e9c056912624f9f21fae6f",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-a33b9ff099e73220/cycle-ledger.json",
+      "ledger_sha256": "cef81eab32726257cdb94fe8a5f2c223a8083bcba2c73b69a7d84baa122d7687",
+      "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-a9c28f3f2765bb29/cycle-budget.xlsx",
+      "bytes": 42271,
+      "sha256": "a9c28f3f2765bb291b49e9752c951d0d273e1ca8e66ab8b48304a036acf05d51",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-a9c28f3f2765bb29/cycle-ledger.json",
+      "ledger_sha256": "6fef986367e7ba709b809b6676facc17b5f20df2b65aa361af1009b72a650ce1",
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-315ede447b6a97e7/cycle-budget.xlsx",
+      "bytes": 42271,
+      "sha256": "315ede447b6a97e70f31355c046d04d42c508bfe4d374d7663629e3141d795fd",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-315ede447b6a97e7/cycle-ledger.json",
+      "ledger_sha256": "2bba9eb77a7e9f36ec6ea896ad640c1489917106d365cfe5bff47b7187da9028",
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-bc043897666c07af/cycle-budget.xlsx",
+      "bytes": 42265,
+      "sha256": "bc043897666c07af0a0e3a50769f978f20dd1d883e6ddc0f8ff88aa8bb49bc83",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-bc043897666c07af/cycle-ledger.json",
+      "ledger_sha256": "3a8b1f0cb76decf31a4e5d8443b61e070d13526c9a624956c3fbbfd8e67ed999",
+      "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-cbdb61e1c3eecee4/cycle-budget.xlsx",
+      "bytes": 42052,
+      "sha256": "cbdb61e1c3eecee4ed354d6a8cce64ac67fe358e7d4ca8faf0296658c317a1d4",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-cbdb61e1c3eecee4/cycle-ledger.json",
+      "ledger_sha256": "0a2fd1a87ecabf4696766752b6a7bb6cebce39ab1b1db0efb8a389c8828522a2",
+      "rom_sha256": "d1a1f9cf3fa98940acf2d234b127f224da79f5aaed37fc19e999718134e7c23f"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-a26c70655077d122/cycle-budget.xlsx",
+      "bytes": 42054,
+      "sha256": "a26c70655077d122ccbdb0c0fe6550d81689206ab94c9273a9037e72ed92bd8c",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-a26c70655077d122/cycle-ledger.json",
+      "ledger_sha256": "47ddeedb14c7daea6181d288f9141f67407ad6c190e85940d4aa22255600a272",
+      "rom_sha256": "d1a1f9cf3fa98940acf2d234b127f224da79f5aaed37fc19e999718134e7c23f"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-b8d941ff31e8f967/cycle-budget.xlsx",
+      "bytes": 42168,
+      "sha256": "b8d941ff31e8f96765a5605619710adb36d4cb5d86224cb7300747560e8ed367",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-b8d941ff31e8f967/cycle-ledger.json",
+      "ledger_sha256": "f88563098a8e6667af8b49304cb568cf1fbceeece06231e759e5d9c9ee3acdc1",
+      "rom_sha256": "230c388345a44226ce6536e17204d37a96714b0f03c126d9e072115a394274bc"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-2add33df4f4b174b/cycle-budget.xlsx",
+      "bytes": 43690,
+      "sha256": "2add33df4f4b174b1f81beeb3bacf3685c827c1164f464a99cfca96ee5c31062",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-2add33df4f4b174b/cycle-ledger.json",
+      "ledger_sha256": "3945b604e9dd4e64eb5e796f30c619c635c2a8c13c088ee0956ba85b47348ac8",
+      "rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-3755ff672ad3c66e/cycle-budget.xlsx",
+      "bytes": 43688,
+      "sha256": "3755ff672ad3c66e97faa8e9bc661c3e796dae0b4091d242f645e48fc5808cad",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-3755ff672ad3c66e/cycle-ledger.json",
+      "ledger_sha256": "3945b604e9dd4e64eb5e796f30c619c635c2a8c13c088ee0956ba85b47348ac8",
+      "rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-11b440a8ba8802be/cycle-budget.xlsx",
+      "bytes": 43691,
+      "sha256": "11b440a8ba8802be99e86078e30529b813e973552d97ee520f5b365d64dc801c",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-11b440a8ba8802be/cycle-ledger.json",
+      "ledger_sha256": "1fac5e427f3e251054985d10cc30a72c3079d7a98beb0d43a3fd915c7d42d9ef",
+      "rom_sha256": "b39e0c7f520872174e9a89cc46ddf4e1957179bc70ac3326c6450420866a878c"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-c19093e1953486e3/cycle-budget.xlsx",
+      "bytes": 42084,
+      "sha256": "c19093e1953486e3b30108fceae49f2507381a2330668df77aa313befdb5d7cd",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-c19093e1953486e3/cycle-ledger.json",
+      "ledger_sha256": "7cfd950882a88cd8d9fe70919a909b56c99f899bed3389d68830a49b13e720a6",
+      "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-72c5d9123641ddfe/cycle-budget.xlsx",
+      "bytes": 43012,
+      "sha256": "72c5d9123641ddfee066bedf432cd5153e54032b2060d4412c6ad2ef7c5b95eb",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-72c5d9123641ddfe/cycle-ledger.json",
+      "ledger_sha256": "fd08e2220c01ff7067db3758746582ec7819730bb9da5bf1160601caf355c4bd",
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160"
+    },
+    {
+      "source": "Previous docs/cycle-budget.xlsx",
+      "path": "measurements/timing/archive/retained-6b4fb3ff0eb81a27/cycle-budget.xlsx",
+      "bytes": 43065,
+      "sha256": "6b4fb3ff0eb81a27ca584a995e8b9b31da96619475823e8d77a2aa8d167efcb0",
+      "scope": "Historical workbook; retain its original ROM hash and workload.",
+      "ledger": "measurements/timing/archive/retained-6b4fb3ff0eb81a27/cycle-ledger.json",
+      "ledger_sha256": "954012ccdf5e1104a5103dd2d1778afb27e38626909b5eeace0fe316c5c2f108",
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160"
     }
   ],
   "current": {
     "path": "cycle-budget.xlsx",
-    "bytes": 39784,
-    "sha256": "9b9944995304f6153720a2bde1330eba751aebc98aefc0cafcefb75b49f152f3",
-    "rom_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
-    "rom_bytes": 2048000,
+    "bytes": 43070,
+    "sha256": "fe7e648f3e111d92171c42dfcf4cbccb18fdf1575959b868d9b3e2009f181d0f",
+    "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+    "rom_bytes": 761856,
     "ledger": "measurements/timing/cycle-ledger.json",
-    "ledger_sha256": "cef81eab32726257cdb94fe8a5f2c223a8083bcba2c73b69a7d84baa122d7687",
+    "ledger_sha256": "05a59c09a68a7d12dfc6fd78f1e1830937d3f6343e3b9bcca18cf3817563540a",
     "generator": "src/toolchain/screen4/turbo_workbook.mjs",
-    "generator_sha256": "3b1d578244b0c328d53eacbea761d3548d5a84fbe3724729845fda8160beafa2",
+    "generator_sha256": "615f4a147f255dd56ca2b68ea29a965f7bb9af4222e9350b572f8459749db584",
     "scope": "Full session, keyboard coin/start and F5 to native round5 (RND4), 3 native enemies; frames5..360, fixed directional input; one automatic mapper/CPU ROM, observed RAM and selected cache tier."
-  }
+  },
+  "experimental": [
+    {
+      "path": "measurements/timing/mapper512-integrated.xlsx",
+      "sha256": "2f569939eae579e23636601a3b5c8ccfbc0b048fefbbad4d76371907dbcb1f01",
+      "bytes": 184492,
+      "ledger": "measurements/timing/mapper512-integrated.json",
+      "ledger_sha256": "cc887c985cd411a148b7a1d5fd3b450eb08b7f9fefbcea21a44392a0276005bd",
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "active_images": [
+        {
+          "family": 0,
+          "sha256": "a68a8eeb6154ee7a7bc91e809da151a509a0b6ff0877d94518a9bda0f7010c91"
+        },
+        {
+          "family": 1,
+          "sha256": "376a18e5e487cb22401a37fa493c2691b9b33fbec2a00b7ec82c59f0da745073"
+        },
+        {
+          "family": 2,
+          "sha256": "66a8ed0e6f67b718d248dc5a2c923221e564fcbdf770a1e8a303a06fb1083a64"
+        },
+        {
+          "family": 3,
+          "sha256": "062d1fff1e3f6a849dc810116f20d8f681c83d7734f2c9e49ae7bcd8034fe962"
+        }
+      ],
+      "generator": "scripts/mapper512_workbook.mjs",
+      "generator_sha256": "aa618b18d1e95d46e4b48f8eecc140a2ab66b22d81b8937d8cf10ec8822e4c3a",
+      "scope": "Full-game512KiB RAM-active integration measured; standalone DOS/BASIC edition NOT qualified"
+    },
+    {
+      "path": "measurements/timing/mapper512-cold-io.xlsx",
+      "bytes": 28038,
+      "sha256": "43bbfda0624f7279bad1ca0f59e3b4e9d4589c21da391250997d8199edcfec27",
+      "ledger": "measurements/timing/mapper512-cold-io.json",
+      "ledger_sha256": "ce541b1fb38d4ef2437225d95cd6f5a2008d61b1c27eab2807a4fb03de66d11b",
+      "generator": "scripts/mapper512_cold_workbook.mjs",
+      "generator_sha256": "94b325d6b8d45eab59e32e980409143b474602a16f888684ba464e9c63574eea",
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "bridge_sha256": "49a936d8dff45a80fcc3669eb4c1f3f7d8115cd8059ba9bacee24781e07359ba",
+      "scope": "Real DOS1/BASIC cold I/O,48KiB scattered storage and active occupied-layout proofs pass; native512KiB boot/callback integration pending"
+    },
+    {
+      "path": "measurements/timing/mapper512-native-game.xlsx",
+      "bytes": 12604,
+      "sha256": "146f42b9a7b75ca49b9fb68f3ef218eb5f86b07ba8e2d5fb01e07ffc747e7e63",
+      "ledger": "measurements/timing/mapper512-native-game.json",
+      "ledger_sha256": "3f52ad945bcafd959b2a21fa17325f021f052ccb9455ccb3ed71501ba2844a07",
+      "generator": "scripts/mapper512_game_workbook.mjs",
+      "generator_sha256": "3d6c5c1e8bca44982e1b5451c1892101a5b80bcd8b6a6fb3c4a9f48320c7f6e5",
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "bridge_sha256": "60843241d534f459d76a8319872ed5ad8dd5192994f4f9ec7bdf79b3dcf0aedd",
+      "resource_sha256": "5586d1556408f3fcc4807b7bf162c40591463c683fdf77c76f934ca10ab183e5",
+      "scope": "Native DOS/BASIC boot and real game/family transitions demonstrated within512KiB; final performance/audio/lifecycle qualification remains open."
+    },
+    {
+      "path": "measurements/timing/mapper512-audio-sync.xlsx",
+      "bytes": 12779,
+      "sha256": "a8847c5d591753bbc90c26f14de17ea9eb46b2f5fce19533cdf978e26a1a7b03",
+      "ledger": "measurements/timing/mapper512-audio-sync.json",
+      "ledger_sha256": "16240936277b200fea664fd56c93f5123cd5e4f39930d3d7c8a16a74850b6713",
+      "generator": "scripts/mapper512_audio_sync_workbook.mjs",
+      "generator_sha256": "78d6589a55816c52bc0291cef31c0eedcf543062c5f9bd09cf8f00298e38ede3",
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "bridge_sha256": "40fc063fa685ec34538f064895015bbfa5c33b741d0444bdb5b17f80462e76d5",
+      "resource_sha256": "f9251378356627f321524aef423cec272d24240de4fc49b0801556e712296414",
+      "scope": "Natural sound synchronization explained and checked on observed events; nine-cycle phase-cache reduction validated across six matched DOS/BASIC gameplay routes. Experimental; no release."
+    },
+    {
+      "path": "measurements/timing/mapper512-lifecycle.xlsx",
+      "bytes": 14148,
+      "sha256": "53eaba850a169ddb6d8e5412b6983a305494f72d73a68325356058bcefc130c4",
+      "ledger": "measurements/timing/mapper512-lifecycle.json",
+      "ledger_sha256": "192365b77884c48a17988d419f6e8434f80dc6e55330043076452daf10ab9c7e",
+      "generator": "scripts/mapper512_lifecycle_workbook.mjs",
+      "generator_sha256": "4009690636dabc1db728fcc186b376ef2fdb2a1b987ffde09a5c5c5a4d053842",
+      "reference_rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "bridge_sha256": "14b6440233d6c4aebc31d8675bd169ec99d34552a0e92ac03002ed1b7a47c385",
+      "resource_sha256": "01e5307f0cbda0626df611289820c1ae9a3e6a5725f74cdd6029bdbec67333ef",
+      "scope": "Experimental lifecycle continuation;23 cases pass, no release or unconditional performance promotion."
+    }
+  ]
 }

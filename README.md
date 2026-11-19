@@ -13,6 +13,11 @@ Every contribution helps keep these projects moving. Thank you for being part
 of what comes next!
 
 # New Rally-X for MSX2+
+
+**Latest stable: [1.0.2](https://github.com/sandersouza/msxgp-newrallyx/releases/tag/1.0.2)** —
+744 KiB ASCII8 cartridge /768 KiB MegaRAM target, both with64 KiB fixed main RAM
+and no RAM mapper. DOS/BASIC standard-mapper executables are also available.
+
 ![](docs/image03.png)
 
 MSX2+ port of the New Rally-X arcade game, focused on
@@ -23,12 +28,41 @@ default SCREEN 4 presenter integrating the original Z80 gameplay routines with
 dynamic rounds, enemies, smoke, PSG audio and one/two-player sessions. The earlier
 SCREEN 5 presenter with sprite HUD remains available as an independent build.
 
-The default port requires **64 KiB mapper RAM and 128 KiB VRAM**. One ROM
+Final hardware acceptance requires the following MSX2+/128KiB VRAM targets:
+
+|Delivery|Main RAM requirement|Game storage|
+|---|---|---|
+|ROM / cartridge|64KiB fixed RAM, **no RAM mapper required**|Compatible cartridge bank controller|
+|BIN / COM main-mapper executable|Compatible RAM mapper with sufficient capacity|Experimental512KiB mapper or preserved4MiB mapper edition|
+|MegaRAM|64KiB fixed RAM, **no RAM mapper required**|Compatible MegaRAM with sufficient capacity; current target768KiB|
+
+The corrected local cartridge and MegaRAM candidate now pass genuine fixed64KiB
+tests with **zero RAM mapper devices**. Ten paired performance profiles preserve
+all356 state/PSG rows per workload, with no slower measured active frames.
+See the [fixed-RAM correction and limits](docs/issue42-fixedram64.md) and
+[hardware targets](docs/hardware-targets.md). Physical acceptance remains open.
+
+One ROM
 automatically selects the faster radar cache when at least128 KiB RAM is
 available, and factory CPU acceleration on supported Panasonic machines.
-The first hardware-check screen reports `MAPPER <size>K` and `TURBO ON/OFF`.
-The cartridge remains below the mandatory **2 MiB** limit. The openMSX launcher
-uses a private FS-A1WSX definition with cartridge type ASCII16.
+The first hardware-check screen reports `RAM 0064K` on fixed RAM or
+`MAPPER <size>K` on mapper RAM, plus `TURBO ON/OFF`.
+The current local cartridge candidate is **761,856 bytes (744 KiB), below 768 KiB**, using ASCII8.
+The openMSX launcher uses a private FS-A1WSX definition and verified image
+metadata. Both cartridge and disk deliveries remain available: the new
+MSX-DOS/Disk BASIC package needs **768 KiB MegaRAM plus 64 KiB main RAM**; the
+earlier standard 4 MiB system-mapper executable is also retained.
+See [size/performance qualification and reproduction](docs/issue42-768-optimization.md)
+and [current F10 validation](docs/f10-invulnerability.md).
+Hold **F10** (MSX **Shift+F5**) through the ROM/RAM opening until the title,
+then release it to enable test invulnerability against cars/rocks. Walls stay
+solid; reset restores normal collisions. This also works in both disk editions.
+The optional [512KiB standard-mapper backend](docs/issue42-512-lifecycle.md)
+now boots and exercises the full game in scoped lifecycle tests, with a separate
+diagnostic test ROM requiring512KiB mapper RAM. General performance/hardware
+acceptance remains open; it is not a stable executable or the fixed64KiB target.
+The owner selected this exact768 KiB target for stable1.0.2. The512 KiB backend
+remains experimental and is excluded from the final binary downloads.
 See the [current architecture](docs/architecture.md) for source ownership and
 [maintenance guide](docs/maintenance.md) for dependency/retention decisions,
 baseline ROM hashes and cycle-ledger reproduction.
@@ -67,7 +101,8 @@ it prevents collision deaths and advances rounds without the fuel bonus. It is
 an optimized-presenter option; it is not added to the preserved legacy build.
 `make build` uses the same selection without opening the emulator.
 The default ROM is **`dist/newrallyx.rom`**, or `dist/test/newrallyx.rom` with
-test mode. Both use ASCII16; select that cartridge type when loading in WebMSX.
+test mode. The default uses ASCII8; named test/diagnostic builds retain ASCII16.
+Select the corresponding cartridge type when loading in WebMSX.
 `dist/manifest.json` records the exact ROM hash, size and configuration.
 `MAPPER=1` selects128KiB in the emulator; the default and `MAPPER=0` select64KiB.
 All select the same automatic ROM, build options and exported filename.
@@ -89,7 +124,7 @@ are needed for different machines. Stock turboR tests use, for example,
 
 The [64 KiB cache strategy](docs/ram64-variant.md) remains the fallback.
 `MAPPER` controls emulated RAM only; `TURBO=0` retains a base-CPU diagnostic build. Original graphics,
-128 KiB VRAM and ASCII16 requirements remain. Emulator results and pending user
+128 KiB VRAM remain required; the default cartridge now uses ASCII8. Emulator results and pending user
 audio/perceptual acceptance are separate from physical-hardware qualification.
 
 Original game ROMs and MSX BIOS must be supplied locally as described in
@@ -218,7 +253,7 @@ Other revisions and ZIP input are not supported by this extractor.
 ### 3. Build or run
 
 ```sh
-make build                   # Creates dist/newrallyx.rom (ASCII16)
+make build                   # Creates dist/newrallyx.rom (ASCII8, below 1 MiB)
 make run                     # Builds, then launches openMSX (your BIOS required)
 ```
 
@@ -250,7 +285,7 @@ and guarded overwrite behavior for advanced use.
 | `make capture-scenes` | Capture the arcade reference frames with MAME |
 | `make analyze-scenes` | Analyze normal and overlap captures into build input bundles |
 | `make prepare-scenes` | Alias for idempotent `make extract-scenes` |
-| `make build` | Rebuild optimized SCREEN 4 and export the normal/ASCII16 cartridge copies |
+| `make build` | Rebuild optimized SCREEN 4 and export the complete ASCII8 cartridge |
 | `make build TEST_MODE=1` | Rebuild a separate optimized test-mode cartridge |
 | `make build LEGACY=1` | Rebuild SCREEN 5 and publish `references/build/newrallyx.rom` |
 | `make run` | Rebuild the selected presenter, then start isolated openMSX |

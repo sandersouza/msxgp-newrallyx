@@ -359,6 +359,11 @@ Audio_SmokeEnvelope:
     guard=controls[controls.index('Session_SaveMotion:'):controls.index('; Four-way arcade input:')]
     (out/'session-motion.inc').write_text(guard)
     native=(view/'src/full-round-native.inc').read_text()
+    reset='    ld hl,1\n    ld ($e000),hl\n'
+    assert native.count(reset)==1
+    # Preserve native entry addresses/branch distances while retiring the
+    # diagnostic fixed seed. ColdLoad retains the ongoing global RNG word.
+    native=native.replace(reset,'    defs 6,0               ; RNG continues across games and player turns.\n',1)
     start=native.index('    push bc\n',native.index('.flag:'));end=native.index('    inc ix\n',start)
     native=native[:start]+native[end:]
     start=native.index('    ld l,a\n',native.index('    ld (Full_Layout),a'))
@@ -448,7 +453,7 @@ def challenge_reveal(out,colors):
 def copy_sources(out,assembly):
     from session_cosmetics import hud_source
     path=assembly/'game-hud.inc';path.write_text(hud_source(path.read_text(),symmetric_gauge=json.loads((out/'hud-module.json').read_text())['symmetric_gauge']))
-    for name in ('session-resident.inc','session-cold.inc','session-ui.inc','session-flags.inc','session-input.inc','session-challenge.inc','session-phase.inc','session-pattern-address.inc','session-sprite-static.inc','session-test.inc','session-boot.inc','session-startup-options.inc','session-title.inc','session-ui-options.inc','session-msx-logo.inc'):
+    for name in ('session-resident.inc','session-cold.inc','session-ui.inc','session-flags.inc','session-input.inc','session-challenge.inc','session-phase.inc','session-pattern-address.inc','session-sprite-static.inc','session-test.inc','session-boot.inc','session-boot-keys.inc','session-startup-options.inc','session-title.inc','session-ui-options.inc','session-msx-logo.inc'):
         shutil.copyfile(source_path(name),assembly/name)
     test=assembly/'session-test.inc'
     text=test.read_text();at=text.index('    IF SESSION_TEST_MODE')
@@ -477,12 +482,16 @@ def copy_sources(out,assembly):
     text+='\n'+source_path('session-enemy-rock.inc').read_text()
     path.write_text(text)
     path=assembly/'game-host.inc';text=path.read_text()
-    text=text.replace('Death_Begin:\n','''Death_Begin:
-    IF SESSION_TEST_MODE
+    # Keep the original no-contact return byte-for-byte: no new instructions
+    # run in ordinary active frames. The boot latch guards lethal contacts only.
+    death_anchor='    ret z\n    call Player_Position\n    ld hl,(player_pending_x)'
+    assert text.count(death_anchor)==1,'Expected exactly one lethal-contact gate'
+    text=text.replace(death_anchor, '''    ret z
     ld a,(GameSession_Invulnerable)
     or a
     ret nz
-    ENDIF
+    call Player_Position
+    ld hl,(player_pending_x)
 ''',1)
     path.write_text(text)
     path=assembly/'game-phase-cache.inc';text=path.read_text()
@@ -673,6 +682,7 @@ cx EQU $c000''',1)
 GameSession_StartupWorkers:
     IF SESSION_HARDWARE_CHECK
     INCLUDE "session-startup-options.inc"
+    INCLUDE "session-boot-keys.inc"
     ENDIF
     ASSERT $ <= $2c00
     defs $2c00-$,0
@@ -777,6 +787,10 @@ def export_cartridge(out):
     resource_name='default' if destination==root/'dist' else '-'.join(destination.relative_to(root/'dist').parts)
     publish_resources(root,target,resource_name)
     (destination/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n')
+    if destination==root/'dist':
+        # The16 KiB link remains an ignored source view for lossless packing.
+        # Normal delivery is the complete8 KiB-window cartridge.
+        subprocess.run([str(root/'.venv/bin/python'),'-B',str(root/'scripts/compact_game_build.py'),'--fixed-ram','--publish','--bundle',str(out.resolve())],cwd=root,check=True)
     print('ROM:',target)
     return target
 

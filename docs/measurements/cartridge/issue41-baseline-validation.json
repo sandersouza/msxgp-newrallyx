@@ -1,0 +1,135 @@
+{
+  "scope": "Unchanged release artifacts only; not the compact backend. First-round three-enemy NTSC smoke/directional workload; not matched full-density3/5/6-enemy qualification.",
+  "artifacts": {
+    "dist/newrallyx.rom": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+    "dist/disk/newrallyx-disk.zip": "d2ba12f51d0f275a987bcdd93d43b72b93f422ab3ba2f034599e40337234e389"
+  },
+  "runs": [
+    {
+      "mode": "rom",
+      "mapper_ram_kib": 64,
+      "refresh_hz": 59.92274340431231,
+      "nominal_refresh_hz": 60,
+      "refresh_cycles": 59736,
+      "two_refresh_budget_cycles": 119472,
+      "artifact_sha256": "d73539eb988b6de198a214bcb5e03476df903dec82fe78a53cc30ea9308ea963",
+      "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+      "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+      "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+      "work": {
+        "samples": 300,
+        "mean": 65708.63111111095,
+        "p95": 95416.00000000115,
+        "maximum": 124270.999999995
+      },
+      "synchronization_wait": {
+        "samples": 300,
+        "mean": 41105.916666666475,
+        "p95": 59529.99999998868,
+        "maximum": 59720.000000004715
+      },
+      "publication": {
+        "samples": 300,
+        "mean": 4250.630000000226,
+        "p95": 6923.000000004438,
+        "maximum": 9158.999999999869
+      },
+      "presentation_period": {
+        "samples": 299,
+        "mean": 111080.98327759198,
+        "p95": 122290.66666666916,
+        "maximum": 179206.99999999395
+      },
+      "presented_fps": 32.224642728041914,
+      "observed_presentations": 300,
+      "observed_psg_changes": 222,
+      "passed": true
+    },
+    {
+      "mode": "dos",
+      "mapper_ram_kib": 4096,
+      "refresh_hz": 59.92274340431231,
+      "nominal_refresh_hz": 60,
+      "refresh_cycles": 59736,
+      "two_refresh_budget_cycles": 119472,
+      "artifact_sha256": "0bf66c0b65c2986219cb5c0d5962bcb85f5f54c1d793fb57559800c89b49fd7c",
+      "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+      "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+      "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+      "work": {
+        "samples": 300,
+        "mean": 65422.065555546345,
+        "p95": 92367.3333332179,
+        "maximum": 124303.66666669154
+      },
+      "synchronization_wait": {
+        "samples": 300,
+        "mean": 42178.51666667369,
+        "p95": 59435.0000000061,
+        "maximum": 59730.00000000556
+      },
+      "publication": {
+        "samples": 300,
+        "mean": 4260.976666662793,
+        "p95": 6922.999999928136,
+        "maximum": 9159.000000177908
+      },
+      "presentation_period": {
+        "samples": 299,
+        "mean": 111880.13489409097,
+        "p95": 122288.66666675037,
+        "maximum": 179204.6666665286
+      },
+      "presented_fps": 31.99446446313729,
+      "observed_presentations": 300,
+      "observed_psg_changes": 221,
+      "passed": true
+    },
+    {
+      "mode": "basic",
+      "mapper_ram_kib": 4096,
+      "refresh_hz": 59.92274340431231,
+      "nominal_refresh_hz": 60,
+      "refresh_cycles": 59736,
+      "two_refresh_budget_cycles": 119472,
+      "artifact_sha256": "0bf66c0b65c2986219cb5c0d5962bcb85f5f54c1d793fb57559800c89b49fd7c",
+      "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+      "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+      "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+      "work": {
+        "samples": 300,
+        "mean": 65422.065555558554,
+        "p95": 92367.33333342138,
+        "maximum": 124303.66666669154
+      },
+      "synchronization_wait": {
+        "samples": 300,
+        "mean": 42178.51666666555,
+        "p95": 59435.0000000061,
+        "maximum": 59730.00000000556
+      },
+      "publication": {
+        "samples": 300,
+        "mean": 4260.976666664828,
+        "p95": 6923.000000131609,
+        "maximum": 9159.000000177908
+      },
+      "presentation_period": {
+        "samples": 299,
+        "mean": 111880.13489409165,
+        "p95": 122288.66666675037,
+        "maximum": 179204.66666673205
+      },
+      "presented_fps": 31.994464463137096,
+      "observed_presentations": 300,
+      "observed_psg_changes": 222,
+      "passed": true
+    }
+  ],
+  "repository_tests": {
+    "general": 470,
+    "components": 94,
+    "component_skips": 1
+  },
+  "disk_archive_note": "Freshly rebuilt binary payloads match the published archive byte for byte. ZIP metadata timestamps differ; dist archive restored from verified release1.0.0 without publishing anything."
+}

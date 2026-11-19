@@ -1,0 +1,5473 @@
+{
+  "passed": true,
+  "status": "Local test candidate; no release or physical-hardware acceptance",
+  "hashes": {
+    "ASCII8": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+    "MegaRAM": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6"
+  },
+  "previous_hashes": {
+    "ASCII8": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+    "MegaRAM": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624"
+  },
+  "rom_bytes": 761856,
+  "cpu_matrix": [
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "ram_profile_kib": 64,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 75246.88185654052,
+        "p95": 108358.66666664183,
+        "max": 125776.33333332837
+      },
+      "presented_fps": 30.029362578097455,
+      "active_frames": 237,
+      "late_frames": 2,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "passed": true,
+      "log": "references/build/game-fixedram-runtime/profile-01wdb_hr",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "ram_profile_kib": 64,
+      "enemy_count": 5,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 87391.88095238266,
+        "p95": 128743.0,
+        "max": 170965.0
+      },
+      "presented_fps": 28.872426132064938,
+      "active_frames": 238,
+      "late_frames": 18,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "passed": true,
+      "log": "references/build/game-fixedram-runtime/profile-pfjy85q8",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "ram_profile_kib": 64,
+      "enemy_count": 6,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 89600.3375350133,
+        "p95": 131814.0,
+        "max": 170084.9999999702
+      },
+      "presented_fps": 28.816839299496703,
+      "active_frames": 238,
+      "late_frames": 19,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "passed": true,
+      "log": "references/build/game-fixedram-runtime/profile-q2hilfe7",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "ram_profile_kib": 64,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 75246.88185654109,
+        "p95": 108358.66666662693,
+        "max": 125776.33333337307
+      },
+      "presented_fps": 30.02936257809747,
+      "active_frames": 237,
+      "late_frames": 2,
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "passed": true,
+      "log": "references/build/game-fixedram-megaram-runtime/profile-_y7s1_nb",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "ram_profile_kib": 64,
+      "enemy_count": 5,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 87391.88095238378,
+        "p95": 128743.0,
+        "max": 170965.00000023842
+      },
+      "presented_fps": 28.872426132064852,
+      "active_frames": 238,
+      "late_frames": 18,
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "passed": true,
+      "log": "references/build/game-fixedram-megaram-runtime/profile-82waga_2",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain"
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "ram_profile_kib": 64,
+      "enemy_count": 6,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 89600.33753501718,
+        "p95": 131813.9999998808,
+        "max": 170085.0
+      },
+      "presented_fps": 28.816839299496646,
+      "active_frames": 238,
+      "late_frames": 19,
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "passed": true,
+      "log": "references/build/game-fixedram-megaram-runtime/profile-v3ptz737",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "mapper_kib": 128,
+      "ram_profile_kib": 128,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 1,
+      "work": {
+        "mean": 74661.49367088646,
+        "p95": 104712.0,
+        "max": 121605.33333334327
+      },
+      "presented_fps": 30.02936470401336,
+      "active_frames": 237,
+      "late_frames": 2,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "passed": true,
+      "log": "references/build/game-fixedram-runtime/profile-8ln34x8v",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 128,
+      "main_ram_kind": "mapper"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Sony_HB-F1XDJ",
+      "mapper_kib": 64,
+      "ram_profile_kib": 64,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 0,
+      "work": {
+        "mean": 81921.57142857111,
+        "p95": 109244.0000000149,
+        "max": 144126.0
+      },
+      "presented_fps": 29.713235573137528,
+      "active_frames": 238,
+      "late_frames": 4,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "passed": true,
+      "log": "references/build/game-fixedram-runtime/profile-tiz7q7d3",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 64,
+      "main_ram_kind": "mapper"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1ST",
+      "mapper_kib": 256,
+      "ram_profile_kib": 256,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 2,
+      "work": {
+        "mean": 73534.36708860779,
+        "p95": 101212.0000000149,
+        "max": 132522.0000000149
+      },
+      "presented_fps": 30.67320138388626,
+      "active_frames": 237,
+      "late_frames": 2,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "passed": true,
+      "log": "references/build/game-fixedram-runtime/profile-2mqytboe",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 256,
+      "main_ram_kind": "mapper"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1GT",
+      "mapper_kib": 512,
+      "ram_profile_kib": 512,
+      "enemy_count": 3,
+      "turbo": true,
+      "actual_backend_kind": 2,
+      "work": {
+        "mean": 73534.36708860779,
+        "p95": 101212.0000000149,
+        "max": 132522.0000000149
+      },
+      "presented_fps": 30.67320138388626,
+      "active_frames": 237,
+      "late_frames": 2,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "passed": true,
+      "log": "references/build/game-fixedram-runtime/profile-ntq4wv05",
+      "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+      "main_ram_kib": 512,
+      "main_ram_kind": "mapper"
+    }
+  ],
+  "comparisons": [
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "enemies": 3,
+      "matched_rows": 356,
+      "matched_active_rows": 237,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "507676353cd82079b2bd33859470da2d69319cbfa30d609ff196c0f0c4e4c2a0",
+      "active_work_delta": {
+        "min": -1061.0000000149012,
+        "mean": -124.40506329139073,
+        "p95": 2.9802322387695312e-08,
+        "max": 8.940696716308594e-08
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous ASCII8",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 75371.28691983191,
+            "p95": 108438.66666667163,
+            "max": 125776.33333332837
+          },
+          "presented_fps": 30.02935832626656,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-jmaso_j7",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1WSX_PLAIN64",
+          "mapper_kib": 0,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 75246.88185654052,
+            "p95": 108358.66666664183,
+            "max": 125776.33333332837
+          },
+          "presented_fps": 30.029362578097455,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+          "passed": true,
+          "log": "references/build/game-fixedram-runtime/profile-01wdb_hr",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 64,
+          "main_ram_kind": "plain"
+        }
+      ],
+      "unchanged_active_frames": 118
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "enemies": 5,
+      "matched_rows": 356,
+      "matched_active_rows": 238,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "7f81c8ca7fb50c75c8a4bbdc3e21aed5efbdc0d4b8dcebc983410bb314b1063d",
+      "active_work_delta": {
+        "min": -1061.0,
+        "mean": -271.16386554471586,
+        "p95": 2.9802322387695312e-08,
+        "max": 8.940696716308594e-08
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous ASCII8",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 5,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 87663.04481792738,
+            "p95": 128821.0,
+            "max": 171044.9999999702
+          },
+          "presented_fps": 28.87241928255167,
+          "active_frames": 238,
+          "late_frames": 18,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-bbde0f8y",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1WSX_PLAIN64",
+          "mapper_kib": 0,
+          "ram_profile_kib": 64,
+          "enemy_count": 5,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 87391.88095238266,
+            "p95": 128743.0,
+            "max": 170965.0
+          },
+          "presented_fps": 28.872426132064938,
+          "active_frames": 238,
+          "late_frames": 18,
+          "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+          "passed": true,
+          "log": "references/build/game-fixedram-runtime/profile-pfjy85q8",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 64,
+          "main_ram_kind": "plain"
+        }
+      ],
+      "unchanged_active_frames": 112
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "enemies": 6,
+      "matched_rows": 356,
+      "matched_active_rows": 238,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "8a190201051b8404342244efc222647eca24d2bfe337c3bac006346f18f712fc",
+      "active_work_delta": {
+        "min": -1112.0,
+        "mean": -89.731092438227,
+        "p95": 2.9802322387695312e-08,
+        "max": 1.1920928955078125e-07
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous ASCII8",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 6,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 89690.06862745152,
+            "p95": 131894.0,
+            "max": 170165.0
+          },
+          "presented_fps": 28.816838324758717,
+          "active_frames": 238,
+          "late_frames": 19,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-5v14rww_",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1WSX_PLAIN64",
+          "mapper_kib": 0,
+          "ram_profile_kib": 64,
+          "enemy_count": 6,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 89600.3375350133,
+            "p95": 131814.0,
+            "max": 170084.9999999702
+          },
+          "presented_fps": 28.816839299496703,
+          "active_frames": 238,
+          "late_frames": 19,
+          "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+          "passed": true,
+          "log": "references/build/game-fixedram-runtime/profile-q2hilfe7",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 64,
+          "main_ram_kind": "plain"
+        }
+      ],
+      "unchanged_active_frames": 114
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "enemies": 3,
+      "matched_rows": 356,
+      "matched_active_rows": 237,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "507676353cd82079b2bd33859470da2d69319cbfa30d609ff196c0f0c4e4c2a0",
+      "active_work_delta": {
+        "min": -1061.0000001192093,
+        "mean": -124.40506329214523,
+        "p95": 2.384185791015625e-07,
+        "max": 3.5762786865234375e-07
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 75371.28691983323,
+            "p95": 108438.66666674614,
+            "max": 125776.33333313465
+          },
+          "presented_fps": 30.029358326266436,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "passed": true,
+          "log": "references/build/game-compact-megaram-runtime/profile-0ao6680h",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_PLAIN64",
+          "mapper_kib": 0,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 75246.88185654109,
+            "p95": 108358.66666662693,
+            "max": 125776.33333337307
+          },
+          "presented_fps": 30.02936257809747,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+          "passed": true,
+          "log": "references/build/game-fixedram-megaram-runtime/profile-_y7s1_nb",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 64,
+          "main_ram_kind": "plain"
+        }
+      ],
+      "unchanged_active_frames": 118
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "enemies": 5,
+      "matched_rows": 356,
+      "matched_active_rows": 238,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "7f81c8ca7fb50c75c8a4bbdc3e21aed5efbdc0d4b8dcebc983410bb314b1063d",
+      "active_work_delta": {
+        "min": -1061.0000001192093,
+        "mean": -271.16386554621846,
+        "p95": 1.1920928955078125e-07,
+        "max": 3.5762786865234375e-07
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 5,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 87663.04481793001,
+            "p95": 128821.0,
+            "max": 171044.9999998808
+          },
+          "presented_fps": 28.872419282551583,
+          "active_frames": 238,
+          "late_frames": 18,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "passed": true,
+          "log": "references/build/game-compact-megaram-runtime/profile-_hmuomr5",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_PLAIN64",
+          "mapper_kib": 0,
+          "ram_profile_kib": 64,
+          "enemy_count": 5,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 87391.88095238378,
+            "p95": 128743.0,
+            "max": 170965.00000023842
+          },
+          "presented_fps": 28.872426132064852,
+          "active_frames": 238,
+          "late_frames": 18,
+          "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+          "passed": true,
+          "log": "references/build/game-fixedram-megaram-runtime/profile-82waga_2",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 64,
+          "main_ram_kind": "plain"
+        }
+      ],
+      "unchanged_active_frames": 112
+    },
+    {
+      "backend": "MegaRAM",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "enemies": 6,
+      "matched_rows": 356,
+      "matched_active_rows": 238,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "8a190201051b8404342244efc222647eca24d2bfe337c3bac006346f18f712fc",
+      "active_work_delta": {
+        "min": -1112.0,
+        "mean": -89.73109243246688,
+        "p95": 2.384185791015625e-07,
+        "max": 3.5762786865234375e-07
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_NR64",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 6,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 89690.06862744964,
+            "p95": 131893.9999998808,
+            "max": 170165.0000001192
+          },
+          "presented_fps": 28.81683832475866,
+          "active_frames": 238,
+          "late_frames": 19,
+          "rom_sha256": "abcf69b3fd3a041cb0614cc4006ff76dc4880578999f09054112be615566e624",
+          "passed": true,
+          "log": "references/build/game-compact-megaram-runtime/profile-onhre76i",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "MegaRAM",
+          "machine": "Panasonic_FS-A1WSX_PLAIN64",
+          "mapper_kib": 0,
+          "ram_profile_kib": 64,
+          "enemy_count": 6,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 89600.33753501718,
+            "p95": 131813.9999998808,
+            "max": 170085.0
+          },
+          "presented_fps": 28.816839299496646,
+          "active_frames": 238,
+          "late_frames": 19,
+          "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+          "passed": true,
+          "log": "references/build/game-fixedram-megaram-runtime/profile-v3ptz737",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 64,
+          "main_ram_kind": "plain"
+        }
+      ],
+      "unchanged_active_frames": 114
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_NR128",
+      "enemies": 3,
+      "matched_rows": 356,
+      "matched_active_rows": 237,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "507676353cd82079b2bd33859470da2d69319cbfa30d609ff196c0f0c4e4c2a0",
+      "active_work_delta": {
+        "min": -1060.9999999850988,
+        "mean": -124.40506329038475,
+        "p95": 2.9802322387695312e-08,
+        "max": 5.960464477539063e-08
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous ASCII8",
+          "machine": "Panasonic_FS-A1WSX_NR128",
+          "mapper_kib": 128,
+          "ram_profile_kib": 128,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 74785.89873417684,
+            "p95": 104791.9999999851,
+            "max": 121605.33333331347
+          },
+          "presented_fps": 30.029365766971427,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-3x09ydmc",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1WSX_NR128",
+          "mapper_kib": 128,
+          "ram_profile_kib": 128,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 1,
+          "work": {
+            "mean": 74661.49367088646,
+            "p95": 104712.0,
+            "max": 121605.33333334327
+          },
+          "presented_fps": 30.02936470401336,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+          "passed": true,
+          "log": "references/build/game-fixedram-runtime/profile-8ln34x8v",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 128,
+          "main_ram_kind": "mapper"
+        }
+      ],
+      "unchanged_active_frames": 118
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Sony_HB-F1XDJ",
+      "enemies": 3,
+      "matched_rows": 356,
+      "matched_active_rows": 238,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "366153eff62e7b54f3956b4c0f928bf26efd0d9010bfcbde156d6f938dcb8597",
+      "active_work_delta": {
+        "min": -1060.9999999850988,
+        "mean": -195.2857142870291,
+        "p95": 2.9802322387695312e-08,
+        "max": 5.960464477539063e-08
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous ASCII8",
+          "machine": "Sony_HB-F1XDJ",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 0,
+          "work": {
+            "mean": 82116.85714285815,
+            "p95": 109493.9999999851,
+            "max": 145160.0000000149
+          },
+          "presented_fps": 29.713242827399814,
+          "active_frames": 238,
+          "late_frames": 4,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-bo3gn5y0",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Sony_HB-F1XDJ",
+          "mapper_kib": 64,
+          "ram_profile_kib": 64,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 0,
+          "work": {
+            "mean": 81921.57142857111,
+            "p95": 109244.0000000149,
+            "max": 144126.0
+          },
+          "presented_fps": 29.713235573137528,
+          "active_frames": 238,
+          "late_frames": 4,
+          "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+          "passed": true,
+          "log": "references/build/game-fixedram-runtime/profile-tiz7q7d3",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 64,
+          "main_ram_kind": "mapper"
+        }
+      ],
+      "unchanged_active_frames": 117
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1ST",
+      "enemies": 3,
+      "matched_rows": 356,
+      "matched_active_rows": 237,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "53d6e807d90d0696013fa931a603b74f224f16a46e7d943df8d5f21ea77618aa",
+      "active_work_delta": {
+        "min": -1061.0000000149012,
+        "mean": -128.10970464273345,
+        "p95": 2.9802322387695312e-08,
+        "max": 5.960464477539063e-08
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous ASCII8",
+          "machine": "Panasonic_FS-A1ST",
+          "mapper_kib": 256,
+          "ram_profile_kib": 256,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 2,
+          "work": {
+            "mean": 73662.47679325052,
+            "p95": 101965.9999999702,
+            "max": 132602.0
+          },
+          "presented_fps": 30.673193620700687,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-whkfzbw1",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1ST",
+          "mapper_kib": 256,
+          "ram_profile_kib": 256,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 2,
+          "work": {
+            "mean": 73534.36708860779,
+            "p95": 101212.0000000149,
+            "max": 132522.0000000149
+          },
+          "presented_fps": 30.67320138388626,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+          "passed": true,
+          "log": "references/build/game-fixedram-runtime/profile-2mqytboe",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 256,
+          "main_ram_kind": "mapper"
+        }
+      ],
+      "unchanged_active_frames": 119
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1GT",
+      "enemies": 3,
+      "matched_rows": 356,
+      "matched_active_rows": 237,
+      "matched_fields": [
+        "frame",
+        "cx",
+        "cy",
+        "elapsed_ticks",
+        "start_x",
+        "start_y",
+        "command",
+        "speed",
+        "active_start",
+        "active_end",
+        "enemy_positions",
+        "r9",
+        "r18",
+        "psg"
+      ],
+      "matched_state_sha256": "53d6e807d90d0696013fa931a603b74f224f16a46e7d943df8d5f21ea77618aa",
+      "active_work_delta": {
+        "min": -1061.0000000149012,
+        "mean": -128.10970464273345,
+        "p95": 2.9802322387695312e-08,
+        "max": 5.960464477539063e-08
+      },
+      "longer_active_frames": 0,
+      "variants": [
+        {
+          "backend": "previous ASCII8",
+          "machine": "Panasonic_FS-A1GT",
+          "mapper_kib": 512,
+          "ram_profile_kib": 512,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 2,
+          "work": {
+            "mean": 73662.47679325052,
+            "p95": 101965.9999999702,
+            "max": 132602.0
+          },
+          "presented_fps": 30.673193620700687,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+          "passed": true,
+          "log": "references/build/game-compact-runtime/profile-bvy3vbzq",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles"
+        },
+        {
+          "backend": "ASCII8",
+          "machine": "Panasonic_FS-A1GT",
+          "mapper_kib": 512,
+          "ram_profile_kib": 512,
+          "enemy_count": 3,
+          "turbo": true,
+          "actual_backend_kind": 2,
+          "work": {
+            "mean": 73534.36708860779,
+            "p95": 101212.0000000149,
+            "max": 132522.0000000149
+          },
+          "presented_fps": 30.67320138388626,
+          "active_frames": 237,
+          "late_frames": 2,
+          "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+          "passed": true,
+          "log": "references/build/game-fixedram-runtime/profile-ntq4wv05",
+          "control": "356 camera/tick states match a run without routine breakpoints; total duration matches within5.01cycles; per-frame observation jitter <=6 reference cycles",
+          "main_ram_kib": 512,
+          "main_ram_kind": "mapper"
+        }
+      ],
+      "unchanged_active_frames": 119
+    }
+  ],
+  "commands": [
+    {
+      "name": "cart-profile-3",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "5",
+        "NRX_PROFILE_ENEMIES": "3",
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "cart-profile-5",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "10",
+        "NRX_PROFILE_ENEMIES": "5",
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "cart-profile-6",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "13",
+        "NRX_PROFILE_ENEMIES": "6",
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "mega-profile-3",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-megaram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "5",
+        "NRX_PROFILE_ENEMIES": "3",
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "mega-profile-5",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-megaram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "10",
+        "NRX_PROFILE_ENEMIES": "5",
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "mega-profile-6",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-megaram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "13",
+        "NRX_PROFILE_ENEMIES": "6",
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "profile-Panasonic_FS-A1WSX-128",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "5",
+        "NRX_PROFILE_ENEMIES": "3",
+        "NRX_REFERENCE_MACHINE": "Panasonic_FS-A1WSX",
+        "NRX_REFERENCE_RAM_KIB": "128"
+      }
+    },
+    {
+      "name": "profile-Sony_HB-F1XDJ-64",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "5",
+        "NRX_PROFILE_ENEMIES": "3",
+        "NRX_REFERENCE_MACHINE": "Sony_HB-F1XDJ",
+        "NRX_REFERENCE_RAM_KIB": "64"
+      }
+    },
+    {
+      "name": "profile-Panasonic_FS-A1ST-256",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "5",
+        "NRX_PROFILE_ENEMIES": "3",
+        "NRX_REFERENCE_MACHINE": "Panasonic_FS-A1ST",
+        "NRX_REFERENCE_RAM_KIB": "256"
+      }
+    },
+    {
+      "name": "profile-Panasonic_FS-A1GT-512",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_profile.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_PROFILE_SEED": "0x1234",
+        "NRX_PROFILE_ROUND": "5",
+        "NRX_PROFILE_ENEMIES": "3",
+        "NRX_REFERENCE_MACHINE": "Panasonic_FS-A1GT",
+        "NRX_REFERENCE_RAM_KIB": "512"
+      }
+    },
+    {
+      "name": "session-integration",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime",
+        "--scenario",
+        "integration",
+        "--headless",
+        "--contracts"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "session-flags",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime",
+        "--scenario",
+        "flags",
+        "--headless",
+        "--contracts"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "session-smoke",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime",
+        "--scenario",
+        "smoke",
+        "--headless",
+        "--contracts"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "session-two-player",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime",
+        "--scenario",
+        "two-player",
+        "--headless",
+        "--contracts"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "session-attract",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime",
+        "--scenario",
+        "attract",
+        "--headless",
+        "--contracts"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "session-controls",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime",
+        "--scenario",
+        "controls",
+        "--headless",
+        "--contracts"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "session-radar",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime",
+        "--scenario",
+        "radar",
+        "--headless",
+        "--contracts"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "boot",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_boot_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "audio",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_audio_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "rocks",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_rocks_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "speed",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_speed_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "sprite",
+      "returncode": 0,
+      "script": "src/toolchain/screen4/session_sprite_verify.py",
+      "args": [
+        "--bundle",
+        "references/build/game-fixedram-runtime"
+      ],
+      "env": {
+        "NRX_REFERENCE_RAM_KIND": "plain"
+      }
+    },
+    {
+      "name": "smoke-rom",
+      "returncode": 0,
+      "script": "scripts/compact_game_verify.py",
+      "args": [
+        "--mode",
+        "rom",
+        "--size",
+        "768",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain"
+      ],
+      "env": {}
+    },
+    {
+      "name": "f10-rom",
+      "returncode": 0,
+      "script": "scripts/f10_verify.py",
+      "args": [
+        "--mode",
+        "rom",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain"
+      ],
+      "env": {}
+    },
+    {
+      "name": "smoke-dos",
+      "returncode": 0,
+      "script": "scripts/compact_game_verify.py",
+      "args": [
+        "--mode",
+        "dos",
+        "--size",
+        "768",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain"
+      ],
+      "env": {}
+    },
+    {
+      "name": "f10-dos",
+      "returncode": 0,
+      "script": "scripts/f10_verify.py",
+      "args": [
+        "--mode",
+        "mega-dos",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain",
+        "--quick"
+      ],
+      "env": {}
+    },
+    {
+      "name": "smoke-basic",
+      "returncode": 0,
+      "script": "scripts/compact_game_verify.py",
+      "args": [
+        "--mode",
+        "basic",
+        "--size",
+        "768",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain"
+      ],
+      "env": {}
+    },
+    {
+      "name": "f10-basic",
+      "returncode": 0,
+      "script": "scripts/f10_verify.py",
+      "args": [
+        "--mode",
+        "mega-basic",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain",
+        "--quick"
+      ],
+      "env": {}
+    },
+    {
+      "name": "slot-shared",
+      "returncode": 0,
+      "script": "scripts/compact_game_verify.py",
+      "args": [
+        "--mode",
+        "rom",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain",
+        "--topology",
+        "shared"
+      ],
+      "env": {}
+    },
+    {
+      "name": "slot-unexpanded",
+      "returncode": 0,
+      "script": "scripts/compact_game_verify.py",
+      "args": [
+        "--mode",
+        "rom",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain",
+        "--topology",
+        "unexpanded"
+      ],
+      "env": {}
+    },
+    {
+      "name": "mega-shared",
+      "returncode": 0,
+      "script": "scripts/compact_game_verify.py",
+      "args": [
+        "--mode",
+        "basic",
+        "--size",
+        "768",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain",
+        "--topology",
+        "shared"
+      ],
+      "env": {}
+    },
+    {
+      "name": "mega-too-small",
+      "returncode": 0,
+      "script": "scripts/compact_game_verify.py",
+      "args": [
+        "--mode",
+        "basic",
+        "--size",
+        "512",
+        "--fixed-ram",
+        "--ram-kind",
+        "plain"
+      ],
+      "env": {}
+    },
+    {
+      "name": "gameover-rom",
+      "returncode": 0,
+      "script": "scripts/fixedram_gameover_verify.py",
+      "args": [
+        "--mode",
+        "rom"
+      ],
+      "env": {}
+    },
+    {
+      "name": "gameover-dos",
+      "returncode": 0,
+      "script": "scripts/fixedram_gameover_verify.py",
+      "args": [
+        "--mode",
+        "dos"
+      ],
+      "env": {}
+    },
+    {
+      "name": "gameover-basic",
+      "returncode": 0,
+      "script": "scripts/fixedram_gameover_verify.py",
+      "args": [
+        "--mode",
+        "basic"
+      ],
+      "env": {}
+    }
+  ],
+  "regressions": [
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "main_ram_kib": 64,
+      "turbo": true,
+      "case": "integration",
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "snapshots": 14,
+      "log": "references/build/game-fixedram-runtime/session-start-0ywp6mm1/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "main_ram_kib": 64,
+      "turbo": true,
+      "case": "flags",
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "snapshots": 12,
+      "log": "references/build/game-fixedram-runtime/session-start-yvm2jxso/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "main_ram_kib": 64,
+      "turbo": true,
+      "case": "smoke",
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "snapshots": 301,
+      "log": "references/build/game-fixedram-runtime/session-start-wqz5j607/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "main_ram_kib": 64,
+      "turbo": true,
+      "case": "two-player",
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "snapshots": 3,
+      "log": "references/build/game-fixedram-runtime/session-start-in3sgz2h/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "main_ram_kib": 64,
+      "turbo": true,
+      "case": "attract",
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "snapshots": 3,
+      "log": "references/build/game-fixedram-runtime/session-start-htkmwr9a/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "main_ram_kib": 64,
+      "turbo": true,
+      "case": "controls",
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "snapshots": 2,
+      "log": "references/build/game-fixedram-runtime/session-start-iglnml8o/result.json"
+    },
+    {
+      "backend": "ASCII8",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "mapper_kib": 0,
+      "main_ram_kib": 64,
+      "turbo": true,
+      "case": "radar",
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "snapshots": 257,
+      "log": "references/build/game-fixedram-runtime/session-start-_wij2uts/result.json"
+    }
+  ],
+  "component_reports": {
+    "integration": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "scenario": "integration",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/session-start-0ywp6mm1",
+      "snapshots": [
+        "challenge-complete",
+        "challenge-items",
+        "challenge",
+        "round-6-layout-1",
+        "select",
+        "round-14-layout-3",
+        "round-13-layout-3",
+        "round-7-layout-1",
+        "paused",
+        "round-12-layout-2",
+        "cast-return",
+        "challenge-typing",
+        "round-5-layout-1",
+        "challenging-stage",
+        "round-10-layout-2",
+        "cast",
+        "round-11-layout-2",
+        "round-9-layout-2",
+        "second-stage",
+        "game-over",
+        "round-8-layout-1",
+        "first-stage"
+      ],
+      "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "mapper_ram_kib": 0,
+      "rng_lifecycle": {
+        "passed": true,
+        "transitions": 13,
+        "kinds": [
+          0,
+          1
+        ],
+        "observations": [
+          {
+            "event": "load",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "0",
+            "rng": "30502",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "23042",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "23042",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "58157",
+            "player": "0",
+            "round": "3"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "15716",
+            "player": "0",
+            "round": "3"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "15716",
+            "player": "0",
+            "round": "3"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "6382",
+            "player": "0",
+            "round": "4"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "10312",
+            "player": "0",
+            "round": "4"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "10312",
+            "player": "0",
+            "round": "4"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "57887",
+            "player": "0",
+            "round": "5"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "49056",
+            "player": "0",
+            "round": "5"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "49056",
+            "player": "0",
+            "round": "5"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "53551",
+            "player": "0",
+            "round": "6"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "277",
+            "player": "0",
+            "round": "6"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "277",
+            "player": "0",
+            "round": "6"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "16711",
+            "player": "0",
+            "round": "7"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "33820",
+            "player": "0",
+            "round": "7"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "33820",
+            "player": "0",
+            "round": "7"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "44092",
+            "player": "0",
+            "round": "8"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "52416",
+            "player": "0",
+            "round": "8"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "52416",
+            "player": "0",
+            "round": "8"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "24344",
+            "player": "0",
+            "round": "9"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "34805",
+            "player": "0",
+            "round": "9"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "34805",
+            "player": "0",
+            "round": "9"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "16902",
+            "player": "0",
+            "round": "10"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "34995",
+            "player": "0",
+            "round": "10"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "34995",
+            "player": "0",
+            "round": "10"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "21472",
+            "player": "0",
+            "round": "11"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "9615",
+            "player": "0",
+            "round": "11"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "9615",
+            "player": "0",
+            "round": "11"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "11609",
+            "player": "0",
+            "round": "12"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "21634",
+            "player": "0",
+            "round": "12"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "21634",
+            "player": "0",
+            "round": "12"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "17898",
+            "player": "0",
+            "round": "13"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "17583",
+            "player": "0",
+            "round": "13"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "17583",
+            "player": "0",
+            "round": "13"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "21130",
+            "player": "0",
+            "round": "14"
+          }
+        ],
+        "scope": "Read-only seed-copy and restore checks; scenario transition injections remain explicitly labeled"
+      },
+      "cold_silence_checks": 30,
+      "challenge_speed": {
+        "native_round": 4,
+        "target_per_tick": 2.625,
+        "observed_per_tick": 2.625,
+        "parked": true,
+        "scope": "Committed real-session challenge snapshot after native acceleration; no speed fixtures or native RAM edits."
+      },
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    "flags": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "scenario": "flags",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/session-start-yvm2jxso",
+      "snapshots": [
+        "captured-flag-3",
+        "select",
+        "captured-flag-2",
+        "after-ten-flags",
+        "captured-flag-1",
+        "captured-flag-5",
+        "captured-flag-4",
+        "captured-flag-6",
+        "captured-flag-7",
+        "captured-flag-9",
+        "cast",
+        "captured-flag-8",
+        "captured-flag-10",
+        "first-stage"
+      ],
+      "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "mapper_ram_kib": 0,
+      "rng_lifecycle": {
+        "passed": true,
+        "transitions": 2,
+        "kinds": [
+          0,
+          1
+        ],
+        "observations": [
+          {
+            "event": "load",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "0",
+            "rng": "30502",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "45658",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "45658",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "8768",
+            "player": "0",
+            "round": "3"
+          }
+        ],
+        "scope": "Read-only seed-copy and restore checks; scenario transition injections remain explicitly labeled"
+      },
+      "clear_sequence": {
+        "settlement_start": 32.642092034974645,
+        "first_audible_mode4": 32.642092034974645,
+        "bonus_start": 34.3822065839839,
+        "settlement_seconds": 1.740114549009256,
+        "fuel_before_bonus": 14852,
+        "fuel_and_score_stable_during_music": true,
+        "flag_order": "0 9 8 1 2 3 4 5 6 7"
+      },
+      "clear_costs": [
+        {
+          "name": "GameSession_CompletionWait (minimum)",
+          "calls": 61,
+          "inclusive": {
+            "mean": 75.9344262283289,
+            "p95": 75.0000000063304,
+            "max": 132.00000000605468
+          }
+        },
+        {
+          "name": "GameSession_CompletionWait (music_wait)",
+          "calls": 45,
+          "inclusive": {
+            "mean": 102.99999999908528,
+            "p95": 103.00000001378059,
+            "max": 103.00000001378059
+          }
+        },
+        {
+          "name": "GameSession_CompletionWait (begin_bonus)",
+          "calls": 1,
+          "inclusive": {
+            "mean": 4469.000000010955,
+            "p95": 4469.000000010955,
+            "max": 4469.000000010955
+          }
+        }
+      ],
+      "clear_cost_method": "Matched entry-to-caller-PC/SP return inclusive guest cycles, including RET/IRQ; no tracked child self costs. Foreground settlement only. begin_bonus includes Completion_Begin; never add parent/child costs.",
+      "cold_silence_checks": 5,
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    "smoke": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "scenario": "smoke",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/session-start-wqz5j607",
+      "snapshots": [
+        "smoke-0045",
+        "smoke-0051",
+        "smoke-0079",
+        "smoke-0086",
+        "smoke-0092",
+        "smoke-0247",
+        "smoke-0253",
+        "smoke-0284",
+        "smoke-0290",
+        "smoke-0131",
+        "smoke-0125",
+        "smoke-0119",
+        "smoke-0118",
+        "smoke-0124",
+        "smoke-0130",
+        "smoke-0291",
+        "smoke-0285",
+        "smoke-0252",
+        "smoke-0246",
+        "smoke-0093",
+        "smoke-0087",
+        "smoke-0078",
+        "smoke-0050",
+        "smoke-0044",
+        "smoke-0052",
+        "smoke-0046",
+        "smoke-0091",
+        "smoke-0085",
+        "smoke-0250",
+        "smoke-0244",
+        "smoke-0278",
+        "smoke-0293",
+        "smoke-0287",
+        "smoke-0126",
+        "smoke-0132",
+        "smoke-0133",
+        "smoke-0127",
+        "smoke-0286",
+        "smoke-0292",
+        "smoke-0279",
+        "smoke-0245",
+        "smoke-0251",
+        "smoke-0084",
+        "smoke-0090",
+        "smoke-0047",
+        "smoke-0053",
+        "smoke-0057",
+        "smoke-0043",
+        "smoke-0094",
+        "smoke-0080",
+        "smoke-0269",
+        "smoke-0255",
+        "smoke-0241",
+        "smoke-0296",
+        "smoke-0282",
+        "smoke-0123",
+        "smoke-0137",
+        "smoke-0136",
+        "smoke-0122",
+        "smoke-0283",
+        "smoke-0297",
+        "smoke-0240",
+        "smoke-0254",
+        "smoke-0268",
+        "smoke-0081",
+        "smoke-0095",
+        "smoke-0042",
+        "smoke-0056",
+        "smoke-0068",
+        "smoke-0040",
+        "smoke-0054",
+        "smoke-0083",
+        "smoke-0097",
+        "smoke-0242",
+        "smoke-0256",
+        "smoke-0281",
+        "smoke-0295",
+        "smoke-0108",
+        "smoke-0134",
+        "smoke-0120",
+        "smoke-0121",
+        "smoke-0135",
+        "smoke-0109",
+        "smoke-0294",
+        "smoke-0280",
+        "smoke-0257",
+        "smoke-0243",
+        "smoke-0096",
+        "smoke-0082",
+        "smoke-0055",
+        "smoke-0041",
+        "smoke-0069",
+        "smoke-0026",
+        "smoke-0032",
+        "smoke-0224",
+        "smoke-0230",
+        "smoke-0218",
+        "smoke-0152",
+        "smoke-0146",
+        "smoke-0191",
+        "smoke-0185",
+        "smoke-0184",
+        "smoke-0190",
+        "select",
+        "smoke-0147",
+        "smoke-0153",
+        "smoke-0219",
+        "smoke-0231",
+        "smoke-0225",
+        "smoke-0033",
+        "smoke-0027",
+        "smoke-0031",
+        "smoke-0025",
+        "smoke-0019",
+        "smoke-0233",
+        "smoke-0227",
+        "smoke-0145",
+        "smoke-0151",
+        "smoke-0179",
+        "smoke-0186",
+        "smoke-0192",
+        "smoke-0193",
+        "smoke-0187",
+        "smoke-0178",
+        "smoke-0150",
+        "smoke-0144",
+        "smoke-0226",
+        "smoke-0232",
+        "smoke-0018",
+        "smoke-0024",
+        "smoke-0030",
+        "smoke-0008",
+        "smoke-0034",
+        "smoke-0020",
+        "smoke-0236",
+        "smoke-0222",
+        "smoke-0168",
+        "smoke-0140",
+        "smoke-0154",
+        "smoke-0183",
+        "smoke-0197",
+        "smoke-0196",
+        "smoke-0182",
+        "smoke-0155",
+        "smoke-0141",
+        "smoke-0169",
+        "smoke-0223",
+        "smoke-0237",
+        "smoke-0021",
+        "smoke-0035",
+        "smoke-0009",
+        "smoke-0023",
+        "smoke-0037",
+        "smoke-0209",
+        "smoke-0221",
+        "smoke-0235",
+        "smoke-0157",
+        "smoke-0143",
+        "smoke-0194",
+        "smoke-0180",
+        "smoke-0181",
+        "smoke-0195",
+        "smoke-0142",
+        "smoke-0156",
+        "smoke-0234",
+        "smoke-0220",
+        "smoke-0208",
+        "smoke-0036",
+        "smoke-0022",
+        "smoke-0007",
+        "smoke-0013",
+        "smoke-0205",
+        "smoke-0211",
+        "smoke-0239",
+        "smoke-0173",
+        "smoke-0167",
+        "smoke-0198",
+        "smoke-0199",
+        "smoke-0166",
+        "smoke-0172",
+        "smoke-0238",
+        "smoke-0210",
+        "smoke-0204",
+        "smoke-0012",
+        "smoke-0006",
+        "smoke-0010",
+        "smoke-0004",
+        "smoke-0038",
+        "smoke-0212",
+        "smoke-0206",
+        "smoke-0164",
+        "smoke-0170",
+        "smoke-0158",
+        "smoke-0159",
+        "smoke-0171",
+        "smoke-0165",
+        "cast",
+        "smoke-0207",
+        "smoke-0213",
+        "smoke-0039",
+        "smoke-0005",
+        "smoke-0011",
+        "smoke-0029",
+        "smoke-0015",
+        "smoke-0001",
+        "smoke-0217",
+        "smoke-0203",
+        "smoke-0149",
+        "smoke-0161",
+        "smoke-0175",
+        "smoke-0174",
+        "smoke-0160",
+        "smoke-0148",
+        "smoke-0202",
+        "smoke-0216",
+        "smoke-0000",
+        "smoke-0014",
+        "smoke-0028",
+        "smoke-0002",
+        "smoke-0016",
+        "smoke-0228",
+        "smoke-0200",
+        "smoke-0214",
+        "smoke-0176",
+        "smoke-0162",
+        "smoke-0189",
+        "smoke-0188",
+        "smoke-0163",
+        "smoke-0177",
+        "smoke-0215",
+        "smoke-0201",
+        "smoke-0229",
+        "smoke-0017",
+        "smoke-0003",
+        "smoke-0064",
+        "smoke-0070",
+        "smoke-0058",
+        "smoke-0266",
+        "smoke-0272",
+        "smoke-0299",
+        "smoke-0110",
+        "smoke-0104",
+        "smoke-0138",
+        "smoke-0139",
+        "smoke-0105",
+        "smoke-0111",
+        "smoke-0298",
+        "smoke-0273",
+        "smoke-0267",
+        "smoke-0059",
+        "smoke-0071",
+        "smoke-0065",
+        "smoke-0073",
+        "smoke-0067",
+        "smoke-0098",
+        "smoke-0271",
+        "smoke-0265",
+        "smoke-0259",
+        "smoke-0107",
+        "smoke-0113",
+        "smoke-0112",
+        "smoke-0106",
+        "smoke-0258",
+        "smoke-0264",
+        "smoke-0270",
+        "smoke-0099",
+        "smoke-0066",
+        "smoke-0072",
+        "smoke-0076",
+        "smoke-0062",
+        "smoke-0089",
+        "smoke-0248",
+        "smoke-0274",
+        "smoke-0260",
+        "smoke-0102",
+        "smoke-0116",
+        "smoke-0117",
+        "smoke-0103",
+        "smoke-0261",
+        "smoke-0275",
+        "smoke-0249",
+        "smoke-0088",
+        "smoke-0063",
+        "smoke-0077",
+        "smoke-0049",
+        "smoke-0061",
+        "smoke-0075",
+        "smoke-0263",
+        "smoke-0277",
+        "smoke-0288",
+        "smoke-0129",
+        "smoke-0115",
+        "smoke-0101",
+        "smoke-0100",
+        "smoke-0114",
+        "smoke-0128",
+        "smoke-0289",
+        "smoke-0276",
+        "smoke-0262",
+        "smoke-0074",
+        "smoke-0060",
+        "smoke-0048",
+        "first-stage"
+      ],
+      "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "mapper_ram_kib": 0,
+      "rng_lifecycle": {
+        "passed": true,
+        "transitions": 4,
+        "kinds": [
+          0,
+          1
+        ],
+        "observations": [
+          {
+            "event": "load",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "0",
+            "rng": "30502",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "54107",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "54107",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "45058",
+            "player": "0",
+            "round": "3"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "43",
+            "player": "0",
+            "round": "3"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "43",
+            "player": "0",
+            "round": "3"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "22667",
+            "player": "0",
+            "round": "4"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "36023",
+            "player": "0",
+            "round": "4"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "36023",
+            "player": "0",
+            "round": "4"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "49340",
+            "player": "0",
+            "round": "5"
+          }
+        ],
+        "scope": "Read-only seed-copy and restore checks; scenario transition injections remain explicitly labeled"
+      },
+      "cold_silence_checks": 9,
+      "smoke_regression": {
+        "committed_frames": 300,
+        "native_placements": 12,
+        "counter_resets": 1,
+        "fine_phases": {
+          "horizontal": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ],
+          "vertical": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "smoke_rows": [
+          10240,
+          10271
+        ],
+        "phase_cache": [
+          10272,
+          10279
+        ],
+        "scope": "Each committed frame checks full HUD/radar and both boundary columns with an independent pixel oracle. Real keyboard only; three native enemies; no native RAM fixtures."
+      },
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    "two-player": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "scenario": "two-player",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/session-start-in3sgz2h",
+      "snapshots": [
+        "select",
+        "player-two",
+        "player-one-restored",
+        "cast",
+        "select-two",
+        "first-stage"
+      ],
+      "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "mapper_ram_kib": 0,
+      "rng_lifecycle": {
+        "passed": true,
+        "transitions": 3,
+        "kinds": [
+          0,
+          1,
+          2
+        ],
+        "observations": [
+          {
+            "event": "load",
+            "kind": "0",
+            "rng": "39277",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "0",
+            "rng": "39277",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "0",
+            "rng": "39646",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "load",
+            "kind": "1",
+            "rng": "49162",
+            "player": "1",
+            "round": "1"
+          },
+          {
+            "event": "native",
+            "kind": "1",
+            "rng": "49162",
+            "player": "1",
+            "round": "1"
+          },
+          {
+            "event": "prepared",
+            "kind": "1",
+            "rng": "54818",
+            "player": "1",
+            "round": "2"
+          },
+          {
+            "event": "load",
+            "kind": "2",
+            "rng": "23494",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "2",
+            "rng": "23494",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "2",
+            "rng": "23494",
+            "player": "0",
+            "round": "2"
+          }
+        ],
+        "scope": "Read-only seed-copy and restore checks; scenario transition injections remain explicitly labeled"
+      },
+      "cold_silence_checks": 7,
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    "attract": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "scenario": "attract",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/session-start-htkmwr9a",
+      "snapshots": [
+        "demo-select",
+        "cast",
+        "demo-moving",
+        "demo",
+        "first-stage"
+      ],
+      "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "mapper_ram_kib": 0,
+      "rng_lifecycle": {
+        "passed": true,
+        "transitions": 2,
+        "kinds": [
+          0
+        ],
+        "observations": [
+          {
+            "event": "load",
+            "kind": "0",
+            "rng": "24137",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "0",
+            "rng": "24137",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "0",
+            "rng": "32906",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "load",
+            "kind": "0",
+            "rng": "4384",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "0",
+            "rng": "4384",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "0",
+            "rng": "43084",
+            "player": "0",
+            "round": "2"
+          }
+        ],
+        "scope": "Read-only seed-copy and restore checks; scenario transition injections remain explicitly labeled"
+      },
+      "cold_silence_checks": 6,
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    "controls": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "scenario": "controls",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/session-start-iglnml8o",
+      "snapshots": [
+        "select",
+        "controls-complete",
+        "cast",
+        "first-stage"
+      ],
+      "input": "Actual keyboard: international/Japanese equals, Return held/released; controlled real Death_Begin car/rock contacts with state restoration. Walls remain on the unchanged movement path.",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "mapper_ram_kib": 0,
+      "rng_lifecycle": {
+        "passed": true,
+        "transitions": 1,
+        "kinds": [
+          0
+        ],
+        "observations": [
+          {
+            "event": "load",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "0",
+            "rng": "30502",
+            "player": "0",
+            "round": "2"
+          }
+        ],
+        "scope": "Read-only seed-copy and restore checks; scenario transition injections remain explicitly labeled"
+      },
+      "test_mode": false,
+      "cold_silence_checks": 3,
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    "radar": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "scenario": "radar",
+      "passed": true,
+      "source": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/session-start-_wij2uts",
+      "snapshots": [
+        "radar-95",
+        "radar-81",
+        "radar-56",
+        "radar-42",
+        "radar-140",
+        "radar-154",
+        "radar-168",
+        "radar-183",
+        "radar-197",
+        "radar-236",
+        "radar-222",
+        "radar-223",
+        "radar-237",
+        "radar-196",
+        "radar-182",
+        "radar-169",
+        "radar-155",
+        "radar-141",
+        "radar-43",
+        "radar-57",
+        "radar-80",
+        "radar-94",
+        "radar-82",
+        "radar-96",
+        "radar-69",
+        "radar-41",
+        "radar-55",
+        "radar-157",
+        "radar-143",
+        "radar-194",
+        "radar-180",
+        "radar-221",
+        "radar-235",
+        "radar-209",
+        "radar-208",
+        "radar-234",
+        "radar-220",
+        "radar-181",
+        "radar-195",
+        "radar-142",
+        "radar-156",
+        "radar-54",
+        "radar-40",
+        "radar-68",
+        "radar-97",
+        "radar-83",
+        "radar-87",
+        "radar-93",
+        "radar-44",
+        "radar-50",
+        "radar-78",
+        "radar-152",
+        "radar-146",
+        "radar-191",
+        "radar-185",
+        "radar-218",
+        "radar-224",
+        "radar-230",
+        "radar-231",
+        "radar-225",
+        "radar-219",
+        "radar-184",
+        "radar-190",
+        "radar-147",
+        "radar-153",
+        "radar-79",
+        "radar-51",
+        "radar-45",
+        "radar-92",
+        "radar-86",
+        "radar-90",
+        "radar-84",
+        "radar-53",
+        "radar-47",
+        "radar-179",
+        "radar-145",
+        "radar-151",
+        "radar-186",
+        "radar-192",
+        "radar-233",
+        "radar-227",
+        "radar-226",
+        "radar-232",
+        "radar-193",
+        "radar-187",
+        "radar-150",
+        "radar-144",
+        "radar-178",
+        "radar-46",
+        "radar-52",
+        "radar-85",
+        "radar-91",
+        "radar-35",
+        "radar-21",
+        "radar-123",
+        "radar-137",
+        "radar-255",
+        "radar-241",
+        "select",
+        "radar-240",
+        "radar-254",
+        "radar-136",
+        "radar-122",
+        "radar-20",
+        "radar-34",
+        "radar-22",
+        "radar-36",
+        "radar-134",
+        "radar-120",
+        "radar-108",
+        "radar-242",
+        "radar-243",
+        "radar-109",
+        "radar-121",
+        "radar-135",
+        "radar-37",
+        "radar-23",
+        "radar-27",
+        "radar-33",
+        "radar-119",
+        "radar-131",
+        "radar-125",
+        "radar-247",
+        "radar-253",
+        "radar-252",
+        "radar-246",
+        "radar-124",
+        "radar-130",
+        "radar-118",
+        "radar-32",
+        "radar-26",
+        "radar-30",
+        "radar-24",
+        "radar-18",
+        "radar-9",
+        "radar-126",
+        "radar-132",
+        "radar-250",
+        "radar-244",
+        "radar-245",
+        "radar-251",
+        "radar-133",
+        "radar-127",
+        "radar-8",
+        "radar-19",
+        "radar-25",
+        "radar-31",
+        "radar-28",
+        "radar-14",
+        "radar-5",
+        "radar-102",
+        "radar-116",
+        "radar-248",
+        "radar-249",
+        "radar-117",
+        "radar-4",
+        "radar-103",
+        "radar-15",
+        "radar-29",
+        "radar-17",
+        "radar-115",
+        "radar-101",
+        "radar-6",
+        "radar-129",
+        "cast",
+        "radar-128",
+        "radar-100",
+        "radar-7",
+        "radar-114",
+        "radar-16",
+        "radar-12",
+        "radar-138",
+        "radar-110",
+        "radar-3",
+        "radar-104",
+        "radar-2",
+        "radar-105",
+        "radar-111",
+        "radar-139",
+        "radar-13",
+        "radar-11",
+        "radar-39",
+        "radar-107",
+        "radar-0",
+        "radar-113",
+        "radar-112",
+        "radar-106",
+        "radar-1",
+        "radar-38",
+        "radar-10",
+        "radar-88",
+        "radar-77",
+        "radar-63",
+        "radar-161",
+        "radar-175",
+        "radar-149",
+        "radar-217",
+        "radar-203",
+        "radar-202",
+        "radar-216",
+        "radar-148",
+        "radar-174",
+        "radar-160",
+        "radar-62",
+        "radar-76",
+        "radar-89",
+        "radar-48",
+        "radar-60",
+        "radar-74",
+        "radar-176",
+        "radar-162",
+        "radar-189",
+        "radar-200",
+        "radar-214",
+        "radar-228",
+        "radar-229",
+        "radar-215",
+        "radar-201",
+        "radar-188",
+        "radar-163",
+        "radar-177",
+        "radar-75",
+        "radar-61",
+        "radar-49",
+        "radar-65",
+        "radar-71",
+        "radar-59",
+        "radar-173",
+        "radar-167",
+        "radar-198",
+        "radar-239",
+        "radar-205",
+        "radar-211",
+        "radar-210",
+        "radar-204",
+        "radar-238",
+        "radar-199",
+        "radar-166",
+        "radar-172",
+        "radar-58",
+        "radar-70",
+        "radar-64",
+        "radar-99",
+        "radar-72",
+        "radar-66",
+        "radar-158",
+        "radar-164",
+        "radar-170",
+        "radar-212",
+        "radar-206",
+        "radar-207",
+        "radar-213",
+        "radar-171",
+        "radar-165",
+        "radar-159",
+        "radar-67",
+        "radar-73",
+        "radar-98",
+        "first-stage"
+      ],
+      "input": "Keyboard coin/start/arrows/Space/P/F5; transition fixtures explicitly marked in the scenario source",
+      "machine": "Panasonic_FS-A1WSX_PLAIN64",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "mapper_ram_kib": 0,
+      "rng_lifecycle": {
+        "passed": true,
+        "transitions": 1,
+        "kinds": [
+          0
+        ],
+        "observations": [
+          {
+            "event": "load",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "native",
+            "kind": "0",
+            "rng": "18640",
+            "player": "0",
+            "round": "2"
+          },
+          {
+            "event": "prepared",
+            "kind": "0",
+            "rng": "30502",
+            "player": "0",
+            "round": "2"
+          }
+        ],
+        "scope": "Read-only seed-copy and restore checks; scenario transition injections remain explicitly labeled"
+      },
+      "cold_silence_checks": 3,
+      "cold_hook_method": "Guest elapsed cycles from routine entry to pre-RET done label; self subtracts tracked nested bodies. CALL/RET instruction overhead remains with the parent or untracked. No parent/child inclusive sum."
+    },
+    "ASCII8/f10-proof-*/report.json": {
+      "passed": true,
+      "mode": "rom",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "cases": [
+        "held",
+        "normal",
+        "shift_first",
+        "release_early",
+        "title_only",
+        "f5_only",
+        "shift_only",
+        "skip_held"
+      ],
+      "contact_checks": 24,
+      "reset_policy": "Reset between cases",
+      "events": [
+        "0 boot 1 0",
+        "0 start 2 1",
+        "0 contact 0 0",
+        "0 contact 1 0",
+        "0 contact 2 0",
+        "0 round 3 1",
+        "1 boot 0 0",
+        "1 start 2 0",
+        "1 contact 0 1",
+        "1 contact 1 1",
+        "1 contact 2 0",
+        "1 round 3 0",
+        "2 boot 1 0",
+        "2 start 2 1",
+        "2 contact 0 0",
+        "2 contact 1 0",
+        "2 contact 2 0",
+        "2 round 3 1",
+        "3 boot 0 0",
+        "3 start 2 0",
+        "3 contact 0 1",
+        "3 contact 1 1",
+        "3 contact 2 0",
+        "3 round 3 0",
+        "4 boot 0 0",
+        "4 start 2 0",
+        "4 contact 0 1",
+        "4 contact 1 1",
+        "4 contact 2 0",
+        "4 round 3 0",
+        "5 boot 0 1",
+        "5 start 2 0",
+        "5 contact 0 1",
+        "5 contact 1 1",
+        "5 contact 2 0",
+        "5 round 3 0",
+        "6 boot 0 0",
+        "6 start 2 0",
+        "6 contact 0 1",
+        "6 contact 1 1",
+        "6 contact 2 0",
+        "6 round 3 0",
+        "7 boot 1 1",
+        "7 start 2 1",
+        "7 contact 0 0",
+        "7 contact 1 0",
+        "7 contact 2 0",
+        "7 round 3 1"
+      ],
+      "scope": "Actual keyboard matrix/host binding commands; boot hold/release/skip/title gating, reset and real F5 round transition. Contact injection calls real Death_Begin with full Page3/CPU/mapping restoration. No direct invulnerability writes, no full natural-course or physical-keyboard claim."
+    },
+    "ASCII8/boot-proof-*/report.json": {
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/boot-proof-6hprv2ak",
+      "boot_frames": 71,
+      "seconds": 12.508799582069788,
+      "target_seconds": 12.532804029562417,
+      "max_state_timing_error_ms": 0.0008380953462894247,
+      "publication_phase_ms": -23.950530025464268,
+      "software_publication_ticks_verified": true,
+      "initial_clear_ms": 141.37215763456012,
+      "speed_multiplier": 1.0,
+      "footer": true,
+      "offscreen_border_rgb": [
+        0,
+        0,
+        0
+      ],
+      "source": "Untouched original cold boot, all source refreshes inspected. Lossless hidden-page deltas; bandwidth-limited temporal selection on the original 60.606Hz timeline, mapped to MSX refreshes. Matrix endpoint detected at the exact native refresh; no1.5x acceleration.",
+      "title": {
+        "caption": "[5] insert coin - [1/2] start player(s)",
+        "caption_y": 186,
+        "caption_x": 11,
+        "brand": "namco",
+        "brand_y": 200,
+        "brand_x": 100,
+        "brand_width": 56,
+        "brand_height": 8,
+        "shift_y": -8,
+        "brand_source": "Original arcade tiles 0x19..0x1f; native pixels without resampling",
+        "blink_pixels": [
+          47633,
+          47634,
+          47635,
+          47636,
+          47637,
+          47889,
+          48145,
+          48146,
+          48147,
+          48404,
+          48661,
+          48916,
+          49169,
+          49170,
+          49171,
+          47743,
+          47998,
+          47999,
+          48253,
+          48255,
+          48511,
+          48767,
+          49023,
+          49277,
+          49278,
+          49279,
+          49280,
+          49281,
+          48263,
+          48518,
+          48773,
+          49028,
+          49283,
+          47754,
+          47755,
+          47756,
+          48009,
+          48013,
+          48269,
+          48524,
+          48778,
+          48779,
+          49033,
+          49289,
+          49290,
+          49291,
+          49292,
+          49293
+        ],
+        "blink_keys": [
+          "5",
+          "1/2"
+        ],
+        "blink_half_period_refreshes": 32,
+        "inverted_keys": [],
+        "brand_artwork": {
+          "x": 100,
+          "y": 200,
+          "width": 56,
+          "height": 8,
+          "source_size": [
+            56,
+            8
+          ],
+          "uniform_scale": 1,
+          "bottom_margin": 4,
+          "method": "Exact approved PNG alpha at1:1; horizontal centering and4px bottom margin; foreground mapped to the existing red palette entry",
+          "source_sha256": "0412e0324d4c4652d28e200e5d7fc7295f219cc1228e927a86d9996171a3f5d2"
+        },
+        "blink_rects": [
+          [
+            16,
+            186,
+            8,
+            8
+          ],
+          [
+            124,
+            186,
+            20,
+            8
+          ]
+        ],
+        "logo": {
+          "enabled": true,
+          "include": "session-msx-logo.inc",
+          "source_size": [
+            54,
+            20
+          ],
+          "source_crop": [
+            0,
+            0,
+            54,
+            20
+          ],
+          "scale_divisor": 1,
+          "rect": [
+            194,
+            8,
+            54,
+            20
+          ],
+          "colors": "Exact1-bit black/white artwork mapped to the existing palette",
+          "method": "Copy every source pixel at1:1; no crop, resize, smoothing or quantization",
+          "source": "assets/msxlogo.bmp",
+          "source_sha256": "21b113c19a01843d49c05a4b85091dd1bdde50ec7bed34a7743d1544e0518ffe"
+        }
+      },
+      "title_costs": [
+        {
+          "name": "UI_MSXLogo_Draw",
+          "calls": 1,
+          "inclusive": {
+            "mean": 23038.999999988726,
+            "p95": 23038.999999988726,
+            "max": 23038.999999988726
+          }
+        },
+        {
+          "name": "UI_CastFooter_Tick",
+          "calls": 546,
+          "inclusive": {
+            "mean": 419.68315018372044,
+            "p95": 53.000000009560324,
+            "max": 10596.000000001619
+          }
+        }
+      ],
+      "title_cost_method": "Guest elapsed inclusive entry to matched PC/SP return, including RET/IRQ. No tracked self costs; cold UI only, never add to active-frame work.",
+      "scope": "Lossless selected boot states on the original timeline, timing/silence, all96 original reveal units shifted8px, full title on/off pixels, optional logo, fixed brackets and blinking numeric masks. Recorded scanout retained; no live gameplay-cycle claim."
+    },
+    "ASCII8/audio-proof-*/report.json": {
+      "clear_cue": {
+        "frames": 53,
+        "nominal_seconds": 1.7689443770088098,
+        "original": {
+          "inputs": {
+            "emulator": "0.289 (unknown)",
+            "script_sha256": "39f8eedf60050eb2462e1bed0df82e8b9baab7d6eea3a8c81075fc8fe40bdf6a",
+            "seed_sha256": "22b3e32d734ecc7e9eae263ffb6095f7f55e3ce0e5836517ca46d399cc6b5670",
+            "roms": [
+              {
+                "name": "nrx1-1.11n",
+                "size": 32,
+                "crc32": "a0a49017",
+                "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+              },
+              {
+                "name": "nrx1-7.8p",
+                "size": 256,
+                "crc32": "4e46f485",
+                "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+              },
+              {
+                "name": "nrx_chg1.8e",
+                "size": 2048,
+                "crc32": "1fff38a4",
+                "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+              },
+              {
+                "name": "nrx_chg2.8d",
+                "size": 2048,
+                "crc32": "85d9fffd",
+                "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+              },
+              {
+                "name": "nrx_prg1.1d",
+                "size": 4096,
+                "crc32": "ba7de9fc",
+                "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+              },
+              {
+                "name": "nrx_prg2.1e",
+                "size": 4096,
+                "crc32": "eedfccae",
+                "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+              },
+              {
+                "name": "nrx_prg3.1k",
+                "size": 4096,
+                "crc32": "b4d5d34a",
+                "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+              },
+              {
+                "name": "nrx_prg4.1l",
+                "size": 4096,
+                "crc32": "7da5496d",
+                "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+              },
+              {
+                "name": "rx1-2.4n",
+                "size": 32,
+                "crc32": "8f574815",
+                "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+              },
+              {
+                "name": "rx1-3.7k",
+                "size": 32,
+                "crc32": "b8861096",
+                "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+              },
+              {
+                "name": "rx1-4.2m",
+                "size": 256,
+                "crc32": "77245b66",
+                "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+              },
+              {
+                "name": "rx1-5.3p",
+                "size": 256,
+                "crc32": "4bad7017",
+                "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+              },
+              {
+                "name": "rx1-6.8m",
+                "size": 256,
+                "crc32": "3c16f62c",
+                "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+              }
+            ]
+          },
+          "completion_call": 107,
+          "nominal_arcade_hz": 60.60606060606061,
+          "seconds": 1.7654999999999998,
+          "wsg_sha256": "cd90e4a80d775faf17b88d2df1040de6b07def2f010a717699115e854c7d27cf",
+          "wav_sha256": "ee91195c99ee3e14f91c14f8a00988855ed1c177ad0de17415175faed31cd274",
+          "original_wait_addresses": [
+            "1B03",
+            "1B0A"
+          ],
+          "port_score_parts": [
+            8,
+            9,
+            10
+          ],
+          "port_score_frames_30hz": 53,
+          "scope": "Original2580 routine at one call per original video tick; clear request28 and contributor RAM seed, no original ROM writes. Original1B03 minimum-settle/1B0A sound-ready waits inspected separately. Controlled sound fixture, not natural playthrough."
+        },
+        "compared_voice_samples": 135,
+        "max_pitch_error_cents": 7.7168236776012105,
+        "scope": "All three note voices against original WSG on paired native ticks; PSG period quantization, not waveform/timbre equivalence."
+      },
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/audio-proof-lx0rf034",
+      "seconds": 28.57108843537415,
+      "engine": [
+        {
+          "velocity": 0,
+          "expected_fundamental_hz": 49.93784877232143,
+          "measured_pcm_hz": 49.98778662109375,
+          "all_four_headings_identical": true
+        },
+        {
+          "velocity": 1,
+          "expected_fundamental_hz": 49.80444401157614,
+          "measured_pcm_hz": 49.85424845558771,
+          "all_four_headings_identical": true
+        },
+        {
+          "velocity": 2,
+          "expected_fundamental_hz": 49.80444401157614,
+          "measured_pcm_hz": 49.85424845558771,
+          "all_four_headings_identical": true
+        }
+      ],
+      "smoke": [
+        {
+          "cue": "smoke1",
+          "rms": 2745.1191823967533,
+          "levels": [
+            16,
+            16
+          ],
+          "tone_periods": [
+            51,
+            45
+          ],
+          "envelope_shape": 8,
+          "leased_channels": [
+            "B",
+            "C"
+          ],
+          "sound_frames": 2,
+          "native_placement_trigger": true,
+          "baseline_rms": 467.3932640588231,
+          "amplitude_ratio": 5.873253624920171,
+          "gain_db": 15.377575108039148
+        },
+        {
+          "cue": "smoke2",
+          "rms": 2637.1405915512755,
+          "levels": [
+            16,
+            16
+          ],
+          "tone_periods": [
+            51,
+            45
+          ],
+          "envelope_shape": 8,
+          "leased_channels": [
+            "B",
+            "C"
+          ],
+          "sound_frames": 2,
+          "native_placement_trigger": true,
+          "baseline_rms": 457.35800657544866,
+          "amplitude_ratio": 5.766031322589815,
+          "gain_db": 15.217539945195593
+        }
+      ],
+      "crash": [
+        {
+          "cue": "crash1",
+          "initial_rms": 5674.936178853368,
+          "tail_rms": 302.1958148656177,
+          "low_band_power": 648264216855533.5,
+          "band_hz": [
+            30,
+            200
+          ],
+          "window_seconds": [
+            0.02,
+            0.28
+          ],
+          "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+        },
+        {
+          "cue": "crash2",
+          "initial_rms": 5861.414272479452,
+          "tail_rms": 302.7938142255751,
+          "low_band_power": 749801281409230.8,
+          "band_hz": [
+            30,
+            200
+          ],
+          "window_seconds": [
+            0.02,
+            0.28
+          ],
+          "method": "DC-removed stereo mean, Hann window, summed Goertzel power at2Hz steps"
+        }
+      ],
+      "cue_ticks_30hz": {
+        "complete": 54,
+        "gameover": 249,
+        "challenge_intro": 193,
+        "challenge": 31,
+        "cold": 12
+      },
+      "audio_costs": [
+        {
+          "name": "GameAudio_Tick (engine)",
+          "calls": 180,
+          "inclusive": {
+            "mean": 2335.311111110812,
+            "p95": 3054.0000000059754,
+            "max": 3970.0000000044447
+          }
+        },
+        {
+          "name": "GameAudio_Tick (smoke_active)",
+          "calls": 4,
+          "inclusive": {
+            "mean": 3846.500000006102,
+            "p95": 4326.000000006516,
+            "max": 4326.000000006516
+          }
+        },
+        {
+          "name": "GameAudio_Tick (smoke_resume)",
+          "calls": 32,
+          "inclusive": {
+            "mean": 2257.0625000000696,
+            "p95": 3808.999999993399,
+            "max": 3809.000000006116
+          }
+        },
+        {
+          "name": "GameAudio_Tick (crash)",
+          "calls": 72,
+          "inclusive": {
+            "mean": 2678.7916666658766,
+            "p95": 3479.0000000036966,
+            "max": 4272.999999996955
+          }
+        },
+        {
+          "name": "GameAudio_Tick (complete)",
+          "calls": 54,
+          "inclusive": {
+            "mean": 3358.611111111523,
+            "p95": 3651.9999999979514,
+            "max": 3681.0000000156597
+          }
+        },
+        {
+          "name": "GameAudio_Tick (fuel)",
+          "calls": 30,
+          "inclusive": {
+            "mean": 2499.1666666673536,
+            "p95": 3794.00000000485,
+            "max": 3794.00000000485
+          }
+        },
+        {
+          "name": "GameSession_AudioStop",
+          "calls": 1,
+          "inclusive": {
+            "mean": 2656.0000000054465,
+            "p95": 2656.0000000054465,
+            "max": 2656.0000000054465
+          }
+        },
+        {
+          "name": "GameAudio_Tick (gameover)",
+          "calls": 249,
+          "inclusive": {
+            "mean": 2721.3293172691892,
+            "p95": 3658.000000008631,
+            "max": 6584.999999996257
+          }
+        },
+        {
+          "name": "GameAudio_Tick (challenge_intro)",
+          "calls": 193,
+          "inclusive": {
+            "mean": 2242.196891191274,
+            "p95": 3515.000000016909,
+            "max": 6562.000000014663
+          }
+        },
+        {
+          "name": "GameAudio_Tick (challenge)",
+          "calls": 31,
+          "inclusive": {
+            "mean": 3059.516129032874,
+            "p95": 3855.000000020172,
+            "max": 7201.000000007556
+          }
+        }
+      ],
+      "audio_cost_method": "Sound-only fixtures; breakpoint at worker entry and exact caller return address before trailing instructions. Guest elapsed inclusive cycles including RET; no tracked child self costs, no active-game FPS claim.",
+      "scope": "Real PSG worker and openMSX PCM at physical-clock cadence; explicit sound-only fixtures. Direction equality and fundamental tested; subjective arcade timbre remains for user acceptance."
+    },
+    "ASCII8/speed-proof-*/report.json": {
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/speed-proof-p0qwefoy",
+      "costs": [
+        {
+          "name": "Full_MSXPlayerSpeed (ordinary)",
+          "calls": 24,
+          "inclusive": {
+            "mean": 281.08333333257787,
+            "p95": 340.0000000032636,
+            "max": 340.0000000032636
+          }
+        },
+        {
+          "name": "Full_MSXPlayerSpeed (parked)",
+          "calls": 40,
+          "inclusive": {
+            "mean": 70.99999999963423,
+            "p95": 71.00000000344936,
+            "max": 71.00000000344936
+          }
+        }
+      ],
+      "arcade": {
+        "inputs": {
+          "script_sha256": "f1328ff90cb4accdbc511a50e7afe584a425977c76397b39ea840645cfaa2680",
+          "emulator": "0.289 (unknown)",
+          "roms": [
+            {
+              "name": "nrx1-1.11n",
+              "size": 32,
+              "crc32": "a0a49017",
+              "sha1": "494c920a157e9f876d533c1b0146275a366c4989"
+            },
+            {
+              "name": "nrx1-7.8p",
+              "size": 256,
+              "crc32": "4e46f485",
+              "sha1": "3f013aafba96a76d410f2db16d1d24d2fb257aaf"
+            },
+            {
+              "name": "nrx_chg1.8e",
+              "size": 2048,
+              "crc32": "1fff38a4",
+              "sha1": "5f6ccce2e0daad5915d017e8d067f187eb2ed41d"
+            },
+            {
+              "name": "nrx_chg2.8d",
+              "size": 2048,
+              "crc32": "85d9fffd",
+              "sha1": "12dff66d98a808b9dc952b2d87a56308b46a973e"
+            },
+            {
+              "name": "nrx_prg1.1d",
+              "size": 4096,
+              "crc32": "ba7de9fc",
+              "sha1": "2133ca327589600bcbd796c213f034daa0457f72"
+            },
+            {
+              "name": "nrx_prg2.1e",
+              "size": 4096,
+              "crc32": "eedfccae",
+              "sha1": "9fca8500f724864a2b73e38bd40cbaeef41617d7"
+            },
+            {
+              "name": "nrx_prg3.1k",
+              "size": 4096,
+              "crc32": "b4d5d34a",
+              "sha1": "c533470aac040b3471d79fd6d35beb4fd4b5bb19"
+            },
+            {
+              "name": "nrx_prg4.1l",
+              "size": 4096,
+              "crc32": "7da5496d",
+              "sha1": "ffac2c07dda57285673073266712fa2987e3b34f"
+            },
+            {
+              "name": "rx1-2.4n",
+              "size": 32,
+              "crc32": "8f574815",
+              "sha1": "4f84162db9d58b64742c67dc689eb665b9862fb3"
+            },
+            {
+              "name": "rx1-3.7k",
+              "size": 32,
+              "crc32": "b8861096",
+              "sha1": "26fad384ed7a1a1e0ba719b5578e2dbb09334a25"
+            },
+            {
+              "name": "rx1-4.2m",
+              "size": 256,
+              "crc32": "77245b66",
+              "sha1": "0c4d0bee858b97632411c440bea6948a74759746"
+            },
+            {
+              "name": "rx1-5.3p",
+              "size": 256,
+              "crc32": "4bad7017",
+              "sha1": "3e6da9d798f5e07fa18d6ce7d0b148be98c766d5"
+            },
+            {
+              "name": "rx1-6.8m",
+              "size": 256,
+              "crc32": "3c16f62c",
+              "sha1": "7a3800be410e306cf85753b9953ffc5575afbcd6"
+            }
+          ]
+        },
+        "cases": [
+          {
+            "native_round": 2,
+            "display_round": 1,
+            "enemy0": 544,
+            "player": 544,
+            "enemy1": 592,
+            "parked": false
+          },
+          {
+            "native_round": 3,
+            "display_round": 2,
+            "enemy0": 608,
+            "player": 576,
+            "enemy1": 656,
+            "parked": false
+          },
+          {
+            "native_round": 4,
+            "display_round": 3,
+            "enemy0": 0,
+            "player": 672,
+            "enemy1": 0,
+            "parked": true
+          },
+          {
+            "native_round": 8,
+            "display_round": 7,
+            "enemy0": 0,
+            "player": 688,
+            "enemy1": 0,
+            "parked": true
+          },
+          {
+            "native_round": 12,
+            "display_round": 11,
+            "enemy0": 0,
+            "player": 704,
+            "enemy1": 0,
+            "parked": true
+          },
+          {
+            "native_round": 16,
+            "display_round": 15,
+            "enemy0": 0,
+            "player": 704,
+            "enemy1": 0,
+            "parked": true
+          }
+        ],
+        "trace_sha256": "208d7fb94d3ed84fac53f7719a87f9b513112c7baf72b1cb5084fd796f460be3",
+        "hashes": {
+          "frames.tsv": "208d7fb94d3ed84fac53f7719a87f9b513112c7baf72b1cb5084fd796f460be3",
+          "round-2.bin": "ecced5a2915955b5f21128e4ef71df7414aaec9d6270faeea13bf94afa4a6040",
+          "round-3.bin": "4d37c1493735b34ee6e06e03c8798fe228a50b5b0ae038718d5d6fa080369d4e",
+          "round-4.bin": "7b86f13d5cdeda401e4c941f38ecfbe4df6518377c37b3747e01e41ceab6c27a",
+          "round-8.bin": "14bcdfdffc703defcedb8f57a5d4660e4bed509d8199e652357575d896f4a15a",
+          "round-12.bin": "b723d50d349a7cad972b56882c61d9b8a7d20d29832f5992d30eaccf556c22c7",
+          "round-16.bin": "8baf1dd2bcec10ab79b1bced7250c1d5d4eee7638df43cce012f6eb3d3a1515b"
+        },
+        "scope": "Real original first credit/start; explicit seed for subsequent original08BF initialization.32 physical frames observed per round. No original ROM patches or speed-table edits; not naturally completed rounds."
+      },
+      "vectors": [
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 258.9999999989702
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": -96,
+          "expected": -96,
+          "actual": -96,
+          "bc": 4660,
+          "cycles": 284.00000000108037
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": -511,
+          "expected": -511,
+          "actual": -511,
+          "bc": 4660,
+          "cycles": 284.00000000108037
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": -512,
+          "expected": -512,
+          "actual": -512,
+          "bc": 4660,
+          "cycles": 292.0000000068424
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": -544,
+          "expected": -512,
+          "actual": -512,
+          "bc": 4660,
+          "cycles": 340.0000000032636
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 258.9999999989702
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": 96,
+          "expected": 96,
+          "actual": 96,
+          "bc": 4660,
+          "cycles": 258.9999999989702
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": 511,
+          "expected": 511,
+          "actual": 511,
+          "bc": 4660,
+          "cycles": 258.9999999989702
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": 512,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 266.9999999920152
+        },
+        {
+          "native_round": 2,
+          "display_round": 1,
+          "enemy0": 544,
+          "player": 544,
+          "enemy1": 592,
+          "parked": false,
+          "velocity": 544,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 289.9999999990434
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 258.9999999989702
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": -96,
+          "expected": -96,
+          "actual": -96,
+          "bc": 4660,
+          "cycles": 284.00000000108037
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": -511,
+          "expected": -511,
+          "actual": -511,
+          "bc": 4660,
+          "cycles": 284.00000000108037
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": -512,
+          "expected": -512,
+          "actual": -512,
+          "bc": 4660,
+          "cycles": 291.99999999412535
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": -576,
+          "expected": -512,
+          "actual": -512,
+          "bc": 4660,
+          "cycles": 340.0000000032636
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 258.9999999989702
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": 96,
+          "expected": 96,
+          "actual": 96,
+          "bc": 4660,
+          "cycles": 258.9999999989702
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": 511,
+          "expected": 511,
+          "actual": 511,
+          "bc": 4660,
+          "cycles": 258.9999999989702
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": 512,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 266.9999999920152
+        },
+        {
+          "native_round": 3,
+          "display_round": 2,
+          "enemy0": 608,
+          "player": 576,
+          "enemy1": 656,
+          "parked": false,
+          "velocity": 576,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 289.9999999990434
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -96,
+          "expected": -96,
+          "actual": -96,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -511,
+          "expected": -511,
+          "actual": -511,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -512,
+          "expected": -512,
+          "actual": -512,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -672,
+          "expected": -672,
+          "actual": -672,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 96,
+          "expected": 96,
+          "actual": 96,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 511,
+          "expected": 511,
+          "actual": 511,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 512,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 0,
+          "player": 672,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 672,
+          "expected": 672,
+          "actual": 672,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 4,
+          "display_round": 3,
+          "enemy0": 544,
+          "player": 672,
+          "enemy1": 576,
+          "parked": false,
+          "velocity": 672,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 289.9999999990434
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -96,
+          "expected": -96,
+          "actual": -96,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -511,
+          "expected": -511,
+          "actual": -511,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -512,
+          "expected": -512,
+          "actual": -512,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -688,
+          "expected": -688,
+          "actual": -688,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 96,
+          "expected": 96,
+          "actual": 96,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 511,
+          "expected": 511,
+          "actual": 511,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 512,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 0,
+          "player": 688,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 688,
+          "expected": 688,
+          "actual": 688,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 8,
+          "display_round": 7,
+          "enemy0": 544,
+          "player": 688,
+          "enemy1": 576,
+          "parked": false,
+          "velocity": 688,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 289.9999999990434
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -96,
+          "expected": -96,
+          "actual": -96,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -511,
+          "expected": -511,
+          "actual": -511,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -512,
+          "expected": -512,
+          "actual": -512,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -704,
+          "expected": -704,
+          "actual": -704,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 96,
+          "expected": 96,
+          "actual": 96,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 511,
+          "expected": 511,
+          "actual": 511,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 512,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 704,
+          "expected": 704,
+          "actual": 704,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 12,
+          "display_round": 11,
+          "enemy0": 544,
+          "player": 704,
+          "enemy1": 576,
+          "parked": false,
+          "velocity": 704,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 289.9999999990434
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -96,
+          "expected": -96,
+          "actual": -96,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -511,
+          "expected": -511,
+          "actual": -511,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -512,
+          "expected": -512,
+          "actual": -512,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": -704,
+          "expected": -704,
+          "actual": -704,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 0,
+          "expected": 0,
+          "actual": 0,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 96,
+          "expected": 96,
+          "actual": 96,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 511,
+          "expected": 511,
+          "actual": 511,
+          "bc": 4660,
+          "cycles": 70.99999999073226
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 512,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 0,
+          "player": 704,
+          "enemy1": 0,
+          "parked": true,
+          "velocity": 704,
+          "expected": 704,
+          "actual": 704,
+          "bc": 4660,
+          "cycles": 71.00000000344936
+        },
+        {
+          "native_round": 16,
+          "display_round": 15,
+          "enemy0": 544,
+          "player": 704,
+          "enemy1": 576,
+          "parked": false,
+          "velocity": 704,
+          "expected": 512,
+          "actual": 512,
+          "bc": 4660,
+          "cycles": 289.9999999990434
+        }
+      ],
+      "failures": [],
+      "scope": "Actual cartridgeB60C limiter, both velocity signs, normal and parked challenge parameters and fuel-exhaustion exit. Guest entry-through-RET cycles; no full-course or scanout claim."
+    },
+    "ASCII8/rocks-proof-*/report.json": {
+      "navigation_tag_pairs": 64,
+      "navigation_failures": [],
+      "passed": true,
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/rocks-proof-s3t2wu0a",
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "cases": 404,
+      "failures": [],
+      "costs": [
+        {
+          "name": "GameSession_EnemyRockProbe",
+          "calls": 404,
+          "inclusive": {
+            "mean": 740.4702970297188,
+            "p95": 5397.000000005351,
+            "max": 5700.000000010578
+          }
+        }
+      ],
+      "cost_groups": [
+        {
+          "name": "Enemy stone recoil",
+          "calls": 36,
+          "inclusive": {
+            "mean": 5472.499999999501,
+            "p95": 5699.999999997861,
+            "max": 5700.000000010578
+          }
+        },
+        {
+          "name": "Enemy stone clear",
+          "calls": 356,
+          "inclusive": {
+            "mean": 285.6292134831494,
+            "p95": 325.00000000199753,
+            "max": 325.00000000199753
+          }
+        },
+        {
+          "name": "Enemy stone immune",
+          "calls": 12,
+          "inclusive": {
+            "mean": 38.00000000193569,
+            "p95": 38.00000000829424,
+            "max": 38.00000000829424
+          }
+        }
+      ],
+      "scope": "All32 descriptor bytes compared with original181B/1885 collision/rebound, both axes/signs, fine-boundary hits/misses and immunity. Controlled fixtures, not a natural-course proof. Entry-through-RET inclusive cycles; no self-cost sum."
+    },
+    "ASCII8/sprite-clip-proof-*/report.json": {
+      "passed": true,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "helper_sha256": "7e56fb8cd1185dc82a1e93313c88a518249233965aefee13ef3e805fdd8df43f",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/sprite-clip-proof-xo395s73",
+      "scope": "Synthetic complete-pattern/SAT/color matrix, including vertical/horizontal clips and sentinel216. Component cycles are not integrated FPS."
+    },
+    "ASCII8/steering-proof-*/report.json": {
+      "passed": true,
+      "requested_active_refreshes": 16000,
+      "input_seed": 12345,
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "path": "/Users/sandersouza/Developer/msx-gamePorts/newrallyx/references/build/game-fixedram-runtime/steering-proof-qgtu04pf",
+      "scope": "Real keyboard rollover/reversals and Space smoke; no native RAM writes; HUD and sprite limits enabled; native contact cell checked against the selected original maze",
+      "boot_f10_invulnerability": false,
+      "observed": [
+        16000,
+        6309,
+        11,
+        2,
+        19
+      ],
+      "distinct_poses_after_refresh5000": 3345
+    },
+    "MegaRAM/f10-proof-*/report.json": {
+      "passed": true,
+      "mode": "mega-basic",
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "cases": [
+        "held",
+        "normal"
+      ],
+      "contact_checks": 6,
+      "reset_policy": "Reset between cases",
+      "events": [
+        "0 boot 1 0",
+        "0 start 2 1",
+        "0 contact 0 0",
+        "0 contact 1 0",
+        "0 contact 2 0",
+        "0 round 3 1",
+        "1 boot 0 0",
+        "1 start 2 0",
+        "1 contact 0 1",
+        "1 contact 1 1",
+        "1 contact 2 0",
+        "1 round 3 0"
+      ],
+      "scope": "Actual keyboard matrix/host binding commands; boot hold/release/skip/title gating, reset and real F5 round transition. Contact injection calls real Death_Begin with full Page3/CPU/mapping restoration. No direct invulnerability writes, no full natural-course or physical-keyboard claim."
+    }
+  },
+  "smoke": {
+    "rom": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "bytes": 761856,
+      "mode": "rom",
+      "megaram_kib": null,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "slot_topology": "expanded",
+      "frames": 300,
+      "smoke_presented_fps": 33.24260198402162,
+      "period_mean": 107679.4470457079,
+      "period_p95": 122291.6666666667,
+      "period_max": 179208.33333333462,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+    },
+    "dos": {
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "bytes": 761856,
+      "mode": "dos",
+      "megaram_kib": 768,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "slot_topology": "expanded",
+      "frames": 300,
+      "smoke_presented_fps": 33.24260198402163,
+      "period_mean": 107679.44704570786,
+      "period_p95": 122291.66666670484,
+      "period_max": 179208.3333333092,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+    },
+    "basic": {
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "bytes": 761856,
+      "mode": "basic",
+      "megaram_kib": 768,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "slot_topology": "expanded",
+      "frames": 300,
+      "smoke_presented_fps": 33.24260198402163,
+      "period_mean": 107679.44704570786,
+      "period_p95": 122291.66666660311,
+      "period_max": 179208.3333333092,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+    }
+  },
+  "natural_gameover": {
+    "rom": {
+      "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "bytes": 761856,
+      "mode": "rom",
+      "megaram_kib": null,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "slot_topology": "expanded",
+      "frames": 2633,
+      "smoke_presented_fps": 33.54959797458389,
+      "period_mean": 106694.125,
+      "period_p95": 121025.33333332736,
+      "period_max": 52030055.66666664,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered2633 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Keyboard-only fixed64KiB game-over and new-credit/start regression.\n\nNo code, state, seed, clock, life or score debugger writes. Cold hook and menu\nobserver record natural deaths and180 presentations after the next real start.\n",
+      "passed": true,
+      "lifecycle": [
+        "death\t44.507737249659755\t2\t0",
+        "death\t64.50014550266398\t2\t0",
+        "death\t84.09203935137008\t2\t0",
+        "game_over\t84.20562613404776\t2\t0",
+        "title\t92.48591147757605\t2\t0",
+        "new_game\t97.12449543168195\t2\t0"
+      ],
+      "new_game_presentations": 180
+    },
+    "dos": {
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "bytes": 761856,
+      "mode": "dos",
+      "megaram_kib": 768,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "slot_topology": "expanded",
+      "frames": 2633,
+      "smoke_presented_fps": 33.549597974583875,
+      "period_mean": 106694.12500000003,
+      "period_p95": 121025.33333332736,
+      "period_max": 52030055.666666746,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered2633 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Keyboard-only fixed64KiB game-over and new-credit/start regression.\n\nNo code, state, seed, clock, life or score debugger writes. Cold hook and menu\nobserver record natural deaths and180 presentations after the next real start.\n",
+      "passed": true,
+      "lifecycle": [
+        "death\t241.0775091061387\t2\t0",
+        "death\t261.06991735914295\t2\t0",
+        "death\t280.66181120784904\t2\t0",
+        "game_over\t280.77508230794695\t2\t0",
+        "title\t289.05536346099854\t2\t0",
+        "new_game\t293.6942672881609\t2\t0"
+      ],
+      "new_game_presentations": 180
+    },
+    "basic": {
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "bytes": 761856,
+      "mode": "basic",
+      "megaram_kib": 768,
+      "expanded_slot": false,
+      "main_ram_kib": 64,
+      "main_ram_kind": "plain",
+      "main_mapper_bytes": 0,
+      "slot_topology": "expanded",
+      "frames": 2633,
+      "smoke_presented_fps": 33.549597974583875,
+      "period_mean": 106694.12500000003,
+      "period_p95": 121025.33333332736,
+      "period_max": 52030055.666666746,
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "active_filter": "Unfiltered2633 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+      "scope": "Keyboard-only fixed64KiB game-over and new-credit/start regression.\n\nNo code, state, seed, clock, life or score debugger writes. Cold hook and menu\nobserver record natural deaths and180 presentations after the next real start.\n",
+      "passed": true,
+      "lifecycle": [
+        "death\t239.37531734713025\t2\t0",
+        "death\t259.36772560013446\t2\t0",
+        "death\t278.95961944884056\t2\t0",
+        "game_over\t279.0751405555734\t2\t0",
+        "title\t287.35541919433894\t2\t0",
+        "new_game\t291.99207552915243\t2\t0"
+      ],
+      "new_game_presentations": 180
+    }
+  },
+  "native_ticks": {
+    "passed": true,
+    "native_ticks": 4096,
+    "controlled_rng_seed": 4660,
+    "variants": {
+      "game-compact-runtime": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+      "game-fixedram-runtime": "c82e85db4d47bbc2c72797de0982998642f952208aeecfd1edbd1b8de2a87160",
+      "game-fixedram-megaram-runtime": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6"
+    },
+    "trace_sha256": "ae956c74945fa1eccfbe5a479406a72a8b34ea2086738c45c8e7b93584277417",
+    "scope": "Each native tick: original768-byte E000..E2FF state, all14 PSG registers and host game/death/round state. Real startup; held up; explicit seed fixture. No full natural-course, listening or physical-hardware claim."
+  },
+  "megaram_unexpanded": {
+    "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+    "bytes": 761856,
+    "mode": "basic",
+    "megaram_kib": 768,
+    "expanded_slot": false,
+    "main_ram_kib": 64,
+    "main_ram_kind": "plain",
+    "main_mapper_bytes": 0,
+    "slot_topology": "unexpanded",
+    "frames": 300,
+    "smoke_presented_fps": 33.24260714653358,
+    "period_mean": 107679.43032330008,
+    "period_p95": 122291.33333334266,
+    "period_max": 179208.3333333092,
+    "graphics": {
+      "passed": true,
+      "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+      "snapshots": [
+        {
+          "snapshot": "final",
+          "layout": 0,
+          "native_round": 2,
+          "player": 1,
+          "enemies": 1,
+          "stones": 0,
+          "flags": 0
+        }
+      ],
+      "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+    },
+    "active_filter": "Unfiltered300 completed presentations; death/stopped intervals may be included; not active-play acceptance",
+    "scope": "Complete-game smoke test; all-state/audio equivalence and matched performance use separate ledgers"
+  },
+  "map_constructors": {
+    "calls": 52,
+    "logical_banks": [
+      76,
+      77,
+      87,
+      88,
+      98,
+      99,
+      109,
+      110
+    ],
+    "inclusive_cycles": {
+      "mean": 348802.0192307714,
+      "p95": 360584.00000000576,
+      "max": 361222.0000000138
+    },
+    "full_16k_bytes_equal": true,
+    "ix_iy_iff_preserved": true,
+    "iff_values": [
+      0
+    ]
+  },
+  "host_tests": {
+    "general": 512,
+    "components": 94,
+    "component_skips": 1,
+    "general_log_sha256": "2b4c0b022c646e2821fdbbbe914d9eb7d951dc225ec8f210033e0c80ce80648a",
+    "components_log_sha256": "24c256dee4b40551e29bb12777b61b9876b5e8985ea7ff43c7dc49468ae8bc0d"
+  },
+  "executable_seals": {
+    "references/build/game-mapper512-game/files/NRX512.DAT": "01e5307f0cbda0626df611289820c1ae9a3e6a5725f74cdd6029bdbec67333ef",
+    "references/build/game-mapper512-game/files/NRX512.BIN": "bded77823f31908704404bb3dbecac9edd54be230507b04341db257c83232935",
+    "references/build/game-mapper512-game/files/NRX512.COM": "4f67a280daae9438194171467714da58cb705f640be800acdb3f0dd105da0870",
+    "references/build/game-mapper512-game/files/NRX512.BAS": "f088e88d90e2e0fea1dc1643ac31623e45fbcc0c44838782a43c0c7675bb6934",
+    "references/build/game-mapper512-game/cold.bin": "14b6440233d6c4aebc31d8675bd169ec99d34552a0e92ac03002ed1b7a47c385",
+    "dist/disk/NRALLYX.BAS": "201af89471b831da25f9c91d8e4331763bfea0962f11bb04a2b186e133914329",
+    "dist/disk/NRALLYX.COM": "2b3e119decba7cc31b175372fdcfe55ec33089f591fca470b6778b9c8f45a601",
+    "dist/disk/NRALLYX.BIN": "e3d07794210d57d35c5cdacad959841b46dbb454982d2c6df603ee79c19ce8fb",
+    "dist/disk/NRALLYX.DAT": "1baf81ceea20c911f7f5b1238fbbcc30b3c432602522ad7f35a9358277583489",
+    "dist/experimental/mapper512/newrallyx-512-test.rom": "1afe41cd7363c918f5e62058a5d8d678298ec11b237c9bf26f4c0efda427978f"
+  },
+  "executable_checks": {
+    "mapper512-dos": {
+      "passed": true,
+      "mode": "dos",
+      "frames": 180,
+      "native_round": 2,
+      "f10": true,
+      "transitions": false,
+      "seed": null,
+      "input_clock": "native",
+      "profile_audio": false,
+      "diagnostic_state_writes": 0,
+      "active_frames": 180,
+      "work": {
+        "mean": 84074.2888888937,
+        "p95": 194867.66666668575,
+        "max": 235545.33333332848
+      },
+      "period": {
+        "mean": 115686.01111111099,
+        "p95": 238941.3333332692,
+        "max": 242879.3333333269
+      },
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-120",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-160",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-40",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-80",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "opening": {
+        "passed": true,
+        "frames": 71,
+        "frame_sha256": [
+          "aebd0cf1b8db8538a15698326819d852d1d41199a7471dfc22cb1543179627bf",
+          "5936e9dc5bd8baf7f4559b0c31e99169fcaf55c1badfe78fdb0dca8301b94054",
+          "4a38a211ef2a093f78fe434a5c01d693f14a1b2b71fa47ad821e9eb005698490",
+          "7339d0dc3f51405f29287d14c13c449f3acd0e8c44c6dc0a4e55eeacceeee940",
+          "4e12938bafe41c3dfbf5781b12d3d143b8ff6035f16fab7f7774ae689387d897",
+          "005e3cbe6f57a1b907ec3326cd5b2d8d6234df41e54ee15baf3d15e9b98f8908",
+          "3c137dc27070616d1ca77362098d9e6aa1d63ed0a43f89c5e039333df0db4603",
+          "fe20f01fd1dce939842aaca51268cc5b92a6516e37aaca6fe81ce047e7ffe292",
+          "d6d7a39d04b03fd4569effe216baacedc602be477fe5ced544c28e0844a90c6b",
+          "6b0da189d2e4d6e0f57ce77d6d0045c193a025b1d9df3285713799b22e2359c3",
+          "9e22f70623e8e8bd818f9bae039c41271be807260e4ca0b1e7c2de771496ae9e",
+          "d682504d4ef3d424d5236e1a60cc0025eed59e31b01f1e68af36426eda07a77b",
+          "5ab8a88babdc5e6cab283e5bd01e8dd0c7b2161704ad8a7e38badd5c2bd3fa66",
+          "8bba701685a2c9155539fc8ebdbd1d2b0c8c90a8ddde3b9521ad4f401c8fdbf6",
+          "22287bc2c9a3c286166ef747a7a7c519091fa3d97aeb515d421723bc02ea0f3f",
+          "bcf047fa1d5b3fca4a28a5a5ba7cc010501f06984e9c80e4eb0ca33a3208b14b",
+          "347e039e59b46cc506ad59ecc0f59ee4ebf0ed4b8c95310b718e8d5adf4073e0",
+          "e5171727189b0ce3afdf6c2b6f800132d3add2956bdcec0851633043c2ba3c24",
+          "be171eaa16290c96aef35476b8fda577eb073d36f8aef804b00a56f1cf88c9c6",
+          "813b6a2efd60ee564caa8703cbff69239b535723e0bb6cb25df8e78625c1e5f1",
+          "902dfd2cb8e36b11cc50dbe32d9cc3280b74b13ef35ab4bbd814a783e65c8ea2",
+          "be7fd91227f1996771ad20bd984b99decb0eed695b0e3dcd6d73fae10738e1b7",
+          "0218303f717a5b12cc4a3d187429498d3a5ffb8dfddcf9c3a153c6e9310188d2",
+          "014e725688ec3a063e9ce4360b35cca32934c0cc07509af7923964cfb4c905a0",
+          "592187f7c2986ca8dccf062c5533caaac4e5aedd49b2cc7eb00ce43d563e75e4",
+          "0db0e9e229f7a8e8812a109442efd38689b35fed7817f10c5342fb835618f83c",
+          "3271a92e623a7831f1a4cbb76c8dd172e6c3448742116490d6b7b563434fda74",
+          "06e5b701226705bf9787362d641a6963aa420e73c27e20f4722ac6862ad50111",
+          "b8e539ff20faffd88152752d369a5bcca823852d0c1918928ab245b7c868e6b1",
+          "505c58d288a16bd53f3e07e2b3e1527c29beb2bc306fdec3ad2b4bfa8e9d512b",
+          "861017383b7b43166a795c0cf7b37fa3d98ab2617d211d7e798b4d9669a1917e",
+          "a98b713b0bc166efe545cd9170a8e585fe61671697b6da1ce1d0eb4d6eab88d0",
+          "77220fe5f96557f646175ecc2a72616af15b960b3001c4062a5ec906dd39bf19",
+          "fb09fb48239f5eac2402fcf4a2666382583203190d933c45052a696ef293d446",
+          "bfd131affc7df42862cd81b5f09b836fff17be5d8723994ec6cc34020a95b875",
+          "e8c83da9877ff8b5258d04da854c028b0e0d28b06b0dcaba995e11a292fa5ddd",
+          "aa9838794037291d2231f2acc90d89655fce161a7248d423cb828faf47389d6e",
+          "3073443c6dd8f11b8b0a70d6f877ea42d49513792a09351eefc322eff252373f",
+          "edcb7d49c4c7e7a15cc5c2e3f0d5a8f2e24a9aa6a23ad5faeee1766c40a61434",
+          "c4b731f0f7273a9e075f6cec49f1ee9ffbe0c1bb38fd9a77c7cb5a177fa72332",
+          "d50521a96ac9e144310e0d639bbbda68f78dcacb114a49231878a744f429e7e4",
+          "17fc7499890de5d9d568b28ec248ee3ded0669fabef99c3e37c3097ff4ad0ef0",
+          "fd58fec84061ea1ab81a0dc734a38fa693166fe2e34c8ec873e0d982957fb515",
+          "d6defa30928789a230d54882962d410b44d83af7e29dcc6bb758cce146849640",
+          "4ac5aeb3dcec2f83b2573169611f09f9a2bea52c7b6e58147e8000fa3c15942c",
+          "02ea37d690852f46e90b18c3e6690c2eca9ef1aa211ef0bb96673901bfbc4ee4",
+          "37ada26386bb9e999fc8b4ab7bbbbc33c2ad12e17e95661ef9857c1174b3a58e",
+          "1ac797e9777cca7e754d5bead6cf3c1e9319c83a1416b02eb659e1483a375829",
+          "45a4ec85130513923f03b43d8d233ea2db3468ed07d803f1e858b438ff86a89e",
+          "ac305f94a7221edb8164ae176732d2f35406e35a5a452d5238d52f3ae7e85391",
+          "7deb42b2e9ceb6596097228557dfe1b5874836cbee3a4b20fbe0a3117360e43c",
+          "d29a37e0896df61ba6c6e4cc928263d9c6bbe04727cf03c67a89f08e6712138d",
+          "e80f1d593bfcf4a251a3a9f3990bc92f09c6f574f602e25cc2c368e670ffd211",
+          "66efe314b279eca3c89dc0fa8cd96e02c417b4fa9ab27306830ff02443832493",
+          "a299ee5d53493d1ca6c03403fdb7ff9306c64b5f1ca58ac631129e035b7a79a6",
+          "4e8ee3f00df9f0faa476840f9a0fafd64f74c746381c0fca607a3d575bd78adc",
+          "76d116720c7c460a54c021568ef09167ae15de0183586aa4aa8a819c0342f1d8",
+          "30320f48100476a96d91cc390bbfebc21ccfee02590e9ad2adfa60e3d9021405",
+          "1b917428a72f6e6d754e70239d0e1f24cbdb8d008e3ef3d761c10d27515f1540",
+          "57fde48feb92a5e11359d5f7c6fd8cedad8d9c6e09f773a49020a9ee388f5de7",
+          "03a3fdfd35c500006d2d0751312af23295aef0bbb5e7c935336695831aa6bff8",
+          "5baf3524a07f118b1077389fe381e212590998d5d36835f71026073eb1f285e6",
+          "63050bfd5742dfa8fc92c864349367fe6507cb5a8f614bb53977a4741f2612e4",
+          "813abf5df1eb82df25ed1937f4227e81bda985f461fef988f2b8965aebcbd83c",
+          "1a0e63453721128d3fbcb45635fbe301584ece3d81413b3ccfc666742b5d7359",
+          "a5a9f150c52a449f2c7178d8e749450dd9d8203ddbccc4eb8b9d026897ebe829",
+          "b747016830c93cc75234dc6ff7359e43dfa713c4c604ef99d167844cfc7cfbf1",
+          "ac7856513f72e51a2a00215a35aa2964538fde1a90b0403d80685719b8ab12ec",
+          "196314f630d7c8844d81be7d823012b50c1a48e3c11bcadff87d7d045004d7f3",
+          "0c707151a7fe5ac9d857488633335f30dc59e54c54c999d304751a03bf7d5332",
+          "7d332213ae8bded61feba4faac0161bb2f6934c7ef3835e65ce7c064f16cb361"
+        ],
+        "publication_tick_error_max": 0,
+        "scope": "Published packed VRAM pixels, black border register and original publication cadence; original captures plus512KiB status overlay. No physical scanout/listening claim."
+      },
+      "immutable_live_bytes_checked": 328807,
+      "resource_sha256": "01e5307f0cbda0626df611289820c1ae9a3e6a5725f74cdd6029bdbec67333ef",
+      "bridge_sha256": "14b6440233d6c4aebc31d8675bd169ec99d34552a0e92ac03002ed1b7a47c385",
+      "verification_script_sha256": "61a93ba92e789b9a0a3171dbfb2430e7b101a019fe70cc39712d73498bbce70c",
+      "cartridge": false,
+      "host_payload_injections": 0,
+      "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+      "path": "references/build/game-mapper512-game/dos-r2-f101-7scrk_76"
+    },
+    "mapper512-basic": {
+      "passed": true,
+      "mode": "basic",
+      "frames": 180,
+      "native_round": 2,
+      "f10": false,
+      "transitions": false,
+      "seed": null,
+      "input_clock": "native",
+      "profile_audio": false,
+      "diagnostic_state_writes": 0,
+      "active_frames": 170,
+      "work": {
+        "mean": 83482.49411764301,
+        "p95": 194867.66666668575,
+        "max": 235545.33333332848
+      },
+      "period": {
+        "mean": 115449.73529411809,
+        "p95": 238941.00000000876,
+        "max": 242879.33333342866
+      },
+      "graphics": {
+        "passed": true,
+        "rom_sha256": "44be6037d05ebf763283f14ef6deb6e4a8bd58b0a25fcc04c693d899c3704f00",
+        "snapshots": [
+          {
+            "snapshot": "final",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-120",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-160",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 1
+          },
+          {
+            "snapshot": "frame-40",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          },
+          {
+            "snapshot": "frame-80",
+            "layout": 0,
+            "native_round": 2,
+            "player": 1,
+            "enemies": 1,
+            "stones": 0,
+            "flags": 0
+          }
+        ],
+        "scope": "Independent dynamic world, all fixed HUD background pixels, numeric/life SAT and complete car patterns on stable commit snapshots. Not a full human-course proof."
+      },
+      "opening": {
+        "passed": true,
+        "frames": 71,
+        "frame_sha256": [
+          "aebd0cf1b8db8538a15698326819d852d1d41199a7471dfc22cb1543179627bf",
+          "5936e9dc5bd8baf7f4559b0c31e99169fcaf55c1badfe78fdb0dca8301b94054",
+          "4a38a211ef2a093f78fe434a5c01d693f14a1b2b71fa47ad821e9eb005698490",
+          "7339d0dc3f51405f29287d14c13c449f3acd0e8c44c6dc0a4e55eeacceeee940",
+          "4e12938bafe41c3dfbf5781b12d3d143b8ff6035f16fab7f7774ae689387d897",
+          "005e3cbe6f57a1b907ec3326cd5b2d8d6234df41e54ee15baf3d15e9b98f8908",
+          "3c137dc27070616d1ca77362098d9e6aa1d63ed0a43f89c5e039333df0db4603",
+          "fe20f01fd1dce939842aaca51268cc5b92a6516e37aaca6fe81ce047e7ffe292",
+          "d6d7a39d04b03fd4569effe216baacedc602be477fe5ced544c28e0844a90c6b",
+          "6b0da189d2e4d6e0f57ce77d6d0045c193a025b1d9df3285713799b22e2359c3",
+          "9e22f70623e8e8bd818f9bae039c41271be807260e4ca0b1e7c2de771496ae9e",
+          "d682504d4ef3d424d5236e1a60cc0025eed59e31b01f1e68af36426eda07a77b",
+          "5ab8a88babdc5e6cab283e5bd01e8dd0c7b2161704ad8a7e38badd5c2bd3fa66",
+          "8bba701685a2c9155539fc8ebdbd1d2b0c8c90a8ddde3b9521ad4f401c8fdbf6",
+          "22287bc2c9a3c286166ef747a7a7c519091fa3d97aeb515d421723bc02ea0f3f",
+          "bcf047fa1d5b3fca4a28a5a5ba7cc010501f06984e9c80e4eb0ca33a3208b14b",
+          "347e039e59b46cc506ad59ecc0f59ee4ebf0ed4b8c95310b718e8d5adf4073e0",
+          "e5171727189b0ce3afdf6c2b6f800132d3add2956bdcec0851633043c2ba3c24",
+          "be171eaa16290c96aef35476b8fda577eb073d36f8aef804b00a56f1cf88c9c6",
+          "813b6a2efd60ee564caa8703cbff69239b535723e0bb6cb25df8e78625c1e5f1",
+          "902dfd2cb8e36b11cc50dbe32d9cc3280b74b13ef35ab4bbd814a783e65c8ea2",
+          "be7fd91227f1996771ad20bd984b99decb0eed695b0e3dcd6d73fae10738e1b7",
+          "0218303f717a5b12cc4a3d187429498d3a5ffb8dfddcf9c3a153c6e9310188d2",
+          "014e725688ec3a063e9ce4360b35cca32934c0cc07509af7923964cfb4c905a0",
+          "592187f7c2986ca8dccf062c5533caaac4e5aedd49b2cc7eb00ce43d563e75e4",
+          "0db0e9e229f7a8e8812a109442efd38689b35fed7817f10c5342fb835618f83c",
+          "3271a92e623a7831f1a4cbb76c8dd172e6c3448742116490d6b7b563434fda74",
+          "06e5b701226705bf9787362d641a6963aa420e73c27e20f4722ac6862ad50111",
+          "b8e539ff20faffd88152752d369a5bcca823852d0c1918928ab245b7c868e6b1",
+          "505c58d288a16bd53f3e07e2b3e1527c29beb2bc306fdec3ad2b4bfa8e9d512b",
+          "861017383b7b43166a795c0cf7b37fa3d98ab2617d211d7e798b4d9669a1917e",
+          "a98b713b0bc166efe545cd9170a8e585fe61671697b6da1ce1d0eb4d6eab88d0",
+          "77220fe5f96557f646175ecc2a72616af15b960b3001c4062a5ec906dd39bf19",
+          "fb09fb48239f5eac2402fcf4a2666382583203190d933c45052a696ef293d446",
+          "bfd131affc7df42862cd81b5f09b836fff17be5d8723994ec6cc34020a95b875",
+          "e8c83da9877ff8b5258d04da854c028b0e0d28b06b0dcaba995e11a292fa5ddd",
+          "aa9838794037291d2231f2acc90d89655fce161a7248d423cb828faf47389d6e",
+          "3073443c6dd8f11b8b0a70d6f877ea42d49513792a09351eefc322eff252373f",
+          "edcb7d49c4c7e7a15cc5c2e3f0d5a8f2e24a9aa6a23ad5faeee1766c40a61434",
+          "c4b731f0f7273a9e075f6cec49f1ee9ffbe0c1bb38fd9a77c7cb5a177fa72332",
+          "d50521a96ac9e144310e0d639bbbda68f78dcacb114a49231878a744f429e7e4",
+          "17fc7499890de5d9d568b28ec248ee3ded0669fabef99c3e37c3097ff4ad0ef0",
+          "fd58fec84061ea1ab81a0dc734a38fa693166fe2e34c8ec873e0d982957fb515",
+          "d6defa30928789a230d54882962d410b44d83af7e29dcc6bb758cce146849640",
+          "4ac5aeb3dcec2f83b2573169611f09f9a2bea52c7b6e58147e8000fa3c15942c",
+          "02ea37d690852f46e90b18c3e6690c2eca9ef1aa211ef0bb96673901bfbc4ee4",
+          "37ada26386bb9e999fc8b4ab7bbbbc33c2ad12e17e95661ef9857c1174b3a58e",
+          "1ac797e9777cca7e754d5bead6cf3c1e9319c83a1416b02eb659e1483a375829",
+          "45a4ec85130513923f03b43d8d233ea2db3468ed07d803f1e858b438ff86a89e",
+          "ac305f94a7221edb8164ae176732d2f35406e35a5a452d5238d52f3ae7e85391",
+          "7deb42b2e9ceb6596097228557dfe1b5874836cbee3a4b20fbe0a3117360e43c",
+          "d29a37e0896df61ba6c6e4cc928263d9c6bbe04727cf03c67a89f08e6712138d",
+          "e80f1d593bfcf4a251a3a9f3990bc92f09c6f574f602e25cc2c368e670ffd211",
+          "66efe314b279eca3c89dc0fa8cd96e02c417b4fa9ab27306830ff02443832493",
+          "a299ee5d53493d1ca6c03403fdb7ff9306c64b5f1ca58ac631129e035b7a79a6",
+          "4e8ee3f00df9f0faa476840f9a0fafd64f74c746381c0fca607a3d575bd78adc",
+          "76d116720c7c460a54c021568ef09167ae15de0183586aa4aa8a819c0342f1d8",
+          "30320f48100476a96d91cc390bbfebc21ccfee02590e9ad2adfa60e3d9021405",
+          "1b917428a72f6e6d754e70239d0e1f24cbdb8d008e3ef3d761c10d27515f1540",
+          "57fde48feb92a5e11359d5f7c6fd8cedad8d9c6e09f773a49020a9ee388f5de7",
+          "03a3fdfd35c500006d2d0751312af23295aef0bbb5e7c935336695831aa6bff8",
+          "5baf3524a07f118b1077389fe381e212590998d5d36835f71026073eb1f285e6",
+          "63050bfd5742dfa8fc92c864349367fe6507cb5a8f614bb53977a4741f2612e4",
+          "813abf5df1eb82df25ed1937f4227e81bda985f461fef988f2b8965aebcbd83c",
+          "1a0e63453721128d3fbcb45635fbe301584ece3d81413b3ccfc666742b5d7359",
+          "a5a9f150c52a449f2c7178d8e749450dd9d8203ddbccc4eb8b9d026897ebe829",
+          "b747016830c93cc75234dc6ff7359e43dfa713c4c604ef99d167844cfc7cfbf1",
+          "ac7856513f72e51a2a00215a35aa2964538fde1a90b0403d80685719b8ab12ec",
+          "196314f630d7c8844d81be7d823012b50c1a48e3c11bcadff87d7d045004d7f3",
+          "0c707151a7fe5ac9d857488633335f30dc59e54c54c999d304751a03bf7d5332",
+          "7d332213ae8bded61feba4faac0161bb2f6934c7ef3835e65ce7c064f16cb361"
+        ],
+        "publication_tick_error_max": 0,
+        "scope": "Published packed VRAM pixels, black border register and original publication cadence; original captures plus512KiB status overlay. No physical scanout/listening claim."
+      },
+      "immutable_live_bytes_checked": 328807,
+      "resource_sha256": "01e5307f0cbda0626df611289820c1ae9a3e6a5725f74cdd6029bdbec67333ef",
+      "bridge_sha256": "14b6440233d6c4aebc31d8675bd169ec99d34552a0e92ac03002ed1b7a47c385",
+      "verification_script_sha256": "c25b0668205c9fb7ce82fe1f976ff9f3a989abccfa112fc0a60aaec85bdf48b5",
+      "cartridge": false,
+      "host_payload_injections": 0,
+      "scope": "Native game from real DOS/BASIC filesystem; no cartridge or intercepted cold provider. Emulator/short-route proof, not hardware or full acceptance.",
+      "path": "references/build/game-mapper512-game/basic-r2-f100-lczhplsk"
+    },
+    "legacy-dos": {
+      "mode": "dos",
+      "mapper_ram_kib": 4096,
+      "refresh_hz": 59.92274340431231,
+      "nominal_refresh_hz": 60,
+      "refresh_cycles": 59736,
+      "two_refresh_budget_cycles": 119472,
+      "artifact_sha256": "6e5dfc69e7f3d4303a967bf420cd952b680145258ec2099569af643831625e17",
+      "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+      "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+      "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+      "work": {
+        "samples": 300,
+        "mean": 65050.355555545815,
+        "p95": 91745.00000003721,
+        "maximum": 124356.6666667011
+      },
+      "synchronization_wait": {
+        "samples": 300,
+        "mean": 41371.03333333417,
+        "p95": 59470.000000085354,
+        "maximum": 59765.000000084816
+      },
+      "publication": {
+        "samples": 300,
+        "mean": 4245.456666668401,
+        "p95": 6923.000000131609,
+        "maximum": 9159.000000177908
+      },
+      "presentation_period": {
+        "samples": 299,
+        "mean": 110681.41248606467,
+        "p95": 122290.3333332561,
+        "maximum": 179207.66666668653
+      },
+      "presented_fps": 32.340976859603074
+    },
+    "legacy-basic": {
+      "mode": "basic",
+      "mapper_ram_kib": 4096,
+      "refresh_hz": 59.92274340431231,
+      "nominal_refresh_hz": 60,
+      "refresh_cycles": 59736,
+      "two_refresh_budget_cycles": 119472,
+      "artifact_sha256": "6e5dfc69e7f3d4303a967bf420cd952b680145258ec2099569af643831625e17",
+      "workload": "300 completed presentations of natural first-round three-enemy active gameplay, right held and one smoke pulse",
+      "active_filter": "Both interval endpoints exclude death, round transitions, pause, game-over and attract mode",
+      "cycle_unit": "elapsed Z80-base-equivalent cycles at 3579545 Hz; includes IRQ and VDP stalls",
+      "work": {
+        "samples": 300,
+        "mean": 65050.355555547845,
+        "p95": 91745.00000003721,
+        "maximum": 124356.6666667011
+      },
+      "synchronization_wait": {
+        "samples": 300,
+        "mean": 41371.01666667115,
+        "p95": 59469.99999988188,
+        "maximum": 59765.000000084816
+      },
+      "publication": {
+        "samples": 300,
+        "mean": 4245.456666664332,
+        "p95": 6923.000000131609,
+        "maximum": 9159.000000177908
+      },
+      "presentation_period": {
+        "samples": 299,
+        "mean": 110681.41248606467,
+        "p95": 122291.66666670484,
+        "maximum": 179207.66666668653
+      },
+      "presented_fps": 32.340976859603074
+    }
+  },
+  "legacy_zip": {
+    "path": "dist/disk/newrallyx-disk.zip",
+    "previous_sha256": "fca5d77ade0bc83156e37279c8968f6108e762ccb128f651c8e54741d3668428",
+    "current_sha256": "1bee9f8297146ad6ff3928036a6ae62479cb898f328a8c198dec09e1cb318eb8",
+    "scope": "Rebuilt archive: cartridge provenance, source overlay and ZIP timestamps may change; all runtime files remain sealed."
+  },
+  "megaram": {
+    "programmed_bytes": 761856,
+    "physical_padded_bytes": 770048,
+    "pages_8k": 93,
+    "rom_sha256": "c3736f2cc167638a7e90e4919c6d12f6268be3ca4c6cbc9ccd710a5360d84fd6",
+    "data_sha256": "db9017ced63e7a1c6479dceae9de178570a2bbaa8053565b5eaacdee59cba365",
+    "minimum_main_ram_kib": 64,
+    "minimum_mapper_ram_kib": 0,
+    "ram_mapper_required": false,
+    "minimum_megaram_kib": 768,
+    "probe_banks": [
+      0,
+      64,
+      95
+    ],
+    "loader_bytes": 973,
+    "compressed_bytes": 267440
+  },
+  "source_files": {
+    "scripts/fixedram_backend.py": "605b74fe3fa745718625d8bec2c966f285110945efcff9820ba79c57746e8be9",
+    "scripts/fixedram_qualify.py": "4c35fdfe9ae2f05b99b62cbc118045c9f67a76db484d711280b7d813ec2a9fc1",
+    "scripts/fixedram_report.py": "9436ae310f2b24fcb204349a2508ab9de5520c0f84064a534a2ff8ce1b33f708",
+    "scripts/fixedram_tick_verify.py": "6f184716dfbb37c8078ebddcf2d30e0e97ee0bbe350ceb8e0b61d6bf2380128c",
+    "scripts/fixedram_gameover_verify.py": "e094af49bf3e327635b1a131e858143a8d47881e0369c1c2b449e45388d4bc58",
+    "scripts/mapper512_reference.py": "0886381b1527354eb183dd0789d55e2bf26af7ecb727e0a37938e234d3457264",
+    "scripts/compact_game_build.py": "4f3129c60f053f97787f293878babee317983784794e6b3976fed854e70b95d0",
+    "scripts/compact_game_verify.py": "66afc34b0d3e51454e72f927910c9d65285bb4a0e61e3b917bfca96cc1d47e1d",
+    "scripts/compact_map_contract.py": "26e29195ac64050f0e3d2d7ebae9a3375ab3f97713033b1b5c11823b2ea418c2",
+    "scripts/megaram_package.py": "79f57507569076da0cb36bbbe72b2f1140d06e24d8ad80c8c6d6bae00d74c6ed",
+    "scripts/disk_package.py": "1b4efcb9475bbf4286a65d3e725eb4cbe1a5ba13a6f7cb3065e85a8877cf8dae",
+    "src/screen4/session-fixedram-cold.inc": "d2dd1af3642b0b90128f8cb8dfb76f81876e55d7ddf3a444317d76b17cb49766",
+    "src/screen4/session-fixedram-hot.inc": "2f0b0ff40937476b85cfaca66df7b6ab95be887d43ec636c107280d94094cdf3",
+    "src/screen4/session-fixedram-irq.inc": "10534eb90023bec9c241d15af7d7cecb2d00df2af4be53d1903539af0212157b",
+    "src/toolchain/msx/emulator.py": "67424cb23082b24b6d5fad009586ff752bb3b4a356de3128f69e724b99b9336c",
+    "src/toolchain/msx/mapper_reference.tcl": "06f3c41a3b72434eda46efc717c38c975d4f20271a981245d028de14a7dc39c5",
+    "src/toolchain/screen4/session_profile_adapter.py": "e4730baedcb82a1f3b034ae53e37aa19ef954acceac7134c719603fcbed9b1f7",
+    "src/toolchain/screen4/session_steering_verify.py": "99bd88c1316edbac035876290bbad18afdc2f6314d7fdeb2ca6f8de949636fc1",
+    "src/screen4/modules/contracts.json": "58e516087a150557328c6dd952793c8ae2a0ba0a67ca1c869bd804076fd79403"
+  },
+  "limits": "openMSX22, NTSC reference only. Short matched directional workloads and controlled scenarios; not every natural course, PAL50, hardware, subjective audio or owner acceptance. Earlier512KiB divergent-route0.24% question remains separate. No release/commit/push/merge."
+}

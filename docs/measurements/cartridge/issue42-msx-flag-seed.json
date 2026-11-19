@@ -1,0 +1,112 @@
+{
+  "rom_sha256": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+  "preserved_artifacts": {
+    "dist/newrallyx.rom": "b5684933f5dcae72d5552b51cbca64a28458fa980795334d6491ce3f55c66e4a",
+    "dist/compact/megaram/newrallyx-megaram.zip": "8c46b18de935b4559fcd2acbe6dacbe096a33107d9ae63df59729e45fcba8b7f",
+    "dist/disk/newrallyx-disk.zip": "d2ba12f51d0f275a987bcdd93d43b72b93f422ab3ba2f034599e40337234e389"
+  },
+  "original_geometry_pages_already_in_cartridge": true,
+  "runs": [
+    {
+      "start_delay_seconds": 0,
+      "controlled_seed": null,
+      "advance_after_seconds": null,
+      "native_round": 2,
+      "rock_count": 0,
+      "rng_before_prepare": 1,
+      "first_flag_positions_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+      "graphics_passed": true,
+      "rng_before_reset": 4780,
+      "rng_after_reset": 1,
+      "rng_before_placement": 1,
+      "rng_after_placement": 5676,
+      "flag_positions_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+      "evidence": "references/build/game-issue42/msx-delay0"
+    },
+    {
+      "start_delay_seconds": 0.5,
+      "controlled_seed": null,
+      "advance_after_seconds": null,
+      "native_round": 2,
+      "rock_count": 0,
+      "rng_before_prepare": 1,
+      "first_flag_positions_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+      "graphics_passed": true,
+      "rng_before_reset": 4780,
+      "rng_after_reset": 1,
+      "rng_before_placement": 1,
+      "rng_after_placement": 5676,
+      "flag_positions_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+      "evidence": "references/build/game-issue42/msx-delay0.5"
+    },
+    {
+      "start_delay_seconds": 2,
+      "controlled_seed": null,
+      "advance_after_seconds": null,
+      "native_round": 2,
+      "rock_count": 0,
+      "rng_before_prepare": 1,
+      "first_flag_positions_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+      "graphics_passed": true,
+      "rng_before_reset": 4780,
+      "rng_after_reset": 1,
+      "rng_before_placement": 1,
+      "rng_after_placement": 5676,
+      "flag_positions_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+      "evidence": "references/build/game-issue42/msx-delay2"
+    }
+  ],
+  "controlled_seed_probe": {
+    "start_delay_seconds": 0,
+    "controlled_seed": 4660,
+    "advance_after_seconds": null,
+    "native_round": 2,
+    "rock_count": 0,
+    "rng_before_prepare": 1,
+    "first_flag_positions_sha256": "b6520e442223a53e63a530a8ce1d1d15c0847e2ff79a7fbc9c11dfb5fad44334",
+    "graphics_passed": true,
+    "rng_before_reset": 4780,
+    "rng_after_reset": 1,
+    "rng_before_placement": 4660,
+    "rng_after_placement": 6995,
+    "flag_positions_sha256": "b6520e442223a53e63a530a8ce1d1d15c0847e2ff79a7fbc9c11dfb5fad44334",
+    "evidence": "references/build/game-issue42/msx-delay0-controlled4660"
+  },
+  "next_round_probes": [
+    {
+      "start_delay_seconds": 0,
+      "controlled_seed": null,
+      "advance_after_seconds": 0.2,
+      "native_round": 3,
+      "rock_count": 2,
+      "rng_before_prepare": 52263,
+      "first_flag_positions_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+      "graphics_passed": true,
+      "rng_before_reset": 4780,
+      "rng_after_reset": 1,
+      "rng_before_placement": 12447,
+      "rng_after_placement": 51136,
+      "flag_positions_sha256": "2e8bf5ffb1453a91925ae458cd51271a7db3e3d923b259aff5eb3234a7fe1edf",
+      "evidence": "references/build/game-issue42/msx-delay0-next0.2"
+    },
+    {
+      "start_delay_seconds": 0,
+      "controlled_seed": null,
+      "advance_after_seconds": 0.6,
+      "native_round": 3,
+      "rock_count": 2,
+      "rng_before_prepare": 12784,
+      "first_flag_positions_sha256": "45654b3a3227762d6ec715d79ce564b46ed725c90d0d9ff6880911c1cf4e3275",
+      "graphics_passed": true,
+      "rng_before_reset": 4780,
+      "rng_after_reset": 1,
+      "rng_before_placement": 7939,
+      "rng_after_placement": 7166,
+      "flag_positions_sha256": "4402ce129e009a3d92b6adb34ef12e5728d59fb9c6e2ba792c99ec72025f7fd4",
+      "evidence": "references/build/game-issue42/msx-delay0-next0.6"
+    }
+  ],
+  "source_sha256": "9c5744337a6680d0ef54d858ccde0909ee75d09da6cf82137cc4cebebee6d81d",
+  "main_ram_kib": 64,
+  "scope": "Accepted ASCII8 cartridge, real credit/start and read-only observers. First game and next-round F5 probes (not naturally earned completion). Separate controlled-seed probe changes one RAM word before placement, checks original algorithm and independent display oracle. No runtime implementation or performance claim."
+}
